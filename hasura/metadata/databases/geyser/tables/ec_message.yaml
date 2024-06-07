@@ -1,0 +1,231 @@
+table:
+  name: message
+  schema: ec
+object_relationships:
+  - name: anneeByAnnee
+    using:
+      foreign_key_constraint_on: annee
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+  - name: type_message
+    using:
+      foreign_key_constraint_on: type
+insert_permissions:
+  - role: commissaire
+    permission:
+      check:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - type:
+              _eq: note_commission
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      columns:
+        - annee
+        - contenu
+        - type
+        - uid
+    comment: ""
+  - role: intervenant
+    permission:
+      check:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+      columns:
+        - annee
+        - contenu
+        - type
+        - uid
+    comment: ""
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - annee
+        - id
+        - contenu
+        - type
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - annee
+        - id
+        - contenu
+        - type
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
+    comment: ""
+update_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - contenu
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - type:
+              _eq: note_commission
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      check: null
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - contenu
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+      check: null
+    comment: ""
+delete_permissions:
+  - role: commissaire
+    permission:
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - type:
+              _eq: note_commission
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+    comment: ""

@@ -1,0 +1,24 @@
+table:
+  name: phase
+  schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - en_cours
+        - visible
+        - value
+      filter:
+        visible:
+          _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - en_cours
+        - visible
+        - value
+      filter:
+        visible:
+          _eq: true
+    comment: ""

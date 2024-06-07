@@ -1,0 +1,59 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script updates Keycloak users based on the `intervenant` table from the
+# local PostgreSQL database. Specifically, it adds or updates users
+# corresponding to active intervenants and deletes users corresponding to
+# inactive intervenants.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+source "$GEYSER_DIR"/.env.local
+export PGPASSWORD="$POSTGRES_PASSWORD"
+
+# login
+"$GEYSER_DIR"/scripts/kcadm --login
+
+echo "***** Active users *****"
+query="SELECT uid, nom, prenom FROM ec.intervenant WHERE actif IS TRUE"
+active_users=$(psql -U postgres -h localhost -p 5432 -d geyser -c "copy ($query) to stdout with csv")
+while IFS=',' read -r uid nom prenom
+do
+  echo "Retrieving user with email=$uid..."
+  response=$("$GEYSER_DIR"/scripts/kcadm get users -r master -q email="$uid" 2>/dev/null </dev/null)
+  id=$(echo "$response" | jq -r '.[0].id')
+  if [[ "$id" == 'null' ]]; then
+    echo "Not found: Creating user with uid=$uid; nom=$nom; prenom=$prenom..."
+    "$GEYSER_DIR"/scripts/kcadm create users -r master -s email="$uid" -s lastName="$nom" -s firstName="$prenom" -s enabled=true -s emailVerified=true </dev/null
+  else
+    lastName=$(echo "$response" | jq -r '.[0].lastName')
+    firstName=$(echo "$response" | jq -r '.[0].firstName')
+    echo "Found: id=$id; lastName=$lastName; firstName=$firstName"
+    if [[ "$lastName" != "$nom" ]] || [[ "$firstName" != "$prenom" ]]; then
+      echo "Last name and/or first name do not match: Updating user..."
+      "$GEYSER_DIR"/scripts/kcadm update users/"$id" -r master -s lastName="$nom" -s firstName="$prenom" </dev/null
+      echo "Done"
+    fi
+  fi
+done <<< "$active_users"
+
+echo "***** Inactive users *****"
+query="SELECT uid FROM ec.intervenant WHERE actif IS FALSE"
+inactive_users=$(psql -U postgres -h localhost -p 5432 -d geyser -c "copy ($query) to stdout with csv")
+while IFS=',' read -r uid
+do
+  echo "Retrieving user with email=$uid..."
+  response=$("$GEYSER_DIR"/scripts/kcadm get users -r master -q email="$uid" 2>/dev/null </dev/null)
+  id=$(echo "$response" | jq -r '.[0].id')
+  if [[ "$id" == 'null' ]]; then
+    echo "Not found"
+  else
+    echo "Found: Deleting user..."
+    "$GEYSER_DIR"/scripts/kcadm delete users/"$id" -r master </dev/null
+    echo "Done"
+  fi
+done <<< "$inactive_users"

@@ -1,0 +1,13 @@
+backups
+hasura
+keycloak
+nginx
+postgres
+scripts
+ssl
+v1
+.env.dev
+.env.local
+.env.prod
+compose.prod.yaml
+compose.yaml

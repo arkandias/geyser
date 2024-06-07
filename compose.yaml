@@ -1,0 +1,79 @@
+name: geyser
+
+services:
+
+  postgres:
+    image: postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -U postgres || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      - POSTGRES_DB=geyser
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+      - KC_DB_PASSWORD
+      - HASURA_DB_PASSWORD
+    ports:
+      - "5432:5432"
+    networks:
+      - backend
+    volumes:
+      - ./postgres/initdb:/docker-entrypoint-initdb.d:ro
+      - ./postgres/data:/var/lib/postgresql/data
+
+  keycloak:
+    build: ./keycloak
+    restart: ${KC_RESTART:-unless-stopped}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD
+      - KC_DB_URL=jdbc:postgresql://postgres:5432/geyser
+      - KC_DB_USERNAME=keycloak
+      - KC_DB_PASSWORD
+      - KC_DB_SCHEMA=keycloak
+    ports:
+      - "8080:8080"
+    networks:
+      - backend
+    volumes:
+      - ./keycloak/data/import:/opt/keycloak/data/import
+      - ./keycloak/data/import/templates:/opt/keycloak/data/import/templates:ro
+      - ./keycloak/providers:/opt/keycloak/providers
+    command: ${KC_CMD:-start-dev}
+
+  hasura:
+    image: hasura/graphql-engine:latest
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    healthcheck:
+      test: curl -fsS http://localhost:8080/healthz || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      - HASURA_GRAPHQL_ADMIN_SECRET
+      - HASURA_GRAPHQL_DATABASE_URL=postgresql://hasura:${HASURA_DB_PASSWORD}@postgres:5432/geyser
+      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8080/realms/master/protocol/openid-connect/certs"}
+      - HASURA_GRAPHQL_CORS_DOMAIN=*
+      - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+    ports:
+      - "8090:8080"
+    networks:
+      - backend
+
+networks:
+  backend:

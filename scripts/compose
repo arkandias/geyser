@@ -1,0 +1,24 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script is a shorthand to run Docker Compose commands.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+if [[ -z "$GEYSER_MODE" ]]; then
+  echo "Warning: GEYSER_MODE is not set; defaulting to production mode" >&2
+  GEYSER_MODE=production
+fi
+
+if [[ $GEYSER_MODE == "production" ]]; then
+  docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml "$@"
+elif [[ $GEYSER_MODE == "development" ]]; then
+  docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml "$@"
+else
+  echo "Error: Incorrect mode $GEYSER_MODE" >&2
+  exit 1
+fi

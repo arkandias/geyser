@@ -1,0 +1,28 @@
+table:
+  name: type_enseignement
+  schema: ec
+array_relationships:
+  - name: enseignements
+    using:
+      foreign_key_constraint_on:
+        column: type
+        table:
+          name: enseignement
+          schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - coefficient
+        - label
+        - label_court
+      filter: {}
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - coefficient
+        - label
+        - label_court
+      filter: {}
+    comment: ""

@@ -1,0 +1,51 @@
+table:
+  name: priorite
+  schema: ec
+object_relationships:
+  - name: enseignement
+    using:
+      foreign_key_constraint_on: ens_id
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - prioritaire
+        - anciennete
+        - ens_id
+        - id
+        - uid
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - prioritaire
+        - anciennete
+        - ens_id
+        - id
+        - uid
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+    comment: ""

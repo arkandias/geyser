@@ -1,0 +1,67 @@
+table:
+  name: responsable
+  schema: ec
+object_relationships:
+  - name: enseignement
+    using:
+      foreign_key_constraint_on: ens_id
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+  - name: mention
+    using:
+      foreign_key_constraint_on: mention_id
+  - name: parcours
+    using:
+      foreign_key_constraint_on: parcours_id
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - ens_id
+        - id
+        - mention_id
+        - parcours_id
+        - commentaire
+        - uid
+      filter:
+        _and:
+          - intervenant:
+              visible:
+                _eq: true
+          - _or:
+              - enseignement:
+                  visible:
+                    _eq: true
+              - parcours:
+                  visible:
+                    _eq: true
+              - mention:
+                  visible:
+                    _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - ens_id
+        - id
+        - mention_id
+        - parcours_id
+        - commentaire
+        - uid
+      filter:
+        _and:
+          - intervenant:
+              visible:
+                _eq: true
+          - _or:
+              - enseignement:
+                  visible:
+                    _eq: true
+              - parcours:
+                  visible:
+                    _eq: true
+              - mention:
+                  visible:
+                    _eq: true
+    comment: ""

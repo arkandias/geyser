@@ -1,0 +1,111 @@
+table:
+  name: modification_service
+  schema: ec
+object_relationships:
+  - name: anneeByAnnee
+    using:
+      foreign_key_constraint_on: annee
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+  - name: type_modification
+    using:
+      foreign_key_constraint_on: type
+insert_permissions:
+  - role: intervenant
+    permission:
+      check:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      columns:
+        - annee
+        - heures_eqtd
+        - type
+        - uid
+    comment: ""
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - annee
+        - id
+        - heures_eqtd
+        - type
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - visible:
+                    _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      allow_aggregations: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - annee
+        - id
+        - heures_eqtd
+        - type
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: ""
+update_permissions:
+  - role: intervenant
+    permission:
+      columns:
+        - heures_eqtd
+        - type
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: intervenant
+    permission:
+      filter:
+        _and:
+          - anneeByAnnee:
+              _and:
+                - en_cours:
+                    _eq: true
+                - visible:
+                    _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+    comment: ""

@@ -1,0 +1,11 @@
+/backups
+/keycloak/data/import/*
+!/keycloak/data/import/templates/
+!/keycloak/data/import/README.md
+/postgres/data
+/ssl/certs/*
+!/ssl/certs/README.md
+/v1
+*.local
+.DS_Store
+.idea

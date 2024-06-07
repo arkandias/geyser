@@ -1,0 +1,36 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script is a shorthand to execute a Keycloak admin command on a running
+# Keycloak instance.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+source "$GEYSER_DIR"/.env.local
+
+# Options
+login=false
+for arg in "$@"; do
+  shift
+  case "$arg" in
+    --login)
+      login=true
+      ;;
+    *)
+      set -- "$@" "$arg"
+      ;;
+  esac
+done
+
+if [[ "$login" == true ]]; then
+  "$GEYSER_DIR"/scripts/compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
+    --server http://localhost:8080 --realm master --user admin --password "$KEYCLOAK_ADMIN_PASSWORD"
+fi
+
+if [[ $# -ne 0 ]]; then
+  "$GEYSER_DIR"/scripts/compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
+fi

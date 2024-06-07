@@ -1,0 +1,53 @@
+table:
+  name: annee
+  schema: ec
+array_relationships:
+  - name: enseignements
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: enseignement
+          schema: ec
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: message
+          schema: ec
+  - name: modifications_service
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: modification_service
+          schema: ec
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: service
+          schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - en_cours
+        - visible
+        - value
+      filter:
+        visible:
+          _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - en_cours
+        - visible
+        - value
+      filter:
+        visible:
+          _eq: true
+    comment: ""

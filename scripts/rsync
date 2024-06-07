@@ -1,0 +1,13 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script is a shorthand for synchronizing a local Geyser directory to a
+# remote server.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+rsync -rlv --delete --files-from="$GEYSER_DIR"/rsync-files --exclude-from="$GEYSER_DIR"/rsync-exclude "$GEYSER_DIR"/ "$@"

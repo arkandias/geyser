@@ -1,0 +1,34 @@
+table:
+  name: cursus
+  schema: ec
+array_relationships:
+  - name: mentions
+    using:
+      foreign_key_constraint_on:
+        column: cursus_id
+        table:
+          name: mention
+          schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - visible
+        - id
+        - nom
+        - nom_court
+      filter:
+        visible:
+          _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - visible
+        - id
+        - nom
+        - nom_court
+      filter:
+        visible:
+          _eq: true
+    comment: ""

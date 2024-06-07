@@ -1,0 +1,126 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# todo: document this script
+
+# Exit script on any error
+set -e
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+# Options
+: "${GEYSER_MODE:=production}"
+for arg in "$@"; do
+  shift
+  case "$arg" in
+  --dev)
+    GEYSER_MODE=development
+    ;;
+  --prod)
+    GEYSER_MODE=production
+    ;;
+  --*)
+    echo "Warning: Unknown option $arg ignored" >&2
+    ;;
+  *)
+    set -- "$@" "$arg"
+    ;;
+  esac
+done
+export GEYSER_MODE
+
+ignore_extra_args () {
+  shift
+  local arg
+  for arg in "$@"; do
+    echo "Warning: Extra command-line argument $arg ignored" >&2
+    shift
+  done
+}
+
+wait_until_healthy () {
+  echo "Waiting for service $1 to become healthy..."
+  local health
+  health=$("$GEYSER_DIR"/scripts/compose ps "$1" --format json | jq '.Health')
+  while [[ "$health" != "\"healthy\"" ]]; do
+    if [[ "$health" == "\"unhealthy\"" ]]; then
+      echo "Error: Service $1 is unhealthy" >&2
+      exit 1
+    fi
+    if [[ -z "$health" ]]; then
+      echo "Error: Service $1 stopped" >&2
+      exit 1
+    fi
+    sleep 1
+    health=$("$GEYSER_DIR"/scripts/compose ps "$1" --format json | jq '.Health')
+  done
+  echo "Done"
+}
+
+wait_until_exit () {
+  echo "Waiting for service $1 to exit..."
+  while [[ -n $("$GEYSER_DIR"/scripts/compose ps -q "$1") ]]; do
+    sleep 1
+  done
+  container_id=$("$GEYSER_DIR"/scripts/compose ps -aq "$1")
+  if [[ -n "$container_id" ]]; then
+    exit_code=$(docker inspect --format='{{.State.ExitCode}}' "${container_id}")
+  fi
+  if [[ $exit_code -eq 0 ]]; then
+    echo "Done"
+  else
+    echo "Warning: $1 exited with code $exit_code" >&2
+  fi
+}
+
+# Actions
+case $1 in
+  start)
+    ignore_extra_args "$@"
+    "$GEYSER_DIR"/scripts/compose up -d
+    ;;
+  stop)
+    ignore_extra_args "$@"
+    "$GEYSER_DIR"/scripts/compose down
+    ;;
+  reset)
+    ignore_extra_args "$@"
+    # stop geyser
+    "$GEYSER_DIR"/scripts/compose down
+    # create keycloak import dir and set correct permissions
+    mkdir -p "$GEYSER_DIR"/keycloak/data/import
+    chmod 777 "$GEYSER_DIR"/keycloak/data/import
+    find "$GEYSER_DIR"/keycloak/data/import -maxdepth 1 -type f -print0 | xargs -0 chmod 666
+    # start postgres, reset database, and stop
+    "$GEYSER_DIR"/scripts/compose up -d postgres
+    wait_until_healthy postgres
+    "$GEYSER_DIR"/scripts/db dump
+    "$GEYSER_DIR"/scripts/db clean
+    "$GEYSER_DIR"/scripts/db init
+    "$GEYSER_DIR"/scripts/compose down
+    # start keycloak, import realm, and stop
+    if [ "$GEYSER_MODE" == "development" ]; then
+      source "$GEYSER_DIR"/.env.dev
+      FRONTEND_URL="http://${FRONTEND_HOST}"
+    elif [ "$GEYSER_MODE" == "production" ]; then
+      source "$GEYSER_DIR"/.env.prod
+      FRONTEND_URL="https://${FRONTEND_HOST}"
+    fi
+    sed "s|\${FRONTEND_URL}|$FRONTEND_URL|g" keycloak/data/import/templates/master-realm.json > keycloak/data/import/templates/master-realm-tmp.json
+    "$GEYSER_DIR"/scripts/kc_run "import --file /opt/keycloak/data/import/templates/master-realm-tmp.json"
+    wait_until_exit keycloak
+    "$GEYSER_DIR"/scripts/compose down
+    rm keycloak/data/import/templates/master-realm-tmp.json
+    # start geyser and apply hasura metadata
+    "$GEYSER_DIR"/scripts/compose up -d
+    wait_until_healthy hasura
+    "$GEYSER_DIR"/scripts/hasura metadata apply
+    ;;
+  *)
+    echo "Usage: geyser {start|stop|reset}"
+    ;;
+esac

@@ -1,0 +1,53 @@
+table:
+  name: service
+  schema: ec
+object_relationships:
+  - name: anneeByAnnee
+    using:
+      foreign_key_constraint_on: annee
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - annee
+        - id
+        - heures_eqtd
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      allow_aggregations: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - annee
+        - id
+        - heures_eqtd
+        - uid
+      filter:
+        _and:
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+    comment: ""

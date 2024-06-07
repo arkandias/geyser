@@ -1,0 +1,54 @@
+table:
+  name: enseignement_table_row
+  schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - visible
+        - annee
+        - groupes
+        - id
+        - semestre
+        - differentiel
+        - heures
+        - total_attributions
+        - total_non_prioritaires
+        - total_principales
+        - total_secondaires
+        - formation
+        - formation_court
+        - nom
+        - nom_court
+        - parcours
+        - parcours_court
+        - type
+      filter:
+        visible:
+          _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - visible
+        - annee
+        - groupes
+        - id
+        - semestre
+        - differentiel
+        - heures
+        - total_attributions
+        - total_non_prioritaires
+        - total_principales
+        - total_secondaires
+        - formation
+        - formation_court
+        - nom
+        - nom_court
+        - parcours
+        - parcours_court
+        - type
+      filter:
+        visible:
+          _eq: true
+    comment: ""

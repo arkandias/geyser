@@ -1,0 +1,54 @@
+table:
+  name: mention
+  schema: ec
+object_relationships:
+  - name: cursus
+    using:
+      foreign_key_constraint_on: cursus_id
+array_relationships:
+  - name: enseignements
+    using:
+      foreign_key_constraint_on:
+        column: mention_id
+        table:
+          name: enseignement
+          schema: ec
+  - name: parcours
+    using:
+      foreign_key_constraint_on:
+        column: mention_id
+        table:
+          name: parcours
+          schema: ec
+  - name: responsables
+    using:
+      foreign_key_constraint_on:
+        column: mention_id
+        table:
+          name: responsable
+          schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - cursus_id
+        - id
+        - nom
+        - nom_court
+        - visible
+      filter:
+        visible:
+          _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - cursus_id
+        - id
+        - nom
+        - nom_court
+        - visible
+      filter:
+        visible:
+          _eq: true
+    comment: ""

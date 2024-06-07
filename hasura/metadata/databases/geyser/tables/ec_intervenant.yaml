@@ -1,0 +1,112 @@
+table:
+  name: intervenant
+  schema: ec
+array_relationships:
+  - name: demandes
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: demande
+          schema: ec
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: message
+          schema: ec
+  - name: modifications_service
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: modification_service
+          schema: ec
+  - name: priorites
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: priorite
+          schema: ec
+  - name: responsables
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: responsable
+          schema: ec
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: service
+          schema: ec
+insert_permissions:
+  - role: intervenant
+    permission:
+      check:
+        _and:
+          - uid:
+              _eq: X-Hasura-User-Id
+          - nom:
+              _eq: X-Hasura-Last-Name
+          - prenom:
+              _eq: X-Hasura-First-Name
+      columns:
+        - alias
+        - nom
+        - prenom
+        - uid
+    comment: ""
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - actif
+        - visible
+        - alias
+        - nom
+        - prenom
+        - uid
+      filter:
+        visible:
+          _eq: true
+      allow_aggregations: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - actif
+        - visible
+        - alias
+        - nom
+        - prenom
+        - uid
+      filter:
+        visible:
+          _eq: true
+      query_root_fields:
+        - select_by_pk
+      subscription_root_fields:
+        - select_by_pk
+    comment: ""
+update_permissions:
+  - role: intervenant
+    permission:
+      columns:
+        - nom
+        - prenom
+        - uid
+      filter: {}
+      check:
+        _and:
+          - uid:
+              _eq: X-Hasura-User-Id
+          - nom:
+              _eq: X-Hasura-Last-Name
+          - prenom:
+              _eq: X-Hasura-First-Name
+    comment: ""

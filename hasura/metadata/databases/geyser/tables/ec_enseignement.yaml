@@ -1,0 +1,139 @@
+table:
+  name: enseignement
+  schema: ec
+object_relationships:
+  - name: anneeByAnnee
+    using:
+      foreign_key_constraint_on: annee
+  - name: mention
+    using:
+      foreign_key_constraint_on: mention_id
+  - name: parcours
+    using:
+      foreign_key_constraint_on: parcours_id
+  - name: parent
+    using:
+      foreign_key_constraint_on: parent_id
+  - name: type_enseignement
+    using:
+      foreign_key_constraint_on: type
+array_relationships:
+  - name: demandes
+    using:
+      foreign_key_constraint_on:
+        column: ens_id
+        table:
+          name: demande
+          schema: ec
+  - name: enseignements
+    using:
+      foreign_key_constraint_on:
+        column: parent_id
+        table:
+          name: enseignement
+          schema: ec
+  - name: priorites
+    using:
+      foreign_key_constraint_on:
+        column: ens_id
+        table:
+          name: priorite
+          schema: ec
+  - name: responsables
+    using:
+      foreign_key_constraint_on:
+        column: ens_id
+        table:
+          name: responsable
+          schema: ec
+computed_fields:
+  - name: groupes_corriges
+    definition:
+      function:
+        name: groupes_corriges
+        schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - annee
+        - annee_cycle
+        - description
+        - groupes
+        - groupes_ouverts
+        - heures
+        - id
+        - mention_id
+        - nom
+        - nom_court
+        - parcours_id
+        - parent_id
+        - regle_priorite
+        - semestre
+        - type
+        - visible
+      computed_fields:
+        - groupes_corriges
+      filter:
+        _and:
+          - visible:
+              _eq: true
+          - anneeByAnnee:
+              visible:
+                _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - annee
+        - annee_cycle
+        - description
+        - groupes
+        - groupes_ouverts
+        - heures
+        - id
+        - mention_id
+        - nom
+        - nom_court
+        - parcours_id
+        - parent_id
+        - regle_priorite
+        - semestre
+        - type
+        - visible
+      computed_fields:
+        - groupes_corriges
+      filter:
+        _and:
+          - visible:
+              _eq: true
+          - anneeByAnnee:
+              visible:
+                _eq: true
+    comment: ""
+update_permissions:
+  - role: intervenant
+    permission:
+      columns:
+        - description
+      filter:
+        _and:
+          - visible:
+              _eq: true
+          - anneeByAnnee:
+              visible:
+                _eq: true
+          - _or:
+              - responsables:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - parcours:
+                  responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - mention:
+                  responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
+      check: null
+    comment: ""

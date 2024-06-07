@@ -1,0 +1,63 @@
+services:
+
+  postgres:
+    restart: always
+
+  keycloak:
+    restart: ${KC_RESTART:-always}
+    environment:
+      - KC_HTTP_ENABLED=true
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HOSTNAME_URL=https://${FRONTEND_HOST}/auth
+      - KC_HOSTNAME_ADMIN_URL=http://localhost:8080/auth
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/fullchain.cer
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/private.key
+    ports:
+      - "8443:8443"
+    networks:
+      - frontend
+    volumes:
+      - ./ssl/certs:/opt/keycloak/certs:ro
+    command: ${KC_CMD:-start --optimized}
+
+  hasura:
+    restart: always
+    environment:
+      - HASURA_GRAPHQL_CORS_DOMAIN=https://${FRONTEND_HOST}
+      - HASURA_GRAPHQL_ENABLE_CONSOLE=false
+    networks:
+      - frontend
+
+  web:
+    # this is the build from geyser-frontend
+    # will be moved to gitlab soon (hopefully)
+    image: ghcr.io/arkandias/geyser-frontend:latest
+    restart: always
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+    healthcheck:
+      test: service nginx status || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      - FRONTEND_HOST
+    ports:
+      - "80:80"
+      - "443:443"
+    networks:
+      - frontend
+    volumes:
+      - ./ssl/certs:/etc/nginx/certs:ro
+      - ./nginx/templates:/etc/nginx/templates:ro
+
+networks:
+  frontend:
+    ipam:
+      config:
+        - subnet: 172.21.0.0/16

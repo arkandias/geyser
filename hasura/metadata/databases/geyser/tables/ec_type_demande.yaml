@@ -1,0 +1,24 @@
+table:
+  name: type_demande
+  schema: ec
+array_relationships:
+  - name: demandes
+    using:
+      foreign_key_constraint_on:
+        column: type
+        table:
+          name: demande
+          schema: ec
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - value
+      filter: {}
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - value
+      filter: {}
+    comment: ""

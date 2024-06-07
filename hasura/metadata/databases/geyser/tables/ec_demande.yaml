@@ -1,0 +1,296 @@
+table:
+  name: demande
+  schema: ec
+object_relationships:
+  - name: enseignement
+    using:
+      foreign_key_constraint_on: ens_id
+  - name: intervenant
+    using:
+      foreign_key_constraint_on: uid
+  - name: type_demande
+    using:
+      foreign_key_constraint_on: type
+computed_fields:
+  - name: heures_eqtd
+    definition:
+      function:
+        name: heures_eqtd
+        schema: ec
+  - name: prioritaire
+    definition:
+      function:
+        name: prioritaire
+        schema: ec
+insert_permissions:
+  - role: commissaire
+    permission:
+      check:
+        _and:
+          - intervenant:
+              visible:
+                _eq: true
+          - enseignement:
+              anneeByAnnee:
+                _and:
+                  - en_cours:
+                      _eq: true
+                  - visible:
+                      _eq: true
+              visible:
+                _eq: true
+          - type:
+              _eq: attribution
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      columns:
+        - ens_id
+        - heures
+        - type
+        - uid
+    comment: ""
+  - role: intervenant
+    permission:
+      check:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                _and:
+                  - en_cours:
+                      _eq: true
+                  - visible:
+                      _eq: true
+              visible:
+                _eq: true
+          - type:
+              _neq: attribution
+          - uid:
+              _eq: X-Hasura-User-Id
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+      columns:
+        - ens_id
+        - heures
+        - type
+        - uid
+    comment: ""
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - ens_id
+        - id
+        - heures
+        - type
+        - uid
+      computed_fields:
+        - heures_eqtd
+        - prioritaire
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - _or:
+              - enseignement:
+                  anneeByAnnee:
+                    en_cours:
+                      _is_null: true
+              - type:
+                  _neq: attribution
+              - _exists:
+                  _table:
+                    name: phase
+                    schema: ec
+                  _where:
+                    _and:
+                      - _or:
+                          - value:
+                              _eq: commission
+                          - value:
+                              _eq: consultation
+                      - en_cours:
+                          _eq: true
+      allow_aggregations: true
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - ens_id
+        - id
+        - heures
+        - type
+        - uid
+      computed_fields:
+        - heures_eqtd
+        - prioritaire
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - _or:
+              - enseignement:
+                  anneeByAnnee:
+                    en_cours:
+                      _is_null: true
+              - type:
+                  _neq: attribution
+              - _exists:
+                  _table:
+                    name: phase
+                    schema: ec
+                  _where:
+                    _and:
+                      - value:
+                          _eq: consultation
+                      - en_cours:
+                          _eq: true
+      allow_aggregations: true
+    comment: ""
+update_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - heures
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - type:
+              _eq: attribution
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+      check: null
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - heures
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - type:
+              _neq: attribution
+          - uid:
+              _eq: X-Hasura-User-Id
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+      check: null
+    comment: ""
+delete_permissions:
+  - role: commissaire
+    permission:
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - intervenant:
+              visible:
+                _eq: true
+          - type:
+              _eq: attribution
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: commission
+                  - en_cours:
+                      _eq: true
+    comment: ""
+  - role: intervenant
+    permission:
+      filter:
+        _and:
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+                visible:
+                  _eq: true
+              visible:
+                _eq: true
+          - type:
+              _neq: attribution
+          - uid:
+              _eq: X-Hasura-User-Id
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+    comment: ""
