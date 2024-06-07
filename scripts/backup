@@ -1,0 +1,21 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script dumps the 'geyser' database and uploads the backup to a remote
+# Nextcloud server. It is intended to be scheduled via crontab for regular 
+# execution.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+source "$GEYSER_DIR"/.env.local
+export PGPASSWORD="$POSTGRES_PASSWORD"
+
+filename="db_geyser_$(date +%Y-%m-%d-%H-%M-%S).dump"
+file="$GEYSER_DIR"/backups/"$filename"
+
+pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc -f "$file"
+curl -u "$NEXTCLOUD_USER":"$NEXTCLOUD_PASS" -T "$file" "https://nextcloud.univ-lille.fr/remote.php/dav/files/$NEXTCLOUD_USER/geyser/backups/$filename"
