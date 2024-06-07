@@ -17,5 +17,8 @@ export PGPASSWORD="$POSTGRES_PASSWORD"
 filename="db_geyser_$(date +%Y-%m-%d-%H-%M-%S).dump"
 file="$GEYSER_DIR"/backups/"$filename"
 
-pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc -f "$file"
-curl -u "$NEXTCLOUD_USER":"$NEXTCLOUD_PASS" -T "$file" "https://nextcloud.univ-lille.fr/remote.php/dav/files/$NEXTCLOUD_USER/geyser/backups/$filename"
+"$GEYSER_DIR"/scripts/db dump --file="$file"
+
+echo "Uploading backup..."
+curl -u "$NEXTCLOUD_USER":"$NEXTCLOUD_PASS" -T "$file" "$NEXTCLOUD_URL/remote.php/dav/files/$NEXTCLOUD_USER/geyser/backups/$filename"
+echo "Done"
