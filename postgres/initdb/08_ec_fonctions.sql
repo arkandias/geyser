@@ -34,7 +34,7 @@ COMMENT ON FUNCTION ec.calcul_anciennetes(annee integer) IS 'Fonction qui calcul
 CREATE OR REPLACE FUNCTION ec.calcul_priorites(annee integer) RETURNS void AS
 $$
 UPDATE ec.priorite p
-SET prioritaire = (e.regle_priorite >= p.anciennete OR e.regle_priorite = 0)
+SET prioritaire = (e.regle_priorite > p.anciennete OR e.regle_priorite = 0)
 FROM ec.enseignement e
 WHERE p.ens_id = e.id
   AND e.annee = $1
