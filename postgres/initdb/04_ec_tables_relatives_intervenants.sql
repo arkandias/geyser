@@ -19,7 +19,7 @@ COMMENT ON COLUMN ec.intervenant.uid IS 'L''identifiant unique de l''intervenant
 COMMENT ON COLUMN ec.intervenant.nom IS 'Le nom de l''intervenant.';
 COMMENT ON COLUMN ec.intervenant.prenom IS 'Le prénom de l''intervenant.';
 COMMENT ON COLUMN ec.intervenant.alias IS 'Un alias pour l''intervenant (optionnel).';
-COMMENT ON COLUMN ec.intervenant.alias IS 'Le service de base en heures EQTD de l''intervenant (optionnel).';
+COMMENT ON COLUMN ec.intervenant.service IS 'Le service de base en heures EQTD de l''intervenant (optionnel).';
 COMMENT ON COLUMN ec.intervenant.visible IS 'Indique si l''intervenant correspondant est visible par les utilisateurs.';
 COMMENT ON COLUMN ec.intervenant.actif IS 'Indique si l''intervenant correspondant est actif, c''est-à-dire s''il intervient dans l''année en cours.';
 
