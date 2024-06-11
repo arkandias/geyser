@@ -29,7 +29,8 @@ FROM ec.enseignement e
          JOIN ec.demande d ON d.ens_id = e.parent_id
          LEFT JOIN ec.priorite p ON d.uid = p.uid AND e.parent_id = p.ens_id
 WHERE e.annee = $1
-  AND d.type = 'attribution';
+  AND d.type = 'attribution'
+ON CONFLICT DO NOTHING;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION ec.calcul_anciennetes(annee integer) IS 'Fonction qui calcule l''ancienneté des intervenants dans les enseignements d''une année donnée.';
 
