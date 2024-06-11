@@ -13,7 +13,6 @@ set -e
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
 # Options
-: "${GEYSER_MODE:=production}"
 for arg in "$@"; do
   shift
   case "$arg" in
@@ -31,6 +30,12 @@ for arg in "$@"; do
     ;;
   esac
 done
+if [[ "$GEYSER_MODE" != 'development' ]] && [[ "$GEYSER_MODE" != 'production' ]]
+then
+  echo "Error: the mode (development/production) must be set, using either \
+        options --dev/--prod, or the environment variable GEYSER_MODE" >&2
+  exit 1
+fi
 export GEYSER_MODE
 
 ignore_extra_args () {

@@ -8,7 +8,8 @@
 # This script adds Geyser and related environment variables, along with useful
 # Docker compose and Hasura aliases, to the configuration file of the detected
 # shell (either Bash or Zsh). The additional configurations are designed to
-# simplify various operations to administrate and develop Geyser.
+# simplify various operations to administrate and develop Geyser. It must be
+# sourced using an interactive shell.
 
 # Set Geyser directory
 : "${GEYSER_DIR:=$(realpath "$(dirname "$0")/..")}"
@@ -24,6 +25,22 @@ else
   echo "Unknown shell, configuration not saved"
   exit 0
 fi
+
+while true; do
+  printf "Select an environment:\n1. Development\n2. Production/Staging\nYour choice: "
+  read -r choice
+  case $choice in
+    1 ) echo "You chose Development";
+      GEYSER_MODE=development
+      gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
+      break;;
+    2 ) echo "You chose Production/Staging";
+      GEYSER_MODE=production
+      gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
+      break;;
+    * ) echo "Not a valid choice";;
+  esac
+done
 
 sed_i () {
   OS=$(uname)
@@ -44,9 +61,9 @@ sed_i () {
 config=$(cat << EOF
 # BEGIN Geyser configuration
 export GEYSER_DIR="$GEYSER_DIR"
+export GEYSER_MODE="$GEYSER_MODE"
 alias geyser='\$GEYSER_DIR/scripts/geyser'
-alias gcompose='docker compose --env-file "\$GEYSER_DIR"/.env.prod --env-file "\$GEYSER_DIR"/.env.local -f "\$GEYSER_DIR"/compose.yaml -f "\$GEYSER_DIR"/compose.prod.yaml'
-alias gdcompose='docker compose --env-file "\$GEYSER_DIR"/.env.dev --env-file "\$GEYSER_DIR"/.env.local -f "\$GEYSER_DIR"/compose.yaml'
+alias gcompose="$gcompose"
 alias ghasura='source "\$GEYSER_DIR"/.env.local && export HASURA_GRAPHQL_ADMIN_SECRET && hasura --project "\$GEYSER_DIR"/hasura'
 alias grsync='rsync -rlv --delete --files-from="\$GEYSER_DIR"/rsync-files --exclude-from="\$GEYSER_DIR"/rsync-exclude "\$GEYSER_DIR"/'
 #source \$GEYSER_DIR/scripts/_complete_kc
