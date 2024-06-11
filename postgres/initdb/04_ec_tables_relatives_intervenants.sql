@@ -28,7 +28,7 @@ CREATE TABLE IF NOT EXISTS ec.service
     id          serial PRIMARY KEY,
     annee       integer NOT NULL REFERENCES ec.annee,
     uid         text    NOT NULL REFERENCES ec.intervenant ON UPDATE CASCADE,
-    heures_eqtd real    NOT NULL DEFAULT 192,
+    heures_eqtd real    NOT NULL DEFAULT 192 CHECK (heures_eqtd > 0),
     UNIQUE (annee, uid)
 );
 COMMENT ON TABLE ec.service IS 'Table contenant les services de base, c''est-à-dire le nombre d''heures EQTD qu''un intervenant donné doit réaliser lors d''une année donnée avant modifications éventuelles.';

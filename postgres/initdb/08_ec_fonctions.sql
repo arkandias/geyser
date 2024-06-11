@@ -13,7 +13,9 @@ $$
 INSERT INTO ec.service(annee, uid, heures_eqtd)
 SELECT $1, uid, service
 FROM ec.intervenant
-WHERE actif IS TRUE;
+WHERE actif IS TRUE
+  AND service > 0
+ON CONFLICT DO NOTHING;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION ec.creation_services(annee integer) IS 'Fonction qui crée le service de tous les intervenants actifs pour une année donnée.';
 
