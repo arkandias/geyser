@@ -14,7 +14,7 @@ $$
         ELSE
             CREATE ROLE hasura;
         END IF;
-    END
+    END;
 $$;
 ALTER USER hasura WITH LOGIN PASSWORD :'hasura_password';
 COMMENT ON ROLE hasura IS 'Role for managing Hasura metadata and for Hasura''s operations within the database.';

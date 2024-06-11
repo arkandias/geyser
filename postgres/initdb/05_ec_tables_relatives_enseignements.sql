@@ -123,7 +123,7 @@ BEGIN
         END IF;
     END IF;
     RETURN new;
-END
+END;
 $$ LANGUAGE plpgsql STABLE;
 COMMENT ON FUNCTION ec.check_parent_annee() IS 'Fonction qui vérifie que l''année de l''enseignement parent (s''il existe) est bien strictement inférieure à celle de l''enseignement.';
 
@@ -153,7 +153,7 @@ BEGIN
             new.id, new.annee, enfant_id, enfant_annee;
     END IF;
     RETURN new;
-END
+END;
 $$ LANGUAGE plpgsql STABLE;
 COMMENT ON FUNCTION ec.check_enfant_annee() IS 'Fonction qui vérifie que les années des enseignements enfants (s''ils existent) sont bien strictement supérieures à celle de l''enseignement.';
 

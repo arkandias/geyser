@@ -14,7 +14,7 @@ $$
         ELSE
             CREATE ROLE keycloak;
         END IF;
-    END
+    END;
 $$;
 ALTER ROLE keycloak WITH LOGIN PASSWORD :'keycloak_password';
 COMMENT ON ROLE keycloak IS 'Role for managing Keycloak related database operations.';

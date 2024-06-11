@@ -38,7 +38,7 @@ SET prioritaire = (e.regle_priorite > p.anciennete OR e.regle_priorite = 0)
 FROM ec.enseignement e
 WHERE p.ens_id = e.id
   AND e.annee = $1
-  AND e.regle_priorite IS NOT NULL
+  AND e.regle_priorite IS NOT NULL;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION ec.calcul_priorites(annee integer) IS 'Fonction qui calcule la priorité des intervenants dans les enseignements d''une année donnée en utilisant l''ancienneté des intervenants et les règles de priorité des enseignements.';
 
@@ -51,6 +51,6 @@ COMMENT ON FUNCTION ec.calcul_priorites(annee integer) IS 'Fonction qui calcule 
 -- FROM ec.enseignement parent
 -- WHERE child.annee = $1
 --   AND child.parent_id = parent.id
--- RETURNING child.*
+-- RETURNING child.*;
 -- $$ LANGUAGE sql;
 -- COMMENT ON FUNCTION import_from_parent(integer) IS 'Met à jour les colonnes `description` et `regle_priorite` pour une année donnée dans la table `ec.enseignement` avec les valeurs de l''enseignement parent (référencé par `parent_id`) et retourne toutes les lignes mises à jour.';
