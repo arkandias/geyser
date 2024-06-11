@@ -6,9 +6,8 @@
 ################################################################################
 
 # This script updates Keycloak users based on the `intervenant` table from the
-# local PostgreSQL database. Specifically, it adds or updates users
-# corresponding to active intervenants and deletes users corresponding to
-# inactive intervenants.
+# local PostgreSQL database. Specifically, it inserts or updates a user for each 
+# active intervenants and disables all the other users.
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
@@ -18,42 +17,62 @@ export PGPASSWORD="$POSTGRES_PASSWORD"
 # login
 "$GEYSER_DIR"/scripts/kcadm --login
 
-echo "***** Active users *****"
-query="SELECT uid, nom, prenom FROM ec.intervenant WHERE actif IS TRUE"
-active_users=$(psql -U postgres -h localhost -p 5432 -d geyser -c "copy ($query) to stdout with csv")
-while IFS=',' read -r uid nom prenom
-do
-  echo "Retrieving user with email=$uid..."
-  response=$("$GEYSER_DIR"/scripts/kcadm get users -r master -q email="$uid" 2>/dev/null </dev/null)
-  id=$(echo "$response" | jq -r '.[0].id')
-  if [[ "$id" == 'null' ]]; then
-    echo "Not found: Creating user with uid=$uid; nom=$nom; prenom=$prenom..."
-    "$GEYSER_DIR"/scripts/kcadm create users -r master -s email="$uid" -s lastName="$nom" -s firstName="$prenom" -s enabled=true -s emailVerified=true </dev/null
+keycloak_users=$("$GEYSER_DIR"/scripts/kcadm get users -r master --limit -1)
+keycloak_groups=$("$GEYSER_DIR"/scripts/kcadm get groups -r master)
+gid=$(echo "$keycloak_groups" | jq -r '.[] | select(.name=="Intervenants") | .id')
+if [[ -z "$gid" ]]; then
+  echo "Error: Group 'Intervenants' does not exists" >&2
+  exit 1
+fi;
+keycloak_members=$("$GEYSER_DIR"/scripts/kcadm get groups/"$gid"/members -r master --limit -1 | jq -r '[.[] | .id]')
+
+intervenants=$(psql -U postgres -h localhost -p 5432 -d geyser -A -t -c "SELECT json_agg(t) FROM ec.intervenant t;")
+active_intervenants=$(echo "$intervenants" | jq -c '[.[] | select(.actif==true)]')
+
+echo "##### Inserting/updating Keycloak users #####"
+while IFS= read -r intervenant; do
+  uid=$(echo "$intervenant" | jq -r '.uid')
+  nom=$(echo "$intervenant" | jq -r '.nom')
+  prenom=$(echo "$intervenant" | jq -r '.prenom')
+  user=$(echo "$keycloak_users" | jq --arg uid "$uid" -c '.[] | select(.email==$uid)')
+  id=$(echo "$user" | jq -r '.id')
+  if [[ -z "$id" ]]; then
+    echo "User ${uid} not found: Creating user..."
+    if ! "$GEYSER_DIR"/scripts/kcadm create users -r master -s email="$uid" -s lastName="$nom" -s firstName="$prenom" -s enabled=true </dev/null; then
+      exit 1
+    fi
+    echo "Done"
+    id=$("$GEYSER_DIR"/scripts/kcadm get users -r master -q email="$uid" </dev/null | jq -r '.[] | .id')
   else
-    lastName=$(echo "$response" | jq -r '.[0].lastName')
-    firstName=$(echo "$response" | jq -r '.[0].firstName')
-    echo "Found: id=$id; lastName=$lastName; firstName=$firstName"
-    if [[ "$lastName" != "$nom" ]] || [[ "$firstName" != "$prenom" ]]; then
-      echo "Last name and/or first name do not match: Updating user..."
-      "$GEYSER_DIR"/scripts/kcadm update users/"$id" -r master -s lastName="$nom" -s firstName="$prenom" </dev/null
+    echo "User ${uid} found"
+    lastName=$(echo "$user" | jq -r '.lastName')
+    firstName=$(echo "$user" | jq -r '.firstName')
+    enabled=$(echo "$user" | jq -r '.enabled')
+    if [[ "$lastName" != "$nom" ]] || [[ "$firstName" != "$prenom" ]] || [[ "$enabled" != true ]]; then
+      echo "Data mismatch or user disabled: Updating user..."
+      "$GEYSER_DIR"/scripts/kcadm update users/"$id" -r master -s lastName="$nom" -s firstName="$prenom" -s enabled=true </dev/null
       echo "Done"
     fi
   fi
-done <<< "$active_users"
+  if ! echo "$keycloak_members" | jq -e --arg id "$id" 'contains([$id])' >/dev/null; then
+    echo "User not in group 'Intervenants': Adding user..."
+    "$GEYSER_DIR"/scripts/kcadm update users/"$id"/groups/"$gid" -r master -s realm=master -s userId="$id" -n </dev/null
+    echo "Done"
+  fi;
+done < <(echo "$active_intervenants" | jq -c '.[]')
 
-echo "***** Inactive users *****"
-query="SELECT uid FROM ec.intervenant WHERE actif IS FALSE"
-inactive_users=$(psql -U postgres -h localhost -p 5432 -d geyser -c "copy ($query) to stdout with csv")
-while IFS=',' read -r uid
-do
-  echo "Retrieving user with email=$uid..."
-  response=$("$GEYSER_DIR"/scripts/kcadm get users -r master -q email="$uid" 2>/dev/null </dev/null)
-  id=$(echo "$response" | jq -r '.[0].id')
-  if [[ "$id" == 'null' ]]; then
-    echo "Not found"
+echo ""
+
+echo "##### Disabling Keycloak users #####"
+while IFS= read -r user; do
+  email=$(echo "$user" | jq -r '.email')
+  if echo "$active_intervenants" | jq -e --arg email "$email" '.[] | select(.uid==$email)' > /dev/null; then
+    echo "User ${email} is an active intervenant"
   else
-    echo "Found: Deleting user..."
-    "$GEYSER_DIR"/scripts/kcadm delete users/"$id" -r master </dev/null
+    echo "User ${email} is not an active intervenant: Disabling user..."
+    id=$(echo "$user" | jq -r '.id')
+    echo "$id"
+    "$GEYSER_DIR"/scripts/kcadm update users/"$id" -r master -s enabled=false </dev/null
     echo "Done"
   fi
-done <<< "$inactive_users"
+done < <(echo "$keycloak_users" | jq -c '.[] | select(.enabled==true)')
