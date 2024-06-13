@@ -31,7 +31,7 @@ services:
   web:
     # this is the build from geyser-frontend
     # will be moved to gitlab soon (hopefully)
-    image: ghcr.io/arkandias/geyser-frontend:latest
+    image: jhauseux/geyser:latest
     restart: always
     depends_on:
       keycloak:
