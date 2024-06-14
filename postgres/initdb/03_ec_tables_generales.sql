@@ -29,7 +29,9 @@ VALUES ('voeux', TRUE, 'Phase pendant laquelle les intervenants peuvent formuler
        ('commission', NULL,
         'Phase pendant laquelle la commission des services attribue les différents enseignements aux intervenants.'),
        ('consultation', NULL,
-        'Phase pendant laquelle les intervenants peuvent consulter les enseignements qui leur ont été attribués.')
+        'Phase pendant laquelle les intervenants peuvent consulter les enseignements qui leur ont été attribués.'),
+       ('fermeture', NULL,
+        'Phase pendant laquelle seuls les administrateurs peuvent accéder à Geyser.')
 ON CONFLICT DO NOTHING;
 COMMENT ON TABLE ec.phase IS 'Table contenant les différentes phases (voeux, commission et consultation). D''autres phases pourront être ajoutées par la suite.';
 COMMENT ON COLUMN ec.phase.value IS 'Le nom de la phase (unique).';
