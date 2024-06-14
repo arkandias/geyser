@@ -66,38 +66,25 @@ select_permissions:
     permission:
       columns:
         - actif
+        - visible
         - alias
         - nom
         - prenom
-        - service
         - uid
-        - visible
       filter:
-        _or:
-          - visible:
-              _eq: true
-          - _exists:
-              _table:
-                name: phase
-                schema: ec
-              _where:
-                _and:
-                  - value:
-                      _eq: commission
-                  - en_cours:
-                      _eq: true
+        visible:
+          _eq: true
       allow_aggregations: true
     comment: ""
   - role: intervenant
     permission:
       columns:
         - actif
+        - visible
         - alias
         - nom
         - prenom
-        - service
         - uid
-        - visible
       filter:
         visible:
           _eq: true
