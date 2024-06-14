@@ -8,14 +8,15 @@
 -- todo: script pour ajouter les responsabilités d'enseignement (pour les nouveaux enseignements)
 -- todo: mettre bout à bout...
 
-CREATE OR REPLACE FUNCTION ec.creation_services(annee integer) RETURNS void AS
+CREATE OR REPLACE FUNCTION ec.creation_services(annee integer) RETURNS setof ec.service AS
 $$
 INSERT INTO ec.service(annee, uid, heures_eqtd)
 SELECT $1, uid, service
 FROM ec.intervenant
 WHERE actif IS TRUE
   AND service > 0
-ON CONFLICT DO NOTHING;
+ON CONFLICT DO NOTHING
+RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION ec.creation_services(annee integer) IS 'Fonction qui crée le service de tous les intervenants actifs pour une année donnée.';
 
@@ -30,7 +31,8 @@ FROM ec.enseignement e
          LEFT JOIN ec.priorite p ON d.uid = p.uid AND e.parent_id = p.ens_id
 WHERE e.annee = $1
   AND d.type = 'attribution'
-ON CONFLICT DO NOTHING;
+ON CONFLICT (uid, ens_id) DO UPDATE
+    SET anciennete = excluded.anciennete;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION ec.calcul_anciennetes(annee integer) IS 'Fonction qui calcule l''ancienneté des intervenants dans les enseignements d''une année donnée.';
 
