@@ -94,9 +94,8 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-      allow_aggregations: true
     comment: >-
-      En phase de commission, les commissaire peuvent voir tous les
+      En phase de commission, les commissaires peuvent voir tous les
       intervenants.
   - role: intervenant
     permission:
@@ -126,7 +125,7 @@ select_permissions:
       subscription_root_fields:
         - select_by_pk
     comment: >-
-      Lorsque Geyser est ouvert, les commissaire peuvent voir tous les
+      Lorsque Geyser est ouvert, les commissaires peuvent voir tous les
       intervenants visibles.
 update_permissions:
   - role: intervenant
