@@ -120,7 +120,7 @@ select_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - anneeByAnnee:
               visible:
                 _eq: true
@@ -156,7 +156,7 @@ update_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - _or:
               - responsables:
                   uid:

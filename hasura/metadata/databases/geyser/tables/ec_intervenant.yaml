@@ -58,7 +58,7 @@ insert_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:
@@ -118,7 +118,7 @@ select_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - visible:
               _eq: true
       query_root_fields:
@@ -147,7 +147,7 @@ update_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:

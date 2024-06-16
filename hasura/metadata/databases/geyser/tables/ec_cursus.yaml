@@ -48,7 +48,7 @@ select_permissions:
                   - value:
                       _eq: fermeture
                   - en_cours:
-                      _neq: true
+                      _is_null: true
           - visible:
               _eq: true
     comment: >-

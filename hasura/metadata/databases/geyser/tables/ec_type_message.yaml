@@ -42,7 +42,7 @@ select_permissions:
               - value:
                   _eq: fermeture
               - en_cours:
-                  _neq: true
+                  _is_null: true
     comment: >-
       Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de
       message.
