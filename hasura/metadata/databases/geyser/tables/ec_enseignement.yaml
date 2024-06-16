@@ -75,13 +75,19 @@ select_permissions:
       computed_fields:
         - groupes_corriges
       filter:
-        _and:
-          - visible:
-              _eq: true
-          - anneeByAnnee:
-              visible:
-                _eq: true
-    comment: ""
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
+    comment: >-
+      En phase de commission, les commissaires peuvent voir tous les
+      enseignements.
   - role: intervenant
     permission:
       columns:
@@ -105,12 +111,35 @@ select_permissions:
         - groupes_corriges
       filter:
         _and:
-          - visible:
-              _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - anneeByAnnee:
               visible:
                 _eq: true
-    comment: ""
+          - mention:
+              _and:
+                - cursus:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
+          - parcours:
+              visible:
+                _eq: true
+          - visible:
+              _eq: true
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir les enseignements
+      visibles dont l'année, le cursus, la mention et (éventuellement) le
+      parcours sont tous visibles.
 update_permissions:
   - role: intervenant
     permission:
@@ -118,11 +147,16 @@ update_permissions:
         - description
       filter:
         _and:
-          - visible:
-              _eq: true
-          - anneeByAnnee:
-              visible:
-                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - _or:
               - responsables:
                   uid:
@@ -136,4 +170,7 @@ update_permissions:
                     uid:
                       _eq: X-Hasura-User-Id
       check: null
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants responsables d'un
+      enseignement, de sa mention ou de son parcours peuvent mettre à jour sa
+      description.

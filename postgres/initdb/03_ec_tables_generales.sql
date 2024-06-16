@@ -7,9 +7,10 @@
 CREATE TABLE IF NOT EXISTS ec.annee
 (
     value    integer PRIMARY KEY,
-    en_cours boolean UNIQUE, -- TRUE or NULL
+    en_cours boolean UNIQUE,                    -- TRUE or NULL
     visible  boolean NOT NULL DEFAULT TRUE,
-    CHECK (en_cours)
+    CHECK (en_cours),                           -- en_cours est TRUE ou NULL
+    CHECK (en_cours IS NULL OR visible IS TRUE) -- l'année en cours est visible
 );
 COMMENT ON TABLE ec.annee IS 'Table contenant les différentes années.';
 COMMENT ON COLUMN ec.annee.value IS 'Le numéro de l''année (unique).';
@@ -19,10 +20,11 @@ COMMENT ON COLUMN ec.annee.visible IS 'Indique si l''année correspondante est v
 CREATE TABLE IF NOT EXISTS ec.phase
 (
     value       text PRIMARY KEY,
-    en_cours    boolean UNIQUE, -- TRUE or NULL
+    en_cours    boolean UNIQUE,                 -- TRUE or NULL
     visible     boolean NOT NULL DEFAULT TRUE,
     description text,
-    CHECK (en_cours)
+    CHECK (en_cours),                           -- en_cours est TRUE ou NULL
+    CHECK (en_cours IS NULL OR visible IS TRUE) -- la phase en cours est visible
 );
 INSERT INTO ec.phase(value, en_cours, description)
 VALUES ('voeux', TRUE, 'Phase pendant laquelle les intervenants peuvent formuler leurs demandes.'),

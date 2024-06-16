@@ -13,17 +13,32 @@ select_permissions:
     permission:
       columns:
         - annee
-        - id
         - heures_eqtd
+        - id
+        - uid
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
+      allow_aggregations: true
+    comment: >-
+      En phase de commission, les commissaires peuvent voir tous les services.
+  - role: intervenant
+    permission:
+      columns:
+        - annee
+        - heures_eqtd
+        - id
         - uid
       filter:
         _and:
-          - anneeByAnnee:
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
           - _exists:
               _table:
                 name: phase
@@ -31,23 +46,14 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: commission
+                      _eq: fermeture
                   - en_cours:
-                      _eq: true
-      allow_aggregations: true
-    comment: ""
-  - role: intervenant
-    permission:
-      columns:
-        - annee
-        - id
-        - heures_eqtd
-        - uid
-      filter:
-        _and:
+                      _neq: true
           - anneeByAnnee:
               visible:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services
+      pour toutes les années visibles.

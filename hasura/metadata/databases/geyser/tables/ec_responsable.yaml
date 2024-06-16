@@ -18,39 +18,47 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
+        - commentaire
         - ens_id
         - id
         - mention_id
         - parcours_id
-        - commentaire
         - uid
       filter:
-        _and:
-          - intervenant:
-              visible:
-                _eq: true
-          - _or:
-              - enseignement:
-                  visible:
-                    _eq: true
-              - parcours:
-                  visible:
-                    _eq: true
-              - mention:
-                  visible:
-                    _eq: true
-    comment: ""
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
+    comment: >-
+      En phase de commission, les commissaires peuvent voir toutes les
+      responsabilités.
   - role: intervenant
     permission:
       columns:
+        - commentaire
         - ens_id
         - id
         - mention_id
         - parcours_id
-        - commentaire
         - uid
       filter:
         _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - intervenant:
               visible:
                 _eq: true
@@ -64,4 +72,7 @@ select_permissions:
               - mention:
                   visible:
                     _eq: true
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les
+      responsabilités dont l'intervenant et la mention, le parcours ou
+      l'enseignement correspondant sont visibles.

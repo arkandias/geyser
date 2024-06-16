@@ -16,13 +16,37 @@ select_permissions:
         - coefficient
         - label
         - label_court
-      filter: {}
-    comment: ""
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
+    comment: >-
+      En phase de commission, les commissaires peuvent voir tous les types
+      d'enseignement.
   - role: intervenant
     permission:
       columns:
         - coefficient
         - label
         - label_court
-      filter: {}
-    comment: ""
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: fermeture
+              - en_cours:
+                  _neq: true
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types
+      d'enseignement.

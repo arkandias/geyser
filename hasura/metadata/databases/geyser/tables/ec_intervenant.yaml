@@ -49,6 +49,16 @@ insert_permissions:
     permission:
       check:
         _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:
@@ -60,39 +70,64 @@ insert_permissions:
         - nom
         - prenom
         - uid
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent créer leur propre
+      profil.
 select_permissions:
   - role: commissaire
     permission:
       columns:
         - actif
-        - visible
         - alias
         - nom
         - prenom
         - uid
+        - visible
       filter:
-        visible:
-          _eq: true
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
       allow_aggregations: true
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaire peuvent voir tous les
+      intervenants.
   - role: intervenant
     permission:
       columns:
         - actif
-        - visible
         - alias
         - nom
         - prenom
         - uid
+        - visible
       filter:
-        visible:
-          _eq: true
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
+          - visible:
+              _eq: true
       query_root_fields:
         - select_by_pk
       subscription_root_fields:
         - select_by_pk
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les commissaire peuvent voir tous les
+      intervenants visibles.
 update_permissions:
   - role: intervenant
     permission:
@@ -100,13 +135,25 @@ update_permissions:
         - nom
         - prenom
         - uid
-      filter: {}
+      filter: { }
       check:
         _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:
               _eq: X-Hasura-Last-Name
           - prenom:
               _eq: X-Hasura-First-Name
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent mettre à jour leur
+      propre profil.

@@ -12,40 +12,66 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - prioritaire
         - anciennete
         - ens_id
         - id
+        - prioritaire
         - uid
       filter:
-        _and:
-          - enseignement:
-              anneeByAnnee:
-                visible:
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
                   _eq: true
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent voir toutes les
+      priorités.
   - role: intervenant
     permission:
       columns:
-        - prioritaire
         - anciennete
         - ens_id
         - id
+        - prioritaire
         - uid
       filter:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - intervenant:
               visible:
                 _eq: true
-    comment: ""
+          - enseignement:
+              _and:
+                - anneeByAnnee:
+                    visible:
+                      _eq: true
+                - mention:
+                    _and:
+                      - cursus:
+                          visible:
+                            _eq: true
+                      - visible:
+                          _eq: true
+                - parcours:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des
+      intervenants visibles pour les enseignements visibles si l'année, le 
+      cursus, la mention et (éventuellement) le parcours sont tous visibles.

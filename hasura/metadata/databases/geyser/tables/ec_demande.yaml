@@ -27,20 +27,6 @@ insert_permissions:
     permission:
       check:
         _and:
-          - intervenant:
-              visible:
-                _eq: true
-          - enseignement:
-              anneeByAnnee:
-                _and:
-                  - en_cours:
-                      _eq: true
-                  - visible:
-                      _eq: true
-              visible:
-                _eq: true
-          - type:
-              _eq: attribution
           - _exists:
               _table:
                 name: phase
@@ -51,29 +37,25 @@ insert_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+          - type:
+              _eq: attribution
       columns:
         - ens_id
         - heures
         - type
         - uid
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent créer des attributions
+      pour tous les intervenants et pour tous les enseignements de l'année en
+      cours.
   - role: intervenant
     permission:
       check:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                _and:
-                  - en_cours:
-                      _eq: true
-                  - visible:
-                      _eq: true
-              visible:
-                _eq: true
-          - type:
-              _neq: attribution
-          - uid:
-              _eq: X-Hasura-User-Id
           - _exists:
               _table:
                 name: phase
@@ -84,63 +66,68 @@ insert_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - enseignement:
+              _and:
+                - anneeByAnnee:
+                    en_cours:
+                      _eq: true
+                - mention:
+                    _and:
+                      - cursus:
+                          visible:
+                            _eq: true
+                      - visible:
+                          _eq: true
+                - parcours:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
+          - type:
+              _neq: attribution
       columns:
         - ens_id
         - heures
         - type
         - uid
-    comment: ""
+    comment: >-
+      En phase de voeux, les intervenants peuvent faire des demandes principales
+      ou secondaires pour des enseignements visibles de l'année en cours dont
+      le cursus, la mention et (éventuellement) le parcours sont tous visibles.
 select_permissions:
   - role: commissaire
     permission:
       columns:
         - ens_id
-        - id
         - heures
+        - id
         - type
         - uid
       computed_fields:
         - heures_eqtd
         - prioritaire
       filter:
-        _and:
-          - enseignement:
-              anneeByAnnee:
-                visible:
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
                   _eq: true
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - _or:
-              - enseignement:
-                  anneeByAnnee:
-                    en_cours:
-                      _is_null: true
-              - type:
-                  _neq: attribution
-              - _exists:
-                  _table:
-                    name: phase
-                    schema: ec
-                  _where:
-                    _and:
-                      - _or:
-                          - value:
-                              _eq: commission
-                          - value:
-                              _eq: consultation
-                      - en_cours:
-                          _eq: true
       allow_aggregations: true
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent voir toutes les demandes.
   - role: intervenant
     permission:
       columns:
         - ens_id
-        - id
         - heures
+        - id
         - type
         - uid
       computed_fields:
@@ -148,22 +135,37 @@ select_permissions:
         - prioritaire
       filter:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - intervenant:
               visible:
                 _eq: true
+          - enseignement:
+              _and:
+                - anneeByAnnee:
+                    visible:
+                      _eq: true
+                - mention:
+                    _and:
+                      - cursus:
+                          visible:
+                            _eq: true
+                      - visible:
+                          _eq: true
+                - parcours:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
           - _or:
-              - enseignement:
-                  anneeByAnnee:
-                    en_cours:
-                      _is_null: true
-              - type:
-                  _neq: attribution
               - _exists:
                   _table:
                     name: phase
@@ -174,8 +176,19 @@ select_permissions:
                           _eq: consultation
                       - en_cours:
                           _eq: true
+              - enseignement:
+                  anneeByAnnee:
+                    en_cours:
+                      _neq: true
+              - type:
+                  _neq: attribution
       allow_aggregations: true
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des
+      intervenants visibles pour les enseignements visibles si l'année, le
+      cursus, la mention et (éventuellement) le parcours sont tous visibles.
+      Ils ne peuvent voir les attributions pour les enseignements de l'année en 
+      cours qu'en phase de consultation.
 update_permissions:
   - role: commissaire
     permission:
@@ -183,19 +196,6 @@ update_permissions:
         - heures
       filter:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
-                  _eq: true
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - type:
-              _eq: attribution
           - _exists:
               _table:
                 name: phase
@@ -206,26 +206,22 @@ update_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
+          - enseignement:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+          - type:
+              _eq: attribution
       check: null
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent modifier toutes les
+      attributions pour des enseignements de l'année en cours.
   - role: intervenant
     permission:
       columns:
         - heures
       filter:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
-                  _eq: true
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
-          - type:
-              _neq: attribution
-          - uid:
-              _eq: X-Hasura-User-Id
           - _exists:
               _table:
                 name: phase
@@ -236,26 +232,38 @@ update_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - enseignement:
+              _and:
+                - anneeByAnnee:
+                    en_cours:
+                      _eq: true
+                - mention:
+                    _and:
+                      - cursus:
+                          visible:
+                            _eq: true
+                      - visible:
+                          _eq: true
+                - parcours:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
+          - type:
+              _neq: attribution
       check: null
-    comment: ""
+    comment: >-
+      En phase de voeux, les intervenants peuvent modifier leurs demandes
+      principales ou secondaires pour un enseignement visible de l'année en
+      cours dont le cursus, la mention et (éventuellement) le parcours sont tous
+      visibles.
 delete_permissions:
   - role: commissaire
     permission:
       filter:
         _and:
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
-                  _eq: true
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - type:
-              _eq: attribution
           - _exists:
               _table:
                 name: phase
@@ -266,23 +274,19 @@ delete_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
-    comment: ""
-  - role: intervenant
-    permission:
-      filter:
-        _and:
           - enseignement:
               anneeByAnnee:
                 en_cours:
                   _eq: true
-                visible:
-                  _eq: true
-              visible:
-                _eq: true
           - type:
-              _neq: attribution
-          - uid:
-              _eq: X-Hasura-User-Id
+              _eq: attribution
+    comment: >-
+      En phase de commission, les commissaires peuvent supprimer toutes les
+      attributions pour des enseignements de l'année en cours.
+  - role: intervenant
+    permission:
+      filter:
+        _and:
           - _exists:
               _table:
                 name: phase
@@ -293,4 +297,29 @@ delete_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-    comment: ""
+          - uid:
+              _eq: X-Hasura-User-Id
+          - enseignement:
+              _and:
+                - anneeByAnnee:
+                    en_cours:
+                      _eq: true
+                - mention:
+                    _and:
+                      - cursus:
+                          visible:
+                            _eq: true
+                      - visible:
+                          _eq: true
+                - parcours:
+                    visible:
+                      _eq: true
+                - visible:
+                    _eq: true
+          - type:
+              _neq: attribution
+    comment: >-
+      En phase de voeux, les intervenants peuvent supprimer leurs demandes
+      principales ou secondaires pour un enseignement visible de l'année en
+      cours dont le cursus, la mention et (éventuellement) le parcours sont tous
+      visibles.

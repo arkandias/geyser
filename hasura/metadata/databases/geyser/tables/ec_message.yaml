@@ -16,17 +16,6 @@ insert_permissions:
     permission:
       check:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - type:
-              _eq: note_commission
           - _exists:
               _table:
                 name: phase
@@ -37,26 +26,23 @@ insert_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - type:
+              _eq: note_commission
       columns:
         - annee
         - contenu
         - type
         - uid
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent créer des notes pour
+      l'année en cours et pour tous les intervenants.
   - role: intervenant
     permission:
       check:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
-          - type:
-              _eq: message_intervenant
           - _exists:
               _table:
                 name: phase
@@ -67,12 +53,21 @@ insert_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
       columns:
         - annee
         - contenu
         - type
         - uid
-    comment: ""
+    comment: >-
+      En phase de voeux, les intervenants peuvent créer un message pour l'année
+      en cours.
 select_permissions:
   - role: commissaire
     permission:
@@ -83,24 +78,19 @@ select_permissions:
         - type
         - uid
       filter:
-        _and:
-          - anneeByAnnee:
-              visible:
-                _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - _exists:
-              _table:
-                name: phase
-                schema: ec
-              _where:
-                _and:
-                  - value:
-                      _eq: commission
-                  - en_cours:
-                      _eq: true
-    comment: ""
+        _exists:
+          _table:
+            name: phase
+            schema: ec
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - en_cours:
+                  _eq: true
+    comment: >-
+      En phase de commission, les commissaires peuvent voir tous les messages et
+      toutes les notes.
   - role: intervenant
     permission:
       columns:
@@ -111,6 +101,16 @@ select_permissions:
         - uid
       filter:
         _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: ec
+              _where:
+                _and:
+                  - value:
+                      _eq: fermeture
+                  - en_cours:
+                      _neq: true
           - anneeByAnnee:
               visible:
                 _eq: true
@@ -118,7 +118,9 @@ select_permissions:
               _eq: X-Hasura-User-Id
           - type:
               _eq: message_intervenant
-    comment: ""
+    comment: >-
+      Lorsque Geyser est ouvert, les intervenants peuvent voir leurs messages de
+      toutes les années visibles.
 update_permissions:
   - role: commissaire
     permission:
@@ -126,17 +128,6 @@ update_permissions:
         - contenu
       filter:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - type:
-              _eq: note_commission
           - _exists:
               _table:
                 name: phase
@@ -147,24 +138,21 @@ update_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - type:
+              _eq: note_commission
       check: null
-    comment: ""
+    comment: >-
+      En phase de commission, les commissaires peuvent modifier le contenu des
+      notes de l'année en cours pour tous les intervenants.
   - role: intervenant
     permission:
       columns:
         - contenu
       filter:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
-          - type:
-              _eq: message_intervenant
           - _exists:
               _table:
                 name: phase
@@ -175,24 +163,22 @@ update_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
       check: null
-    comment: ""
+    comment: >-
+      En phase de voeux, les intervenants peuvent modifier le contenu de leur
+      message de l'année en cours.
 delete_permissions:
   - role: commissaire
     permission:
       filter:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - type:
-              _eq: note_commission
           - _exists:
               _table:
                 name: phase
@@ -203,21 +189,18 @@ delete_permissions:
                       _eq: commission
                   - en_cours:
                       _eq: true
-    comment: ""
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - type:
+              _eq: note_commission
+    comment: >-
+      En phase de commission, les commissaires peuvent supprimer les notes de
+      l'année en cours pour tous les intervenants.
   - role: intervenant
     permission:
       filter:
         _and:
-          - anneeByAnnee:
-              _and:
-                - en_cours:
-                    _eq: true
-                - visible:
-                    _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
-          - type:
-              _eq: message_intervenant
           - _exists:
               _table:
                 name: phase
@@ -228,4 +211,14 @@ delete_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-    comment: ""
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+          - type:
+              _eq: message_intervenant
+      check: null
+    comment: >-
+      En phase de voeux, les intervenants peuvent supprimer leur message de
+      l'année en cours.
