@@ -48,9 +48,9 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: fermeture
+                      _neq: fermeture
                   - en_cours:
-                      _is_null: true
+                      _eq: true
           - intervenant:
               visible:
                 _eq: true

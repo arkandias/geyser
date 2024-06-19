@@ -80,7 +80,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _neq: fermeture
                   - en_cours:
                       _eq: true
           - anneeByAnnee:
@@ -90,8 +90,8 @@ select_permissions:
               _eq: X-Hasura-User-Id
       allow_aggregations: true
     comment: >-
-      En phase de voeux, les intervenants peuvent voir leurs modifications de
-      service pour toutes les années visibles.
+      Lorsque Geyser est ouvert, les intervenants peuvent voir leurs
+      modifications de service pour toutes les années visibles.
 update_permissions:
   - role: intervenant
     permission:

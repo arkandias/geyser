@@ -56,9 +56,9 @@ insert_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: fermeture
+                      _neq: fermeture
                   - en_cours:
-                      _is_null: true
+                      _eq: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:
@@ -66,7 +66,6 @@ insert_permissions:
           - prenom:
               _eq: X-Hasura-First-Name
       columns:
-        - alias
         - nom
         - prenom
         - uid
@@ -115,15 +114,11 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: fermeture
+                      _neq: fermeture
                   - en_cours:
-                      _is_null: true
+                      _eq: true
           - visible:
               _eq: true
-      query_root_fields:
-        - select_by_pk
-      subscription_root_fields:
-        - select_by_pk
     comment: >-
       Lorsque Geyser est ouvert, les commissaires peuvent voir tous les
       intervenants visibles.
@@ -144,9 +139,9 @@ update_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: fermeture
+                      _neq: fermeture
                   - en_cours:
-                      _is_null: true
+                      _eq: true
           - uid:
               _eq: X-Hasura-User-Id
           - nom:
