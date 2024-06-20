@@ -28,8 +28,7 @@ select_permissions:
               - en_cours:
                   _eq: true
       allow_aggregations: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les services.
+    comment: En phase de commission, les commissaires peuvent voir tous les services.
   - role: intervenant
     permission:
       columns:
@@ -54,6 +53,4 @@ select_permissions:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services
-      pour toutes les années visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services pour toutes les années visibles.

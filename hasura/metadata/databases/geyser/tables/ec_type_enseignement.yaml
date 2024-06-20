@@ -27,9 +27,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les types
-      d'enseignement.
+    comment: En phase de commission, les commissaires peuvent voir tous les types d'enseignement.
   - role: intervenant
     permission:
       columns:
@@ -47,6 +45,4 @@ select_permissions:
                   _neq: fermeture
               - en_cours:
                   _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types
-      d'enseignement.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types d'enseignement.

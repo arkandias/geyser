@@ -69,9 +69,7 @@ insert_permissions:
         - nom
         - prenom
         - uid
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent créer leur propre
-      profil.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent créer leur propre profil.
 select_permissions:
   - role: commissaire
     permission:
@@ -93,9 +91,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les
-      intervenants.
+    comment: En phase de commission, les commissaires peuvent voir tous les intervenants.
   - role: intervenant
     permission:
       columns:
@@ -119,9 +115,7 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les commissaires peuvent voir tous les
-      intervenants visibles.
+    comment: Lorsque Geyser est ouvert, les commissaires peuvent voir tous les intervenants visibles.
 update_permissions:
   - role: intervenant
     permission:
@@ -129,7 +123,7 @@ update_permissions:
         - nom
         - prenom
         - uid
-      filter: { }
+      filter: {}
       check:
         _and:
           - _exists:
@@ -148,6 +142,4 @@ update_permissions:
               _eq: X-Hasura-Last-Name
           - prenom:
               _eq: X-Hasura-First-Name
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent mettre à jour leur
-      propre profil.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent mettre à jour leur propre profil.

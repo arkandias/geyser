@@ -40,8 +40,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les parcours.
+    comment: En phase de commission, les commissaires peuvent voir tous les parcours.
   - role: intervenant
     permission:
       columns:
@@ -64,6 +63,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir tous les parcours
-      visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les parcours visibles.

@@ -25,9 +25,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les types de
-      demande.
+    comment: En phase de commission, les commissaires peuvent voir tous les types de demande.
   - role: intervenant
     permission:
       columns:
@@ -43,6 +41,4 @@ select_permissions:
                   _neq: fermeture
               - en_cours:
                   _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de
-      demande.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de demande.

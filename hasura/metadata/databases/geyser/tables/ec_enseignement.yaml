@@ -85,9 +85,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir tous les
-      enseignements.
+    comment: En phase de commission, les commissaires peuvent voir tous les enseignements.
   - role: intervenant
     permission:
       columns:
@@ -121,25 +119,41 @@ select_permissions:
                       _neq: fermeture
                   - en_cours:
                       _eq: true
-          - anneeByAnnee:
-              visible:
-                _eq: true
-          - mention:
-              _and:
-                - cursus:
-                    visible:
+          - _or:
+              - _and:
+                  - anneeByAnnee:
+                      visible:
+                        _eq: true
+                  - mention:
+                      _and:
+                        - cursus:
+                            visible:
+                              _eq: true
+                        - visible:
+                            _eq: true
+                  - parcours:
+                      visible:
+                        _eq: true
+                  - visible:
                       _eq: true
-                - visible:
-                    _eq: true
-          - parcours:
-              visible:
-                _eq: true
-          - visible:
-              _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir les enseignements
-      visibles dont l'année, le cursus, la mention et (éventuellement) le
-      parcours sont tous visibles.
+              - responsables:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - parcours:
+                  responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - mention:
+                  responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - demandes:
+                  _and:
+                    - uid:
+                        _eq: X-Hasura-User-Id
+                    - type:
+                        _eq: attribution
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles. Les intervenants peuvent également voir tous les enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ou qui leur ont été attribués.
 update_permissions:
   - role: intervenant
     permission:
@@ -170,7 +184,4 @@ update_permissions:
                     uid:
                       _eq: X-Hasura-User-Id
       check: null
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants responsables d'un
-      enseignement, de sa mention ou de son parcours peuvent mettre à jour sa
-      description.
+    comment: Lorsque Geyser est ouvert, les intervenants responsables d'un enseignement, de sa mention ou de son parcours peuvent mettre à jour sa description.

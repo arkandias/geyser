@@ -35,9 +35,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir toutes les
-      responsabilités.
+    comment: En phase de commission, les commissaires peuvent voir toutes les responsabilités.
   - role: intervenant
     permission:
       columns:
@@ -72,7 +70,4 @@ select_permissions:
               - mention:
                   visible:
                     _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les
-      responsabilités dont l'intervenant et la mention, le parcours ou
-      l'enseignement correspondant sont visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les responsabilités dont l'intervenant et la mention, le parcours ou l'enseignement correspondant sont visibles.

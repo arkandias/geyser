@@ -48,10 +48,7 @@ insert_permissions:
         - heures
         - type
         - uid
-    comment: >-
-      En phase de commission, les commissaires peuvent créer des attributions
-      pour tous les intervenants et pour tous les enseignements de l'année en
-      cours.
+    comment: En phase de commission, les commissaires peuvent créer des attributions pour tous les intervenants et pour tous les enseignements de l'année en cours.
   - role: intervenant
     permission:
       check:
@@ -92,10 +89,7 @@ insert_permissions:
         - heures
         - type
         - uid
-    comment: >-
-      En phase de voeux, les intervenants peuvent faire des demandes principales
-      ou secondaires pour des enseignements visibles de l'année en cours dont
-      le cursus, la mention et (éventuellement) le parcours sont tous visibles.
+    comment: En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour des enseignements visibles de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
 select_permissions:
   - role: commissaire
     permission:
@@ -120,8 +114,7 @@ select_permissions:
               - en_cours:
                   _eq: true
       allow_aggregations: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir toutes les demandes.
+    comment: En phase de commission, les commissaires peuvent voir toutes les demandes.
   - role: intervenant
     permission:
       columns:
@@ -183,12 +176,7 @@ select_permissions:
               - type:
                   _neq: attribution
       allow_aggregations: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des
-      intervenants visibles pour les enseignements visibles si l'année, le
-      cursus, la mention et (éventuellement) le parcours sont tous visibles.
-      Ils ne peuvent voir les attributions pour les enseignements de l'année en 
-      cours qu'en phase de consultation.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour les enseignements visibles si l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles. Ils ne peuvent voir les attributions pour les enseignements de l'année en  cours qu'en phase de consultation.
 update_permissions:
   - role: commissaire
     permission:
@@ -213,9 +201,7 @@ update_permissions:
           - type:
               _eq: attribution
       check: null
-    comment: >-
-      En phase de commission, les commissaires peuvent modifier toutes les
-      attributions pour des enseignements de l'année en cours.
+    comment: En phase de commission, les commissaires peuvent modifier toutes les attributions pour des enseignements de l'année en cours.
   - role: intervenant
     permission:
       columns:
@@ -254,11 +240,7 @@ update_permissions:
           - type:
               _neq: attribution
       check: null
-    comment: >-
-      En phase de voeux, les intervenants peuvent modifier leurs demandes
-      principales ou secondaires pour un enseignement visible de l'année en
-      cours dont le cursus, la mention et (éventuellement) le parcours sont tous
-      visibles.
+    comment: En phase de voeux, les intervenants peuvent modifier leurs demandes principales ou secondaires pour un enseignement visible de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
 delete_permissions:
   - role: commissaire
     permission:
@@ -280,9 +262,7 @@ delete_permissions:
                   _eq: true
           - type:
               _eq: attribution
-    comment: >-
-      En phase de commission, les commissaires peuvent supprimer toutes les
-      attributions pour des enseignements de l'année en cours.
+    comment: En phase de commission, les commissaires peuvent supprimer toutes les attributions pour des enseignements de l'année en cours.
   - role: intervenant
     permission:
       filter:
@@ -318,8 +298,4 @@ delete_permissions:
                     _eq: true
           - type:
               _neq: attribution
-    comment: >-
-      En phase de voeux, les intervenants peuvent supprimer leurs demandes
-      principales ou secondaires pour un enseignement visible de l'année en
-      cours dont le cursus, la mention et (éventuellement) le parcours sont tous
-      visibles.
+    comment: En phase de voeux, les intervenants peuvent supprimer leurs demandes principales ou secondaires pour un enseignement visible de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.

@@ -8,7 +8,7 @@ select_permissions:
         - en_cours
         - value
         - visible
-      filter: { }
+      filter: {}
     comment: Les commissaires peuvent voir toutes les phases.
   - role: intervenant
     permission:

@@ -28,9 +28,7 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: >-
-      En phase de commission, les commissaires peuvent voir toutes les
-      priorités.
+    comment: En phase de commission, les commissaires peuvent voir toutes les priorités.
   - role: intervenant
     permission:
       columns:
@@ -71,7 +69,4 @@ select_permissions:
                       _eq: true
                 - visible:
                     _eq: true
-    comment: >-
-      Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des
-      intervenants visibles pour les enseignements visibles si l'année, le 
-      cursus, la mention et (éventuellement) le parcours sont tous visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des intervenants visibles pour les enseignements visibles si l'année, le  cursus, la mention et (éventuellement) le parcours sont tous visibles.
