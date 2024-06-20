@@ -25,7 +25,7 @@ array_relationships:
         table:
           name: demande
           schema: ec
-  - name: enseignements
+  - name: enfants
     using:
       foreign_key_constraint_on:
         column: parent_id
@@ -153,7 +153,7 @@ select_permissions:
                         _eq: X-Hasura-User-Id
                     - type:
                         _eq: attribution
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles. Les intervenants peuvent également voir tous les enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ou qui leur ont été attribués.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles.
 update_permissions:
   - role: intervenant
     permission:
