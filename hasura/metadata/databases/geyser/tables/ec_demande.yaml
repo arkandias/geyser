@@ -66,22 +66,40 @@ insert_permissions:
           - uid:
               _eq: X-Hasura-User-Id
           - enseignement:
-              _and:
-                - anneeByAnnee:
-                    en_cours:
-                      _eq: true
-                - mention:
-                    _and:
-                      - cursus:
-                          visible:
-                            _eq: true
-                      - visible:
+              _or:
+                - _and:
+                    - anneeByAnnee:
+                        visible:
                           _eq: true
+                    - mention:
+                        _and:
+                          - cursus:
+                              visible:
+                                _eq: true
+                          - visible:
+                              _eq: true
+                    - parcours:
+                        visible:
+                          _eq: true
+                    - visible:
+                        _eq: true
+                - responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parcours:
-                    visible:
-                      _eq: true
-                - visible:
-                    _eq: true
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - mention:
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - demandes:
+                    _and:
+                      - uid:
+                          _eq: X-Hasura-User-Id
+                      - type:
+                          _eq: attribution
           - type:
               _neq: attribution
       columns:
@@ -142,22 +160,40 @@ select_permissions:
               visible:
                 _eq: true
           - enseignement:
-              _and:
-                - anneeByAnnee:
-                    visible:
-                      _eq: true
-                - mention:
-                    _and:
-                      - cursus:
-                          visible:
-                            _eq: true
-                      - visible:
+              _or:
+                - _and:
+                    - anneeByAnnee:
+                        visible:
                           _eq: true
+                    - mention:
+                        _and:
+                          - cursus:
+                              visible:
+                                _eq: true
+                          - visible:
+                              _eq: true
+                    - parcours:
+                        visible:
+                          _eq: true
+                    - visible:
+                        _eq: true
+                - responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parcours:
-                    visible:
-                      _eq: true
-                - visible:
-                    _eq: true
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - mention:
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - demandes:
+                    _and:
+                      - uid:
+                          _eq: X-Hasura-User-Id
+                      - type:
+                          _eq: attribution
           - _or:
               - _exists:
                   _table:
@@ -221,22 +257,40 @@ update_permissions:
           - uid:
               _eq: X-Hasura-User-Id
           - enseignement:
-              _and:
-                - anneeByAnnee:
-                    en_cours:
-                      _eq: true
-                - mention:
-                    _and:
-                      - cursus:
-                          visible:
-                            _eq: true
-                      - visible:
+              _or:
+                - _and:
+                    - anneeByAnnee:
+                        visible:
                           _eq: true
+                    - mention:
+                        _and:
+                          - cursus:
+                              visible:
+                                _eq: true
+                          - visible:
+                              _eq: true
+                    - parcours:
+                        visible:
+                          _eq: true
+                    - visible:
+                        _eq: true
+                - responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parcours:
-                    visible:
-                      _eq: true
-                - visible:
-                    _eq: true
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - mention:
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - demandes:
+                    _and:
+                      - uid:
+                          _eq: X-Hasura-User-Id
+                      - type:
+                          _eq: attribution
           - type:
               _neq: attribution
       check: null
@@ -280,22 +334,40 @@ delete_permissions:
           - uid:
               _eq: X-Hasura-User-Id
           - enseignement:
-              _and:
-                - anneeByAnnee:
-                    en_cours:
-                      _eq: true
-                - mention:
-                    _and:
-                      - cursus:
-                          visible:
-                            _eq: true
-                      - visible:
+              _or:
+                - _and:
+                    - anneeByAnnee:
+                        visible:
                           _eq: true
+                    - mention:
+                        _and:
+                          - cursus:
+                              visible:
+                                _eq: true
+                          - visible:
+                              _eq: true
+                    - parcours:
+                        visible:
+                          _eq: true
+                    - visible:
+                        _eq: true
+                - responsables:
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parcours:
-                    visible:
-                      _eq: true
-                - visible:
-                    _eq: true
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - mention:
+                    responsables:
+                      uid:
+                        _eq: X-Hasura-User-Id
+                - demandes:
+                    _and:
+                      - uid:
+                          _eq: X-Hasura-User-Id
+                      - type:
+                          _eq: attribution
           - type:
               _neq: attribution
     comment: En phase de voeux, les intervenants peuvent supprimer leurs demandes principales ou secondaires pour un enseignement visible de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
