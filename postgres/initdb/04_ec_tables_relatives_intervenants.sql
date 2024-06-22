@@ -39,22 +39,22 @@ COMMENT ON COLUMN ec.service.heures_eqtd IS 'Le nombre d''heures EQTD du service
 
 CREATE TABLE IF NOT EXISTS ec.type_modification
 (
-    value       text PRIMARY KEY,
+    label       text PRIMARY KEY,
     description text
 );
-INSERT INTO ec.type_modification(value, description)
-VALUES ('CRCT', 'Congé pour recherches ou conversions thématiques'),
+INSERT INTO ec.type_modification(label, description)
+VALUES ('Autre', 'Tout autre type de modification'),
+       ('Congé / arrêt', 'Congé maternité, arrêt maladie, etc.'),
        ('CPP', 'Congé pour projet pédagogique'),
+       ('CRCT', 'Congé pour recherches ou conversions thématiques'),
        ('Délégation', 'Délégation auprès d''un institut de recherche (CNRS, INRIA, etc.)'),
        ('Décharge',
         'Décharge d''enseignement pour une activité annexe (par exemple une responsabilité administrative)'),
-       ('Enseignement extérieur', 'Déduction pour des heures d''enseignement réalisées en-dehors de l''université'),
-       ('Congé / arrêt', 'Congé maternité, arrêt maladie, etc.'),
-       ('Départ', 'Pour un intervenant ayant quitté le département en cours d''année'),
-       ('Autre', 'Tout autre type de modification')
+       ('Départ', 'Service partiel en cas de départ en cours d''année'),
+       ('Enseignements extérieurs', 'Déduction des heures d''enseignement hors Geyser')
 ON CONFLICT DO NOTHING;
 COMMENT ON TABLE ec.type_modification IS 'Table contenant les différents types de modification de service.';
-COMMENT ON COLUMN ec.type_modification.value IS 'Le type de modification (unique).';
+COMMENT ON COLUMN ec.type_modification.label IS 'Le type de modification (unique).';
 COMMENT ON COLUMN ec.type_modification.description IS 'Une brève description.';
 
 CREATE TABLE IF NOT EXISTS ec.modification_service

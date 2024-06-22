@@ -13,7 +13,8 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - value
+        - label
+        - description
       filter:
         _exists:
           _table:
@@ -29,7 +30,8 @@ select_permissions:
   - role: intervenant
     permission:
       columns:
-        - value
+        - label
+        - description
       filter:
         _exists:
           _table:
