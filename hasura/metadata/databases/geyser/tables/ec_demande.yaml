@@ -95,11 +95,15 @@ insert_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    _and:
-                      - uid:
-                          _eq: X-Hasura-User-Id
-                      - type:
-                          _eq: attribution
+                    uid:
+                      _eq: X-Hasura-User-Id
+                - parent:
+                    demandes:
+                      _and:
+                        - uid:
+                            _eq: X-Hasura-User-Id
+                        - type:
+                            _eq: attribution
           - type:
               _neq: attribution
       columns:
@@ -107,7 +111,7 @@ insert_permissions:
         - heures
         - type
         - uid
-    comment: En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour des enseignements visibles de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
+    comment: "En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour : 1) des enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 4) des enseignements dont les enseignements parents leur ont été attribués."
 select_permissions:
   - role: commissaire
     permission:
@@ -156,44 +160,52 @@ select_permissions:
                       _neq: fermeture
                   - en_cours:
                       _eq: true
-          - intervenant:
-              visible:
-                _eq: true
-          - enseignement:
-              _or:
-                - _and:
-                    - anneeByAnnee:
-                        visible:
-                          _eq: true
-                    - mention:
-                        _and:
-                          - cursus:
-                              visible:
-                                _eq: true
-                          - visible:
-                              _eq: true
-                    - parcours:
-                        visible:
-                          _eq: true
-                    - visible:
-                        _eq: true
-                - responsables:
-                    uid:
-                      _eq: X-Hasura-User-Id
-                - parcours:
-                    responsables:
-                      uid:
-                        _eq: X-Hasura-User-Id
-                - mention:
-                    responsables:
-                      uid:
-                        _eq: X-Hasura-User-Id
-                - demandes:
-                    _and:
-                      - uid:
+          - _or:
+              - enseignement:
+                  _or:
+                    - responsables:
+                        uid:
                           _eq: X-Hasura-User-Id
-                      - type:
-                          _eq: attribution
+                    - parcours:
+                        responsables:
+                          uid:
+                            _eq: X-Hasura-User-Id
+                    - mention:
+                        responsables:
+                          uid:
+                            _eq: X-Hasura-User-Id
+              - _and:
+                  - intervenant:
+                      visible:
+                        _eq: true
+                  - enseignement:
+                      _or:
+                        - _and:
+                            - anneeByAnnee:
+                                visible:
+                                  _eq: true
+                            - mention:
+                                _and:
+                                  - cursus:
+                                      visible:
+                                        _eq: true
+                                  - visible:
+                                      _eq: true
+                            - parcours:
+                                visible:
+                                  _eq: true
+                            - visible:
+                                _eq: true
+                        - demandes:
+                            uid:
+                              _eq: X-Hasura-User-Id
+                        - parent:
+                            demandes:
+                              _and:
+                                - uid:
+                                    _eq: X-Hasura-User-Id
+                                - type:
+                                    _eq: attribution
           - _or:
               - _exists:
                   _table:
@@ -212,7 +224,7 @@ select_permissions:
               - type:
                   _neq: attribution
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour les enseignements visibles si l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles. Ils ne peuvent voir les attributions pour les enseignements de l'année en  cours qu'en phase de consultation.
+    comment: "Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour : 1) des enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 3) des enseignements dont les enseignements parents leur ont été attribués. Les intervenants responsables d'un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les demandes pour cet enseignement. Les intervenants ne peuvent voir les attributions pour les enseignements de l'année en cours qu'en phase de consultation."
 update_permissions:
   - role: commissaire
     permission:
@@ -286,15 +298,19 @@ update_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    _and:
-                      - uid:
-                          _eq: X-Hasura-User-Id
-                      - type:
-                          _eq: attribution
+                    uid:
+                      _eq: X-Hasura-User-Id
+                - parent:
+                    demandes:
+                      _and:
+                        - uid:
+                            _eq: X-Hasura-User-Id
+                        - type:
+                            _eq: attribution
           - type:
               _neq: attribution
       check: null
-    comment: En phase de voeux, les intervenants peuvent modifier leurs demandes principales ou secondaires pour un enseignement visible de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
+    comment: En phase de voeux, les intervenants peuvent modifier leurs demandes principales ou secondaires pour tous les enseignements pour lesquels ils peuvent faire des demandes.
 delete_permissions:
   - role: commissaire
     permission:
@@ -363,11 +379,15 @@ delete_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    _and:
-                      - uid:
-                          _eq: X-Hasura-User-Id
-                      - type:
-                          _eq: attribution
+                    uid:
+                      _eq: X-Hasura-User-Id
+                - parent:
+                    demandes:
+                      _and:
+                        - uid:
+                            _eq: X-Hasura-User-Id
+                        - type:
+                            _eq: attribution
           - type:
               _neq: attribution
-    comment: En phase de voeux, les intervenants peuvent supprimer leurs demandes principales ou secondaires pour un enseignement visible de l'année en cours dont le cursus, la mention et (éventuellement) le parcours sont tous visibles.
+    comment: En phase de voeux, les intervenants peuvent supprimer leurs demandes principales ou secondaires pour tous les enseignements pour lesquels ils peuvent faire des demandes.
