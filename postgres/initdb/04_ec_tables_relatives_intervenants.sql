@@ -47,9 +47,8 @@ VALUES ('Autre', 'Tout autre type de modification'),
        ('Congé / arrêt', 'Congé maternité, arrêt maladie, etc.'),
        ('CPP', 'Congé pour projet pédagogique'),
        ('CRCT', 'Congé pour recherches ou conversions thématiques'),
-       ('Délégation', 'Délégation auprès d''un institut de recherche (CNRS, INRIA, etc.)'),
-       ('Décharge',
-        'Décharge d''enseignement pour une activité annexe (par exemple une responsabilité administrative)'),
+       ('Délégation', 'Délégation auprès d''un institut de recherche'),
+       ('Décharge', 'Décharge d''enseignement pour une responsabilité'),
        ('Départ', 'Service partiel en cas de départ en cours d''année'),
        ('Enseignements extérieurs', 'Déduction des heures d''enseignement hors Geyser')
 ON CONFLICT DO NOTHING;
