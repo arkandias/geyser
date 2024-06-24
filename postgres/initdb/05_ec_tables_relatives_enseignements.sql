@@ -79,7 +79,7 @@ CREATE TABLE IF NOT EXISTS ec.enseignement
     annee_cycle     integer NOT NULL GENERATED ALWAYS AS (ceil(semestre / 2.0)) STORED,
     heures          real    NOT NULL CHECK (heures >= 0),
     groupes         integer NOT NULL CHECK (groupes >= 0),
-    groupes_ouverts integer CHECK (0 <= groupes_ouverts AND groupes_ouverts <= groupes),
+    groupes_ouverts integer CHECK (0 <= groupes_ouverts AND groupes_ouverts < groupes),
     description     text,
     regle_priorite  integer          DEFAULT 3 CHECK (regle_priorite >= 0), -- 0=infini; NULL=pas de règle
     visible         boolean NOT NULL DEFAULT TRUE,
