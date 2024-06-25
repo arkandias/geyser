@@ -4,10 +4,11 @@
 
 - [Geyser](#geyser)
     - [Getting Started](#getting-started)
-        - [Prerequisites](#prerequisites)
+        - [Installation](#installation)
         - [Configuration](#configuration)
             - [Environment Variables](#environment-variables)
-            - [Running Geyser](#running-geyser)
+            - [SSL Certificates](#ssl-certificates)
+        - [Running Geyser](#running-geyser)
     - [Components](#components)
         - [Postgres](#postgres)
         - [Hasura](#hasura)
@@ -20,27 +21,38 @@
 These instructions will get you a copy of the project up and running on your local machine for development and testing
 purposes.
 
-### Prerequisites
+### Installation
+
+Start by cloning the project's repository (you need Git for this):
+
+```shell
+git clone https://gitlab.univ-lille.fr/julien.hauseux/geyser-backend.git
+```
+
+This will create a directory `geyser-backend` in your working directory. Switch to this directory:
+
+```shell
+cd geyser-backend
+```
 
 The essential tools that need to be installed on your machine include:
 
 - Docker Compose
 - Hasura CLI
 
-Although not necessary, the following tools may prove beneficial to some of the convenient scripts provided with this
-project:
+Although not necessary, the following tools are needed to use some of the convenient scripts provided with this project:
 
 - PostgreSQL
 - jq
 
-On Ubuntu, these tools can be installed all at once by running:
+On Ubuntu, these tools can be installed all at once:
 
 ```shell
 ./scripts/install_tools
 ```
 
-If you're using Bash or Zsh, you can add the environment
-variables `GEYSER_DIR` and `GEYSER_MODE` to your profile, as well as some convenient aliases by running:
+If you're using Bash or Zsh, you can add the environment variables `GEYSER_DIR` and `GEYSER_MODE` to your profile, as
+well as some convenient aliases:
 
 ```shell
 source ./scripts/add_configuration
@@ -79,16 +91,20 @@ the root of the project.*
 
 The SSL certificates must be placed in `ssl/certs`, see [here](ssl/certs/README.md).
 
-#### Running Geyser
+### Running Geyser
 
 The script `scripts/geyser` provides the following commands:
 
-- `start`: starts Geyser
-- `stop`: stops Geyser
-- `reset`: makes a copy of the database and starts a fresh configuration
+- `start` to start Geyser
+- `stop` to stop Geyser
+- `reset` to make a copy of the database and starts a fresh configuration
 
-In a development environment, use the option `--dev`. Equivalently, you can set the environment variable `GEYSER_MODE`
-to `development`.
+Use these command with one of the following options:
+
+- `--dev` in a development environment
+- `--prod` in a production/staging environment
+
+Equivalently, you can set the environment variable `GEYSER_MODE` to `development` or `production`.
 
 ## Components
 
