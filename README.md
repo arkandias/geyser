@@ -24,19 +24,27 @@ purposes.
 
 The essential tools that need to be installed on your machine include:
 
-- Docker Compose (v2.27)
-- Hasura CLI (v2.39)
+- Docker Compose
+- Hasura CLI
 
 Although not necessary, the following tools may prove beneficial to some of the convenient scripts provided with this
 project:
 
-- PostgreSQL 16
-- jq 9 (v1.7)
+- PostgreSQL
+- jq
 
-On Ubuntu, these tools can be installed all at once using the script `install_tools`.
+On Ubuntu, these tools can be installed all at once by running:
 
-If you're using Bash or Zsh, you can also run the script `add_configuration` to add some convenient aliases to
-your shell.
+```shell
+./scripts/install_tools
+```
+
+If you're using Bash or Zsh, you can add the environment
+variables `GEYSER_DIR` and `GEYSER_MODE` to your profile, as well as some convenient aliases by running:
+
+```shell
+source ./scripts/add_configuration
+``` 
 
 ### Configuration
 
