@@ -11,9 +11,6 @@
 # simplify various operations to administrate and develop Geyser. It must be
 # sourced using an interactive shell.
 
-# Set Geyser directory
-: "${GEYSER_DIR:=$(realpath "$(dirname "$0")/..")}"
-
 # Add configuration to the interactive shell initialization file
 if [ -n "$BASH_VERSION" ]; then
   echo "Shell detected: Bash"
@@ -26,19 +23,29 @@ else
   exit 0
 fi
 
+# Set Geyser directory
+default_dir="$(cd "$(dirname "$0")"/.. && pwd)"
+printf "Geyser installation directory [%s]: " "$default_dir"
+read -r install_dir
+GEYSER_DIR=${install_dir:-$default_dir}
+
+# Set Geyser mode
+printf "Select an environment:\n1) Development\n2) Production/Staging\n"
 while true; do
-  printf "Select an environment:\n1. Development\n2. Production/Staging\nYour choice: "
+  printf "Your choice: "
   read -r choice
   case $choice in
-    1 ) echo "You chose Development";
+    1) echo "You chose Development";
       GEYSER_MODE=development
+      # shellcheck disable=SC2016
       gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
       break;;
-    2 ) echo "You chose Production/Staging";
+    2) echo "You chose Production/Staging";
       GEYSER_MODE=production
+      # shellcheck disable=SC2016
       gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
       break;;
-    * ) echo "Not a valid choice";;
+    *) echo "Not a valid choice";;
   esac
 done
 
@@ -71,15 +78,25 @@ alias grsync='rsync -rlv --delete --files-from="\$GEYSER_DIR"/rsync-files --excl
 EOF
 )
 
-echo "The following configuration will be added to ${config_file} (previous configurations will be removed):"
+echo "Configuration:"
 echo "$config"
-
-sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "$config_file"
-while [ "$(tail -n 1 "$config_file" | grep -v '^$')" = "" ]; do
-  sed_i -e '$d' "$config_file"
+while true; do
+  printf "Add to %s? [Y/n] " "$config_file"
+  read -r choice
+  case $choice in
+    ""|y|Y)
+      sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "$config_file"
+      while [ "$(tail -n 1 "$config_file" | grep -v '^$')" = "" ]; do
+        # shellcheck disable=SC2016
+        sed_i -e '$d' "$config_file"
+      done
+      {
+        echo ""
+        echo "$config"
+        echo ""
+      } >> "$config_file"
+      break;;
+    n|N) break;;
+    *) echo "Not a valid choice";;
+  esac
 done
-{
-  echo ""
-  echo "$config"
-  echo ""
-} >> "$config_file"
