@@ -92,6 +92,11 @@ case $1 in
     ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose down
     ;;
+  update)
+    ignore_extra_args "$@"
+    "$GEYSER_DIR"/scripts/compose pull
+    echo "Geyser has been updated. You must start Geyser again for the updates to take effect"
+    ;;
   reset)
     ignore_extra_args "$@"
     # stop geyser
