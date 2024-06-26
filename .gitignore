@@ -1,4 +1,5 @@
 /backups
+/export
 /keycloak/data/import/*
 !/keycloak/data/import/templates/
 !/keycloak/data/import/README.md

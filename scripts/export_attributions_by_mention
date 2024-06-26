@@ -1,0 +1,60 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script exports the attributions of a given year into multiple CSV files,
+# one per mention and per year.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+source "$GEYSER_DIR"/.env.local
+export PGPASSWORD="$POSTGRES_PASSWORD"
+
+if [[ -z "$1" ]]; then
+  echo "You must provide the year of the export" >&2
+  exit 1
+fi
+
+annee="$1"
+shift
+for arg in "$@"; do
+  echo "Warning: Extra command-line argument $arg ignored" >&2
+  shift
+done
+
+mkdir -p "$GEYSER_DIR"/export
+
+query_mention_ids=$(cat <<-EOSQL
+	SELECT DISTINCT e.mention_id
+	FROM ec.enseignement e
+			JOIN ec.demande d ON e.id = d.ens_id
+	WHERE e.annee = ${annee} AND d.type = 'attribution'
+	ORDER BY e.mention_id;
+EOSQL
+)
+
+IFS=$'\n' read -r -d '' -a mention_ids < <(psql -U postgres -h localhost -p 5432 -d geyser -P format=unaligne -P tuples_only -c "${query_mention_ids}" && printf '\0')
+
+for mention_id in "${mention_ids[@]}"; do
+  mention_name=$(psql -U postgres -h localhost -p 5432 -d geyser -P format=unaligne -P tuples_only <<-EOSQL
+		SELECT c.nom || ' ' || coalesce(m.nom_court, m.nom)
+			FROM ec.mention m
+					JOIN ec.cursus c ON m.cursus_id = c.id
+    	WHERE m.id = ${mention_id};
+	EOSQL
+	)
+  filename=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
+  query_attributions=$(cat <<-EOSQL
+		SELECT e.semestre, e.nom, e.type, i.nom, i.prenom, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
+		FROM ec.demande d
+				JOIN ec.intervenant i ON d.uid = i.uid
+				JOIN ec.enseignement e ON d.ens_id = e.id
+		WHERE e.annee = ${annee} AND d.type = 'attribution' AND e.mention_id = ${mention_id}
+		ORDER BY e.semestre, e.nom, e.type, i.nom, i.prenom
+	EOSQL
+  )
+  psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/export/${filename}.csv"
+done
