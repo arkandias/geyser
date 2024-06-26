@@ -6,7 +6,7 @@
 ################################################################################
 
 # This script exports the attributions of a given year into multiple CSV files,
-# one per mention and per year.
+# one per mention.
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
@@ -14,7 +14,7 @@ source "$GEYSER_DIR"/.env.local
 export PGPASSWORD="$POSTGRES_PASSWORD"
 
 if [[ -z "$1" ]]; then
-  echo "You must provide the year of the export" >&2
+  echo "You must provide the year for the exports" >&2
   exit 1
 fi
 
@@ -25,7 +25,7 @@ for arg in "$@"; do
   shift
 done
 
-mkdir -p "$GEYSER_DIR"/export
+mkdir -p "$GEYSER_DIR"/exports
 
 query_mention_ids=$(cat <<-EOSQL
 	SELECT DISTINCT e.mention_id
@@ -46,7 +46,8 @@ for mention_id in "${mention_ids[@]}"; do
     	WHERE m.id = ${mention_id};
 	EOSQL
 	)
-  filename=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
+  mention_name_formatted=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
+  filename="${annee}_${mention_name_formatted}"
   query_attributions=$(cat <<-EOSQL
 		SELECT e.semestre, e.nom, e.type, i.nom, i.prenom, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
 		FROM ec.demande d
@@ -56,5 +57,5 @@ for mention_id in "${mention_ids[@]}"; do
 		ORDER BY e.semestre, e.nom, e.type, i.nom, i.prenom
 	EOSQL
   )
-  psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/export/${filename}.csv"
+  psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/exports/${filename}.csv"
 done
