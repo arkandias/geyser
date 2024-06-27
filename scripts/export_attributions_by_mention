@@ -49,7 +49,7 @@ for mention_id in "${mention_ids[@]}"; do
   mention_name_formatted=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
   filename="${annee}_${mention_name_formatted}"
   query_attributions=$(cat <<-EOSQL
-		SELECT e.semestre, e.nom, e.type, i.nom, i.prenom, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
+		SELECT e.semestre, e.nom, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
 		FROM ec.demande d
 				JOIN ec.intervenant i ON d.uid = i.uid
 				JOIN ec.enseignement e ON d.ens_id = e.id
