@@ -69,6 +69,7 @@ select_permissions:
         - groupes
         - groupes_ouverts
         - heures
+        - heures_ouvertes
         - id
         - mention_id
         - nom
@@ -81,6 +82,7 @@ select_permissions:
         - visible
       computed_fields:
         - groupes_corriges
+        - heures_corrigees
       filter:
         _exists:
           _table:
@@ -102,6 +104,7 @@ select_permissions:
         - groupes
         - groupes_ouverts
         - heures
+        - heures_ouvertes
         - id
         - mention_id
         - nom
@@ -114,6 +117,7 @@ select_permissions:
         - visible
       computed_fields:
         - groupes_corriges
+        - heures_corrigees
       filter:
         _and:
           - _exists:
