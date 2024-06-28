@@ -49,12 +49,13 @@ for mention_id in "${mention_ids[@]}"; do
   mention_name_formatted=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
   filename="${annee}_${mention_name_formatted}"
   query_attributions=$(cat <<-EOSQL
-		SELECT e.semestre, e.nom, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
+		SELECT p.nom as parcours, e.semestre, e.nom as enseignement, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
 		FROM ec.demande d
 				JOIN ec.intervenant i ON d.uid = i.uid
 				JOIN ec.enseignement e ON d.ens_id = e.id
+				LEFT JOIN ec.parcours p ON e.parcours_id = p.id
 		WHERE e.annee = ${annee} AND d.type = 'attribution' AND e.mention_id = ${mention_id}
-		ORDER BY e.semestre, e.nom, e.type, i.nom, i.prenom
+		ORDER BY p.nom, e.semestre, e.nom, e.type, i.nom, i.prenom
 	EOSQL
   )
   psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/exports/${filename}.csv"
