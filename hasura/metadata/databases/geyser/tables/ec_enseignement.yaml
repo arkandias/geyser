@@ -52,6 +52,13 @@ computed_fields:
       function:
         name: groupes_corriges
         schema: ec
+    comment: Le nombre de groupes ouverts, et à défaut le nombre de groupes.
+  - name: heures_corrigees
+    definition:
+      function:
+        name: heures_corrigees
+        schema: ec
+    comment: Le nombre d'heures d'enseignement ouvertes par groupe, et à défaut le nombre d'heures d'enseignement.
 select_permissions:
   - role: commissaire
     permission:

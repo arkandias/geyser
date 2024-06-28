@@ -78,6 +78,7 @@ CREATE TABLE IF NOT EXISTS ec.enseignement
     semestre        integer NOT NULL CHECK (1 <= semestre AND semestre <= 6),
     annee_cycle     integer NOT NULL GENERATED ALWAYS AS (ceil(semestre / 2.0)) STORED,
     heures          real    NOT NULL CHECK (heures >= 0),
+    heures_ouvertes real CHECK (0 <= heures_ouvertes AND heures_ouvertes < heures),
     groupes         integer NOT NULL CHECK (groupes >= 0),
     groupes_ouverts integer CHECK (0 <= groupes_ouverts AND groupes_ouverts < groupes),
     description     text,
@@ -96,12 +97,19 @@ COMMENT ON COLUMN ec.enseignement.nom_court IS 'Le nom abrégé (optionnel)';
 COMMENT ON COLUMN ec.enseignement.type IS 'Le type d''enseignement.';
 COMMENT ON COLUMN ec.enseignement.semestre IS 'Le semestre durant lequel l''enseignement a lieu.';
 COMMENT ON COLUMN ec.enseignement.annee_cycle IS 'L''année du cycle universitaire durant laquelle l''enseignement a lieu (calculée automatiquement à partir du semestre).';
-COMMENT ON COLUMN ec.enseignement.heures IS 'Le nombre d''heures d''enseignement (devant les étudiants).';
+COMMENT ON COLUMN ec.enseignement.heures IS 'Le nombre d''heures d''enseignement par groupe.';
+COMMENT ON COLUMN ec.enseignement.heures_ouvertes IS 'Le nombre d''heures d''enseignement ouvertes par groupe (optionnel, si différent du nombre d''heures d''enseignement initial).';
 COMMENT ON COLUMN ec.enseignement.groupes IS 'Le nombre de groupes.';
 COMMENT ON COLUMN ec.enseignement.groupes_ouverts IS 'Le nombre de groupes ouverts (optionnel, si différent du nombre de groupes initial).';
 COMMENT ON COLUMN ec.enseignement.description IS 'Une description de l''enseignement.';
 COMMENT ON COLUMN ec.enseignement.regle_priorite IS 'Une règle de priorité (optionnelle) : nombre d''année pendant lesquelles un intervenant est prioritaire sur un enseignement (3 par défaut ; 1 si pas de priorité d''une année sur l''autre ; 0 si pas limite de priorité).';
 COMMENT ON COLUMN ec.enseignement.visible IS 'Indique si l''enseignement correspondant est visible par les utilisateurs.';
+
+CREATE OR REPLACE FUNCTION ec.heures_corrigees(enseignement_row ec.enseignement) RETURNS real AS
+$$
+SELECT coalesce(enseignement_row.heures_ouvertes, enseignement_row.heures);
+$$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION ec.heures_corrigees(enseignement_row ec.enseignement) IS 'Fonction qui renvoie, pour un enseignement donné, le nombre d''heures d''enseignement ouvertes par groupe, et à défaut le nombre d''heures d''enseignement par groupe.';
 
 CREATE OR REPLACE FUNCTION ec.groupes_corriges(enseignement_row ec.enseignement) RETURNS integer AS
 $$
