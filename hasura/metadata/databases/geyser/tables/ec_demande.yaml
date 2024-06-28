@@ -111,7 +111,7 @@ insert_permissions:
         - heures
         - type
         - uid
-    comment: "En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour : 1) des enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 4) des enseignements dont les enseignements parents leur ont été attribués."
+    comment: 'En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 4) des enseignements dont les enseignements parents leur ont été attribués.'
 select_permissions:
   - role: commissaire
     permission:
@@ -224,7 +224,7 @@ select_permissions:
               - type:
                   _neq: attribution
       allow_aggregations: true
-    comment: "Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour : 1) des enseignements visibles dont l'année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 3) des enseignements dont les enseignements parents leur ont été attribués. Les intervenants responsables d'un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les demandes pour cet enseignement. Les intervenants ne peuvent voir les attributions pour les enseignements de l'année en cours qu'en phase de consultation."
+    comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 3) des enseignements dont les enseignements parents leur ont été attribués. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les demandes pour cet enseignement. Les intervenants ne peuvent voir les attributions pour les enseignements de l''année en cours qu''en phase de consultation.'
 update_permissions:
   - role: commissaire
     permission:
