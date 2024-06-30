@@ -140,7 +140,7 @@ CREATE OR REPLACE TRIGGER check_parent_annee
     ON ec.enseignement
     FOR EACH ROW
 EXECUTE FUNCTION ec.check_parent_annee();
-COMMENT ON TRIGGER check_parent_annee ON ec.enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute insertion d''un enseignement ou mise à jour des valeurs de parent_id ou annee d''un enseignement.';
+COMMENT ON TRIGGER check_parent_annee ON ec.enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute insertion d''un enseignement et toute mise à jour des valeurs de parent_id ou annee d''un enseignement.';
 
 CREATE OR REPLACE FUNCTION ec.check_enfant_annee() RETURNS trigger AS
 $$
@@ -171,3 +171,24 @@ CREATE OR REPLACE TRIGGER check_enfant_annee
     FOR EACH ROW
 EXECUTE FUNCTION ec.check_enfant_annee();
 COMMENT ON TRIGGER check_enfant_annee ON ec.enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute mise à jour de la valeur de annee d''un enseignement.';
+
+CREATE OR REPLACE FUNCTION ec.check_mention_parcours() RETURNS trigger AS
+$$
+BEGIN
+    IF new.parcours_id IS NOT NULL THEN
+        IF (SELECT mention_id FROM ec.parcours WHERE id = new.parcours_id) != new.mention_id THEN
+            RAISE EXCEPTION 'La mention du parcours n''est pas celle de l''enseignement '
+                '(id mention: %, id parcours: %)', new.mention_id, new.parcours_id;
+        END IF;
+    END IF;
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql STABLE;
+COMMENT ON FUNCTION ec.check_mention_parcours() IS 'Fonction qui vérifie que la mention du parcours est la même que celle de l''enseignement.';
+
+CREATE TRIGGER check_mention_parcours
+    BEFORE INSERT OR UPDATE OF mention_id, parcours_id
+    ON ec.enseignement
+    FOR EACH ROW
+EXECUTE PROCEDURE check_mention_parcours();
+COMMENT ON TRIGGER check_parent_annee ON ec.enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement et toute mise à jour des valeurs de mention_id ou parcours_id d''un enseignement.';
