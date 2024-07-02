@@ -1,0 +1,25 @@
+#compdef geyser
+
+local context state line
+typeset -A opt_args
+
+_geyser() {
+  _arguments -C \
+    "--dev[Run Geyser in development mode]" \
+    "--prod[Run Geyser in production mode]" \
+    ": :_geyser_commands"
+}
+
+_geyser_commands() {
+  local -a commands
+  commands=(
+    'start:Start the Geyser service'
+    'stop:Stop the Geyser service'
+    'restart:Restart the Geyser service'
+    'update:Update the Geyser service'
+    'reset:Reset the Geyser service'
+  )
+  _describe -t commands 'geyser commands' commands
+}
+
+_geyser "$@"

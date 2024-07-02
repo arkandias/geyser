@@ -65,6 +65,7 @@ sed_i () {
   esac
 }
 
+# The configuration
 config=$(cat << EOF
 # BEGIN Geyser configuration
 export GEYSER_DIR="$GEYSER_DIR"
@@ -73,7 +74,6 @@ alias geyser='\$GEYSER_DIR/scripts/geyser'
 alias gcompose="$gcompose"
 alias ghasura='source "\$GEYSER_DIR"/.env.local && export HASURA_GRAPHQL_ADMIN_SECRET && hasura --project "\$GEYSER_DIR"/hasura'
 alias grsync='rsync -rlv --delete --files-from="\$GEYSER_DIR"/rsync-files --exclude-from="\$GEYSER_DIR"/rsync-exclude "\$GEYSER_DIR"/'
-#source \$GEYSER_DIR/scripts/_complete_kc
 # END Geyser configuration
 EOF
 )
@@ -100,3 +100,24 @@ while true; do
     *) echo "Not a valid choice";;
   esac
 done
+
+# Completion
+echo "Install Geyser completion for:"
+echo "1) Bash"
+echo "2) Zsh (using oh-my-zsh)"
+echo "3) None"
+read -r selection
+case "$selection" in
+  1)
+    cp "$GEYSER_DIR"/scripts/completion/geyser-completion.bash /etc/bash_completion.d/geyser
+    ;;
+  2)
+    mkdir -p "$HOME"/.oh-my-zsh/completions
+    cp "$GEYSER_DIR"/scripts/completion/_geyser "$HOME"/.oh-my-zsh/completions/_geyser
+    ;;
+  3)
+    ;;
+  *)
+    echo "Invalid option"
+    ;;
+esac
