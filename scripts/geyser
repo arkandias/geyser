@@ -92,10 +92,15 @@ case $1 in
     ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose down
     ;;
+  restart)
+    ignore_extra_args "$@"
+    "$GEYSER_DIR"/scripts/compose down
+    "$GEYSER_DIR"/scripts/compose up -d
+    ;;
   update)
     ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose pull
-    echo "Geyser has been updated. You must start Geyser again for the updates to take effect"
+    echo "Geyser has been updated. You must now restart Geyser for the updates to take effect"
     ;;
   reset)
     ignore_extra_args "$@"
@@ -131,6 +136,6 @@ case $1 in
     "$GEYSER_DIR"/scripts/hasura metadata apply
     ;;
   *)
-    echo "Usage: geyser {start|stop|reset}"
+    echo "Usage: geyser {start|stop|restart|update|reset}"
     ;;
 esac
