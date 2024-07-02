@@ -68,20 +68,21 @@ sudo apt-get install jq
 curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 
 # Completion
-read -pr "Install Docker and Hasura completion for: " selection
+echo "Install Docker and Hasura completion for:"
 echo "1) Bash"
 echo "2) Zsh (using oh-my-zsh)"
 echo "3) None"
+read -r selection
 case "$selection" in
   1)
     sudo apt install bash-completion
-    echo docker completion bash | sudo tee /etc/bash_completion.d/hasura > /dev/null
+    echo docker completion bash | sudo tee /etc/bash_completion.d/docker > /dev/null
     echo hasura completion bash | sudo tee /etc/bash_completion.d/hasura > /dev/null
     ;;
   2)
-    mkdir -p "$HOME/.oh-my-zsh/completions"
-    docker completion zsh > "$HOME/.oh-my-zsh/completions/_docker"
-    hasura completion zsh > "$HOME/.oh-my-zsh/completions/_hasura"
+    mkdir -p "$HOME"/.oh-my-zsh/completions
+    docker completion zsh > "$HOME"/.oh-my-zsh/completions/_docker
+    hasura completion zsh > "$HOME"/.oh-my-zsh/completions/_hasura
     ;;
   3)
     exit 0
