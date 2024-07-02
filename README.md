@@ -99,7 +99,7 @@ The script `scripts/geyser` provides the following commands:
 - `stop` to stop Geyser
 - `restart` to restart Geyser
 - `update` to update Geyser
-- `reset` to make a copy of the database and starts a fresh configuration
+- `reset` to make a backup of the database and starts a fresh configuration
 
 Use these command with one of the following options:
 

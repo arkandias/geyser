@@ -5,7 +5,20 @@
 # Distributed under the GNU Affero General Public License, version 3.          #
 ################################################################################
 
-# todo: document this script
+# This script provides some commands to manage the Geyser server.
+# 
+# Usage: geyser COMMAND [OPTIONS]
+# 
+# Commands:
+#   start       Start Geyser containers.
+#   stop        Stop Geyser containers.
+#   restart     Restart Geyser containers (equivalent to stop then start).
+#   update      Update Geyser containers (pull new versions of the containers).
+#   reset       Make a copy of the database and start a fresh configuration.
+# 
+# Options:
+#   --dev       Specifies the development configuration.
+#   --prod      Specifies the production/staging configuration.
 
 # Exit script on any error
 set -e
@@ -83,27 +96,23 @@ wait_until_exit () {
 }
 
 # Actions
+ignore_extra_args "$@"
 case $1 in
   start)
-    ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose up -d
     ;;
   stop)
-    ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose down
     ;;
   restart)
-    ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose down
     "$GEYSER_DIR"/scripts/compose up -d
     ;;
   update)
-    ignore_extra_args "$@"
     "$GEYSER_DIR"/scripts/compose pull
     echo "Geyser has been updated. You must now restart Geyser for the updates to take effect"
     ;;
   reset)
-    ignore_extra_args "$@"
     # stop geyser
     "$GEYSER_DIR"/scripts/compose down
     # create keycloak import dir and set correct permissions

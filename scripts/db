@@ -9,17 +9,17 @@
 # Geyser project, this includes initialization, cleaning, restoration, and 
 # dumping of the database or specific database schemas.
 # 
-# Usage: db [OPTIONS] COMMAND
-# 
-# Options:
-#   --schema=<schema_name>    Specifies the database schema to interact with.
-#   --file=<file_path>        Specifies the file to be used with dump/restore.
+# Usage: db COMMAND [OPTIONS]
 # 
 # Commands:
 #   init        Initialize the database with predefined SQL scripts.
 #   clean       Clean the entire database or the schema specified by the --schema option.
 #   dump        Create a complete dump of the database or the schema specified by the --schema option.
 #   restore     Restore the database or the schema specified by the --schema option from a dump file.
+# 
+# Options:
+#   --schema=<schema_name>    Specifies the database schema to interact with.
+#   --file=<file_path>        Specifies the file to be used with dump/restore.
 # 
 # Note: All commands access the PostgreSQL database `geyser` hosted on 
 # `localhost:5432` using the `postgres` user. The password for `postgres` is 
