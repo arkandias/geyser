@@ -1,6 +1,7 @@
 FROM quay.io/keycloak/keycloak:25.0 as builder
 
 # Enable health and metrics support
+ENV KC_LEGACY_OBSERVABILITY_INTERFACE=true
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 
@@ -18,6 +19,7 @@ HEALTHCHECK --interval=10s --timeout=10s --retries=3 \
     --start-period=30s --start-interval=1s \
     CMD healthcheck
 
+ENV KC_LEGACY_OBSERVABILITY_INTERFACE=true
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 ENV KC_DB=postgres
