@@ -56,7 +56,7 @@ for arg in "$@"; do
       file="${parts[1]}"
       ;;
     --*)
-      echo "Warning: Unknown option $arg ignored" >&2
+      echo "Warning: Unknown option ${arg} ignored" >&2
       ;;
     *)
       set -- "$@" "$arg"
@@ -68,7 +68,7 @@ ignore_extra_args () {
   shift
   local arg
   for arg in "$@"; do
-    echo "Warning: Extra command-line argument $arg ignored" >&2
+    echo "Warning: Extra command-line argument ${arg} ignored" >&2
     shift
   done
 }
@@ -91,7 +91,7 @@ clean () {
 		EOSQL
     echo "Done"
   else
-    echo "Cleaning schema $schema..."
+    echo "Cleaning schema ${schema}..."
     psql -U postgres -h localhost -p 5432 -d geyser >/dev/null <<-EOSQL
 		DROP SCHEMA IF EXISTS ${schema} CASCADE;
 		CREATE SCHEMA ${schema};
@@ -102,19 +102,19 @@ clean () {
 
 dump () {
   if [[ -z "$schema" ]]; then
-    echo "Dumping database..."
     if [[ -z "$file" ]]; then
       mkdir -p "$GEYSER_DIR/backups"
       file="$GEYSER_DIR/backups/db_geyser_$(date +%Y-%m-%d-%H-%M-%S).dump"
     fi
+    echo "Dumping database to ${file}..."
     pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc -f "$file"
     echo "Done"
   else
-    echo "Dumping schema $schema..."
     if [[ -z "$file" ]]; then
       mkdir -p "$GEYSER_DIR/backups"
       file="$GEYSER_DIR/backups/schema_${schema}_$(date +%Y-%m-%d-%H-%M-%S).dump"
     fi
+    echo "Dumping schema ${schema} to ${file}..."
     pg_dump -U postgres -h localhost -p 5432 -d geyser -n "$schema" -Fc -f "$file"
     echo "Done"
   fi
@@ -142,7 +142,7 @@ select_backup () {
 restore () {
   if [[ -n "$file" ]]; then
     if [[ ! -f "$file"  ]]; then
-      echo "Error: File $file does not exists" >&2
+      echo "Error: File ${file} does not exists" >&2
       exit 1
     fi
   else
