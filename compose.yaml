@@ -48,7 +48,7 @@ services:
     volumes:
       - ./keycloak/data/import:/opt/keycloak/data/import
       - ./keycloak/data/import/templates:/opt/keycloak/data/import/templates:ro
-      - ./keycloak/providers:/opt/keycloak/providers
+      - ./keycloak/providers:/opt/keycloak/providers:ro
     command: ${KC_CMD:-start-dev}
 
   hasura:

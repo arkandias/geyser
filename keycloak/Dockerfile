@@ -9,12 +9,13 @@ ENV KC_METRICS_ENABLED=true
 ENV KC_DB=postgres
 
 COPY ./providers /opt/keycloak/providers
+
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM quay.io/keycloak/keycloak:latest
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
-COPY ./kc_healthcheck.sh /usr/local/bin/healthcheck
+COPY healthcheck /usr/local/bin/healthcheck
 HEALTHCHECK --interval=10s --timeout=10s --retries=3 \
     --start-period=30s --start-interval=1s \
     CMD healthcheck
