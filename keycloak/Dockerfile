@@ -15,10 +15,9 @@ RUN /opt/keycloak/bin/kc.sh build
 FROM quay.io/keycloak/keycloak:latest
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
 
-COPY healthcheck /usr/local/bin/healthcheck
-HEALTHCHECK --interval=10s --timeout=10s --retries=3 \
-    --start-period=30s --start-interval=1s \
-    CMD healthcheck
+# Add healthcheck (needs disabling management interface)
+COPY ./healthcheck /usr/local/bin/healthcheck
+ENV KC_LEGACY_OBSERVABILITY_INTERFACE=true
 
 ENV KC_LEGACY_OBSERVABILITY_INTERFACE=true
 ENV KC_HEALTH_ENABLED=true

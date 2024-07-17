@@ -1,44 +1,46 @@
 table:
-  name: type_message
-  schema: ec
+  name: type_modification
+  schema: public
 array_relationships:
-  - name: messages
+  - name: modifications_service
     using:
       foreign_key_constraint_on:
         column: type
         table:
-          name: message
-          schema: ec
+          name: modification_service
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - value
+        - label
+        - description
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les types de message.
+    comment: En phase de commission, les commissaires peuvent voir tous les types de modification de service.
   - role: intervenant
     permission:
       columns:
-        - value
+        - label
+        - description
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _neq: fermeture
               - en_cours:
                   _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de message.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de modification de service.

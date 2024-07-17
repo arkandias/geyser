@@ -17,7 +17,7 @@ services:
     networks:
       - frontend
     volumes:
-      - ./ssl/certs:/opt/keycloak/certs:ro
+      - ./certs:/opt/keycloak/certs:ro
     command: ${KC_CMD:-start --optimized}
 
   hasura:
@@ -53,7 +53,7 @@ services:
     networks:
       - frontend
     volumes:
-      - ./ssl/certs:/etc/nginx/certs:ro
+      - ./certs:/etc/nginx/certs:ro
       - ./nginx/templates:/etc/nginx/templates:ro
 
 networks:

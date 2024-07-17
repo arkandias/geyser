@@ -1,60 +1,66 @@
 table:
-  name: parcours
-  schema: ec
-object_relationships:
-  - name: mention
-    using:
-      foreign_key_constraint_on: mention_id
+  name: annee
+  schema: public
 array_relationships:
   - name: enseignements
     using:
       foreign_key_constraint_on:
-        column: parcours_id
+        column: annee
         table:
           name: enseignement
-          schema: ec
-  - name: responsables
+          schema: public
+  - name: messages
     using:
       foreign_key_constraint_on:
-        column: parcours_id
+        column: annee
         table:
-          name: responsable
-          schema: ec
+          name: message
+          schema: public
+  - name: modifications_service
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: modification_service
+          schema: public
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: service
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - id
-        - mention_id
-        - nom
-        - nom_court
+        - en_cours
+        - value
         - visible
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les parcours.
+    comment: En phase de commission, les commissaires peuvent voir toutes les années.
   - role: intervenant
     permission:
       columns:
-        - id
-        - mention_id
-        - nom
-        - nom_court
+        - en_cours
+        - value
         - visible
       filter:
         _and:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -63,4 +69,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les parcours visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les années visibles.

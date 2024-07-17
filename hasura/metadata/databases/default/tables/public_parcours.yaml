@@ -1,19 +1,31 @@
 table:
-  name: cursus
-  schema: ec
+  name: parcours
+  schema: public
+object_relationships:
+  - name: mention
+    using:
+      foreign_key_constraint_on: mention_id
 array_relationships:
-  - name: mentions
+  - name: enseignements
     using:
       foreign_key_constraint_on:
-        column: cursus_id
+        column: parcours_id
         table:
-          name: mention
-          schema: ec
+          name: enseignement
+          schema: public
+  - name: responsables
+    using:
+      foreign_key_constraint_on:
+        column: parcours_id
+        table:
+          name: responsable
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
         - id
+        - mention_id
         - nom
         - nom_court
         - visible
@@ -21,18 +33,19 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les cursus.
+    comment: En phase de commission, les commissaires peuvent voir tous les parcours.
   - role: intervenant
     permission:
       columns:
         - id
+        - mention_id
         - nom
         - nom_court
         - visible
@@ -41,7 +54,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -50,4 +63,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les cursus visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les parcours visibles.

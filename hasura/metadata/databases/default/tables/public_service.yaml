@@ -1,6 +1,6 @@
 table:
   name: service
-  schema: ec
+  schema: public
 object_relationships:
   - name: anneeByAnnee
     using:
@@ -20,7 +20,7 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
@@ -41,7 +41,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:

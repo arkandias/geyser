@@ -1,44 +1,48 @@
 table:
-  name: type_demande
-  schema: ec
+  name: type_enseignement
+  schema: public
 array_relationships:
-  - name: demandes
+  - name: enseignements
     using:
       foreign_key_constraint_on:
         column: type
         table:
-          name: demande
-          schema: ec
+          name: enseignement
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - value
+        - coefficient
+        - label
+        - label_court
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les types de demande.
+    comment: En phase de commission, les commissaires peuvent voir tous les types d'enseignement.
   - role: intervenant
     permission:
       columns:
-        - value
+        - coefficient
+        - label
+        - label_court
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _neq: fermeture
               - en_cours:
                   _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types de demande.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types d'enseignement.

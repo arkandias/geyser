@@ -1,6 +1,6 @@
 table:
   name: demande
-  schema: ec
+  schema: public
 object_relationships:
   - name: enseignement
     using:
@@ -16,12 +16,12 @@ computed_fields:
     definition:
       function:
         name: heures_eqtd
-        schema: ec
+        schema: public
   - name: prioritaire
     definition:
       function:
         name: prioritaire
-        schema: ec
+        schema: public
 insert_permissions:
   - role: commissaire
     permission:
@@ -30,7 +30,7 @@ insert_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -56,7 +56,7 @@ insert_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -128,7 +128,7 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
@@ -153,7 +153,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -210,7 +210,7 @@ select_permissions:
               - _exists:
                   _table:
                     name: phase
-                    schema: ec
+                    schema: public
                   _where:
                     _and:
                       - value:
@@ -235,7 +235,7 @@ update_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -259,7 +259,7 @@ update_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -319,7 +319,7 @@ delete_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -340,7 +340,7 @@ delete_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:

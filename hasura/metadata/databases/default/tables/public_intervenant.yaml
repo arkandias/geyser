@@ -1,6 +1,6 @@
 table:
   name: intervenant
-  schema: ec
+  schema: public
 array_relationships:
   - name: demandes
     using:
@@ -8,42 +8,42 @@ array_relationships:
         column: uid
         table:
           name: demande
-          schema: ec
+          schema: public
   - name: messages
     using:
       foreign_key_constraint_on:
         column: uid
         table:
           name: message
-          schema: ec
+          schema: public
   - name: modifications_service
     using:
       foreign_key_constraint_on:
         column: uid
         table:
           name: modification_service
-          schema: ec
+          schema: public
   - name: priorites
     using:
       foreign_key_constraint_on:
         column: uid
         table:
           name: priorite
-          schema: ec
+          schema: public
   - name: responsables
     using:
       foreign_key_constraint_on:
         column: uid
         table:
           name: responsable
-          schema: ec
+          schema: public
   - name: services
     using:
       foreign_key_constraint_on:
         column: uid
         table:
           name: service
-          schema: ec
+          schema: public
 insert_permissions:
   - role: intervenant
     permission:
@@ -52,7 +52,7 @@ insert_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -84,7 +84,7 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
@@ -106,7 +106,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -134,7 +134,7 @@ update_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:

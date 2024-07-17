@@ -1,66 +1,67 @@
 table:
-  name: annee
-  schema: ec
+  name: mention
+  schema: public
+object_relationships:
+  - name: cursus
+    using:
+      foreign_key_constraint_on: cursus_id
 array_relationships:
   - name: enseignements
     using:
       foreign_key_constraint_on:
-        column: annee
+        column: mention_id
         table:
           name: enseignement
-          schema: ec
-  - name: messages
+          schema: public
+  - name: parcours
     using:
       foreign_key_constraint_on:
-        column: annee
+        column: mention_id
         table:
-          name: message
-          schema: ec
-  - name: modifications_service
+          name: parcours
+          schema: public
+  - name: responsables
     using:
       foreign_key_constraint_on:
-        column: annee
+        column: mention_id
         table:
-          name: modification_service
-          schema: ec
-  - name: services
-    using:
-      foreign_key_constraint_on:
-        column: annee
-        table:
-          name: service
-          schema: ec
+          name: responsable
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - en_cours
-        - value
+        - cursus_id
+        - id
+        - nom
+        - nom_court
         - visible
       filter:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les années.
+    comment: En phase de commission, les commissaires peuvent voir toutes les mentions.
   - role: intervenant
     permission:
       columns:
-        - en_cours
-        - value
+        - cursus_id
+        - id
+        - nom
+        - nom_court
         - visible
       filter:
         _and:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -69,4 +70,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les années visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les mentions visibles.

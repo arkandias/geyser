@@ -1,6 +1,6 @@
 table:
   name: enseignement
-  schema: ec
+  schema: public
 object_relationships:
   - name: anneeByAnnee
     using:
@@ -24,40 +24,40 @@ array_relationships:
         column: ens_id
         table:
           name: demande
-          schema: ec
+          schema: public
   - name: enfants
     using:
       foreign_key_constraint_on:
         column: parent_id
         table:
           name: enseignement
-          schema: ec
+          schema: public
   - name: priorites
     using:
       foreign_key_constraint_on:
         column: ens_id
         table:
           name: priorite
-          schema: ec
+          schema: public
   - name: responsables
     using:
       foreign_key_constraint_on:
         column: ens_id
         table:
           name: responsable
-          schema: ec
+          schema: public
 computed_fields:
   - name: groupes_corriges
     definition:
       function:
         name: groupes_corriges
-        schema: ec
+        schema: public
     comment: Le nombre de groupes ouverts, et à défaut le nombre de groupes.
   - name: heures_corrigees
     definition:
       function:
         name: heures_corrigees
-        schema: ec
+        schema: public
     comment: Le nombre d'heures d'enseignement ouvertes par groupe, et à défaut le nombre d'heures d'enseignement.
 select_permissions:
   - role: commissaire
@@ -87,7 +87,7 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
@@ -123,7 +123,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -179,7 +179,7 @@ update_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:

@@ -89,7 +89,7 @@ the root of the project.*
 
 #### SSL Certificates
 
-The SSL certificates must be placed in `ssl/certs`, see [here](ssl/certs/README.md).
+The SSL certificates must be placed in `certs/`, see [here](certs/README.md).
 
 ### Running Geyser
 

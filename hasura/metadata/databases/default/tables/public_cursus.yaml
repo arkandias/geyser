@@ -1,37 +1,18 @@
 table:
-  name: mention
-  schema: ec
-object_relationships:
-  - name: cursus
-    using:
-      foreign_key_constraint_on: cursus_id
+  name: cursus
+  schema: public
 array_relationships:
-  - name: enseignements
+  - name: mentions
     using:
       foreign_key_constraint_on:
-        column: mention_id
+        column: cursus_id
         table:
-          name: enseignement
-          schema: ec
-  - name: parcours
-    using:
-      foreign_key_constraint_on:
-        column: mention_id
-        table:
-          name: parcours
-          schema: ec
-  - name: responsables
-    using:
-      foreign_key_constraint_on:
-        column: mention_id
-        table:
-          name: responsable
-          schema: ec
+          name: mention
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - cursus_id
         - id
         - nom
         - nom_court
@@ -40,18 +21,17 @@ select_permissions:
         _exists:
           _table:
             name: phase
-            schema: ec
+            schema: public
           _where:
             _and:
               - value:
                   _eq: commission
               - en_cours:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les mentions.
+    comment: En phase de commission, les commissaires peuvent voir tous les cursus.
   - role: intervenant
     permission:
       columns:
-        - cursus_id
         - id
         - nom
         - nom_court
@@ -61,7 +41,7 @@ select_permissions:
           - _exists:
               _table:
                 name: phase
-                schema: ec
+                schema: public
               _where:
                 _and:
                   - value:
@@ -70,4 +50,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les mentions visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les cursus visibles.
