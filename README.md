@@ -2,19 +2,23 @@
 
 *Gestion des services prévisionnels*
 
-- [Geyser](#geyser)
-    - [Getting Started](#getting-started)
-        - [Installation](#installation)
-        - [Configuration](#configuration)
-            - [Environment Variables](#environment-variables)
-            - [SSL Certificates](#ssl-certificates)
-        - [Running Geyser](#running-geyser)
-    - [Components](#components)
-        - [Postgres](#postgres)
-        - [Hasura](#hasura)
-        - [Keycloak](#keycloak)
-    - [Contact](#contact)
-    - [License](#license)
+**Table of Contents**
+
+- [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Configuration](#configuration)
+        - [Environment Variables](#environment-variables)
+        - [SSL Certificates](#ssl-certificates)
+    - [Running Geyser](#running-geyser)
+- [Components](#components)
+    - [Geyser database](#geyser-database)
+    - [Hasura](#hasura-graphql-engine)
+    - [Keycloak](#keycloak)
+        - [Endpoints](#endpoints)
+    - [Keycloak database](#keycloak-database)
+    - [Nginx (production only)](#nginx-production-only)
+- [Contact](#contact)
+- [License](#license)
 
 ## Getting Started
 
@@ -72,9 +76,8 @@ The passwords/secrets that must be set (typically in `.env.local`):
 
 | Environment variable          | Explanation                                                           |
 |-------------------------------|-----------------------------------------------------------------------|
-| `POSTGRES_PASSWORD`           | Password for the role `postgres` in the database (superuser)          |
-| `KC_DB_PASSWORD`              | Password for the role `keycloak` in the database                      |
-| `HASURA_DB_PASSWORD`          | Password for the role `hasura` in the database                        |
+| `POSTGRES_PASSWORD`           | Password for the role `postgres` in the Geyser database (superuser)   |
+| `POSTGRES_KC_PASSWORD`        | Password for the role `postgres` in the Keycloak database (superuser) |
 | `KEYCLOAK_ADMIN_PASSWORD`     | Password for the initial admin user `admin` of the keycloak container |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | Admin secret for Hasura GraphQL Engine                                |
 
@@ -99,7 +102,9 @@ The script `scripts/geyser` provides the following commands:
 - `stop` to stop Geyser
 - `restart` to restart Geyser
 - `update` to update Geyser
-- `reset` to make a backup of the database and starts a fresh configuration
+- `reset` to starts a fresh configuration
+- `backup` to make a backup of the databases
+- `restore` to restore a backup of the databases
 
 Use these command with one of the following options:
 
@@ -110,18 +115,19 @@ Equivalently, you can set the environment variable `GEYSER_MODE` to `development
 
 ## Components
 
-### Postgres
+Here we list the various components of Geyser. Each component corresponds to a single Docker container.
 
-A PostgreSQL database named `geyser` contains the following schemas (among others):
+### Geyser database
 
-- `ec`: the web app data
-- `keycloak`: Keycloak data
-- `hdb_catalog`: Hasura metadata
+A PostgreSQL container is running as service `db`.
+It contains a database named `geyser`, which contains the data relative to Geyser in the `public` schema, and Hasura
+metadata in the `hdb_catalog` schema.
+This database is accessible on the host port `5432`.
 
-A script `scripts/db` gathers some handy commands to manage the database (dump, clean, restore, etc.).
+### Hasura (GraphQL Engine)
 
-### Hasura
-
+An Hasura container is running as service `hasura`.
+It is connected to the Geyser database and is used by the web client to make GraphQL queries.
 The GraphQL API is available at:
 
 - http://localhost:8090/v1/graphql in development mode
@@ -131,15 +137,16 @@ Hasura permissions are handled by giving users some of the following roles.
 
 In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
 
-| Role           | Explanations                                         |
-|----------------|------------------------------------------------------|
-| Intervenant    | The base user role with restricted permissions       |
-| Commissaire    | Some extra permissions during the "commission" phase |
-| Administrateur | The superuser role with all permissions              |
+| Role          | Explanations                                         |
+|---------------|------------------------------------------------------|
+| `intervenant` | The base user role with restricted permissions       |
+| `commissaire` | Some extra permissions during the "commission" phase |
+| `admin`       | The superuser role with all permissions              |
 
 ### Keycloak
 
-Keycloak manages the authentication and the roles of the Hasura users using JWT tokens.
+A Keycloak container is running as service `keycloak`.
+It manages the authentication and the roles of the Hasura users using JWT tokens.
 
 #### Endpoints
 
@@ -158,13 +165,16 @@ You can access this path using SSH Tunnel: if you connect with `ssh -L  8080:loc
 then `/auth/` can be reached at http://localhost:8080/auth/admin.
 In particular, the admin console is available at http://localhost:8080/auth/admin.
 
-#### Importing and exporting realms
+### Keycloak database
 
-See [here](./keycloak/data/import/README.md).
+A second PostgreSQL container is running as service `db_keycloak`.
+It contains a database named `keycloak` dedicated to the Keycloak instance.
+This database is accessible on the host port `5433`.
 
-#### Installing an extension
+### Nginx (production only)
 
-See [here](./keycloak/providers/README.md).
+In production, a custom Nginx container is running as service `web`.
+It is used as a reverse proxy, and serves the web client for the app.
 
 ## Contact
 
