@@ -10,11 +10,14 @@
 # Usage: geyser COMMAND [OPTIONS]
 # 
 # Commands:
+#   init        Initialize Geyser.
 #   start       Start Geyser containers.
 #   stop        Stop Geyser containers.
 #   restart     Restart Geyser containers (equivalent to stop then start).
 #   update      Update Geyser containers (pull new versions of the containers).
-#   reset       Make a copy of the database and start a fresh configuration.
+#   reset       Start a fresh configuration.
+#   backup      Backup the current configuration.
+#   restore     Restore a configuration among a list of backups.
 # 
 # Options:
 #   --dev       Specifies the development configuration.
@@ -55,7 +58,7 @@ ignore_extra_args () {
   shift
   local arg
   for arg in "$@"; do
-    echo "Warning: Extra command-line argument $arg ignored" >&2
+    echo "Warning: Extra command-line argument '$arg' ignored" >&2
     shift
   done
 }
@@ -98,7 +101,22 @@ wait_until_exit () {
 # Actions
 ignore_extra_args "$@"
 case $1 in
+  init)
+    "$GEYSER_DIR"/scripts/compose up -d
+    wait_until_healthy hasura
+    "$GEYSER_DIR"/scripts/hasura migrate apply --database-name default
+    "$GEYSER_DIR"/scripts/hasura seed apply --database-name default
+    "$GEYSER_DIR"/scripts/hasura metadata apply
+    ;;
   start)
+    if ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
+        echo "Volume 'geyser_data_keycloak' does not exists. You must initialize Geyser first"
+        exit 1
+    fi
+    if ! docker volume inspect geyser_data >/dev/null 2>&1; then
+        echo "Volume 'geyser_data' does not exists. You must initialize Geyser first"
+        exit 1
+    fi
     "$GEYSER_DIR"/scripts/compose up -d
     ;;
   stop)
@@ -113,38 +131,67 @@ case $1 in
     echo "Geyser has been updated. You must now restart Geyser for the updates to take effect"
     ;;
   reset)
-    # stop geyser
+    "$GEYSER_DIR"/scripts/compose down -v
+    echo "Geyser has been reset. You must now initialize Geyser"
+    ;;
+  backup)
+    date="$(date +%Y-%m-%d-%H-%M-%S)"
+    "$GEYSER_DIR"/scripts/kc_run export --dir "/opt/keycloak/data/backups/${date}/" --realm geyser
+    "$GEYSER_DIR"/scripts/compose exec -e PGPASSWORD=postgres_pwd db \
+    pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc -f "/backups/geyser_${date}.dump"
+    ;;
+  restore)
+    # Stop Geyser and enable nullglob
     "$GEYSER_DIR"/scripts/compose down
-    # create keycloak import dir and set correct permissions
-    mkdir -p "$GEYSER_DIR"/keycloak/data/import
-    chmod 777 "$GEYSER_DIR"/keycloak/data/import
-    find "$GEYSER_DIR"/keycloak/data/import -maxdepth 1 -type f -print0 | xargs -0 chmod 666
-    # start postgres, reset database, and stop
-    "$GEYSER_DIR"/scripts/compose up -d postgres
-    wait_until_healthy postgres
-    "$GEYSER_DIR"/scripts/db dump
-    "$GEYSER_DIR"/scripts/db clean
-    "$GEYSER_DIR"/scripts/db init
-    "$GEYSER_DIR"/scripts/compose down
-    # start keycloak, import realm, and stop
-    if [ "$GEYSER_MODE" == "development" ]; then
-      source "$GEYSER_DIR"/.env.dev
-      FRONTEND_URL="http://${FRONTEND_HOST}"
-    elif [ "$GEYSER_MODE" == "production" ]; then
-      source "$GEYSER_DIR"/.env.prod
-      FRONTEND_URL="https://${FRONTEND_HOST}"
+    shopt -s nullglob
+    # Keycloak
+    dir_paths=("$GEYSER_DIR"/keycloak/backups/*/)
+    if [[ ${#dir_paths[@]} -eq 0 ]]; then
+      echo "No backup found. Skipping"
+    else
+      dir_names=()
+      for path in "${dir_paths[@]}"; do
+        dir_names+=("$(basename "${path%/}")")
+      done
+      echo "Choose a backup for Keycloak (enter 0 to skip):"
+      select name in "${dir_names[@]}"; do
+        if [ -n "$name" ]; then
+          "$GEYSER_DIR"/scripts/kc_run import --dir /opt/keycloak/data/backups/"$name"/
+          break
+        else
+          echo "No backup selected. Skipping"
+          break
+        fi
+      done
     fi
-    sed "s|\${FRONTEND_URL}|$FRONTEND_URL|g" keycloak/data/import/templates/master-realm.json > keycloak/data/import/templates/master-realm-tmp.json
-    "$GEYSER_DIR"/scripts/kc_run "import --file /opt/keycloak/data/import/templates/master-realm-tmp.json"
-    wait_until_exit keycloak
-    "$GEYSER_DIR"/scripts/compose down
-    rm keycloak/data/import/templates/master-realm-tmp.json
-    # start geyser and apply hasura metadata
+    # Geyser
+    file_paths=("$GEYSER_DIR"/backups/geyser_*.dump)
+    if [[ ${#file_paths[@]} -eq 0 ]]; then
+      echo "No backup found. Skipping"
+    else
+      file_names=()
+      for path in "${file_paths[@]}"; do
+        file_names+=("$(basename "${path%/}")")
+      done
+      echo "Choose a backup for Geyser (enter 0 to skip):"
+      select name in "${file_names[@]}"; do
+       if [ -n "$name" ]; then
+         "$GEYSER_DIR"/scripts/compose up -d db
+         wait_until_healthy db
+         "$GEYSER_DIR"/scripts/compose exec -e PGPASSWORD=postgres_pwd db \
+         pg_restore -U postgres -h localhost -p 5432 -d geyser --clean --if-exists -1 /backups/"$name"
+         break
+       else
+         echo "No backup selected. Skipping"
+         break
+       fi
+      done
+    fi
+    # Disable nullglob and restart Geyser
+    shopt -u nullglob
     "$GEYSER_DIR"/scripts/compose up -d
-    wait_until_healthy hasura
-    "$GEYSER_DIR"/scripts/hasura metadata apply
     ;;
   *)
-    echo "Usage: geyser {start|stop|restart|update|reset}"
+    echo "Usage: geyser {init|start|stop|restart|update|reset|save|restore}"
     ;;
 esac

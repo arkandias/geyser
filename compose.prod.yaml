@@ -1,6 +1,6 @@
 services:
 
-  postgres:
+  db_keycloak:
     restart: always
 
   keycloak:
@@ -12,13 +12,17 @@ services:
       - KC_HOSTNAME_ADMIN=http://localhost:8080/auth
       - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/fullchain.cer
       - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/private.key
+      - FRONTEND_URL=https://${FRONTEND_HOST}
     ports:
       - "8443:8443"
     networks:
       - frontend
     volumes:
       - ./certs:/opt/keycloak/certs:ro
-    command: ${KC_CMD:-start --optimized}
+    command: ${KC_CMD:-start --optimized --import-realm}
+  
+  db:
+    restart: always
 
   hasura:
     restart: always

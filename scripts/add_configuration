@@ -5,13 +5,12 @@
 # Distributed under the GNU Affero General Public License, version 3.          #
 ################################################################################
 
-# This script adds Geyser and related environment variables, along with useful
-# Docker compose and Hasura aliases, to the configuration file of the detected
-# shell (either Bash or Zsh). The additional configurations are designed to
-# simplify various operations to administrate and develop Geyser. It must be
-# sourced using an interactive shell.
+# This script is intended to be sourced using an interactive shell. It adds some
+# environment variables along with some useful aliases to the configuration file
+# of the detected shell (either Bash or Zsh). These configurations are designed
+# to simplify various operations to administrate Geyser.
 
-# Add configuration to the interactive shell initialization file
+# Detect current shell
 if [ -n "$BASH_VERSION" ]; then
   echo "Shell detected: Bash"
   config_file="$HOME/.bashrc"

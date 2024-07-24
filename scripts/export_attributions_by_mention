@@ -25,12 +25,12 @@ for arg in "$@"; do
   shift
 done
 
-mkdir -p "$GEYSER_DIR"/exports
+mkdir -p "$GEYSER_DIR"/attributions_by_mention
 
 query_mention_ids=$(cat <<-EOSQL
 	SELECT DISTINCT e.mention_id
-	FROM ec.enseignement e
-			JOIN ec.demande d ON e.id = d.ens_id
+	FROM enseignement e
+			JOIN demande d ON e.id = d.ens_id
 	WHERE e.annee = ${annee} AND d.type = 'attribution'
 	ORDER BY e.mention_id;
 EOSQL
@@ -41,8 +41,8 @@ IFS=$'\n' read -r -d '' -a mention_ids < <(psql -U postgres -h localhost -p 5432
 for mention_id in "${mention_ids[@]}"; do
   mention_name=$(psql -U postgres -h localhost -p 5432 -d geyser -P format=unaligne -P tuples_only <<-EOSQL
 		SELECT c.nom || ' ' || coalesce(m.nom_court, m.nom)
-			FROM ec.mention m
-					JOIN ec.cursus c ON m.cursus_id = c.id
+			FROM mention m
+					JOIN cursus c ON m.cursus_id = c.id
     	WHERE m.id = ${mention_id};
 	EOSQL
 	)
@@ -50,13 +50,13 @@ for mention_id in "${mention_ids[@]}"; do
   filename="${annee}_${mention_name_formatted}"
   query_attributions=$(cat <<-EOSQL
 		SELECT p.nom as parcours, e.semestre, e.nom as enseignement, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
-		FROM ec.demande d
-				JOIN ec.intervenant i ON d.uid = i.uid
-				JOIN ec.enseignement e ON d.ens_id = e.id
-				LEFT JOIN ec.parcours p ON e.parcours_id = p.id
+		FROM demande d
+				JOIN intervenant i ON d.uid = i.uid
+				JOIN enseignement e ON d.ens_id = e.id
+				LEFT JOIN parcours p ON e.parcours_id = p.id
 		WHERE e.annee = ${annee} AND d.type = 'attribution' AND e.mention_id = ${mention_id}
 		ORDER BY p.nom, e.semestre, e.nom, e.type, i.nom, i.prenom
 	EOSQL
   )
-  psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/exports/${filename}.csv"
+  psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/attributions_by_mention/${filename}.csv"
 done

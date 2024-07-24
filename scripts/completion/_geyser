@@ -18,6 +18,8 @@ _geyser_commands() {
     'restart:Restart the Geyser service'
     'update:Update the Geyser service'
     'reset:Reset the Geyser service'
+    'backup:Backup the current configuration'
+    'restore:Restore a configuration among a list of backups'
   )
   _describe -t commands 'geyser commands' commands
 }

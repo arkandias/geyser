@@ -23,7 +23,7 @@ services:
     networks:
       - backend
     volumes:
-      - postgres_kc_data:/var/lib/postgresql/data
+      - data_keycloak:/var/lib/postgresql/data
 
   keycloak:
     build: ./keycloak
@@ -45,14 +45,15 @@ services:
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=$POSTGRES_KC_PASSWORD
       - KC_DB_SCHEMA=public
+      - FRONTEND_URL=http://${FRONTEND_HOST}
     ports:
       - "8080:8080"
     networks:
       - backend
     volumes:
-      - ./keycloak/data/import:/opt/keycloak/data/import
-      - ./keycloak/data/import/templates:/opt/keycloak/data/import/templates:ro
-    command: ${KC_CMD:-start-dev}
+      - ./keycloak/templates:/opt/keycloak/data/import:ro
+      - ./keycloak/backups:/opt/keycloak/data/backups
+    command: ${KC_CMD:-start-dev --import-realm}
 
   db:
     image: postgres:16
@@ -75,7 +76,8 @@ services:
     networks:
       - backend
     volumes:
-      - postgres_data:/var/lib/postgresql/data
+      - data:/var/lib/postgresql/data
+      - ./backups:/backups
 
   hasura:
     image: hasura/graphql-engine:latest
@@ -95,7 +97,7 @@ services:
     environment:
       - HASURA_GRAPHQL_ADMIN_SECRET
       - HASURA_GRAPHQL_DATABASE_URL=postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser
-      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8080/realms/master/protocol/openid-connect/certs"}
+      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8080/realms/geyser/protocol/openid-connect/certs"}
       - HASURA_GRAPHQL_CORS_DOMAIN=*
       - HASURA_GRAPHQL_ENABLE_CONSOLE=true
     ports:
@@ -107,5 +109,5 @@ networks:
   backend:
 
 volumes:
-  postgres_kc_data:
-  postgres_data:
+  data_keycloak:
+  data:
