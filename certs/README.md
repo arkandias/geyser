@@ -1,6 +1,7 @@
 # SSL certificates
 
-In order to deploy Geyser in a production environment, the following files must be placed in this directory:
+In order to deploy Geyser in a production environment, the following files must be placed in a subdirectory with the
+name of the frontend host (defined by the environment variable `FRONTEND_HOST`):
 
 - `fullchain.cer` containing the SSL certificate(s)
 - `private.key` containing the private key

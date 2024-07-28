@@ -9,13 +9,14 @@ server {
     listen 443 ssl;
     server_name ${FRONTEND_HOST};
 
-    ssl_certificate /etc/nginx/certs/fullchain.cer;
-    ssl_certificate_key /etc/nginx/certs/private.key;
+    ssl_certificate /etc/nginx/certs/${FRONTEND_HOST}/fullchain.cer;
+    ssl_certificate_key /etc/nginx/certs/${FRONTEND_HOST}/private.key;
 
     # Keycloak
     location /auth/js/ {
         proxy_pass https://keycloak:8443/js/;
         proxy_set_header Host $host;
+        # X-Forwarded headers
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
@@ -25,6 +26,7 @@ server {
     location /auth/realms/ {
         proxy_pass https://keycloak:8443/realms/;
         proxy_set_header Host $host;
+        # X-Forwarded headers
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
@@ -34,6 +36,7 @@ server {
     location /auth/resources/ {
         proxy_pass https://keycloak:8443/resources/;
         proxy_set_header Host $host;
+        # X-Forwarded headers
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
@@ -44,10 +47,12 @@ server {
     # Hasura
     location /graphql {
         proxy_pass http://hasura:8080/v1/graphql;
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
         proxy_set_header Host $host;
+        # these 3 lines are necessary to handle WebSocket connections
+        proxy_http_version 1.1;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Upgrade $http_upgrade;
+        # X-Forwarded headers
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto $scheme;
         proxy_set_header X-Forwarded-Host $host;
@@ -61,23 +66,5 @@ server {
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;
-    }
-}
-
-# Restricted to localhost (use SSH tunnel)
-server {
-    listen 80;
-    server_name localhost;
-    allow 172.21.0.1; # Docker network host
-    deny all;
-
-    location /auth/ {
-        proxy_pass http://keycloak:8080/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-        proxy_set_header X-Forwarded-Host $host;
-        proxy_set_header X-Forwarded-Port $server_port;
-        proxy_set_header X-Forwarded-Prefix /auth;
     }
 }

@@ -7,11 +7,10 @@ services:
     restart: ${KC_RESTART:-always}
     environment:
       - KC_HTTP_ENABLED=true
-      - KC_PROXY_HEADERS=xforwarded
       - KC_HOSTNAME=https://${FRONTEND_HOST}/auth
-      - KC_HOSTNAME_ADMIN=http://localhost:8080/auth
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/fullchain.cer
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/private.key
+      - KC_HOSTNAME_ADMIN=http://localhost:8080
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${FRONTEND_HOST}/fullchain.cer
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${FRONTEND_HOST}/private.key
       - FRONTEND_URL=https://${FRONTEND_HOST}
     ports:
       - "8443:8443"
@@ -62,6 +61,3 @@ services:
 
 networks:
   frontend:
-    ipam:
-      config:
-        - subnet: 172.21.0.0/16

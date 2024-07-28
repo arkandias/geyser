@@ -14,7 +14,7 @@
 #   start       Start Geyser containers.
 #   stop        Stop Geyser containers.
 #   restart     Restart Geyser containers (equivalent to stop then start).
-#   update      Update Geyser containers (pull new versions of the containers).
+#   update      Update Geyser containers (pull and build images).
 #   reset       Start a fresh configuration.
 #   backup      Backup the current configuration.
 #   restore     Restore a configuration among a list of backups.
@@ -102,6 +102,10 @@ wait_until_exit () {
 ignore_extra_args "$@"
 case $1 in
   init)
+    "$GEYSER_DIR"/scripts/compose up -d keycloak
+    wait_until_healthy keycloak
+    "$GEYSER_DIR"/scripts/kcadm --login
+    "$GEYSER_DIR"/scripts/kcadm update realms/master -s attributes.frontendUrl=http://localhost:8080
     "$GEYSER_DIR"/scripts/compose up -d
     wait_until_healthy hasura
     "$GEYSER_DIR"/scripts/hasura migrate apply --database-name default
@@ -128,7 +132,8 @@ case $1 in
     ;;
   update)
     "$GEYSER_DIR"/scripts/compose pull
-    echo "Geyser has been updated. You must now restart Geyser for the updates to take effect"
+    "$GEYSER_DIR"/scripts/compose build
+    echo "Geyser has been updated. You must now restart Geyser"
     ;;
   reset)
     "$GEYSER_DIR"/scripts/compose down -v

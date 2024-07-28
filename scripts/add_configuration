@@ -34,13 +34,11 @@ while true; do
   printf "Your choice: "
   read -r choice
   case $choice in
-    1) echo "You chose Development";
-      GEYSER_MODE=development
+    1) GEYSER_MODE=development
       # shellcheck disable=SC2016
       gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
       break;;
-    2) echo "You chose Production/Staging";
-      GEYSER_MODE=production
+    2) GEYSER_MODE=production
       # shellcheck disable=SC2016
       gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
       break;;
