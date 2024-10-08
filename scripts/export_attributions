@@ -1,0 +1,40 @@
+#!/bin/bash
+################################################################################
+# Copyright (c) 2024 Julien Hauseux.                                           #
+# This file is part of Geyser.                                                 #
+# Distributed under the GNU Affero General Public License, version 3.          #
+################################################################################
+
+# This script exports the attributions of a given year into multiple CSV files,
+# one per mention.
+
+: "${GEYSER_DIR:=$(dirname "$0")/..}"
+
+source "$GEYSER_DIR"/.env.local
+export PGPASSWORD="$POSTGRES_PASSWORD"
+
+if [[ -z "$1" ]]; then
+  echo "You must provide the year for the exports" >&2
+  exit 1
+fi
+
+annee="$1"
+shift
+for arg in "$@"; do
+  echo "Warning: Extra command-line argument $arg ignored" >&2
+  shift
+done
+
+mkdir -p "$GEYSER_DIR"/attributions
+filename="${annee}"
+query_attributions=$(cat <<-EOSQL
+  SELECT p.nom as parcours, e.semestre, e.nom as enseignement, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
+  FROM demande d
+      JOIN intervenant i ON d.uid = i.uid
+      JOIN enseignement e ON d.ens_id = e.id
+      LEFT JOIN parcours p ON e.parcours_id = p.id
+  WHERE e.annee = ${annee} AND d.type = 'attribution'
+  ORDER BY p.nom, e.semestre, e.nom, e.type, i.nom, i.prenom
+EOSQL
+)
+psql -U postgres -h localhost -p 5432 -d geyser -c "COPY (${query_attributions}) TO STDOUT WITH CSV HEADER" > "${GEYSER_DIR}/attributions/${filename}.csv"
