@@ -120,7 +120,7 @@ select_permissions:
         - select_by_pk
       subscription_root_fields:
         - select_by_pk
-    comment: Lorsque Geyser est ouvert, les commissaires peuvent voir tous les intervenants visibles.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les intervenants visibles en les sélectionnant un à un.
 update_permissions:
   - role: intervenant
     permission:
@@ -128,7 +128,7 @@ update_permissions:
         - nom
         - prenom
         - uid
-      filter: {}
+      filter: { }
       check:
         _and:
           - _exists:
