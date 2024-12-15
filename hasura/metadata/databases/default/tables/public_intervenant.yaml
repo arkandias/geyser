@@ -78,6 +78,7 @@ select_permissions:
         - alias
         - nom
         - prenom
+        - service
         - uid
         - visible
       filter:
@@ -99,6 +100,7 @@ select_permissions:
         - alias
         - nom
         - prenom
+        - service
         - uid
         - visible
       filter:
@@ -115,7 +117,6 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-      limit: 1
       query_root_fields:
         - select_by_pk
       subscription_root_fields:
@@ -128,8 +129,7 @@ update_permissions:
         - nom
         - prenom
         - uid
-      filter: { }
-      check:
+      filter:
         _and:
           - _exists:
               _table:
@@ -147,4 +147,5 @@ update_permissions:
               _eq: X-Hasura-Last-Name
           - prenom:
               _eq: X-Hasura-First-Name
+      check: null
     comment: Lorsque Geyser est ouvert, les intervenants peuvent mettre à jour leur propre profil.

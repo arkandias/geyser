@@ -18,7 +18,5 @@ select_permissions:
         - en_cours
         - value
         - visible
-      filter:
-        visible:
-          _eq: true
-    comment: Les intervenants peuvent voir toutes les phases visibles.
+      filter: {}
+    comment: Les intervenants peuvent voir toutes les phases.
