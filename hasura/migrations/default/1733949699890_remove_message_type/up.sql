@@ -9,11 +9,7 @@ FROM message
 WHERE type != 'message_intervenant';
 
 ALTER TABLE message
-    DROP CONSTRAINT message_annee_uid_type_key,
-    DROP CONSTRAINT message_type_fkey,
-    DROP COLUMN type;
+    DROP COLUMN type,
+    ADD UNIQUE (annee, uid);
 
 DROP TABLE type_message;
-
-ALTER TABLE message
-    ADD CONSTRAINT message_annee_uid_key UNIQUE (annee, uid);

@@ -1,6 +1,6 @@
 ALTER TABLE modification_service
-    ADD COLUMN annee integer REFERENCES annee,
-    ADD COLUMN uid   text REFERENCES intervenant;
+    ADD COLUMN annee integer REFERENCES annee ON UPDATE CASCADE,
+    ADD COLUMN uid   text REFERENCES intervenant ON UPDATE CASCADE;
 
 WITH cte AS (SELECT m.id AS id, intervenant.uid AS uid, s.annee AS annee
              FROM modification_service m

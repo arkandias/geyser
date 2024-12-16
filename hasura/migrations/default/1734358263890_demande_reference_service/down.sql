@@ -1,7 +1,7 @@
 ALTER TABLE demande
-    ADD COLUMN uid text REFERENCES intervenant;
+    ADD COLUMN uid text REFERENCES intervenant ON UPDATE CASCADE;
 ALTER TABLE demande
-    ADD CONSTRAINT demande_ens_id_uid_type_key UNIQUE (ens_id, uid, type);
+    ADD UNIQUE (uid, ens_id, type);
 
 WITH cte AS (SELECT d.id AS demande_id, s.uid AS service_uid
              FROM demande d

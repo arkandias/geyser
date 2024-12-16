@@ -1,5 +1,5 @@
 ALTER TABLE modification_service
-    ADD COLUMN service_id integer REFERENCES service;
+    ADD COLUMN service_id integer REFERENCES service ON UPDATE CASCADE;
 
 WITH cte AS (SELECT m.id AS id, s.id AS service_id
              FROM modification_service m

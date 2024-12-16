@@ -20,10 +20,9 @@ VALUES ('message_intervenant',
         'Note visible uniquement par les membres de la commission des services et contenant des informations utiles à son travail.');
 
 ALTER TABLE message
-    ADD COLUMN type text NOT NULL DEFAULT 'message_intervenant';
+    DROP CONSTRAINT message_annee_uid_key,
+    ADD COLUMN type text NOT NULL DEFAULT 'message_intervenant' REFERENCES type_message ON UPDATE CASCADE;
 
 ALTER TABLE message
     ALTER COLUMN type DROP DEFAULT,
-    ADD FOREIGN KEY (type) REFERENCES type_message (value) ON UPDATE CASCADE,
-    ADD UNIQUE (annee, uid, type),
-    DROP CONSTRAINT message_annee_uid_key;
+    ADD UNIQUE (annee, uid, type);

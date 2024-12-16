@@ -19,9 +19,9 @@ WHERE NOT exists (SELECT 1
                     AND e.annee = s.annee);
 
 ALTER TABLE demande
-    ADD COLUMN service_id integer REFERENCES service;
+    ADD COLUMN service_id integer REFERENCES service ON UPDATE CASCADE;
 ALTER TABLE demande
-    ADD CONSTRAINT demande_ens_id_service_id_type_key UNIQUE (ens_id, service_id, type);
+    ADD UNIQUE (service_id, ens_id, type);
 
 CREATE OR REPLACE FUNCTION check_demande_annee() RETURNS trigger AS
 $$
