@@ -2,7 +2,7 @@ table:
   name: type_modification
   schema: public
 array_relationships:
-  - name: modifications_service
+  - name: modifications
     using:
       foreign_key_constraint_on:
         column: type

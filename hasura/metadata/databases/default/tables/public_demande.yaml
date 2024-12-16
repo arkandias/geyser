@@ -8,7 +8,7 @@ object_relationships:
   - name: service
     using:
       foreign_key_constraint_on: service_id
-  - name: type_demande
+  - name: typeByType
     using:
       foreign_key_constraint_on: type
 computed_fields:

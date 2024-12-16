@@ -5,7 +5,7 @@ object_relationships:
   - name: service
     using:
       foreign_key_constraint_on: service_id
-  - name: type_modification
+  - name: typeByType
     using:
       foreign_key_constraint_on: type
 insert_permissions:
