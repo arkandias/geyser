@@ -2,13 +2,6 @@ table:
   name: intervenant
   schema: public
 array_relationships:
-  - name: messages
-    using:
-      foreign_key_constraint_on:
-        column: uid
-        table:
-          name: message
-          schema: public
   - name: priorites
     using:
       foreign_key_constraint_on:
