@@ -2,12 +2,9 @@ table:
   name: modification_service
   schema: public
 object_relationships:
-  - name: anneeByAnnee
+  - name: service
     using:
-      foreign_key_constraint_on: annee
-  - name: intervenant
-    using:
-      foreign_key_constraint_on: uid
+      foreign_key_constraint_on: service_id
   - name: type_modification
     using:
       foreign_key_constraint_on: type
@@ -26,26 +23,26 @@ insert_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - anneeByAnnee:
-              en_cours:
-                _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
       columns:
-        - annee
         - heures_eqtd
+        - service_id
         - type
-        - uid
     comment: En phase de voeux, les intervenants peuvent créer des modifications de service pour l'année en cours.
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - annee
         - id
         - heures_eqtd
+        - service_id
         - type
-        - uid
       filter:
         _exists:
           _table:
@@ -62,11 +59,10 @@ select_permissions:
   - role: intervenant
     permission:
       columns:
-        - annee
         - id
         - heures_eqtd
+        - service_id
         - type
-        - uid
       filter:
         _and:
           - _exists:
@@ -79,11 +75,13 @@ select_permissions:
                       _neq: fermeture
                   - en_cours:
                       _eq: true
-          - anneeByAnnee:
-              visible:
-                _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              anneeByAnnee:
+                visible:
+                  _eq: true
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
       allow_aggregations: true
     comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs modifications de service pour toutes les années visibles.
 update_permissions:
@@ -104,11 +102,13 @@ update_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - anneeByAnnee:
-              en_cours:
-                _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
       check: null
     comment: En phase de voeux, les intervenants peuvent modifier le nombre d'heures et le type de leurs modifications de service pour l'année en cours.
 delete_permissions:
@@ -126,9 +126,11 @@ delete_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - anneeByAnnee:
-              en_cours:
-                _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              anneeByAnnee:
+                en_cours:
+                  _eq: true
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
     comment: En phase de voeux, les intervenants peuvent supprimer leurs modifications de service pour l'année en cours.

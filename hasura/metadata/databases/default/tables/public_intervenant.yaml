@@ -9,13 +9,6 @@ array_relationships:
         table:
           name: message
           schema: public
-  - name: modifications_service
-    using:
-      foreign_key_constraint_on:
-        column: uid
-        table:
-          name: modification_service
-          schema: public
   - name: priorites
     using:
       foreign_key_constraint_on:

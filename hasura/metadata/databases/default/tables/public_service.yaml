@@ -16,6 +16,13 @@ array_relationships:
         table:
           name: demande
           schema: public
+  - name: modifications
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: modification_service
+          schema: public
 select_permissions:
   - role: commissaire
     permission:
