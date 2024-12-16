@@ -21,13 +21,8 @@ VALUES ('Autre', 'Tout autre type de modification'),
        ('Délégation', 'Délégation auprès d''un institut de recherche'),
        ('Décharge', 'Décharge d''enseignement pour une responsabilité'),
        ('Départ', 'Service partiel en cas de départ en cours d''année'),
-       ('Enseignements extérieurs', 'Déduction des heures d''enseignement hors Geyser');
-
-INSERT INTO type_message(value, description)
-VALUES ('message_intervenant',
-        'Message à l''attention de la commission des services et visible par elle seule pour lui signaler toute information utile.'),
-       ('note_commission',
-        'Note visible uniquement par les membres de la commission des services et contenant des informations utiles à son travail.');
+       ('Enseignements extérieurs', 'Déduction des heures d''enseignement hors Geyser'),
+       ('Temps partiel', 'Service à temps partiel');
 
 INSERT INTO type_demande(value, description)
 VALUES ('attribution', 'Attribution d''un enseignement à un intervenant par la commission des services.'),
