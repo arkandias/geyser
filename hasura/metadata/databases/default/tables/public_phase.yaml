@@ -5,10 +5,9 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - en_cours
-        - visible
-        - value
         - description
+        - en_cours
+        - value
       filter: {}
     comment: Les commissaires peuvent voir toutes les phases.
   - role: intervenant
@@ -17,6 +16,5 @@ select_permissions:
         - description
         - en_cours
         - value
-        - visible
       filter: {}
     comment: Les intervenants peuvent voir toutes les phases.

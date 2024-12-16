@@ -8,7 +8,6 @@ DELETE
 FROM message
 WHERE type != 'message_intervenant';
 
-
 ALTER TABLE message
     DROP CONSTRAINT message_annee_uid_type_key,
     DROP CONSTRAINT message_type_fkey,
