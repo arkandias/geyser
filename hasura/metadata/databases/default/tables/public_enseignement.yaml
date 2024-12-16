@@ -159,13 +159,15 @@ select_permissions:
                     uid:
                       _eq: X-Hasura-User-Id
               - demandes:
-                  uid:
-                    _eq: X-Hasura-User-Id
+                  service:
+                    uid:
+                      _eq: X-Hasura-User-Id
               - parent:
                   demandes:
                     _and:
-                      - uid:
-                          _eq: X-Hasura-User-Id
+                      - service:
+                          uid:
+                            _eq: X-Hasura-User-Id
                       - type:
                           _eq: attribution
     comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir : 1) les enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) les enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) les enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 4) les enseignements dont les enseignements parents leur ont été attribués.'

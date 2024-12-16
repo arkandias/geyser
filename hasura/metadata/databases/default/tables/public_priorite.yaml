@@ -86,13 +86,15 @@ select_permissions:
                             - visible:
                                 _eq: true
                         - demandes:
-                            uid:
-                              _eq: X-Hasura-User-Id
+                            service:
+                              uid:
+                                _eq: X-Hasura-User-Id
                         - parent:
                             demandes:
                               _and:
-                                - uid:
-                                    _eq: X-Hasura-User-Id
+                                - service:
+                                    uid:
+                                      _eq: X-Hasura-User-Id
                                 - type:
                                     _eq: attribution
     comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 3) des enseignements dont les enseignements parents leur ont été attribués. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les priorités pour cet enseignement.'
