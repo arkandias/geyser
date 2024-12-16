@@ -117,11 +117,7 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-      query_root_fields:
-        - select_by_pk
-      subscription_root_fields:
-        - select_by_pk
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les intervenants visibles en les sélectionnant un à un.
+    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les intervenants visibles.
 update_permissions:
   - role: intervenant
     permission:
