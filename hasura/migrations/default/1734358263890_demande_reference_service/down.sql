@@ -28,3 +28,12 @@ ALTER TABLE service
     ALTER COLUMN heures_eqtd SET DEFAULT 192;
 ALTER TABLE service
     ADD CONSTRAINT service_heures_eqtd_check CHECK (heures_eqtd > 0);
+
+CREATE OR REPLACE FUNCTION prioritaire(demande_row demande) RETURNS boolean AS
+$$
+SELECT prioritaire
+FROM priorite
+WHERE uid = demande_row.uid
+  AND ens_id = demande_row.ens_id;
+$$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION prioritaire(demande) IS 'Fonction qui indique, pour une demande donnée, si celle-ci est prioritaire.';

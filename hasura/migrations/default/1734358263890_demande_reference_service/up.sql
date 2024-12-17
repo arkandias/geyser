@@ -79,3 +79,13 @@ ALTER TABLE demande
 
 ALTER TABLE demande
     DROP COLUMN uid;
+
+CREATE OR REPLACE FUNCTION prioritaire(demande_row demande) RETURNS boolean AS
+$$
+SELECT p.prioritaire
+FROM priorite p
+         JOIN service s ON s.id = demande_row.service_id
+WHERE p.uid = s.uid
+  AND p.ens_id = demande_row.ens_id;
+$$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION prioritaire(demande) IS 'Fonction qui indique, pour une demande donnée, si celle-ci est prioritaire.';
