@@ -16,6 +16,9 @@ ALTER TABLE demande
 
 DROP TRIGGER IF EXISTS check_demande_annee ON demande;
 DROP FUNCTION IF EXISTS check_demande_annee();
+COMMENT ON TRIGGER check_parent_annee ON enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute insertion d''un enseignement et toute mise à jour des valeurs de parent_id ou annee d''un enseignement.';
+COMMENT ON TRIGGER check_enfant_annee ON enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute mise à jour de la valeur de annee d''un enseignement.';
+COMMENT ON TRIGGER check_mention_parcours ON enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement et toute mise à jour des valeurs de mention_id ou parcours_id d''un enseignement.';
 
 ALTER TABLE demande
     DROP COLUMN service_id;

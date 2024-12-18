@@ -63,7 +63,7 @@ COMMENT ON TRIGGER check_demande_annee ON demande IS 'Trigger qui exécute la fo
 -- For consistency
 COMMENT ON TRIGGER check_parent_annee ON enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute insertion d''un enseignement ou mise à jour des colonnes parent_id ou annee.';
 COMMENT ON TRIGGER check_enfant_annee ON enseignement IS 'Trigger qui exécute la fonction check_parent_annee() avant toute mise à jour de la colonne annee d''un enseignement.';
-COMMENT ON TRIGGER check_parent_annee ON enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement ou mise à jour des colonnes mention_id ou parcours_id.';
+COMMENT ON TRIGGER check_mention_parcours ON enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement ou mise à jour des colonnes mention_id ou parcours_id.';
 
 WITH cte AS (SELECT d.id AS demande_id, s.id AS service_id
              FROM demande d

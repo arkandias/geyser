@@ -311,7 +311,7 @@ CREATE TRIGGER check_mention_parcours
     ON enseignement
     FOR EACH ROW
 EXECUTE PROCEDURE check_mention_parcours();
-COMMENT ON TRIGGER check_parent_annee ON enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement et toute mise à jour des valeurs de mention_id ou parcours_id d''un enseignement.';
+COMMENT ON TRIGGER check_mention_parcours ON enseignement IS 'Trigger qui exécute la fonction check_mention_parcours() avant toute insertion d''un enseignement et toute mise à jour des valeurs de mention_id ou parcours_id d''un enseignement.';
 
 --
 -- Tables relatives aux demandes
