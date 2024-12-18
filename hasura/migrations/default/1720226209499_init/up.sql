@@ -54,10 +54,10 @@ COMMENT ON TABLE intervenant IS 'Table contenant les intervenants.';
 COMMENT ON COLUMN intervenant.uid IS 'L''identifiant unique de l''intervenant.';
 COMMENT ON COLUMN intervenant.nom IS 'Le nom de l''intervenant.';
 COMMENT ON COLUMN intervenant.prenom IS 'Le prénom de l''intervenant.';
-COMMENT ON COLUMN intervenant.alias IS 'Un alias pour l''intervenant (optionnel).';
+COMMENT ON COLUMN intervenant.alias IS 'Un alias pour l''intervenant à afficher à la place du nom et prénom (optionnel).';
 COMMENT ON COLUMN intervenant.service IS 'Le service de base en heures EQTD de l''intervenant (optionnel).';
-COMMENT ON COLUMN intervenant.visible IS 'Indique si l''intervenant correspondant est visible par les utilisateurs.';
-COMMENT ON COLUMN intervenant.actif IS 'Indique si l''intervenant correspondant est actif, c''est-à-dire s''il intervient dans l''année en cours.';
+COMMENT ON COLUMN intervenant.visible IS 'Indique si l''intervenant est visible par les utilisateurs.';
+COMMENT ON COLUMN intervenant.actif IS 'Indique si un service doit être automatiquement créé pour l''intervenant lors de la prochaine année.';
 
 CREATE TABLE IF NOT EXISTS service
 (

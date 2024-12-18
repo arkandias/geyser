@@ -1,5 +1,6 @@
 ALTER TABLE modification_service
     ADD COLUMN service_id integer REFERENCES service ON UPDATE CASCADE;
+COMMENT ON COLUMN modification_service.service_id IS 'L''identifiant du service modifié.';
 
 WITH cte AS (SELECT m.id AS id, s.id AS service_id
              FROM modification_service m
