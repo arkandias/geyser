@@ -2,6 +2,20 @@ table:
   name: intervenant
   schema: public
 array_relationships:
+  - name: demandes
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: demande
+          schema: public
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: message
+          schema: public
   - name: priorites
     using:
       foreign_key_constraint_on:
@@ -57,7 +71,7 @@ select_permissions:
         - alias
         - nom
         - prenom
-        - service
+        - heures_eqtd_service_base
         - uid
         - visible
       filter:
@@ -79,7 +93,7 @@ select_permissions:
         - alias
         - nom
         - prenom
-        - service
+        - heures_eqtd_service_base
         - uid
         - visible
       filter:

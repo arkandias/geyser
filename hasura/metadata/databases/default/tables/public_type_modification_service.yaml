@@ -1,8 +1,8 @@
 table:
-  name: type_modification
+  name: type_modification_service
   schema: public
 array_relationships:
-  - name: modifications
+  - name: modifications_service
     using:
       foreign_key_constraint_on:
         column: type

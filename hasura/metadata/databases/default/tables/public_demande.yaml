@@ -5,9 +5,9 @@ object_relationships:
   - name: enseignement
     using:
       foreign_key_constraint_on: ens_id
-  - name: service
+  - name: intervenant
     using:
-      foreign_key_constraint_on: service_id
+      foreign_key_constraint_on: uid
   - name: typeByType
     using:
       foreign_key_constraint_on: type
@@ -46,8 +46,8 @@ insert_permissions:
       columns:
         - ens_id
         - heures
-        - service_id
         - type
+        - uid
     comment: En phase de commission, les commissaires peuvent créer des attributions pour tous les intervenants et pour tous les enseignements de l'année en cours.
   - role: intervenant
     permission:
@@ -63,9 +63,8 @@ insert_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - service:
-              uid:
-                _eq: X-Hasura-User-Id
+          - uid:
+              _eq: X-Hasura-User-Id
           - enseignement:
               _or:
                 - _and:
@@ -96,15 +95,13 @@ insert_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    service:
-                      uid:
-                        _eq: X-Hasura-User-Id
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parent:
                     demandes:
                       _and:
-                        - service:
-                            uid:
-                              _eq: X-Hasura-User-Id
+                        - uid:
+                            _eq: X-Hasura-User-Id
                         - type:
                             _eq: attribution
           - type:
@@ -112,8 +109,8 @@ insert_permissions:
       columns:
         - ens_id
         - heures
-        - service_id
         - type
+        - uid
     comment: 'En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 4) des enseignements dont les enseignements parents leur ont été attribués.'
 select_permissions:
   - role: commissaire
@@ -122,8 +119,8 @@ select_permissions:
         - ens_id
         - heures
         - id
-        - service_id
         - type
+        - uid
       computed_fields:
         - heures_eqtd
         - prioritaire
@@ -146,8 +143,8 @@ select_permissions:
         - ens_id
         - heures
         - id
-        - service_id
         - type
+        - uid
       computed_fields:
         - heures_eqtd
         - prioritaire
@@ -178,10 +175,9 @@ select_permissions:
                           uid:
                             _eq: X-Hasura-User-Id
               - _and:
-                  - service:
-                      intervenant:
-                        visible:
-                          _eq: true
+                  - intervenant:
+                      visible:
+                        _eq: true
                   - enseignement:
                       _or:
                         - _and:
@@ -201,15 +197,13 @@ select_permissions:
                             - visible:
                                 _eq: true
                         - demandes:
-                            service:
-                              uid:
-                                _eq: X-Hasura-User-Id
+                            uid:
+                              _eq: X-Hasura-User-Id
                         - parent:
                             demandes:
                               _and:
-                                - service:
-                                    uid:
-                                      _eq: X-Hasura-User-Id
+                                - uid:
+                                    _eq: X-Hasura-User-Id
                                 - type:
                                     _eq: attribution
           - _or:
@@ -272,9 +266,8 @@ update_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - service:
-              uid:
-                _eq: X-Hasura-User-Id
+          - uid:
+              _eq: X-Hasura-User-Id
           - enseignement:
               _or:
                 - _and:
@@ -305,15 +298,13 @@ update_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    service:
-                      uid:
-                        _eq: X-Hasura-User-Id
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parent:
                     demandes:
                       _and:
-                        - service:
-                            uid:
-                              _eq: X-Hasura-User-Id
+                        - uid:
+                            _eq: X-Hasura-User-Id
                         - type:
                             _eq: attribution
           - type:
@@ -356,9 +347,8 @@ delete_permissions:
                       _eq: voeux
                   - en_cours:
                       _eq: true
-          - service:
-              uid:
-                _eq: X-Hasura-User-Id
+          - uid:
+              _eq: X-Hasura-User-Id
           - enseignement:
               _or:
                 - _and:
@@ -389,15 +379,13 @@ delete_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
                 - demandes:
-                    service:
-                      uid:
-                        _eq: X-Hasura-User-Id
+                    uid:
+                      _eq: X-Hasura-User-Id
                 - parent:
                     demandes:
                       _and:
-                        - service:
-                            uid:
-                              _eq: X-Hasura-User-Id
+                        - uid:
+                            _eq: X-Hasura-User-Id
                         - type:
                             _eq: attribution
           - type:

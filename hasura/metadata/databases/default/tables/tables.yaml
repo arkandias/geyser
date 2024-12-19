@@ -13,4 +13,4 @@
 - "!include public_service.yaml"
 - "!include public_type_demande.yaml"
 - "!include public_type_enseignement.yaml"
-- "!include public_type_modification.yaml"
+- "!include public_type_modification_service.yaml"

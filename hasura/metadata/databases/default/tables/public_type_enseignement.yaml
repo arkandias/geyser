@@ -15,7 +15,6 @@ select_permissions:
       columns:
         - coefficient
         - label
-        - label_court
       filter:
         _exists:
           _table:
@@ -33,7 +32,6 @@ select_permissions:
       columns:
         - coefficient
         - label
-        - label_court
       filter:
         _exists:
           _table:
