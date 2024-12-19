@@ -1,6 +1,10 @@
 table:
   name: intervenant
   schema: public
+object_relationships:
+  - name: fonctionByFonction
+    using:
+      foreign_key_constraint_on: fonction
 array_relationships:
   - name: demandes
     using:

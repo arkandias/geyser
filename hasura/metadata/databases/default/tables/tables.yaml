@@ -2,6 +2,7 @@
 - "!include public_cursus.yaml"
 - "!include public_demande.yaml"
 - "!include public_enseignement.yaml"
+- "!include public_fonction.yaml"
 - "!include public_intervenant.yaml"
 - "!include public_mention.yaml"
 - "!include public_message.yaml"

@@ -9,6 +9,13 @@ array_relationships:
         table:
           name: enseignement
           schema: public
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: annee
+        table:
+          name: message
+          schema: public
   - name: services
     using:
       foreign_key_constraint_on:

@@ -1,0 +1,28 @@
+table:
+  name: fonction
+  schema: public
+array_relationships:
+  - name: intervenants
+    using:
+      foreign_key_constraint_on:
+        column: fonction
+        table:
+          name: intervenant
+          schema: public
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - heures_eqtd_service_base
+        - label
+        - value
+      filter: {}
+    comment: ""
+  - role: intervenant
+    permission:
+      columns:
+        - heures_eqtd_service_base
+        - label
+        - value
+      filter: {}
+    comment: ""
