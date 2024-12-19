@@ -14,6 +14,7 @@ select_permissions:
     permission:
       columns:
         - heures_eqtd_service_base
+        - description
         - label
         - value
       filter: {}
@@ -22,6 +23,7 @@ select_permissions:
     permission:
       columns:
         - heures_eqtd_service_base
+        - description
         - label
         - value
       filter: {}
