@@ -13,8 +13,10 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - coefficient
+        - value
         - label
+        - coefficient
+        - description
       filter:
         _exists:
           _table:
@@ -30,8 +32,10 @@ select_permissions:
   - role: intervenant
     permission:
       columns:
-        - coefficient
+        - value
         - label
+        - coefficient
+        - description
       filter:
         _exists:
           _table:
