@@ -73,9 +73,10 @@ select_permissions:
       columns:
         - actif
         - alias
+        - fonction
+        - heures_eqtd_service_base
         - nom
         - prenom
-        - heures_eqtd_service_base
         - uid
         - visible
       filter:
@@ -93,13 +94,14 @@ select_permissions:
   - role: intervenant
     permission:
       columns:
+        - fonction
+        - visible
         - actif
-        - alias
         - nom
         - prenom
         - heures_eqtd_service_base
         - uid
-        - visible
+        - alias
       filter:
         _and:
           - _exists:
