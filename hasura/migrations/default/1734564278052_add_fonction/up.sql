@@ -17,9 +17,9 @@ ALTER TABLE intervenant
 CREATE OR REPLACE FUNCTION creation_services(annee integer) RETURNS setof service AS
 $$
 INSERT INTO service(annee, uid, heures_eqtd)
-SELECT $1, uid, coalesce(i.heures_eqtd_service_base, s.heures_eqtd_service_base)
+SELECT $1, uid, coalesce(i.heures_eqtd_service_base, f.heures_eqtd_service_base)
 FROM intervenant i
-         JOIN fonction s ON i.statut = s.value
+         JOIN fonction f ON i.fonction = f.value
 WHERE actif IS TRUE
 ON CONFLICT DO NOTHING
 RETURNING *;

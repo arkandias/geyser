@@ -36,7 +36,6 @@ CREATE OR REPLACE TRIGGER check_demande_service
 EXECUTE FUNCTION check_demande_service();
 COMMENT ON TRIGGER check_demande_service ON demande IS 'Trigger that executes the check_demande_service() function before any insertion of a demande and any update of the uid or ens_id values of a demande.';
 
-
 CREATE OR REPLACE FUNCTION check_priorite_service() RETURNS trigger AS
 $$
 DECLARE
@@ -94,4 +93,3 @@ WHERE e.annee = $1
   AND e.regle_priorite IS NOT NULL;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION calcul_priorites(annee integer) IS 'Fonction qui calcule la priorité des intervenants dans les enseignements d''une année donnée en utilisant l''ancienneté des intervenants et les règles de priorité des enseignements.';
-
