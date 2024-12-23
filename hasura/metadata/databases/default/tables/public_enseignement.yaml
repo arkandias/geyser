@@ -59,6 +59,12 @@ computed_fields:
         name: heures_corrigees
         schema: public
     comment: Le nombre d'heures d'enseignement ouvertes par groupe, et à défaut le nombre d'heures d'enseignement.
+  - name: total_heures_corrigees
+    definition:
+      function:
+        name: total_heures_corrigees
+        schema: public
+    comment: Le nombre d'heures d'enseignement ouvertes par groupe multiplié par le nombre de groupes ouverts.
 select_permissions:
   - role: commissaire
     permission:
