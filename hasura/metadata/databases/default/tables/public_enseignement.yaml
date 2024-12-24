@@ -89,6 +89,7 @@ select_permissions:
       computed_fields:
         - groupes_corriges
         - heures_corrigees
+        - total_heures_corrigees
       filter:
         _exists:
           _table:
@@ -124,6 +125,7 @@ select_permissions:
       computed_fields:
         - groupes_corriges
         - heures_corrigees
+        - total_heures_corrigees
       filter:
         _and:
           - _exists:
