@@ -16,6 +16,31 @@ array_relationships:
         table:
           name: modification_service
           schema: public
+insert_permissions:
+  - role: intervenant
+    permission:
+      check:
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: public
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      columns:
+        - annee
+        - heures_eqtd
+        - uid
+    comment: ""
 select_permissions:
   - role: commissaire
     permission:
