@@ -87,3 +87,27 @@ select_permissions:
           - uid:
               _eq: X-Hasura-User-Id
     comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services pour toutes les années visibles.
+update_permissions:
+  - role: intervenant
+    permission:
+      columns:
+        - heures_eqtd
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: public
+              _where:
+                _and:
+                  - value:
+                      _eq: voeux
+                  - en_cours:
+                      _eq: true
+          - anneeByAnnee:
+              en_cours:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      check: null
+    comment: ""
