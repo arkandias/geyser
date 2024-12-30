@@ -86,6 +86,7 @@ select_permissions:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
+      allow_aggregations: true
     comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services pour toutes les années visibles.
 update_permissions:
   - role: intervenant

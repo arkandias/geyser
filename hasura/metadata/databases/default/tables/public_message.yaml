@@ -52,7 +52,6 @@ select_permissions:
                   _eq: commission
               - en_cours:
                   _eq: true
-      allow_aggregations: true
     comment: En phase de commission, les commissaires peuvent voir tous les messages.
   - role: intervenant
     permission:
@@ -78,7 +77,6 @@ select_permissions:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
-      allow_aggregations: true
     comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs messages de toutes les années visibles.
 update_permissions:
   - role: intervenant
