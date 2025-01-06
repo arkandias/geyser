@@ -16,13 +16,6 @@ array_relationships:
         table:
           name: demande
           schema: public
-  - name: messages
-    using:
-      foreign_key_constraint_on:
-        column: service_id
-        table:
-          name: message
-          schema: public
   - name: modifications
     using:
       foreign_key_constraint_on:
@@ -60,6 +53,7 @@ insert_permissions:
       columns:
         - annee
         - heures_eqtd
+        - message
         - uid
     comment: ""
 select_permissions:
@@ -69,6 +63,7 @@ select_permissions:
         - annee
         - heures_eqtd
         - id
+        - message
         - uid
       filter:
         _exists:
@@ -89,6 +84,7 @@ select_permissions:
         - annee
         - heures_eqtd
         - id
+        - message
         - uid
       filter:
         _and:
@@ -114,6 +110,7 @@ update_permissions:
     permission:
       columns:
         - heures_eqtd
+        - message
       filter:
         _and:
           - _exists:

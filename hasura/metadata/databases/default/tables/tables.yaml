@@ -5,7 +5,6 @@
 - "!include public_fonction.yaml"
 - "!include public_intervenant.yaml"
 - "!include public_mention.yaml"
-- "!include public_message.yaml"
 - "!include public_modification_service.yaml"
 - "!include public_parcours.yaml"
 - "!include public_phase.yaml"
