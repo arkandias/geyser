@@ -17,6 +17,9 @@ WHERE d.uid = s.uid
 ALTER TABLE demande
     ALTER COLUMN service_id SET NOT NULL;
 
+ALTER TABLE demande
+    ADD UNIQUE (service_id, ens_id, type);
+
 ALTER TABLE priorite
     ADD COLUMN service_id integer REFERENCES service ON UPDATE CASCADE;;
 
@@ -33,6 +36,9 @@ WHERE priorite.service_id IS NULL;
 
 ALTER TABLE priorite
     ALTER COLUMN service_id SET NOT NULL;
+
+ALTER TABLE priorite
+    ADD UNIQUE (service_id, ens_id);
 
 ALTER TABLE message
     ADD COLUMN service_id integer REFERENCES service ON UPDATE CASCADE;;
