@@ -5,9 +5,9 @@ object_relationships:
   - name: enseignement
     using:
       foreign_key_constraint_on: ens_id
-  - name: intervenant
+  - name: service
     using:
-      foreign_key_constraint_on: uid
+      foreign_key_constraint_on: service_id
 select_permissions:
   - role: commissaire
     permission:
@@ -16,7 +16,7 @@ select_permissions:
         - ens_id
         - id
         - prioritaire
-        - uid
+        - service_id
       filter:
         _exists:
           _table:
@@ -36,7 +36,7 @@ select_permissions:
         - ens_id
         - id
         - prioritaire
-        - uid
+        - service_id
       filter:
         _and:
           - _exists:
@@ -64,9 +64,10 @@ select_permissions:
                           uid:
                             _eq: X-Hasura-User-Id
               - _and:
-                  - intervenant:
-                      visible:
-                        _eq: true
+                  - service:
+                      intervenant:
+                        visible:
+                          _eq: true
                   - enseignement:
                       _or:
                         - _and:
@@ -86,13 +87,11 @@ select_permissions:
                             - visible:
                                 _eq: true
                         - demandes:
-                            uid:
-                              _eq: X-Hasura-User-Id
-                        - parent:
-                            demandes:
-                              _and:
-                                - uid:
-                                    _eq: X-Hasura-User-Id
-                                - type:
-                                    _eq: attribution
-    comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont fait une demande ou qui leur ont été attribués ; 3) des enseignements dont les enseignements parents leur ont été attribués. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les priorités pour cet enseignement.'
+                            service:
+                              uid:
+                                _eq: X-Hasura-User-Id
+                        - priorites:
+                            service:
+                              uid:
+                                _eq: X-Hasura-User-Id
+    comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont une demande/attribution ou une priorité. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les priorités pour cet enseignement.'

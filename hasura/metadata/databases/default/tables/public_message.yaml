@@ -5,9 +5,9 @@ object_relationships:
   - name: anneeByAnnee
     using:
       foreign_key_constraint_on: annee
-  - name: intervenant
+  - name: service
     using:
-      foreign_key_constraint_on: uid
+      foreign_key_constraint_on: service_id
 insert_permissions:
   - role: intervenant
     permission:
@@ -26,12 +26,13 @@ insert_permissions:
           - anneeByAnnee:
               en_cours:
                 _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
       columns:
         - annee
         - contenu
-        - uid
+        - service_id
     comment: En phase de voeux, les intervenants peuvent créer un message pour l'année en cours.
 select_permissions:
   - role: commissaire
@@ -40,7 +41,7 @@ select_permissions:
         - annee
         - id
         - contenu
-        - uid
+        - service_id
       filter:
         _exists:
           _table:
@@ -59,7 +60,7 @@ select_permissions:
         - annee
         - id
         - contenu
-        - uid
+        - service_id
       filter:
         _and:
           - _exists:
@@ -75,8 +76,9 @@ select_permissions:
           - anneeByAnnee:
               visible:
                 _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
     comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs messages de toutes les années visibles.
 update_permissions:
   - role: intervenant
@@ -98,8 +100,9 @@ update_permissions:
           - anneeByAnnee:
               en_cours:
                 _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
       check: null
     comment: En phase de voeux, les intervenants peuvent modifier le contenu de leur propre message de l'année en cours.
 delete_permissions:
@@ -120,6 +123,7 @@ delete_permissions:
           - anneeByAnnee:
               en_cours:
                 _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
+          - service:
+              uid:
+                _eq: X-Hasura-User-Id
     comment: En phase de voeux, les intervenants peuvent supprimer leur propre message de l'année en cours.

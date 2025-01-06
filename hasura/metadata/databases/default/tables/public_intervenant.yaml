@@ -6,27 +6,6 @@ object_relationships:
     using:
       foreign_key_constraint_on: fonction
 array_relationships:
-  - name: demandes
-    using:
-      foreign_key_constraint_on:
-        column: uid
-        table:
-          name: demande
-          schema: public
-  - name: messages
-    using:
-      foreign_key_constraint_on:
-        column: uid
-        table:
-          name: message
-          schema: public
-  - name: priorites
-    using:
-      foreign_key_constraint_on:
-        column: uid
-        table:
-          name: priorite
-          schema: public
   - name: responsabilites
     using:
       foreign_key_constraint_on:

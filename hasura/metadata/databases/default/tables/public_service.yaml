@@ -9,12 +9,33 @@ object_relationships:
     using:
       foreign_key_constraint_on: uid
 array_relationships:
+  - name: demandes
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: demande
+          schema: public
+  - name: messages
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: message
+          schema: public
   - name: modifications
     using:
       foreign_key_constraint_on:
         column: service_id
         table:
           name: modification_service
+          schema: public
+  - name: priorites
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: priorite
           schema: public
 insert_permissions:
   - role: intervenant
