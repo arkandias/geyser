@@ -168,14 +168,14 @@ BEGIN
         SELECT year
         INTO parent_year
         FROM course
-        WHERE id = new.parent_id
-        LIMIT 1;
+        WHERE id = new.parent_id;
 
         IF parent_year IS NOT NULL AND parent_year >= new.year THEN
             RAISE EXCEPTION 'The parent course year must be less than the course year '
                 '(course id: %, course year: %, parent id: %, parent year: %)',
                 new.id, new.year, new.parent_id, parent_year;
         END IF;
+
     END IF;
     RETURN new;
 END;
@@ -205,6 +205,7 @@ BEGIN
             '(course id: %, course year: %, child id: %, child year: %)',
             new.id, new.year, child_id, child_year;
     END IF;
+
     RETURN new;
 END;
 $$ LANGUAGE plpgsql STABLE;
@@ -224,14 +225,14 @@ BEGIN
         SELECT program_id
         INTO track_program_id
         FROM track
-        WHERE id = new.track_id
-        LIMIT 1;
+        WHERE id = new.track_id;
 
         IF track_program_id != new.program_id THEN
             RAISE EXCEPTION 'The track program must match the course program '
                 '(program id: %, track id: %, track program id: %)',
                 new.program_id, new.track_id, track_program_id;
         END IF;
+
     END IF;
     RETURN new;
 END;
@@ -304,6 +305,37 @@ WHERE service_id = request_row.service_id
   AND course_id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
 
+CREATE OR REPLACE FUNCTION check_service_course_year() RETURNS trigger AS
+$$
+DECLARE
+    service_year integer;
+    course_year  integer;
+BEGIN
+    SELECT year INTO service_year FROM service WHERE id = new.service_id;
+    SELECT year INTO course_year FROM course WHERE id = new.course_id;
+
+    IF service_year != course_year THEN
+        RAISE EXCEPTION 'Service year must match course year '
+            '(service year: %, course year: %)',
+            service_year, course_year;
+    END IF;
+
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER check_demande_service
+    BEFORE INSERT OR UPDATE OF service_id, course_id
+    ON request
+    FOR EACH ROW
+EXECUTE FUNCTION check_service_course_year();
+
+CREATE TRIGGER check_priorite_service
+    BEFORE INSERT OR UPDATE OF service_id, course_id
+    ON priority
+    FOR EACH ROW
+EXECUTE FUNCTION check_service_course_year();
+
 --
 -- Table des responsabilités
 --
@@ -335,26 +367,25 @@ ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
 
-CREATE OR REPLACE FUNCTION compute_seniority(new_year integer) RETURNS void AS
+CREATE OR REPLACE FUNCTION compute_seniority(service_row service) RETURNS void AS
 $$
 INSERT INTO priority (service_id, course_id, seniority)
-SELECT r.service_id,
-       c.id,
-       coalesce(p.seniority + 1, 1)
+SELECT service_row.id, c.id, coalesce(p.seniority + 1, 1)
 FROM course c
-         JOIN request r ON r.course_id = c.parent_id AND r.type = 'attribution'
-         LEFT JOIN priority p ON r.service_id = p.service_id AND c.parent_id = p.course_id
-WHERE c.year = new_year
+         JOIN request r ON r.course_id = c.parent_id AND r.type = 'assignment'
+         JOIN service s ON r.service_id = s.id AND s.uid = service_row.uid
+         LEFT JOIN priority p ON r.service_id = p.service_id AND r.course_id = p.course_id
+WHERE c.year = service_row.year
 ON CONFLICT (service_id, course_id) DO UPDATE
     SET seniority = excluded.seniority;
 $$ LANGUAGE sql;
 
-CREATE OR REPLACE FUNCTION compute_priority(new_year integer) RETURNS void AS
+CREATE OR REPLACE FUNCTION compute_priority(service_row service) RETURNS void AS
 $$
 UPDATE priority p
 SET is_priority = (c.priority_rule > p.seniority OR c.priority_rule = 0)
 FROM course c
-WHERE p.course_id = c.id
-  AND c.year = new_year
+WHERE c.id = p.course_id
+  AND p.service_id = service_row.id
   AND c.priority_rule IS NOT NULL;
 $$ LANGUAGE sql;
