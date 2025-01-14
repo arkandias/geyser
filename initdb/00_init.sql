@@ -356,36 +356,68 @@ CREATE TABLE IF NOT EXISTS coordinator
 -- Fonctions
 --
 
-CREATE OR REPLACE FUNCTION create_services(new_year integer) RETURNS setof service AS
+CREATE OR REPLACE FUNCTION compute_seniorities(p_service_id integer) RETURNS setof priority AS
+$$
+WITH service_info AS (SELECT year, uid
+                      FROM service
+                      WHERE id = p_service_id)
+INSERT
+INTO priority (service_id, course_id, seniority)
+SELECT p_service_id, c.id, coalesce(p.seniority + 1, 1)
+FROM course c
+         JOIN request r ON r.course_id = c.parent_id AND r.type = 'assignment'
+         JOIN service s ON r.service_id = s.id AND s.uid = (SELECT uid FROM service_info)
+         LEFT JOIN priority p ON r.service_id = p.service_id AND r.course_id = p.course_id
+WHERE c.year = (SELECT year FROM service_info)
+ON CONFLICT (service_id, course_id) DO UPDATE
+    SET seniority = excluded.seniority
+RETURNING *;
+$$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION compute_priorities(p_service_id integer) RETURNS setof priority AS
+$$
+UPDATE priority p
+SET is_priority = (p.seniority > 0 AND (c.priority_rule > p.seniority OR c.priority_rule = 0))
+FROM course c
+WHERE p.service_id = p_service_id
+  AND c.id = p.course_id
+  AND c.priority_rule IS NOT NULL
+RETURNING p.*;
+$$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION compute_service_priorities() RETURNS trigger AS
+$$
+BEGIN
+    PERFORM compute_seniorities(new);
+    PERFORM compute_priorities(new);
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER compute_service_priorities
+    AFTER INSERT
+    ON service
+    FOR EACH ROW
+EXECUTE FUNCTION compute_service_priorities();
+
+CREATE OR REPLACE FUNCTION create_service(p_year integer, p_uid text) RETURNS service AS
 $$
 INSERT INTO service (year, uid, base_hours)
-SELECT new_year, uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
+SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
+FROM teacher t
+         JOIN position p ON t.position = p.value
+WHERE t.uid = p_uid
+ON CONFLICT DO NOTHING
+RETURNING *;
+$$ LANGUAGE sql;
+
+CREATE OR REPLACE FUNCTION create_services(p_year integer) RETURNS setof service AS
+$$
+INSERT INTO service (year, uid, base_hours)
+SELECT p_year, t.uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM teacher t
          JOIN position p ON t.position = p.value
 WHERE t.active IS TRUE
 ON CONFLICT DO NOTHING
 RETURNING *;
-$$ LANGUAGE sql;
-
-CREATE OR REPLACE FUNCTION compute_seniority(service_row service) RETURNS void AS
-$$
-INSERT INTO priority (service_id, course_id, seniority)
-SELECT service_row.id, c.id, coalesce(p.seniority + 1, 1)
-FROM course c
-         JOIN request r ON r.course_id = c.parent_id AND r.type = 'assignment'
-         JOIN service s ON r.service_id = s.id AND s.uid = service_row.uid
-         LEFT JOIN priority p ON r.service_id = p.service_id AND r.course_id = p.course_id
-WHERE c.year = service_row.year
-ON CONFLICT (service_id, course_id) DO UPDATE
-    SET seniority = excluded.seniority;
-$$ LANGUAGE sql;
-
-CREATE OR REPLACE FUNCTION compute_priority(service_row service) RETURNS void AS
-$$
-UPDATE priority p
-SET is_priority = (c.priority_rule > p.seniority OR c.priority_rule = 0)
-FROM course c
-WHERE c.id = p.course_id
-  AND p.service_id = service_row.id
-  AND c.priority_rule IS NOT NULL;
 $$ LANGUAGE sql;
