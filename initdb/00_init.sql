@@ -423,3 +423,27 @@ WHERE t.active IS TRUE
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
+
+--
+-- Comments
+--
+
+COMMENT ON FUNCTION set_timestamp() IS 'Updates the updated_at timestamp whenever a row is modified';
+
+COMMENT ON FUNCTION check_parent_year() IS 'Ensures that the parent course''s year is less than the course''s year';
+
+COMMENT ON FUNCTION check_children_year() IS 'Ensures that child courses'' years are greater than the course''s year';
+
+COMMENT ON FUNCTION check_track_program() IS 'Ensures that the track of a course belongs to the course''s program';
+
+COMMENT ON FUNCTION check_service_course_year() IS 'Ensures that service and course years match for requests and priorities';
+
+COMMENT ON FUNCTION compute_seniorities(integer) IS 'Calculates course seniorities for a given service based on previous course assignments';
+
+COMMENT ON FUNCTION compute_priorities(integer) IS 'Updates priority flags based on seniority and course priority rules';
+
+COMMENT ON FUNCTION compute_service_priorities() IS 'Trigger function that computes both seniorities and priorities for a new service';
+
+COMMENT ON FUNCTION create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours';
+
+COMMENT ON FUNCTION create_services(integer) IS 'Creates service entries for all active teachers for a specific year';
