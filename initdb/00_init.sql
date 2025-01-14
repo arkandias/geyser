@@ -1,10 +1,6 @@
-CREATE OR REPLACE FUNCTION set_timestamp() RETURNS trigger AS
-$$
-BEGIN
-    new.updated_at = now();
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql;
+--
+-- General tables
+--
 
 CREATE TABLE IF NOT EXISTS year
 (
@@ -17,11 +13,18 @@ CREATE TABLE IF NOT EXISTS year
 
 CREATE TABLE IF NOT EXISTS phase
 (
-    value       text PRIMARY KEY,
-    current     boolean UNIQUE, -- TRUE or NULL
-    description text,
-    CHECK (current)             -- current is TRUE or NULL
+    value   text PRIMARY KEY,
+    current boolean UNIQUE, -- TRUE or NULL
+    CHECK (current)         -- current is TRUE or NULL
 );
+
+CREATE OR REPLACE FUNCTION set_timestamp() RETURNS trigger AS
+$$
+BEGIN
+    new.updated_at = now();
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql;
 
 --
 -- Teacher-related tables
@@ -133,31 +136,35 @@ CREATE TABLE IF NOT EXISTS course_type
 
 CREATE TABLE IF NOT EXISTS course
 (
-    id                    serial PRIMARY KEY,
-    ens_id_import         text UNIQUE,
-    formation_id_import   text,
-    year                  integer NOT NULL REFERENCES year ON UPDATE CASCADE,
-    program_id            integer NOT NULL REFERENCES program ON UPDATE CASCADE,
-    track_id              integer REFERENCES track ON UPDATE CASCADE,
-    parent_id             integer REFERENCES course ON UPDATE CASCADE,
-    name                  text    NOT NULL,
-    name_short            text,
-    name_import           text,
-    type                  text    NOT NULL REFERENCES course_type ON UPDATE CASCADE,
-    semester              integer NOT NULL CHECK (1 <= semester AND semester <= 6),
-    cycle_year            integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
-    hours                 real    NOT NULL CHECK (hours >= 0),
-    hours_adjusted        real CHECK (0 <= hours_adjusted AND hours_adjusted < hours),
-    hours_effective       integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
-    groups                integer NOT NULL CHECK (groups >= 0),
-    groups_adjusted       integer CHECK (0 <= groups_adjusted AND groups_adjusted < groups),
-    groups_effective      integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
-    total_hours_effective integer GENERATED ALWAYS AS (hours_effective * groups_effective) STORED,
-    description           text,
-    priority_rule         integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
-    visible               boolean NOT NULL DEFAULT TRUE,
+    id                  serial PRIMARY KEY,
+    ens_id_import       text UNIQUE,
+    formation_id_import text,
+    year                integer NOT NULL REFERENCES year ON UPDATE CASCADE,
+    program_id          integer NOT NULL REFERENCES program ON UPDATE CASCADE,
+    track_id            integer REFERENCES track ON UPDATE CASCADE,
+    parent_id           integer REFERENCES course ON UPDATE CASCADE,
+    name                text    NOT NULL,
+    name_short          text,
+    name_import         text,
+    type                text    NOT NULL REFERENCES course_type ON UPDATE CASCADE,
+    semester            integer NOT NULL CHECK (1 <= semester AND semester <= 6),
+    cycle_year          integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
+    hours               real    NOT NULL CHECK (hours >= 0),
+    hours_adjusted      real CHECK (0 <= hours_adjusted AND hours_adjusted < hours),
+    hours_effective     integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
+    groups              integer NOT NULL CHECK (groups >= 0),
+    groups_adjusted     integer CHECK (0 <= groups_adjusted AND groups_adjusted < groups),
+    groups_effective    integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
+    description         text,
+    priority_rule       integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
+    visible             boolean NOT NULL DEFAULT TRUE,
     UNIQUE (year, program_id, track_id, name, semester, type)
 );
+
+CREATE OR REPLACE FUNCTION total_hours_effective(course_row course) RETURNS real AS
+$$
+SELECT course_row.hours_effective * course_row.groups_effective;
+$$ LANGUAGE sql STABLE;
 
 CREATE OR REPLACE FUNCTION check_parent_year() RETURNS trigger AS
 $$
@@ -250,14 +257,25 @@ CREATE TRIGGER check_track_program_on_track_update
     FOR EACH ROW
 EXECUTE FUNCTION check_track_program();
 
+CREATE TABLE IF NOT EXISTS coordinator
+(
+    id         serial PRIMARY KEY,
+    uid        text NOT NULL REFERENCES teacher ON UPDATE CASCADE,
+    program_id integer REFERENCES program ON UPDATE CASCADE,
+    track_id   integer REFERENCES track ON UPDATE CASCADE,
+    course_id  integer REFERENCES course ON UPDATE CASCADE,
+    comment    text,
+    UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
+    CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
+);
+
 --
--- request-related tables
+-- Request-related tables
 --
 
 CREATE TABLE IF NOT EXISTS request_type
 (
-    value       text PRIMARY KEY,
-    description text
+    value text PRIMARY KEY
 );
 
 CREATE TABLE IF NOT EXISTS request
@@ -324,36 +342,20 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 
-CREATE TRIGGER check_demande_service
+CREATE TRIGGER check_request_service
     BEFORE INSERT OR UPDATE OF service_id, course_id
     ON request
     FOR EACH ROW
 EXECUTE FUNCTION check_service_course_year();
 
-CREATE TRIGGER check_priorite_service
+CREATE TRIGGER check_priority_service
     BEFORE INSERT OR UPDATE OF service_id, course_id
     ON priority
     FOR EACH ROW
 EXECUTE FUNCTION check_service_course_year();
 
 --
--- Table des responsabilités
---
-
-CREATE TABLE IF NOT EXISTS coordinator
-(
-    id         serial PRIMARY KEY,
-    uid        text NOT NULL REFERENCES teacher ON UPDATE CASCADE,
-    program_id integer REFERENCES program ON UPDATE CASCADE,
-    track_id   integer REFERENCES track ON UPDATE CASCADE,
-    course_id  integer REFERENCES course ON UPDATE CASCADE,
-    comment    text,
-    UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
-    CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
-);
-
---
--- Fonctions
+-- Functions
 --
 
 CREATE OR REPLACE FUNCTION compute_seniorities(p_service_id integer) RETURNS setof priority AS
