@@ -55,12 +55,6 @@ CREATE TABLE IF NOT EXISTS service
     UNIQUE (year, uid)
 );
 
-CREATE OR REPLACE TRIGGER set_timestamp
-    BEFORE UPDATE
-    ON service
-    FOR EACH ROW
-EXECUTE FUNCTION set_timestamp();
-
 CREATE TABLE IF NOT EXISTS service_modification_type
 (
     value       text PRIMARY KEY,
@@ -77,12 +71,6 @@ CREATE TABLE IF NOT EXISTS service_modification
     created_at timestamptz NOT NULL DEFAULT current_timestamp,
     updated_at timestamptz NOT NULL DEFAULT current_timestamp
 );
-
-CREATE OR REPLACE TRIGGER set_timestamp
-    BEFORE UPDATE
-    ON service_modification
-    FOR EACH ROW
-EXECUTE FUNCTION set_timestamp();
 
 --
 -- Course-related tables
@@ -280,12 +268,6 @@ CREATE TABLE IF NOT EXISTS request
     updated_at timestamptz NOT NULL DEFAULT current_timestamp,
     UNIQUE (service_id, course_id, type)
 );
-
-CREATE OR REPLACE TRIGGER set_timestamp
-    BEFORE UPDATE
-    ON request
-    FOR EACH ROW
-EXECUTE FUNCTION set_timestamp();
 
 CREATE OR REPLACE FUNCTION hours_weighted(request_row request) RETURNS real AS
 $$
