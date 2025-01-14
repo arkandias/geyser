@@ -1,13 +1,13 @@
 table:
-  name: type_enseignement
+  name: course_type
   schema: public
 array_relationships:
-  - name: enseignements
+  - name: courses
     using:
       foreign_key_constraint_on:
         column: type
         table:
-          name: enseignement
+          name: course
           schema: public
 select_permissions:
   - role: commissaire
@@ -15,7 +15,7 @@ select_permissions:
       columns:
         - description
         - value
-        - coefficient
+        - weight
         - label
       filter:
         _exists:
@@ -26,15 +26,15 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les types d'enseignement.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir tous les types d'course.
+  - role: teacher
     permission:
       columns:
         - description
         - value
-        - coefficient
+        - weight
         - label
       filter:
         _exists:
@@ -45,6 +45,6 @@ select_permissions:
             _and:
               - value:
                   _neq: fermeture
-              - en_cours:
+              - current:
                   _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les types d'enseignement.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir tous les types d'course.

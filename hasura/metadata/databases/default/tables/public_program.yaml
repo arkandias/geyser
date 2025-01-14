@@ -1,40 +1,40 @@
 table:
-  name: mention
+  name: program
   schema: public
 object_relationships:
-  - name: cursus
+  - name: degree
     using:
-      foreign_key_constraint_on: cursus_id
+      foreign_key_constraint_on: degree_id
 array_relationships:
-  - name: enseignements
+  - name: coordinators
     using:
       foreign_key_constraint_on:
-        column: mention_id
+        column: program_id
         table:
-          name: enseignement
+          name: coordinator
           schema: public
-  - name: parcours
+  - name: courses
     using:
       foreign_key_constraint_on:
-        column: mention_id
+        column: program_id
         table:
-          name: parcours
+          name: course
           schema: public
-  - name: responsables
+  - name: tracks
     using:
       foreign_key_constraint_on:
-        column: mention_id
+        column: program_id
         table:
-          name: responsable
+          name: track
           schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - cursus_id
+        - degree_id
         - id
-        - nom
-        - nom_court
+        - name
+        - name_short
         - visible
       filter:
         _exists:
@@ -45,16 +45,16 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les mentions.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir toutes les programs.
+  - role: teacher
     permission:
       columns:
-        - cursus_id
+        - degree_id
         - id
-        - nom
-        - nom_court
+        - name
+        - name_short
         - visible
       filter:
         _and:
@@ -66,8 +66,8 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les mentions visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir toutes les programs visibles.

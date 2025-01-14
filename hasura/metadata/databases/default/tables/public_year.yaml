@@ -1,21 +1,27 @@
 table:
-  name: cursus
+  name: year
   schema: public
 array_relationships:
-  - name: mentions
+  - name: courses
     using:
       foreign_key_constraint_on:
-        column: cursus_id
+        column: year
         table:
-          name: mention
+          name: course
+          schema: public
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: year
+        table:
+          name: service
           schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - id
-        - nom
-        - nom_court
+        - current
+        - value
         - visible
       filter:
         _exists:
@@ -26,15 +32,14 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les cursus.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir toutes les années.
+  - role: teacher
     permission:
       columns:
-        - id
-        - nom
-        - nom_court
+        - current
+        - value
         - visible
       filter:
         _and:
@@ -46,8 +51,8 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les cursus visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir toutes les années visibles.

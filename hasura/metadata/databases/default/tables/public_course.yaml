@@ -1,0 +1,196 @@
+table:
+  name: course
+  schema: public
+object_relationships:
+  - name: parent
+    using:
+      foreign_key_constraint_on: parent_id
+  - name: program
+    using:
+      foreign_key_constraint_on: program_id
+  - name: track
+    using:
+      foreign_key_constraint_on: track_id
+  - name: typeByType
+    using:
+      foreign_key_constraint_on: type
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
+array_relationships:
+  - name: coordinators
+    using:
+      foreign_key_constraint_on:
+        column: course_id
+        table:
+          name: coordinator
+          schema: public
+  - name: enfants
+    using:
+      foreign_key_constraint_on:
+        column: parent_id
+        table:
+          name: course
+          schema: public
+  - name: prioritys
+    using:
+      foreign_key_constraint_on:
+        column: course_id
+        table:
+          name: priority
+          schema: public
+  - name: requests
+    using:
+      foreign_key_constraint_on:
+        column: course_id
+        table:
+          name: request
+          schema: public
+computed_fields:
+  - name: total_hours_effective
+    definition:
+      function:
+        name: total_hours_effective
+        schema: public
+    comment: Le namebre d'hours d'course ouvertes par groupe multiplié par le namebre de groups ouverts.
+select_permissions:
+  - role: commissaire
+    permission:
+      columns:
+        - year
+        - cycle_year
+        - description
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - id
+        - program_id
+        - name
+        - name_short
+        - track_id
+        - parent_id
+        - priority_rule
+        - semester
+        - type
+        - visible
+      computed_fields:
+        - total_hours_effective
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: public
+          _where:
+            _and:
+              - value:
+                  _eq: commission
+              - current:
+                  _eq: true
+    comment: En phase de commission, les commissaires peuvent voir tous les courses.
+  - role: teacher
+    permission:
+      columns:
+        - year
+        - cycle_year
+        - description
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - id
+        - program_id
+        - name
+        - name_short
+        - track_id
+        - parent_id
+        - priority_rule
+        - semester
+        - type
+        - visible
+      computed_fields:
+        - total_hours_effective
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: public
+              _where:
+                _and:
+                  - value:
+                      _neq: fermeture
+                  - current:
+                      _eq: true
+          - _or:
+              - _and:
+                  - yearByYear:
+                      visible:
+                        _eq: true
+                  - program:
+                      _and:
+                        - degree:
+                            visible:
+                              _eq: true
+                        - visible:
+                            _eq: true
+                  - track:
+                      visible:
+                        _eq: true
+                  - visible:
+                      _eq: true
+              - coordinators:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - track:
+                  coordinators:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - program:
+                  coordinators:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - requests:
+                  service:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - prioritys:
+                  service:
+                    uid:
+                      _eq: X-Hasura-User-Id
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir : 1) les courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) les courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) les courses pour lesquels ils ont une request/attribution ou une priorité.'
+update_permissions:
+  - role: teacher
+    permission:
+      columns:
+        - description
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: public
+              _where:
+                _and:
+                  - value:
+                      _neq: fermeture
+                  - current:
+                      _eq: true
+          - _or:
+              - coordinators:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - track:
+                  coordinators:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - program:
+                  coordinators:
+                    uid:
+                      _eq: X-Hasura-User-Id
+      check: null
+    comment: Lorsque Geyser est ouvert, les teachers coordinators d'un course, de sa program ou de son track peuvent mettre à jour sa description.

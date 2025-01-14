@@ -1,28 +1,28 @@
 table:
-  name: fonction
+  name: position
   schema: public
 array_relationships:
-  - name: intervenants
+  - name: teachers
     using:
       foreign_key_constraint_on:
-        column: fonction
+        column: position
         table:
-          name: intervenant
+          name: teacher
           schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - heures_eqtd_service_base
+        - base_service_hours
         - description
         - label
         - value
       filter: {}
     comment: ""
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - heures_eqtd_service_base
+        - base_service_hours
         - description
         - label
         - value

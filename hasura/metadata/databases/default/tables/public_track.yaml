@@ -1,33 +1,33 @@
 table:
-  name: parcours
+  name: track
   schema: public
 object_relationships:
-  - name: mention
+  - name: program
     using:
-      foreign_key_constraint_on: mention_id
+      foreign_key_constraint_on: program_id
 array_relationships:
-  - name: enseignements
+  - name: coordinators
     using:
       foreign_key_constraint_on:
-        column: parcours_id
+        column: track_id
         table:
-          name: enseignement
+          name: coordinator
           schema: public
-  - name: responsables
+  - name: courses
     using:
       foreign_key_constraint_on:
-        column: parcours_id
+        column: track_id
         table:
-          name: responsable
+          name: course
           schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
         - id
-        - mention_id
-        - nom
-        - nom_court
+        - program_id
+        - name
+        - name_short
         - visible
       filter:
         _exists:
@@ -38,16 +38,16 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les parcours.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir tous les track.
+  - role: teacher
     permission:
       columns:
         - id
-        - mention_id
-        - nom
-        - nom_court
+        - program_id
+        - name
+        - name_short
         - visible
       filter:
         _and:
@@ -59,8 +59,8 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir tous les parcours visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir tous les track visibles.

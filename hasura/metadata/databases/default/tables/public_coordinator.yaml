@@ -1,28 +1,28 @@
 table:
-  name: responsable
+  name: coordinator
   schema: public
 object_relationships:
-  - name: enseignement
+  - name: course
     using:
-      foreign_key_constraint_on: ens_id
-  - name: intervenant
+      foreign_key_constraint_on: course_id
+  - name: program
+    using:
+      foreign_key_constraint_on: program_id
+  - name: teacher
     using:
       foreign_key_constraint_on: uid
-  - name: mention
+  - name: track
     using:
-      foreign_key_constraint_on: mention_id
-  - name: parcours
-    using:
-      foreign_key_constraint_on: parcours_id
+      foreign_key_constraint_on: track_id
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - commentaire
-        - ens_id
+        - comment
+        - course_id
         - id
-        - mention_id
-        - parcours_id
+        - program_id
+        - track_id
         - uid
       filter:
         _exists:
@@ -33,18 +33,18 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
       allow_aggregations: true
     comment: En phase de commission, les commissaires peuvent voir toutes les responsabilités.
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - commentaire
-        - ens_id
+        - comment
+        - course_id
         - id
-        - mention_id
-        - parcours_id
+        - program_id
+        - track_id
         - uid
       filter:
         _and:
@@ -56,20 +56,20 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
-          - intervenant:
+          - teacher:
               visible:
                 _eq: true
           - _or:
-              - enseignement:
+              - course:
                   visible:
                     _eq: true
-              - parcours:
+              - track:
                   visible:
                     _eq: true
-              - mention:
+              - program:
                   visible:
                     _eq: true
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les responsabilités dont l'intervenant et la mention, le parcours ou l'enseignement correspondant sont visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir toutes les responsabilités dont l'teacher et la program, le track ou l'course correspondant sont visibles.

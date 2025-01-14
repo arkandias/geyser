@@ -1,10 +1,10 @@
 table:
-  name: demande
+  name: request
   schema: public
 object_relationships:
-  - name: enseignement
+  - name: course
     using:
-      foreign_key_constraint_on: ens_id
+      foreign_key_constraint_on: course_id
   - name: service
     using:
       foreign_key_constraint_on: service_id
@@ -12,15 +12,15 @@ object_relationships:
     using:
       foreign_key_constraint_on: type
 computed_fields:
-  - name: heures_eqtd
+  - name: hours_weighted
     definition:
       function:
-        name: heures_eqtd
+        name: hours_weighted
         schema: public
-  - name: prioritaire
+  - name: is_priority
     definition:
       function:
-        name: prioritaire
+        name: is_priority
         schema: public
 insert_permissions:
   - role: commissaire
@@ -35,21 +35,21 @@ insert_permissions:
                 _and:
                   - value:
                       _eq: commission
-                  - en_cours:
+                  - current:
                       _eq: true
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
+          - course:
+              yearByYear:
+                current:
                   _eq: true
           - type:
               _eq: attribution
       columns:
-        - ens_id
-        - heures
+        - course_id
+        - hours
         - service_id
         - type
-    comment: En phase de commission, les commissaires peuvent créer des attributions pour tous les intervenants et pour tous les enseignements de l'année en cours.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent créer des attributions pour tous les teachers et pour tous les courses de l'année en cours.
+  - role: teacher
     permission:
       check:
         _and:
@@ -61,64 +61,64 @@ insert_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-          - enseignement:
+          - course:
               _or:
                 - _and:
-                    - anneeByAnnee:
+                    - yearByYear:
                         visible:
                           _eq: true
-                    - mention:
+                    - program:
                         _and:
-                          - cursus:
+                          - degree:
                               visible:
                                 _eq: true
                           - visible:
                               _eq: true
-                    - parcours:
+                    - track:
                         visible:
                           _eq: true
                     - visible:
                         _eq: true
-                - responsables:
+                - coordinators:
                     uid:
                       _eq: X-Hasura-User-Id
-                - parcours:
-                    responsables:
+                - track:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - mention:
-                    responsables:
+                - program:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - demandes:
+                - requests:
                     service:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
               _neq: attribution
       columns:
-        - ens_id
-        - heures
+        - course_id
+        - hours
         - service_id
         - type
-    comment: 'En phase de voeux, les intervenants peuvent faire des demandes principales ou secondaires pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements dont ils sont responsables (directement ou via le parcours ou la mention) ; 3) des enseignements pour lesquels ils ont une demande/attribution ou une priorité.'
+    comment: 'En phase de voeux, les teachers peuvent faire des requests principales ou secondaires pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) des courses pour lesquels ils ont une request/attribution ou une priorité.'
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - ens_id
-        - heures
+        - course_id
+        - hours
         - id
         - service_id
         - type
       computed_fields:
-        - heures_eqtd
-        - prioritaire
+        - hours_weighted
+        - is_priority
       filter:
         _exists:
           _table:
@@ -128,21 +128,21 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les demandes.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir toutes les requests.
+  - role: teacher
     permission:
       columns:
-        - ens_id
-        - heures
+        - course_id
+        - hours
         - id
         - service_id
         - type
       computed_fields:
-        - heures_eqtd
-        - prioritaire
+        - hours_weighted
+        - is_priority
       filter:
         _and:
           - _exists:
@@ -153,46 +153,46 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - _or:
-              - enseignement:
+              - course:
                   _or:
-                    - responsables:
+                    - coordinators:
                         uid:
                           _eq: X-Hasura-User-Id
-                    - parcours:
-                        responsables:
+                    - track:
+                        coordinators:
                           uid:
                             _eq: X-Hasura-User-Id
-                    - mention:
-                        responsables:
+                    - program:
+                        coordinators:
                           uid:
                             _eq: X-Hasura-User-Id
               - _and:
                   - service:
-                      intervenant:
+                      teacher:
                         visible:
                           _eq: true
-                  - enseignement:
+                  - course:
                       _or:
                         - _and:
-                            - anneeByAnnee:
+                            - yearByYear:
                                 visible:
                                   _eq: true
-                            - mention:
+                            - program:
                                 _and:
-                                  - cursus:
+                                  - degree:
                                       visible:
                                         _eq: true
                                   - visible:
                                       _eq: true
-                            - parcours:
+                            - track:
                                 visible:
                                   _eq: true
                             - visible:
                                 _eq: true
-                        - demandes:
+                        - requests:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
@@ -205,21 +205,21 @@ select_permissions:
                     _and:
                       - value:
                           _eq: consultation
-                      - en_cours:
+                      - current:
                           _eq: true
-              - enseignement:
-                  anneeByAnnee:
-                    en_cours:
+              - course:
+                  yearByYear:
+                    current:
                       _is_null: true
               - type:
                   _neq: attribution
       allow_aggregations: true
-    comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les demandes des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont une demande/attribution ou une priorité. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les demandes pour cet enseignement. Les intervenants ne peuvent voir les attributions pour les enseignements de l''année en cours qu''en phase de consultation.'
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les requests des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/attribution ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les requests pour cet course. Les teachers ne peuvent voir les attributions pour les courses de l''année en cours qu''en phase de consultation.'
 update_permissions:
   - role: commissaire
     permission:
       columns:
-        - heures
+        - hours
       filter:
         _and:
           - _exists:
@@ -230,20 +230,20 @@ update_permissions:
                 _and:
                   - value:
                       _eq: commission
-                  - en_cours:
+                  - current:
                       _eq: true
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
+          - course:
+              yearByYear:
+                current:
                   _eq: true
           - type:
               _eq: attribution
       check: null
-    comment: En phase de commission, les commissaires peuvent modifier toutes les attributions pour des enseignements de l'année en cours.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent modifier toutes les attributions pour des courses de l'année en cours.
+  - role: teacher
     permission:
       columns:
-        - heures
+        - hours
       filter:
         _and:
           - _exists:
@@ -254,48 +254,48 @@ update_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-          - enseignement:
+          - course:
               _or:
                 - _and:
-                    - anneeByAnnee:
+                    - yearByYear:
                         visible:
                           _eq: true
-                    - mention:
+                    - program:
                         _and:
-                          - cursus:
+                          - degree:
                               visible:
                                 _eq: true
                           - visible:
                               _eq: true
-                    - parcours:
+                    - track:
                         visible:
                           _eq: true
                     - visible:
                         _eq: true
-                - responsables:
+                - coordinators:
                     uid:
                       _eq: X-Hasura-User-Id
-                - parcours:
-                    responsables:
+                - track:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - mention:
-                    responsables:
+                - program:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - demandes:
+                - requests:
                     service:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
               _neq: attribution
       check: null
-    comment: En phase de voeux, les intervenants peuvent modifier leurs demandes principales ou secondaires pour tous les enseignements pour lesquels ils peuvent faire des demandes.
+    comment: En phase de voeux, les teachers peuvent modifier leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
 delete_permissions:
   - role: commissaire
     permission:
@@ -309,16 +309,16 @@ delete_permissions:
                 _and:
                   - value:
                       _eq: commission
-                  - en_cours:
+                  - current:
                       _eq: true
-          - enseignement:
-              anneeByAnnee:
-                en_cours:
+          - course:
+              yearByYear:
+                current:
                   _eq: true
           - type:
               _eq: attribution
-    comment: En phase de commission, les commissaires peuvent supprimer toutes les attributions pour des enseignements de l'année en cours.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent supprimer toutes les attributions pour des courses de l'année en cours.
+  - role: teacher
     permission:
       filter:
         _and:
@@ -330,44 +330,44 @@ delete_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-          - enseignement:
+          - course:
               _or:
                 - _and:
-                    - anneeByAnnee:
+                    - yearByYear:
                         visible:
                           _eq: true
-                    - mention:
+                    - program:
                         _and:
-                          - cursus:
+                          - degree:
                               visible:
                                 _eq: true
                           - visible:
                               _eq: true
-                    - parcours:
+                    - track:
                         visible:
                           _eq: true
                     - visible:
                         _eq: true
-                - responsables:
+                - coordinators:
                     uid:
                       _eq: X-Hasura-User-Id
-                - parcours:
-                    responsables:
+                - track:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - mention:
-                    responsables:
+                - program:
+                    coordinators:
                       uid:
                         _eq: X-Hasura-User-Id
-                - demandes:
+                - requests:
                     service:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
               _neq: attribution
-    comment: En phase de voeux, les intervenants peuvent supprimer leurs demandes principales ou secondaires pour tous les enseignements pour lesquels ils peuvent faire des demandes.
+    comment: En phase de voeux, les teachers peuvent supprimer leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.

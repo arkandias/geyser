@@ -1,27 +1,21 @@
 table:
-  name: annee
+  name: degree
   schema: public
 array_relationships:
-  - name: enseignements
+  - name: programs
     using:
       foreign_key_constraint_on:
-        column: annee
+        column: degree_id
         table:
-          name: enseignement
-          schema: public
-  - name: services
-    using:
-      foreign_key_constraint_on:
-        column: annee
-        table:
-          name: service
+          name: program
           schema: public
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - en_cours
-        - value
+        - id
+        - name
+        - name_short
         - visible
       filter:
         _exists:
@@ -32,14 +26,15 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les années.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir tous les degree.
+  - role: teacher
     permission:
       columns:
-        - en_cours
-        - value
+        - id
+        - name
+        - name_short
         - visible
       filter:
         _and:
@@ -51,8 +46,8 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir toutes les années visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir tous les degree visibles.

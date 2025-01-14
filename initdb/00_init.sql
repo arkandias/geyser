@@ -105,23 +105,21 @@ CREATE TABLE IF NOT EXISTS degree
 
 CREATE TABLE IF NOT EXISTS program
 (
-    id          serial PRIMARY KEY,
-    degree_id   integer NOT NULL REFERENCES degree ON UPDATE CASCADE,
-    name        text    NOT NULL,
-    name_short  text,
-    name_import text,
-    visible     boolean NOT NULL DEFAULT TRUE,
+    id         serial PRIMARY KEY,
+    degree_id  integer NOT NULL REFERENCES degree ON UPDATE CASCADE,
+    name       text    NOT NULL,
+    name_short text,
+    visible    boolean NOT NULL DEFAULT TRUE,
     UNIQUE (degree_id, name)
 );
 
 CREATE TABLE IF NOT EXISTS track
 (
-    id          serial PRIMARY KEY,
-    program_id  integer NOT NULL REFERENCES program ON UPDATE CASCADE,
-    name        text    NOT NULL,
-    name_short  text,
-    name_import text,
-    visible     boolean NOT NULL DEFAULT TRUE,
+    id         serial PRIMARY KEY,
+    program_id integer NOT NULL REFERENCES program ON UPDATE CASCADE,
+    name       text    NOT NULL,
+    name_short text,
+    visible    boolean NOT NULL DEFAULT TRUE,
     UNIQUE (program_id, name)
 );
 
@@ -135,28 +133,25 @@ CREATE TABLE IF NOT EXISTS course_type
 
 CREATE TABLE IF NOT EXISTS course
 (
-    id                  serial PRIMARY KEY,
-    ens_id_import       text UNIQUE,
-    formation_id_import text,
-    year                integer NOT NULL REFERENCES year ON UPDATE CASCADE,
-    program_id          integer NOT NULL REFERENCES program ON UPDATE CASCADE,
-    track_id            integer REFERENCES track ON UPDATE CASCADE,
-    parent_id           integer REFERENCES course ON UPDATE CASCADE,
-    name                text    NOT NULL,
-    name_short          text,
-    name_import         text,
-    type                text    NOT NULL REFERENCES course_type ON UPDATE CASCADE,
-    semester            integer NOT NULL CHECK (1 <= semester AND semester <= 6),
-    cycle_year          integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
-    hours               real    NOT NULL CHECK (hours >= 0),
-    hours_adjusted      real CHECK (0 <= hours_adjusted AND hours_adjusted < hours),
-    hours_effective     integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
-    groups              integer NOT NULL CHECK (groups >= 0),
-    groups_adjusted     integer CHECK (0 <= groups_adjusted AND groups_adjusted < groups),
-    groups_effective    integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
-    description         text,
-    priority_rule       integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
-    visible             boolean NOT NULL DEFAULT TRUE,
+    id               serial PRIMARY KEY,
+    year             integer NOT NULL REFERENCES year ON UPDATE CASCADE,
+    program_id       integer NOT NULL REFERENCES program ON UPDATE CASCADE,
+    track_id         integer REFERENCES track ON UPDATE CASCADE,
+    parent_id        integer REFERENCES course ON UPDATE CASCADE,
+    name             text    NOT NULL,
+    name_short       text,
+    type             text    NOT NULL REFERENCES course_type ON UPDATE CASCADE,
+    semester         integer NOT NULL CHECK (1 <= semester AND semester <= 6),
+    cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
+    hours            real    NOT NULL CHECK (hours >= 0),
+    hours_adjusted   real CHECK (0 <= hours_adjusted AND hours_adjusted < hours),
+    hours_effective  integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
+    groups           integer NOT NULL CHECK (groups >= 0),
+    groups_adjusted  integer CHECK (0 <= groups_adjusted AND groups_adjusted < groups),
+    groups_effective integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
+    description      text,
+    priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
+    visible          boolean NOT NULL DEFAULT TRUE,
     UNIQUE (year, program_id, track_id, name, semester, type)
 );
 
@@ -488,7 +483,6 @@ COMMENT ON COLUMN program.id IS 'Unique identifier for the program.';
 COMMENT ON COLUMN program.degree_id IS 'Associated degree ID.';
 COMMENT ON COLUMN program.name IS 'Program name (unique within degree).';
 COMMENT ON COLUMN program.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN program.name_import IS 'Name used for data import.';
 COMMENT ON COLUMN program.visible IS 'Indicates if the program is visible to users.';
 
 COMMENT ON TABLE track IS 'Table containing different tracks within programs.';
@@ -496,7 +490,6 @@ COMMENT ON COLUMN track.id IS 'Unique identifier for the track.';
 COMMENT ON COLUMN track.program_id IS 'Associated program ID.';
 COMMENT ON COLUMN track.name IS 'Track name (unique within program).';
 COMMENT ON COLUMN track.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN track.name_import IS 'Name used for data import.';
 COMMENT ON COLUMN track.visible IS 'Indicates if the track is visible to users.';
 
 COMMENT ON TABLE course_type IS 'Table containing different course types (lecture, tutorial, etc.).';
@@ -507,15 +500,12 @@ COMMENT ON COLUMN course_type.description IS 'Brief description.';
 
 COMMENT ON TABLE course IS 'Table containing courses.';
 COMMENT ON COLUMN course.id IS 'Unique identifier for the course.';
-COMMENT ON COLUMN course.ens_id_import IS 'ID used for data import.';
-COMMENT ON COLUMN course.formation_id_import IS 'ID used for data import.';
 COMMENT ON COLUMN course.year IS 'Academic year of the course.';
 COMMENT ON COLUMN course.program_id IS 'Associated program ID.';
 COMMENT ON COLUMN course.track_id IS 'Associated track ID (optional).';
 COMMENT ON COLUMN course.parent_id IS 'ID of parent course (same course from previous year).';
 COMMENT ON COLUMN course.name IS 'Course name.';
 COMMENT ON COLUMN course.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN course.name_import IS 'Name used for data import.';
 COMMENT ON COLUMN course.type IS 'Course type.';
 COMMENT ON COLUMN course.semester IS 'Semester number (1-6).';
 COMMENT ON COLUMN course.cycle_year IS 'Academic cycle year (automatically calculated from semester: S1/S2 -> 1; S3/S4 -> 2; S5/S6 -> 3).';

@@ -2,36 +2,36 @@ table:
   name: service
   schema: public
 object_relationships:
-  - name: anneeByAnnee
-    using:
-      foreign_key_constraint_on: annee
-  - name: intervenant
+  - name: teacher
     using:
       foreign_key_constraint_on: uid
-array_relationships:
-  - name: demandes
+  - name: yearByYear
     using:
-      foreign_key_constraint_on:
-        column: service_id
-        table:
-          name: demande
-          schema: public
+      foreign_key_constraint_on: year
+array_relationships:
   - name: modifications
     using:
       foreign_key_constraint_on:
         column: service_id
         table:
-          name: modification_service
+          name: service_modification
           schema: public
-  - name: priorites
+  - name: prioritys
     using:
       foreign_key_constraint_on:
         column: service_id
         table:
-          name: priorite
+          name: priority
+          schema: public
+  - name: requests
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: request
           schema: public
 insert_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       check:
         _and:
@@ -43,16 +43,16 @@ insert_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
-          - anneeByAnnee:
-              en_cours:
+          - yearByYear:
+              current:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
       columns:
-        - annee
-        - heures_eqtd
+        - year
+        - hours
         - message
         - uid
     comment: ""
@@ -60,8 +60,8 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - annee
-        - heures_eqtd
+        - year
+        - hours
         - id
         - message
         - uid
@@ -74,15 +74,15 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
       allow_aggregations: true
     comment: En phase de commission, les commissaires peuvent voir tous les services.
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - annee
-        - heures_eqtd
+        - year
+        - hours
         - id
         - message
         - uid
@@ -96,20 +96,20 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
-          - anneeByAnnee:
+          - yearByYear:
               visible:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs services pour toutes les années visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir leurs services pour toutes les années visibles.
 update_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - heures_eqtd
+        - hours
         - message
       filter:
         _and:
@@ -121,10 +121,10 @@ update_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
-          - anneeByAnnee:
-              en_cours:
+          - yearByYear:
+              current:
                 _eq: true
           - uid:
               _eq: X-Hasura-User-Id

@@ -1,17 +1,17 @@
 table:
-  name: intervenant
+  name: teacher
   schema: public
 object_relationships:
-  - name: fonctionByFonction
+  - name: positionByFonction
     using:
-      foreign_key_constraint_on: fonction
+      foreign_key_constraint_on: position
 array_relationships:
   - name: responsabilites
     using:
       foreign_key_constraint_on:
         column: uid
         table:
-          name: responsable
+          name: coordinator
           schema: public
   - name: services
     using:
@@ -21,7 +21,7 @@ array_relationships:
           name: service
           schema: public
 insert_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       check:
         _and:
@@ -33,29 +33,29 @@ insert_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - uid:
               _eq: X-Hasura-User-Id
-          - nom:
+          - lastname:
               _eq: X-Hasura-Last-Name
-          - prenom:
+          - firstname:
               _eq: X-Hasura-First-Name
       columns:
-        - nom
-        - prenom
+        - lastname
+        - firstname
         - uid
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent créer leur propre profil.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent créer leur propre profil.
 select_permissions:
   - role: commissaire
     permission:
       columns:
-        - actif
+        - active
         - alias
-        - fonction
-        - heures_eqtd_service_base
-        - nom
-        - prenom
+        - position
+        - base_service_hours
+        - lastname
+        - firstname
         - uid
         - visible
       filter:
@@ -67,18 +67,18 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les intervenants.
-  - role: intervenant
+    comment: En phase de commission, les commissaires peuvent voir tous les teachers.
+  - role: teacher
     permission:
       columns:
-        - fonction
+        - position
         - visible
-        - actif
-        - nom
-        - prenom
-        - heures_eqtd_service_base
+        - active
+        - lastname
+        - firstname
+        - base_service_hours
         - uid
         - alias
       filter:
@@ -91,18 +91,18 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - visible:
               _eq: true
       limit: 1
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir les intervenants visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir les teachers visibles.
 update_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - nom
-        - prenom
+        - lastname
+        - firstname
         - uid
       filter:
         _and:
@@ -114,13 +114,13 @@ update_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - uid:
               _eq: X-Hasura-User-Id
-          - nom:
+          - lastname:
               _eq: X-Hasura-Last-Name
-          - prenom:
+          - firstname:
               _eq: X-Hasura-First-Name
       check: null
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent mettre à jour leur propre profil.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent mettre à jour leur propre profil.

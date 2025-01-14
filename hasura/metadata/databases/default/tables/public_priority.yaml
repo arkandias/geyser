@@ -1,10 +1,10 @@
 table:
-  name: priorite
+  name: priority
   schema: public
 object_relationships:
-  - name: enseignement
+  - name: course
     using:
-      foreign_key_constraint_on: ens_id
+      foreign_key_constraint_on: course_id
   - name: service
     using:
       foreign_key_constraint_on: service_id
@@ -12,10 +12,10 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - anciennete
-        - ens_id
+        - seniority
+        - course_id
         - id
-        - prioritaire
+        - is_priority
         - service_id
       filter:
         _exists:
@@ -26,16 +26,16 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
     comment: En phase de commission, les commissaires peuvent voir toutes les priorités.
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - anciennete
-        - ens_id
+        - seniority
+        - course_id
         - id
-        - prioritaire
+        - is_priority
         - service_id
       filter:
         _and:
@@ -47,51 +47,51 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - _or:
-              - enseignement:
+              - course:
                   _or:
-                    - responsables:
+                    - coordinators:
                         uid:
                           _eq: X-Hasura-User-Id
-                    - parcours:
-                        responsables:
+                    - track:
+                        coordinators:
                           uid:
                             _eq: X-Hasura-User-Id
-                    - mention:
-                        responsables:
+                    - program:
+                        coordinators:
                           uid:
                             _eq: X-Hasura-User-Id
               - _and:
                   - service:
-                      intervenant:
+                      teacher:
                         visible:
                           _eq: true
-                  - enseignement:
+                  - course:
                       _or:
                         - _and:
-                            - anneeByAnnee:
+                            - yearByYear:
                                 visible:
                                   _eq: true
-                            - mention:
+                            - program:
                                 _and:
-                                  - cursus:
+                                  - degree:
                                       visible:
                                         _eq: true
                                   - visible:
                                       _eq: true
-                            - parcours:
+                            - track:
                                 visible:
                                   _eq: true
                             - visible:
                                 _eq: true
-                        - demandes:
+                        - requests:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-                        - priorites:
+                        - prioritys:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-    comment: 'Lorsque Geyser est ouvert, les intervenants peuvent voir les priorités des intervenants visibles pour : 1) des enseignements visibles dont l''année, le cursus, la mention et (éventuellement) le parcours sont tous visibles ; 2) des enseignements pour lesquels ils ont une demande/attribution ou une priorité. Les intervenants responsables d''un enseignement (directement ou via le parcours ou la mention) peuvent voir toutes les priorités pour cet enseignement.'
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les priorités des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/attribution ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les priorités pour cet course.'

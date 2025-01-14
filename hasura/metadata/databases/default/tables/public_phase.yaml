@@ -6,15 +6,15 @@ select_permissions:
     permission:
       columns:
         - description
-        - en_cours
+        - current
         - value
       filter: {}
     comment: Les commissaires peuvent voir toutes les phases.
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
         - description
-        - en_cours
+        - current
         - value
       filter: {}
-    comment: Les intervenants peuvent voir toutes les phases.
+    comment: Les teachers peuvent voir toutes les phases.

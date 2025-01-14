@@ -1,5 +1,5 @@
 table:
-  name: modification_service
+  name: service_modification
   schema: public
 object_relationships:
   - name: service
@@ -9,7 +9,7 @@ object_relationships:
     using:
       foreign_key_constraint_on: type
 insert_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       check:
         _and:
@@ -21,26 +21,26 @@ insert_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
-              anneeByAnnee:
-                en_cours:
+              yearByYear:
+                current:
                   _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
       columns:
-        - heures_eqtd
+        - hours
         - service_id
         - type
-    comment: En phase de voeux, les intervenants peuvent créer des modifications de service pour l'année en cours.
+    comment: En phase de voeux, les teachers peuvent créer des modifications de service pour l'année en cours.
 select_permissions:
   - role: commissaire
     permission:
       columns:
         - id
-        - heures_eqtd
+        - hours
         - service_id
         - type
       filter:
@@ -52,15 +52,15 @@ select_permissions:
             _and:
               - value:
                   _eq: commission
-              - en_cours:
+              - current:
                   _eq: true
       allow_aggregations: true
     comment: En phase de commission, les commissaires peuvent voir toutes les modifications de service.
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
         - id
-        - heures_eqtd
+        - hours
         - service_id
         - type
       filter:
@@ -73,22 +73,22 @@ select_permissions:
                 _and:
                   - value:
                       _neq: fermeture
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
-              anneeByAnnee:
+              yearByYear:
                 visible:
                   _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les intervenants peuvent voir leurs modifications de service pour toutes les années visibles.
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir leurs modifications de service pour toutes les années visibles.
 update_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       columns:
-        - heures_eqtd
+        - hours
         - type
       filter:
         _and:
@@ -100,19 +100,19 @@ update_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
-              anneeByAnnee:
-                en_cours:
+              yearByYear:
+                current:
                   _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
       check: null
-    comment: En phase de voeux, les intervenants peuvent modifier le nombre d'heures et le type de leurs modifications de service pour l'année en cours.
+    comment: En phase de voeux, les teachers peuvent modifier le namebre d'hours et le type de leurs modifications de service pour l'année en cours.
 delete_permissions:
-  - role: intervenant
+  - role: teacher
     permission:
       filter:
         _and:
@@ -124,13 +124,13 @@ delete_permissions:
                 _and:
                   - value:
                       _eq: voeux
-                  - en_cours:
+                  - current:
                       _eq: true
           - service:
-              anneeByAnnee:
-                en_cours:
+              yearByYear:
+                current:
                   _eq: true
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-    comment: En phase de voeux, les intervenants peuvent supprimer leurs modifications de service pour l'année en cours.
+    comment: En phase de voeux, les teachers peuvent supprimer leurs modifications de service pour l'année en cours.
