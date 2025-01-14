@@ -16,7 +16,7 @@ VALUES ('requests', NULL),
        ('shutdown', NULL);
 
 COMMENT ON TABLE phase IS 'System phases controlling the course assignment workflow';
-COMMENT ON COLUMN phase.value IS 'Phase identifier (e.g., requests, assignments, results, shutdown)';
+COMMENT ON COLUMN phase.value IS 'Phase identifier (requests, assignments, results, shutdown)';
 COMMENT ON COLUMN phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
 
 CREATE TABLE IF NOT EXISTS year
@@ -365,7 +365,7 @@ VALUES ('assignment'),
        ('secondary');
 
 COMMENT ON TABLE request_type IS 'Types of teaching assignment requests in workflow';
-COMMENT ON COLUMN request_type.value IS 'Request type identifier (primary, secondary, or assignment)';
+COMMENT ON COLUMN request_type.value IS 'Request type identifier (primary, secondary, assignment)';
 
 CREATE TABLE IF NOT EXISTS request
 (
