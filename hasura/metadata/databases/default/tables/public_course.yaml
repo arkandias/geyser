@@ -47,12 +47,11 @@ array_relationships:
           name: request
           schema: public
 computed_fields:
-  - name: total_hours_effective
+  - name: totalHoursEffective
     definition:
       function:
         name: total_hours_effective
         schema: public
-    comment: Le namebre d'hours d'course ouvertes par groupe multiplié par le namebre de groups ouverts.
 select_permissions:
   - role: commissaire
     permission:
@@ -77,7 +76,7 @@ select_permissions:
         - type
         - visible
       computed_fields:
-        - total_hours_effective
+        - totalHoursEffective
       filter:
         _exists:
           _table:
@@ -113,7 +112,7 @@ select_permissions:
         - type
         - visible
       computed_fields:
-        - total_hours_effective
+        - totalHoursEffective
       filter:
         _and:
           - _exists:

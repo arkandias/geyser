@@ -17,8 +17,7 @@ select_permissions:
         - description
         - label
         - value
-      filter: {}
-    comment: ""
+      filter: { }
   - role: teacher
     permission:
       columns:
@@ -26,5 +25,4 @@ select_permissions:
         - description
         - label
         - value
-      filter: {}
-    comment: ""
+      filter: { }

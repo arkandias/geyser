@@ -129,4 +129,3 @@ update_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       check: null
-    comment: ""

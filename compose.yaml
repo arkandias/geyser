@@ -100,6 +100,7 @@ services:
       - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8080/realms/geyser/protocol/openid-connect/certs"}
       - HASURA_GRAPHQL_CORS_DOMAIN=*
       - HASURA_GRAPHQL_ENABLE_CONSOLE=true
+      - HASURA_GRAPHQL_EXPERIMENTAL_FEATURES=naming_convention
     ports:
       - "8090:8080"
     networks:
