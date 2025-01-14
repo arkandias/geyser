@@ -52,7 +52,7 @@ computed_fields:
       function:
         name: total_hours_effective
         schema: public
-    comment: Le namebre d'hours d'course ouvertes par groupe multiplié par le namebre de groups ouverts.
+    comment: Total effective teaching hours of the course given by multiplying hours_effective by groups_effective
 select_permissions:
   - role: commissaire
     permission:

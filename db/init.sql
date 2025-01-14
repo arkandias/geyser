@@ -1,14 +1,3 @@
-INSERT INTO phase(value, current)
-VALUES ('requests', TRUE),
-       ('assignments', NULL),
-       ('results', NULL),
-       ('shutdown', NULL);
-
-INSERT INTO request_type(value)
-VALUES ('assignment'),
-       ('primary'),
-       ('secondary');
-
 INSERT INTO service_modification_type(value, label, description)
 VALUES ('autre', 'Autre', 'Tout autre type de modification'),
        ('conge_arret', 'Congé / arrêt', 'Congé maternité, arrêt maladie, etc.'),

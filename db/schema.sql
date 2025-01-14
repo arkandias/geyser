@@ -2,6 +2,23 @@
 -- General tables
 --
 
+CREATE TABLE IF NOT EXISTS phase
+(
+    value   text PRIMARY KEY,
+    current boolean UNIQUE, -- TRUE or NULL
+    CHECK (current)         -- current is TRUE or NULL
+);
+
+INSERT INTO phase(value, current)
+VALUES ('requests', NULL),
+       ('assignments', NULL),
+       ('results', NULL),
+       ('shutdown', NULL);
+
+COMMENT ON TABLE phase IS 'System phases controlling the course assignment workflow';
+COMMENT ON COLUMN phase.value IS 'Phase identifier (e.g., requests, assignments, results, shutdown)';
+COMMENT ON COLUMN phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
+
 CREATE TABLE IF NOT EXISTS year
 (
     value   integer PRIMARY KEY,
@@ -11,12 +28,10 @@ CREATE TABLE IF NOT EXISTS year
     CHECK (current IS NULL OR visible IS TRUE) -- current year is visible
 );
 
-CREATE TABLE IF NOT EXISTS phase
-(
-    value   text PRIMARY KEY,
-    current boolean UNIQUE, -- TRUE or NULL
-    CHECK (current)         -- current is TRUE or NULL
-);
+COMMENT ON TABLE year IS 'Academic year definitions with current year designation and visibility settings';
+COMMENT ON COLUMN year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
+COMMENT ON COLUMN year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
+COMMENT ON COLUMN year.visible IS 'Controls visibility of the year in the user interface and queries';
 
 
 --
@@ -31,6 +46,12 @@ CREATE TABLE IF NOT EXISTS position
     description        text
 );
 
+COMMENT ON TABLE position IS 'Teaching positions with associated service hour requirements';
+COMMENT ON COLUMN position.value IS 'Position identifier (e.g., professor, lecturer)';
+COMMENT ON COLUMN position.label IS 'Human-readable position name for display purposes';
+COMMENT ON COLUMN position.base_service_hours IS 'Default annual teaching hours required for this position, can be overridden per teacher';
+COMMENT ON COLUMN position.description IS 'Optional description of the position';
+
 CREATE TABLE IF NOT EXISTS teacher
 (
     uid                text PRIMARY KEY,
@@ -43,17 +64,32 @@ CREATE TABLE IF NOT EXISTS teacher
     active             boolean NOT NULL DEFAULT TRUE
 );
 
+COMMENT ON TABLE teacher IS 'Core teacher information and status';
+COMMENT ON COLUMN teacher.uid IS 'Teacher''s email address (primary key).';
+COMMENT ON COLUMN teacher.firstname IS 'Teacher''s first name';
+COMMENT ON COLUMN teacher.lastname IS 'Teacher''s last name';
+COMMENT ON COLUMN teacher.alias IS 'Optional display name, used instead of first/last name when set';
+COMMENT ON COLUMN teacher.position IS 'Reference to teacher''s position, determines default service hours';
+COMMENT ON COLUMN teacher.base_service_hours IS 'Individual override for annual teaching hours, takes precedence over position''s base hours';
+COMMENT ON COLUMN teacher.visible IS 'Controls teacher visibility in the user interface and queries';
+COMMENT ON COLUMN teacher.active IS 'Controls system access and automatic service creation for upcoming years';
+
 CREATE TABLE IF NOT EXISTS service
 (
-    id         serial PRIMARY KEY,
-    year       integer     NOT NULL REFERENCES year ON UPDATE CASCADE,
-    uid        text        NOT NULL REFERENCES teacher ON UPDATE CASCADE,
-    hours      real        NOT NULL,
-    message    text,
-    created_at timestamptz NOT NULL DEFAULT current_timestamp,
-    updated_at timestamptz NOT NULL DEFAULT current_timestamp,
+    id      serial PRIMARY KEY,
+    year    integer NOT NULL REFERENCES year ON UPDATE CASCADE,
+    uid     text    NOT NULL REFERENCES teacher ON UPDATE CASCADE,
+    hours   real    NOT NULL,
+    message text,
     UNIQUE (year, uid)
 );
+
+COMMENT ON TABLE service IS 'Annual teaching service records tracking required hours and modifications';
+COMMENT ON COLUMN service.id IS 'Unique service identifier';
+COMMENT ON COLUMN service.year IS 'Academic year for this service record';
+COMMENT ON COLUMN service.uid IS 'Teacher identifier linking to teacher table';
+COMMENT ON COLUMN service.hours IS 'Required teaching hours for the year before modifications';
+COMMENT ON COLUMN service.message IS 'Optional message from teacher to course allocation committee';
 
 CREATE TABLE IF NOT EXISTS service_modification_type
 (
@@ -62,15 +98,25 @@ CREATE TABLE IF NOT EXISTS service_modification_type
     description text
 );
 
+COMMENT ON TABLE service_modification_type IS 'Categories of service hour modifications';
+COMMENT ON COLUMN service_modification_type.value IS 'Modification type identifier';
+COMMENT ON COLUMN service_modification_type.label IS 'Human-readable name for the modification type';
+COMMENT ON COLUMN service_modification_type.description IS 'Detailed explanation of the modification type and its application';
+
 CREATE TABLE IF NOT EXISTS service_modification
 (
     id         serial PRIMARY KEY,
-    service_id integer     NOT NULL REFERENCES service ON UPDATE CASCADE,
-    type       text        NOT NULL REFERENCES service_modification_type ON UPDATE CASCADE,
-    hours      real        NOT NULL,
-    created_at timestamptz NOT NULL DEFAULT current_timestamp,
-    updated_at timestamptz NOT NULL DEFAULT current_timestamp
+    service_id integer NOT NULL REFERENCES service ON UPDATE CASCADE,
+    type       text    NOT NULL REFERENCES service_modification_type ON UPDATE CASCADE,
+    hours      real    NOT NULL
 );
+
+COMMENT ON TABLE service_modification IS 'Individual modifications to base teaching service hours';
+COMMENT ON COLUMN service_modification.id IS 'Unique modification identifier';
+COMMENT ON COLUMN service_modification.service_id IS 'Reference to affected service record';
+COMMENT ON COLUMN service_modification.type IS 'Type of service modification being applied';
+COMMENT ON COLUMN service_modification.hours IS 'Hour adjustment amount (negative values increase required hours)';
+
 
 --
 -- Course-related tables
@@ -84,6 +130,12 @@ CREATE TABLE IF NOT EXISTS degree
     visible    boolean NOT NULL DEFAULT TRUE
 );
 
+COMMENT ON TABLE degree IS 'Academic degrees offered by the institution';
+COMMENT ON COLUMN degree.id IS 'Unique degree identifier';
+COMMENT ON COLUMN degree.name IS 'Full degree name, unique (e.g., Bachelor of Science)';
+COMMENT ON COLUMN degree.name_short IS 'Abbreviated degree name (e.g., BSc)';
+COMMENT ON COLUMN degree.visible IS 'Controls degree visibility in the user interface and queries';
+
 CREATE TABLE IF NOT EXISTS program
 (
     id         serial PRIMARY KEY,
@@ -93,6 +145,13 @@ CREATE TABLE IF NOT EXISTS program
     visible    boolean NOT NULL DEFAULT TRUE,
     UNIQUE (degree_id, name)
 );
+
+COMMENT ON TABLE program IS 'Academic programs within each degree';
+COMMENT ON COLUMN program.id IS 'Unique program identifier';
+COMMENT ON COLUMN program.degree_id IS 'Parent degree for this program';
+COMMENT ON COLUMN program.name IS 'Full program name, unique within its degree (e.g., Mathematics)';
+COMMENT ON COLUMN program.name_short IS 'Abbreviated program name';
+COMMENT ON COLUMN program.visible IS 'Controls program visibility in the user interface and queries';
 
 CREATE TABLE IF NOT EXISTS track
 (
@@ -104,6 +163,13 @@ CREATE TABLE IF NOT EXISTS track
     UNIQUE (program_id, name)
 );
 
+COMMENT ON TABLE track IS 'Specialization tracks within academic programs';
+COMMENT ON COLUMN track.id IS 'Unique track identifier';
+COMMENT ON COLUMN track.program_id IS 'Parent program for this track';
+COMMENT ON COLUMN track.name IS 'Full track name, unique within its program (e.g., Pure Mathematics, Applied Mathematics, Statistics, etc.)';
+COMMENT ON COLUMN track.name_short IS 'Abbreviated track name';
+COMMENT ON COLUMN track.visible IS 'Controls track visibility in the user interface and queries';
+
 CREATE TABLE IF NOT EXISTS course_type
 (
     value       text PRIMARY KEY,
@@ -111,6 +177,12 @@ CREATE TABLE IF NOT EXISTS course_type
     coefficient real NOT NULL DEFAULT 1,
     description text
 );
+
+COMMENT ON TABLE course_type IS 'Types of course delivery with associated workload coefficients';
+COMMENT ON COLUMN course_type.value IS 'Course type identifier (e.g., lecture, tutorial)';
+COMMENT ON COLUMN course_type.label IS 'Human-readable type name for display';
+COMMENT ON COLUMN course_type.coefficient IS 'Workload multiplier for service hour calculations';
+COMMENT ON COLUMN course_type.description IS 'Detailed description of the course type and its characteristics';
 
 CREATE TABLE IF NOT EXISTS course
 (
@@ -135,6 +207,27 @@ CREATE TABLE IF NOT EXISTS course
     visible          boolean NOT NULL DEFAULT TRUE,
     UNIQUE (year, program_id, track_id, name, semester, type)
 );
+
+COMMENT ON TABLE course IS 'Detailed course definitions and configurations';
+COMMENT ON COLUMN course.id IS 'Unique course identifier';
+COMMENT ON COLUMN course.year IS 'Academic year when the course is offered';
+COMMENT ON COLUMN course.program_id IS 'Program offering this course';
+COMMENT ON COLUMN course.track_id IS 'Optional track specialization for this course';
+COMMENT ON COLUMN course.parent_id IS 'Reference to previous year''s version of this course';
+COMMENT ON COLUMN course.name IS 'Full course name';
+COMMENT ON COLUMN course.name_short IS 'Abbreviated course name';
+COMMENT ON COLUMN course.type IS 'Course delivery type affecting workload calculation';
+COMMENT ON COLUMN course.semester IS 'Academic semester (1-6)';
+COMMENT ON COLUMN course.cycle_year IS 'Computed study year (1-3) based on semester';
+COMMENT ON COLUMN course.hours IS 'Standard teaching hours per group';
+COMMENT ON COLUMN course.hours_adjusted IS 'Modified teaching hours per group if different from standard';
+COMMENT ON COLUMN course.hours_effective IS 'Actual teaching hours used, defaulting to standard if no adjustment';
+COMMENT ON COLUMN course.groups IS 'Standard number of student groups';
+COMMENT ON COLUMN course.groups_adjusted IS 'Modified number of groups if different from standard';
+COMMENT ON COLUMN course.groups_effective IS 'Actual number of groups used, defaulting to standard if no adjustment';
+COMMENT ON COLUMN course.description IS 'Detailed course description and objectives';
+COMMENT ON COLUMN course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
+COMMENT ON COLUMN course.visible IS 'Controls course visibility in the user interface and queries';
 
 CREATE OR REPLACE FUNCTION total_hours_effective(course_row course) RETURNS real AS
 $$
@@ -248,6 +341,15 @@ CREATE TABLE IF NOT EXISTS coordinator
     CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
 
+COMMENT ON TABLE coordinator IS 'Academic coordination responsibilities at program, track, or course level';
+COMMENT ON COLUMN coordinator.id IS 'Unique coordinator assignment identifier';
+COMMENT ON COLUMN coordinator.uid IS 'Teacher assigned as coordinator';
+COMMENT ON COLUMN coordinator.program_id IS 'Program being coordinated (mutually exclusive with track_id and course_id)';
+COMMENT ON COLUMN coordinator.track_id IS 'Track being coordinated (mutually exclusive with program_id and course_id)';
+COMMENT ON COLUMN coordinator.course_id IS 'Course being coordinated (mutually exclusive with program_id and track_id)';
+COMMENT ON COLUMN coordinator.comment IS 'Additional coordination details';
+
+
 --
 -- Request-related tables
 --
@@ -257,17 +359,30 @@ CREATE TABLE IF NOT EXISTS request_type
     value text PRIMARY KEY
 );
 
+INSERT INTO request_type(value)
+VALUES ('assignment'),
+       ('primary'),
+       ('secondary');
+
+COMMENT ON TABLE request_type IS 'Types of teaching assignment requests in workflow';
+COMMENT ON COLUMN request_type.value IS 'Request type identifier (primary, secondary, or assignment)';
+
 CREATE TABLE IF NOT EXISTS request
 (
     id         serial PRIMARY KEY,
-    service_id integer     NOT NULL REFERENCES service ON UPDATE CASCADE,
-    course_id  integer     NOT NULL REFERENCES course ON UPDATE CASCADE,
-    type       text        NOT NULL REFERENCES request_type ON UPDATE CASCADE,
-    hours      real        NOT NULL CHECK (hours > 0),
-    created_at timestamptz NOT NULL DEFAULT current_timestamp,
-    updated_at timestamptz NOT NULL DEFAULT current_timestamp,
+    service_id integer NOT NULL REFERENCES service ON UPDATE CASCADE,
+    course_id  integer NOT NULL REFERENCES course ON UPDATE CASCADE,
+    type       text    NOT NULL REFERENCES request_type ON UPDATE CASCADE,
+    hours      real    NOT NULL CHECK (hours > 0),
     UNIQUE (service_id, course_id, type)
 );
+
+COMMENT ON TABLE request IS 'Teacher requests and assignments for courses';
+COMMENT ON COLUMN request.id IS 'Unique request identifier';
+COMMENT ON COLUMN request.service_id IS 'Associated teacher service record';
+COMMENT ON COLUMN request.course_id IS 'Requested or assigned course';
+COMMENT ON COLUMN request.type IS 'Type of request (primary choice, backup, or final assignment)';
+COMMENT ON COLUMN request.hours IS 'Requested or assigned teaching hours';
 
 CREATE OR REPLACE FUNCTION hours_weighted(request_row request) RETURNS real AS
 $$
@@ -277,7 +392,7 @@ FROM request r
          JOIN course_type ct ON c.type = ct.value
 WHERE r.id = request_row.id;
 $$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION hours_weighted(request) IS 'Calculates weighted hours for a request by applying the course type coefficient to the requested hours';
+COMMENT ON FUNCTION hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
 
 CREATE TABLE IF NOT EXISTS priority
 (
@@ -288,6 +403,13 @@ CREATE TABLE IF NOT EXISTS priority
     is_priority boolean,
     UNIQUE (service_id, course_id)
 );
+
+COMMENT ON TABLE priority IS 'Teacher course assignment history and priority status';
+COMMENT ON COLUMN priority.id IS 'Unique priority record identifier';
+COMMENT ON COLUMN priority.service_id IS 'Associated teacher service record';
+COMMENT ON COLUMN priority.course_id IS 'Course for which priority is tracked';
+COMMENT ON COLUMN priority.seniority IS 'Consecutive years teaching this course before current year';
+COMMENT ON COLUMN priority.is_priority IS 'Current priority status based on seniority and course rules';
 
 CREATE OR REPLACE FUNCTION is_priority(request_row request) RETURNS boolean AS
 $$
@@ -329,6 +451,7 @@ CREATE TRIGGER check_priority_service
     ON priority
     FOR EACH ROW
 EXECUTE FUNCTION check_service_course_year();
+
 
 --
 -- Functions
@@ -405,6 +528,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION create_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
+
 --
 -- Timestamps
 --
@@ -417,7 +541,6 @@ BEGIN
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION set_timestamp() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
-
 
 CREATE OR REPLACE FUNCTION add_timestamp_columns(target_table text) RETURNS void AS
 $$
@@ -457,132 +580,3 @@ $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION add_timestamp_columns_to_all_tables() IS 'Adds created_at and updated_at timestamp columns to all tables in the public schema, along with an automatic update trigger for updated_at';
 
 SELECT add_timestamp_columns_to_all_tables();
-
---
--- Comments
---
-
--- General tables
-COMMENT ON TABLE year IS 'Table containing different academic years.';
-COMMENT ON COLUMN year.value IS 'Year number (unique).';
-COMMENT ON COLUMN year.current IS 'Indicates if this is the current year (TRUE) or not (NULL). Only one year can be current at a time.';
-COMMENT ON COLUMN year.visible IS 'Indicates if the year is visible to users.';
-
-COMMENT ON TABLE phase IS 'Table containing the different phases: requests, assignments, results, and shutdown.';
-COMMENT ON COLUMN phase.value IS 'Phase identifier.';
-COMMENT ON COLUMN phase.current IS 'Indicates if this is the current phase (TRUE) or not (NULL). Only one phase can be current at a time.';
-
--- Teacher-related tables
-COMMENT ON TABLE position IS 'Table containing different teaching positions.';
-COMMENT ON COLUMN position.value IS 'Position name (unique).';
-COMMENT ON COLUMN position.label IS 'Display label for this position.';
-COMMENT ON COLUMN position.base_service_hours IS 'Default annual teaching service hours required for this position.';
-COMMENT ON COLUMN position.description IS 'Brief description.';
-
-COMMENT ON TABLE teacher IS 'Table containing teacher information.';
-COMMENT ON COLUMN teacher.uid IS 'Unique identifier for the teacher. Must be an email.';
-COMMENT ON COLUMN teacher.firstname IS 'Teacher''s first name.';
-COMMENT ON COLUMN teacher.lastname IS 'Teacher''s last name.';
-COMMENT ON COLUMN teacher.alias IS 'Optional display alias instead of first and last name.';
-COMMENT ON COLUMN teacher.position IS 'Teacher''s position.';
-COMMENT ON COLUMN teacher.base_service_hours IS 'Teacher''s annual teaching service hours requirement. If set, this overrides the default value from their position.';
-COMMENT ON COLUMN teacher.visible IS 'Indicates if the teacher is visible to users.';
-COMMENT ON COLUMN teacher.active IS 'Indicates if the teacher is currently active. Controls both application access and whether a service should be automatically created for the next year.';
-
-COMMENT ON TABLE service IS 'Table containing base services, i.e. the number of teaching hours a teacher must fulfill in a given year before any modifications.';
-COMMENT ON COLUMN service.id IS 'Unique identifier for the service.';
-COMMENT ON COLUMN service.year IS 'Academic year of the service.';
-COMMENT ON COLUMN service.uid IS 'Teacher''s identifier for this service.';
-COMMENT ON COLUMN service.hours IS 'Base number of teaching hours.';
-COMMENT ON COLUMN service.message IS 'Optional message from the teacher to the course assignment commission.';
-COMMENT ON COLUMN service.created_at IS 'Timestamp of when the modification was created.';
-COMMENT ON COLUMN service.updated_at IS 'Timestamp of when the modification was last updated.';
-
-COMMENT ON TABLE service_modification_type IS 'Table containing different types of service modifications.';
-COMMENT ON COLUMN service_modification_type.value IS 'Modification type (unique).';
-COMMENT ON COLUMN service_modification_type.label IS 'Display label for the modification type.';
-COMMENT ON COLUMN service_modification_type.description IS 'Brief description.';
-
-COMMENT ON TABLE service_modification IS 'Table containing modifications to a teacher''s base service for a given year.';
-COMMENT ON COLUMN service_modification.id IS 'Unique identifier for the modification.';
-COMMENT ON COLUMN service_modification.service_id IS 'Reference to the service being modified. Links the modification to a specific teacher''s service for a given year.';
-COMMENT ON COLUMN service_modification.type IS 'Type of modification.';
-COMMENT ON COLUMN service_modification.hours IS 'Number of hours by which the service is modified (negative number indicates service increase).';
-COMMENT ON COLUMN service_modification.created_at IS 'Timestamp of when the modification was created.';
-COMMENT ON COLUMN service_modification.updated_at IS 'Timestamp of when the modification was last updated.';
-
--- Course-related tables
-COMMENT ON TABLE degree IS 'Table containing different degrees (bachelor, master, etc.).';
-COMMENT ON COLUMN degree.id IS 'Unique identifier for the degree.';
-COMMENT ON COLUMN degree.name IS 'Degree name (unique).';
-COMMENT ON COLUMN degree.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN degree.visible IS 'Indicates if the degree is visible to users.';
-
-COMMENT ON TABLE program IS 'Table containing different programs (mathematics, computer science, etc.).';
-COMMENT ON COLUMN program.id IS 'Unique identifier for the program.';
-COMMENT ON COLUMN program.degree_id IS 'Associated degree ID.';
-COMMENT ON COLUMN program.name IS 'Program name (unique within degree).';
-COMMENT ON COLUMN program.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN program.visible IS 'Indicates if the program is visible to users.';
-
-COMMENT ON TABLE track IS 'Table containing different tracks within programs.';
-COMMENT ON COLUMN track.id IS 'Unique identifier for the track.';
-COMMENT ON COLUMN track.program_id IS 'Associated program ID.';
-COMMENT ON COLUMN track.name IS 'Track name (unique within program).';
-COMMENT ON COLUMN track.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN track.visible IS 'Indicates if the track is visible to users.';
-
-COMMENT ON TABLE course_type IS 'Table containing different course types (lecture, tutorial, etc.).';
-COMMENT ON COLUMN course_type.value IS 'Course type (unique).';
-COMMENT ON COLUMN course_type.label IS 'Display label for the course type.';
-COMMENT ON COLUMN course_type.coefficient IS 'Multiplicative coefficient applied to teaching hours for service calculations.';
-COMMENT ON COLUMN course_type.description IS 'Brief description.';
-
-COMMENT ON TABLE course IS 'Table containing courses.';
-COMMENT ON COLUMN course.id IS 'Unique identifier for the course.';
-COMMENT ON COLUMN course.year IS 'Academic year of the course.';
-COMMENT ON COLUMN course.program_id IS 'Associated program ID.';
-COMMENT ON COLUMN course.track_id IS 'Associated track ID (optional).';
-COMMENT ON COLUMN course.parent_id IS 'ID of parent course (same course from previous year).';
-COMMENT ON COLUMN course.name IS 'Course name.';
-COMMENT ON COLUMN course.name_short IS 'Abbreviated name.';
-COMMENT ON COLUMN course.type IS 'Course type.';
-COMMENT ON COLUMN course.semester IS 'Semester number (1-6).';
-COMMENT ON COLUMN course.cycle_year IS 'Academic cycle year (automatically calculated from semester: S1/S2 -> 1; S3/S4 -> 2; S5/S6 -> 3).';
-COMMENT ON COLUMN course.hours IS 'Teaching hours per group.';
-COMMENT ON COLUMN course.hours_adjusted IS 'Adjusted teaching hours per group (if different from initial hours).';
-COMMENT ON COLUMN course.hours_effective IS 'Actual number of teaching hours per group, using hours_adjusted if set, otherwise using the initial hours value.';
-COMMENT ON COLUMN course.groups IS 'Number of groups.';
-COMMENT ON COLUMN course.groups_adjusted IS 'Adjusted number of groups (if different from initial groups).';
-COMMENT ON COLUMN course.groups_effective IS 'Actual number of groups, using groups_adjusted if set, otherwise using the initial groups value.';
-COMMENT ON COLUMN course.description IS 'Course description.';
-COMMENT ON COLUMN course.priority_rule IS 'Priority rule (optional): number of years a teacher has priority for this course (3 by default; 1 for no year-to-year priority; 0 for unlimited priority).';
-COMMENT ON COLUMN course.visible IS 'Indicates if the course is visible to users.';
-
-COMMENT ON TABLE coordinator IS 'Table containing coordinators of programs, tracks, or courses. Each row corresponds to exactly one of these three types of responsibility.';
-COMMENT ON COLUMN coordinator.id IS 'Unique identifier for the coordinator entry.';
-COMMENT ON COLUMN coordinator.uid IS 'Teacher''s identifier.';
-COMMENT ON COLUMN coordinator.program_id IS 'Program ID (optional, if and only if the row corresponds to program coordination).';
-COMMENT ON COLUMN coordinator.track_id IS 'Track ID (optional, if and only if the row corresponds to track coordination).';
-COMMENT ON COLUMN coordinator.course_id IS 'Course ID (optional, if and only if the row corresponds to course coordination).';
-COMMENT ON COLUMN coordinator.comment IS 'Additional information (optional, e.g., to specify year for program or track coordination).';
-
--- Request-related tables
-COMMENT ON TABLE request_type IS 'Table containing different types of teaching requests: primary (first choice), secondary (backup choice), and assignment (final allocation).';
-COMMENT ON COLUMN request_type.value IS 'Request type (unique).';
-
-COMMENT ON TABLE request IS 'Table containing teaching requests.';
-COMMENT ON COLUMN request.id IS 'Unique identifier for the request.';
-COMMENT ON COLUMN request.service_id IS 'Associated service ID.';
-COMMENT ON COLUMN request.course_id IS 'Associated course ID.';
-COMMENT ON COLUMN request.type IS 'Request type.';
-COMMENT ON COLUMN request.hours IS 'Requested teaching hours.';
-COMMENT ON COLUMN request.created_at IS 'Timestamp of when the modification was created.';
-COMMENT ON COLUMN request.updated_at IS 'Timestamp of when the modification was last updated.';
-
-COMMENT ON TABLE priority IS 'Table containing information about teacher seniority and priority for courses.';
-COMMENT ON COLUMN priority.id IS 'Unique identifier for the priority entry.';
-COMMENT ON COLUMN priority.service_id IS 'Associated service ID.';
-COMMENT ON COLUMN priority.course_id IS 'Associated course ID.';
-COMMENT ON COLUMN priority.seniority IS 'Number of consecutive years up to the current year (excluded) during which the course was assigned to the teacher.';
-COMMENT ON COLUMN priority.is_priority IS 'Indicates if the teacher has priority for this course.';
