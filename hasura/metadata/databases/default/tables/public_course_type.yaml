@@ -13,10 +13,10 @@ select_permissions:
   - role: commissaire
     permission:
       columns:
-        - description
         - value
-        - weight
         - label
+        - coefficient
+        - description
       filter:
         _exists:
           _table:
@@ -32,10 +32,10 @@ select_permissions:
   - role: teacher
     permission:
       columns:
-        - description
         - value
-        - weight
         - label
+        - coefficient
+        - description
       filter:
         _exists:
           _table:

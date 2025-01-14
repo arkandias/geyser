@@ -18,13 +18,6 @@ CREATE TABLE IF NOT EXISTS phase
     CHECK (current)         -- current is TRUE or NULL
 );
 
-CREATE OR REPLACE FUNCTION set_timestamp() RETURNS trigger AS
-$$
-BEGIN
-    new.updated_at = now();
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql;
 
 --
 -- Teacher-related tables
@@ -127,7 +120,7 @@ CREATE TABLE IF NOT EXISTS course_type
 (
     value       text PRIMARY KEY,
     label       text NOT NULL,
-    weight      real NOT NULL DEFAULT 1,
+    coefficient real NOT NULL DEFAULT 1,
     description text
 );
 
@@ -159,6 +152,7 @@ CREATE OR REPLACE FUNCTION total_hours_effective(course_row course) RETURNS real
 $$
 SELECT course_row.hours_effective * course_row.groups_effective;
 $$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective';
 
 CREATE OR REPLACE FUNCTION check_parent_year() RETURNS trigger AS
 $$
@@ -181,6 +175,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql STABLE;
+COMMENT ON FUNCTION check_parent_year() IS 'Ensures that the parent course''s year is less than the course''s year';
 
 CREATE OR REPLACE TRIGGER check_parent_year
     BEFORE INSERT OR UPDATE OF parent_id, year
@@ -210,6 +205,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql STABLE;
+COMMENT ON FUNCTION check_children_year() IS 'Ensures that child courses'' years are greater than the course''s year';
 
 CREATE OR REPLACE TRIGGER check_children_year
     BEFORE UPDATE OF year
@@ -238,6 +234,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql STABLE;
+COMMENT ON FUNCTION check_track_program() IS 'Ensures that a course''s track belongs to the course''s program';
 
 CREATE TRIGGER check_track_program
     BEFORE INSERT OR UPDATE OF program_id, track_id
@@ -292,12 +289,13 @@ EXECUTE FUNCTION set_timestamp();
 
 CREATE OR REPLACE FUNCTION hours_weighted(request_row request) RETURNS real AS
 $$
-SELECT r.hours * ct.weight
+SELECT r.hours * ct.coefficient
 FROM request r
          JOIN course c ON r.course_id = c.id
          JOIN course_type ct ON c.type = ct.value
 WHERE r.id = request_row.id;
 $$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION hours_weighted(request) IS 'Calculates weighted hours for a request by applying the course type coefficient to the requested hours';
 
 CREATE TABLE IF NOT EXISTS priority
 (
@@ -316,6 +314,7 @@ FROM priority
 WHERE service_id = request_row.service_id
   AND course_id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION is_priority(request) IS 'Determines if a request is prioritized based on teaching history and course priority rules';
 
 CREATE OR REPLACE FUNCTION check_service_course_year() RETURNS trigger AS
 $$
@@ -335,6 +334,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION check_service_course_year() IS 'Ensures that service and course years match for requests and priorities';
 
 CREATE TRIGGER check_request_service
     BEFORE INSERT OR UPDATE OF service_id, course_id
@@ -369,6 +369,7 @@ ON CONFLICT (service_id, course_id) DO UPDATE
     SET seniority = excluded.seniority
 RETURNING *;
 $$ LANGUAGE sql;
+COMMENT ON FUNCTION compute_seniorities(integer) IS 'Inserts priorities or updates seniority column for a given service based on previous course assignments';
 
 CREATE OR REPLACE FUNCTION compute_priorities(p_service_id integer) RETURNS setof priority AS
 $$
@@ -380,6 +381,7 @@ WHERE p.service_id = p_service_id
   AND c.priority_rule IS NOT NULL
 RETURNING p.*;
 $$ LANGUAGE sql;
+COMMENT ON FUNCTION compute_priorities(integer) IS 'Updates is_priority column for a given service based on seniority and course priority rules';
 
 CREATE OR REPLACE FUNCTION compute_service_priorities() RETURNS trigger AS
 $$
@@ -389,6 +391,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION compute_service_priorities() IS 'Trigger function that fully computes all priorities for a given service';
 
 CREATE TRIGGER compute_service_priorities
     AFTER INSERT
@@ -406,6 +409,7 @@ WHERE t.uid = p_uid
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
+COMMENT ON FUNCTION create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
 CREATE OR REPLACE FUNCTION create_services(p_year integer) RETURNS setof service AS
 $$
@@ -417,6 +421,60 @@ WHERE t.active IS TRUE
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
+COMMENT ON FUNCTION create_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
+
+--
+-- Timestamps
+--
+
+CREATE OR REPLACE FUNCTION set_timestamp() RETURNS trigger AS
+$$
+BEGIN
+    new.updated_at = now();
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION set_timestamp() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
+
+
+CREATE OR REPLACE FUNCTION add_timestamp_columns(target_table text) RETURNS void AS
+$$
+BEGIN
+    EXECUTE format('
+        ALTER TABLE %I 
+        ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT current_timestamp,
+        ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT current_timestamp
+    ', target_table);
+
+    EXECUTE format('
+        CREATE OR REPLACE TRIGGER set_timestamp
+        BEFORE UPDATE ON %I
+        FOR EACH ROW
+        EXECUTE FUNCTION set_timestamp()
+    ', target_table);
+
+    RAISE NOTICE 'Added timestamp columns and trigger to table: %', target_table;
+END;
+$$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION add_timestamp_columns(text) IS 'Adds created_at and updated_at timestamp columns to the specified table, along with an automatic update trigger for updated_at';
+
+CREATE OR REPLACE FUNCTION add_timestamp_columns_to_all_tables() RETURNS void AS
+$$
+DECLARE
+    table_name text;
+BEGIN
+    FOR table_name IN
+        SELECT tablename
+        FROM pg_tables
+        WHERE schemaname = 'public'
+        LOOP
+            PERFORM add_timestamp_columns(table_name);
+        END LOOP;
+END;
+$$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION add_timestamp_columns_to_all_tables() IS 'Adds created_at and updated_at timestamp columns to all tables in the public schema, along with an automatic update trigger for updated_at';
+
+SELECT add_timestamp_columns_to_all_tables();
 
 --
 -- Comments
@@ -495,7 +553,7 @@ COMMENT ON COLUMN track.visible IS 'Indicates if the track is visible to users.'
 COMMENT ON TABLE course_type IS 'Table containing different course types (lecture, tutorial, etc.).';
 COMMENT ON COLUMN course_type.value IS 'Course type (unique).';
 COMMENT ON COLUMN course_type.label IS 'Display label for the course type.';
-COMMENT ON COLUMN course_type.weight IS 'Multiplicative coefficient applied to teaching hours for service calculations.';
+COMMENT ON COLUMN course_type.coefficient IS 'Multiplicative coefficient applied to teaching hours for service calculations.';
 COMMENT ON COLUMN course_type.description IS 'Brief description.';
 
 COMMENT ON TABLE course IS 'Table containing courses.';
@@ -518,7 +576,6 @@ COMMENT ON COLUMN course.groups_effective IS 'Actual number of groups, using gro
 COMMENT ON COLUMN course.description IS 'Course description.';
 COMMENT ON COLUMN course.priority_rule IS 'Priority rule (optional): number of years a teacher has priority for this course (3 by default; 1 for no year-to-year priority; 0 for unlimited priority).';
 COMMENT ON COLUMN course.visible IS 'Indicates if the course is visible to users.';
-COMMENT ON FUNCTION total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective.';
 
 COMMENT ON TABLE coordinator IS 'Table containing coordinators of programs, tracks, or courses. Each row corresponds to exactly one of these three types of responsibility.';
 COMMENT ON COLUMN coordinator.id IS 'Unique identifier for the coordinator entry.';
@@ -540,8 +597,6 @@ COMMENT ON COLUMN request.type IS 'Request type.';
 COMMENT ON COLUMN request.hours IS 'Requested teaching hours.';
 COMMENT ON COLUMN request.created_at IS 'Timestamp of when the modification was created.';
 COMMENT ON COLUMN request.updated_at IS 'Timestamp of when the modification was last updated.';
-COMMENT ON FUNCTION hours_weighted(request) IS 'Calculates weighted hours for a request by applying the course type weight coefficient to the requested hours.';
-COMMENT ON FUNCTION is_priority(request) IS 'Determines if a request is prioritized based on teaching history and course priority rules.';
 
 COMMENT ON TABLE priority IS 'Table containing information about teacher seniority and priority for courses.';
 COMMENT ON COLUMN priority.id IS 'Unique identifier for the priority entry.';
@@ -549,15 +604,3 @@ COMMENT ON COLUMN priority.service_id IS 'Associated service ID.';
 COMMENT ON COLUMN priority.course_id IS 'Associated course ID.';
 COMMENT ON COLUMN priority.seniority IS 'Number of consecutive years up to the current year (excluded) during which the course was assigned to the teacher.';
 COMMENT ON COLUMN priority.is_priority IS 'Indicates if the teacher has priority for this course.';
-
--- Functions
-COMMENT ON FUNCTION set_timestamp() IS 'Updates the updated_at timestamp whenever a row is modified';
-COMMENT ON FUNCTION check_parent_year() IS 'Ensures that the parent course''s year is less than the course''s year';
-COMMENT ON FUNCTION check_children_year() IS 'Ensures that child courses'' years are greater than the course''s year';
-COMMENT ON FUNCTION check_track_program() IS 'Ensures that the track of a course belongs to the course''s program';
-COMMENT ON FUNCTION check_service_course_year() IS 'Ensures that service and course years match for requests and priorities';
-COMMENT ON FUNCTION compute_seniorities(integer) IS 'Calculates course seniorities for a given service based on previous course assignments';
-COMMENT ON FUNCTION compute_priorities(integer) IS 'Updates priority flags based on seniority and course priority rules';
-COMMENT ON FUNCTION compute_service_priorities() IS 'Trigger function that computes both seniorities and priorities for a new service. Runs automatically after service creation.';
-COMMENT ON FUNCTION create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours';
-COMMENT ON FUNCTION create_services(integer) IS 'Creates service entries for all active teachers for a specific year, using their personal base_service_hours if set, otherwise their position''s base_service_hours.';

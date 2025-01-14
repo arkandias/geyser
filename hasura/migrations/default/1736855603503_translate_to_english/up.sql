@@ -110,8 +110,6 @@ ALTER TABLE type_demande
 
 ALTER TABLE type_enseignement
     RENAME TO course_type;
-ALTER TABLE course_type
-    RENAME COLUMN coefficient TO weight;
 
 ALTER TABLE type_modification
     RENAME TO service_modification_type;
