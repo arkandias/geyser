@@ -48,7 +48,7 @@ CREATE TABLE IF NOT EXISTS service
     id         serial PRIMARY KEY,
     year       integer     NOT NULL REFERENCES year ON UPDATE CASCADE,
     uid        text        NOT NULL REFERENCES teacher ON UPDATE CASCADE,
-    base_hours real        NOT NULL,
+    hours      real        NOT NULL,
     message    text,
     created_at timestamptz NOT NULL DEFAULT current_timestamp,
     updated_at timestamptz NOT NULL DEFAULT current_timestamp,
@@ -383,7 +383,7 @@ EXECUTE FUNCTION compute_service_priorities();
 
 CREATE OR REPLACE FUNCTION create_service(p_year integer, p_uid text) RETURNS service AS
 $$
-INSERT INTO service (year, uid, base_hours)
+INSERT INTO service (year, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM teacher t
          JOIN position p ON t.position = p.value
@@ -395,7 +395,7 @@ COMMENT ON FUNCTION create_service(integer, text) IS 'Creates a new service entr
 
 CREATE OR REPLACE FUNCTION create_services(p_year integer) RETURNS setof service AS
 $$
-INSERT INTO service (year, uid, base_hours)
+INSERT INTO service (year, uid, hours)
 SELECT p_year, t.uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM teacher t
          JOIN position p ON t.position = p.value
@@ -493,7 +493,7 @@ COMMENT ON TABLE service IS 'Table containing base services, i.e. the number of 
 COMMENT ON COLUMN service.id IS 'Unique identifier for the service.';
 COMMENT ON COLUMN service.year IS 'Academic year of the service.';
 COMMENT ON COLUMN service.uid IS 'Teacher''s identifier for this service.';
-COMMENT ON COLUMN service.base_hours IS 'Base number of teaching hours.';
+COMMENT ON COLUMN service.hours IS 'Base number of teaching hours.';
 COMMENT ON COLUMN service.message IS 'Optional message from the teacher to the course assignment commission.';
 COMMENT ON COLUMN service.created_at IS 'Timestamp of when the modification was created.';
 COMMENT ON COLUMN service.updated_at IS 'Timestamp of when the modification was last updated.';
