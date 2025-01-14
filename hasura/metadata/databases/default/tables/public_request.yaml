@@ -17,13 +17,11 @@ computed_fields:
       function:
         name: hours_weighted
         schema: public
-    comment: The requested hours multiplied by the course type coefficient
   - name: is_priority
     definition:
       function:
         name: is_priority
         schema: public
-    comment: The request priority based on teaching history and course priority rules
 insert_permissions:
   - role: commissaire
     permission:

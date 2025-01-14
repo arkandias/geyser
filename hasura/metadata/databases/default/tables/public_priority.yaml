@@ -90,7 +90,7 @@ select_permissions:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-                        - prioritys:
+                        - priorities:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id

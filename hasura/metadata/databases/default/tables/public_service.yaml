@@ -16,7 +16,7 @@ array_relationships:
         table:
           name: service_modification
           schema: public
-  - name: prioritys
+  - name: priorities
     using:
       foreign_key_constraint_on:
         column: service_id

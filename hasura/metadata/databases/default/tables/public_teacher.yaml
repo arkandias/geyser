@@ -2,11 +2,11 @@ table:
   name: teacher
   schema: public
 object_relationships:
-  - name: positionByFonction
+  - name: positionByPosition
     using:
       foreign_key_constraint_on: position
 array_relationships:
-  - name: responsabilites
+  - name: responsibilities
     using:
       foreign_key_constraint_on:
         column: uid
