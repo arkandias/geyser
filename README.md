@@ -85,7 +85,7 @@ The following environment variable must also be set (either in `.env.local` or o
 
 | Environment variable | Explanation                                                                                                              |
 |----------------------|--------------------------------------------------------------------------------------------------------------------------|
-| `FRONTEND_HOST`      | The hostname and, optionally, the port number at which the web app will be served (e.g. `localhost:5173`, `example.com`) |
+| `SERVER_HOST`        | The hostname and, optionally, the port number at which the web app will be served (e.g. `localhost:5173`, `example.com`) |
 
 *N.B. In order to run the application, all three files `.env.dev`, `.env.prod`, and `.env.local` must exist at
 the root of the project.*
@@ -131,7 +131,7 @@ It is connected to the Geyser database and is used by the web client to make Gra
 The GraphQL API is available at:
 
 - http://localhost:8090/v1/graphql in development mode
-- https://example.com/graphql in production mode (assuming `FRONTEND_HOST=example.com`)
+- https://example.com/graphql in production mode (assuming `SERVER_HOST=example.com`)
 
 Hasura permissions are handled by giving users some of the following roles.
 
@@ -152,7 +152,7 @@ It manages the authentication and the roles of the Hasura users using JWT tokens
 
 In development mode, Keycloak can be reached at http://localhost:8080.
 
-In production mode, the following ports are exposed by the reverse proxy (assuming `FRONTEND_HOST=example.com`):
+In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
 
 | Path          | Reverse proxy path                  |
 |---------------|-------------------------------------|

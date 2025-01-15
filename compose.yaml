@@ -45,7 +45,7 @@ services:
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=$POSTGRES_KC_PASSWORD
       - KC_DB_SCHEMA=public
-      - FRONTEND_URL=http://${FRONTEND_HOST}
+      - FRONTEND_URL=http://${SERVER_HOST}
     ports:
       - "8080:8080"
     networks:

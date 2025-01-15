@@ -7,11 +7,11 @@ services:
     restart: ${KC_RESTART:-always}
     environment:
       - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME=https://${FRONTEND_HOST}/auth
+      - KC_HOSTNAME=https://${SERVER_HOST}/auth
       - KC_HOSTNAME_ADMIN=http://localhost:8080
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${FRONTEND_HOST}/fullchain.cer
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${FRONTEND_HOST}/private.key
-      - FRONTEND_URL=https://${FRONTEND_HOST}
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${SERVER_HOST}/fullchain.cer
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${SERVER_HOST}/private.key
+      - FRONTEND_URL=https://${SERVER_HOST}
     ports:
       - "8443:8443"
     networks:
@@ -26,15 +26,13 @@ services:
   hasura:
     restart: always
     environment:
-      - HASURA_GRAPHQL_CORS_DOMAIN=https://${FRONTEND_HOST}
+      - HASURA_GRAPHQL_CORS_DOMAIN=https://${SERVER_HOST}
       - HASURA_GRAPHQL_ENABLE_CONSOLE=false
     networks:
       - frontend
 
   web:
-    # this is the build from geyser-frontend
-    # will be moved to gitlab soon (hopefully)
-    image: jhauseux/geyser:latest
+    build: ./keycloak
     restart: always
     depends_on:
       keycloak:
@@ -49,7 +47,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      - FRONTEND_HOST
+      - SERVER_HOST
     ports:
       - "80:80"
       - "443:443"
