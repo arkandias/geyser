@@ -4,6 +4,10 @@ WORKDIR /app
 
 ARG CLIENT_VERSION
 ARG SERVER_HOST
+ARG LEGAL_NOTICE
+
+# Copy legal notice if provided
+RUN cp ${LEGAL_NOTICE} /app/src/content/legal-notice.html 2>/dev/null || true
 
 ENV VITE_BUILD_VERSION=${CLIENT_VERSION}
 ENV VITE_GRAPHQL_URL=${SERVER_HOST}/graphql
