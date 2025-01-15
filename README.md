@@ -1,5 +1,5 @@
 <div style="background-color: #ffffff">
-    <img src="geyser-horizontal-logo-tight.svg" alt="Geyser logo" width="750">
+    <img src="logo.svg" alt="Geyser logo" width="750">
 </div>
 
 ## Getting Started

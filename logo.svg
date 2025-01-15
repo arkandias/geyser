@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 200">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 160">
     <!-- Logo symbol -->
-    <g transform="translate(100,100)">
+    <g transform="translate(80,80)">
         <circle cx="0" cy="0" r="80" fill="#f0f9ff"/>
 
         <!-- Base flowing curves -->
@@ -30,7 +30,7 @@
     </g>
 
     <!-- Text group -->
-    <g transform="translate(220,85)">
+    <g transform="translate(200,65)">
         <!-- GEYSER -->
         <text x="0" y="10"
               font-family="Inter, Helvetica Neue, sans-serif"
@@ -40,6 +40,7 @@
             GEYSER
         </text>
 
+        <!-- Course Allocation Flow -->
         <text x="2" y="45">
             <tspan
                     font-family="Inter, Helvetica Neue, sans-serif"
