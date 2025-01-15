@@ -1,10 +1,4 @@
 #!/bin/bash
-################################################################################
-# Copyright (c) 2024 Julien Hauseux.                                           #
-# This file is part of Geyser.                                                 #
-# Distributed under the GNU Affero General Public License, version 3.          #
-################################################################################
-
 # This script serves as a shorthand for executing Keycloak commands which cannot
 # be run on a started Keycloak (e.g., `import`). For commands executable on a
 # started Keycloak, consider using the companion script `kc`.

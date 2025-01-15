@@ -1,10 +1,4 @@
 #!/bin/sh
-################################################################################
-# Copyright (c) 2024 Julien Hauseux.                                           #
-# This file is part of Geyser.                                                 #
-# Distributed under the GNU Affero General Public License, version 3.          #
-################################################################################
-
 # This script is intended to be sourced using an interactive shell. It adds some
 # environment variables along with some useful aliases to the configuration file
 # of the detected shell (either Bash or Zsh). These configurations are designed
@@ -12,14 +6,14 @@
 
 # Detect current shell
 if [ -n "$BASH_VERSION" ]; then
-  echo "Shell detected: Bash"
-  config_file="$HOME/.bashrc"
+    echo "Shell detected: Bash"
+    config_file="$HOME/.bashrc"
 elif [ -n "$ZSH_VERSION" ]; then
-  echo "Shell detected: Zsh"
-  config_file="$HOME/.zshrc"
+    echo "Shell detected: Zsh"
+    config_file="$HOME/.zshrc"
 else
-  echo "Unknown shell, configuration not saved"
-  exit 0
+    echo "Unknown shell, configuration not saved"
+    exit 0
 fi
 
 # Set Geyser directory
@@ -31,39 +25,44 @@ GEYSER_DIR=${install_dir:-$default_dir}
 # Set Geyser mode
 printf "Select an environment:\n1) Development\n2) Production/Staging\n"
 while true; do
-  printf "Your choice: "
-  read -r choice
-  case $choice in
-    1) GEYSER_MODE=development
-      # shellcheck disable=SC2016
-      gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
-      break;;
-    2) GEYSER_MODE=production
-      # shellcheck disable=SC2016
-      gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
-      break;;
-    *) echo "Not a valid choice";;
-  esac
+    printf "Your choice: "
+    read -r choice
+    case $choice in
+    1)
+        GEYSER_MODE=development
+        # shellcheck disable=SC2016
+        gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
+        break
+        ;;
+    2)
+        GEYSER_MODE=production
+        # shellcheck disable=SC2016
+        gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
+        break
+        ;;
+    *) echo "Not a valid choice" ;;
+    esac
 done
 
-sed_i () {
-  OS=$(uname)
-  case "$OS" in
+sed_i() {
+    OS=$(uname)
+    case "$OS" in
     "Linux")
-      sed -i "$@"
-      ;;
+        sed -i "$@"
+        ;;
     "Darwin")
-      sed -i '' "$@"
-      ;;
+        sed -i '' "$@"
+        ;;
     *)
-      echo "Unknown OS, configuration not saved"
-      exit 0
-      ;;
-  esac
+        echo "Unknown OS, configuration not saved"
+        exit 0
+        ;;
+    esac
 }
 
 # The configuration
-config=$(cat << EOF
+config=$(
+    cat <<EOF
 # BEGIN Geyser configuration
 export GEYSER_DIR="$GEYSER_DIR"
 export GEYSER_MODE="$GEYSER_MODE"
@@ -78,24 +77,25 @@ EOF
 echo "Configuration:"
 echo "$config"
 while true; do
-  printf "Add to %s? [Y/n] " "$config_file"
-  read -r choice
-  case $choice in
-    ""|y|Y)
-      sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "$config_file"
-      while [ "$(tail -n 1 "$config_file" | grep -v '^$')" = "" ]; do
-        # shellcheck disable=SC2016
-        sed_i -e '$d' "$config_file"
-      done
-      {
-        echo ""
-        echo "$config"
-        echo ""
-      } >> "$config_file"
-      break;;
-    n|N) break;;
-    *) echo "Not a valid choice";;
-  esac
+    printf "Add to %s? [Y/n] " "$config_file"
+    read -r choice
+    case $choice in
+    "" | y | Y)
+        sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "$config_file"
+        while [ "$(tail -n 1 "$config_file" | grep -v '^$')" = "" ]; do
+            # shellcheck disable=SC2016
+            sed_i -e '$d' "$config_file"
+        done
+        {
+            echo ""
+            echo "$config"
+            echo ""
+        } >>"$config_file"
+        break
+        ;;
+    n | N) break ;;
+    *) echo "Not a valid choice" ;;
+    esac
 done
 
 # Completion
@@ -105,16 +105,16 @@ echo "2) Zsh (using oh-my-zsh)"
 echo "3) None"
 read -r selection
 case "$selection" in
-  1)
+1)
     cp "$GEYSER_DIR"/scripts/completion/geyser-completion.bash /etc/bash_completion.d/geyser
     ;;
-  2)
+2)
     mkdir -p "$HOME"/.oh-my-zsh/completions
     cp "$GEYSER_DIR"/scripts/completion/_geyser "$HOME"/.oh-my-zsh/completions/_geyser
     ;;
-  3)
-    ;;
-  *)
+3) ;;
+
+*)
     echo "Invalid option"
     ;;
 esac

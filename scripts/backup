@@ -1,12 +1,6 @@
 #!/bin/bash
-################################################################################
-# Copyright (c) 2024 Julien Hauseux.                                           #
-# This file is part of Geyser.                                                 #
-# Distributed under the GNU Affero General Public License, version 3.          #
-################################################################################
-
 # This script dumps the 'geyser' database and uploads the backup to a remote
-# Nextcloud server. It is intended to be scheduled via crontab for regular 
+# Nextcloud server. It is intended to be scheduled via crontab for regular
 # execution.
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
