@@ -1,8 +1,8 @@
 #!/bin/sh
-# This script is intended to be sourced using an interactive shell. It adds some
-# environment variables along with some useful aliases to the configuration file
-# of the detected shell (either Bash or Zsh). These configurations are designed
-# to simplify various operations to administrate Geyser.
+# This script is intended to be sourced using an interactive shell (either Bash
+# or Zsh). It adds some environment variables along with some useful aliases to
+# the configuration file of the detected shell. These configurations are
+# designed to simplify various operations to administrate Geyser.
 
 # Detect current shell
 if [ -n "$BASH_VERSION" ]; then
