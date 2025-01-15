@@ -1,6 +1,6 @@
 # Geyser
 
-*Gestion des services prévisionnels*
+*Course Allocation Flow*
 
 **Table of Contents**
 
