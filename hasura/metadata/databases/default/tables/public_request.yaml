@@ -23,7 +23,7 @@ computed_fields:
         name: is_priority
         schema: public
 insert_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       check:
         _and:
@@ -34,7 +34,7 @@ insert_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: commission
+                      _eq: assignments
                   - current:
                       _eq: true
           - course:
@@ -42,13 +42,13 @@ insert_permissions:
                 current:
                   _eq: true
           - type:
-              _eq: attribution
+              _eq: assignment
       columns:
         - course_id
         - hours
         - service_id
         - type
-    comment: En phase de commission, les commissaires peuvent créer des attributions pour tous les teachers et pour tous les courses de l'année en cours.
+    comment: En phase de assignments, les assigners peuvent créer des assignments pour tous les teachers et pour tous les courses de l'année en cours.
   - role: teacher
     permission:
       check:
@@ -60,7 +60,7 @@ insert_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _eq: requests
                   - current:
                       _eq: true
           - service:
@@ -100,15 +100,15 @@ insert_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
-              _neq: attribution
+              _neq: assignment
       columns:
         - course_id
         - hours
         - service_id
         - type
-    comment: 'En phase de voeux, les teachers peuvent faire des requests principales ou secondaires pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) des courses pour lesquels ils ont une request/attribution ou une priorité.'
+    comment: 'En phase de requests, les teachers peuvent faire des requests principales ou secondaires pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) des courses pour lesquels ils ont une request/assignment ou une priorité.'
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - course_id
@@ -127,11 +127,11 @@ select_permissions:
           _where:
             _and:
               - value:
-                  _eq: commission
+                  _eq: assignments
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les requests.
+    comment: En phase de assignments, les assigners peuvent voir toutes les requests.
   - role: teacher
     permission:
       columns:
@@ -152,7 +152,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - _or:
@@ -204,7 +204,7 @@ select_permissions:
                   _where:
                     _and:
                       - value:
-                          _eq: consultation
+                          _eq: results
                       - current:
                           _eq: true
               - course:
@@ -212,11 +212,11 @@ select_permissions:
                     current:
                       _is_null: true
               - type:
-                  _neq: attribution
+                  _neq: assignment
       allow_aggregations: true
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les requests des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/attribution ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les requests pour cet course. Les teachers ne peuvent voir les attributions pour les courses de l''année en cours qu''en phase de consultation.'
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les requests des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/assignment ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les requests pour cet course. Les teachers ne peuvent voir les assignments pour les courses de l''année en cours qu''en phase de consultation.'
 update_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - hours
@@ -229,7 +229,7 @@ update_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: commission
+                      _eq: assignments
                   - current:
                       _eq: true
           - course:
@@ -237,9 +237,9 @@ update_permissions:
                 current:
                   _eq: true
           - type:
-              _eq: attribution
+              _eq: assignment
       check: null
-    comment: En phase de commission, les commissaires peuvent modifier toutes les attributions pour des courses de l'année en cours.
+    comment: En phase de assignments, les assigners peuvent modifier toutes les assignments pour des courses de l'année en cours.
   - role: teacher
     permission:
       columns:
@@ -253,7 +253,7 @@ update_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _eq: requests
                   - current:
                       _eq: true
           - service:
@@ -293,11 +293,11 @@ update_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
-              _neq: attribution
+              _neq: assignment
       check: null
-    comment: En phase de voeux, les teachers peuvent modifier leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
+    comment: En phase de requests, les teachers peuvent modifier leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
 delete_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       filter:
         _and:
@@ -308,7 +308,7 @@ delete_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: commission
+                      _eq: assignments
                   - current:
                       _eq: true
           - course:
@@ -316,8 +316,8 @@ delete_permissions:
                 current:
                   _eq: true
           - type:
-              _eq: attribution
-    comment: En phase de commission, les commissaires peuvent supprimer toutes les attributions pour des courses de l'année en cours.
+              _eq: assignment
+    comment: En phase de assignments, les assigners peuvent supprimer toutes les assignments pour des courses de l'année en cours.
   - role: teacher
     permission:
       filter:
@@ -329,7 +329,7 @@ delete_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _eq: requests
                   - current:
                       _eq: true
           - service:
@@ -369,5 +369,5 @@ delete_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
           - type:
-              _neq: attribution
-    comment: En phase de voeux, les teachers peuvent supprimer leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
+              _neq: assignment
+    comment: En phase de requests, les teachers peuvent supprimer leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.

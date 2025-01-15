@@ -42,7 +42,7 @@ insert_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _eq: requests
                   - current:
                       _eq: true
           - yearByYear:
@@ -57,7 +57,7 @@ insert_permissions:
         - uid
     comment: ""
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - year
@@ -73,11 +73,11 @@ select_permissions:
           _where:
             _and:
               - value:
-                  _eq: commission
+                  _eq: assignments
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de commission, les commissaires peuvent voir tous les services.
+    comment: En phase de assignments, les assigners peuvent voir tous les services.
   - role: teacher
     permission:
       columns:
@@ -95,7 +95,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - yearByYear:
@@ -120,7 +120,7 @@ update_permissions:
               _where:
                 _and:
                   - value:
-                      _eq: voeux
+                      _eq: requests
                   - current:
                       _eq: true
           - yearByYear:

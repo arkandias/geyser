@@ -10,7 +10,7 @@ array_relationships:
           name: teacher
           schema: public
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - base_service_hours

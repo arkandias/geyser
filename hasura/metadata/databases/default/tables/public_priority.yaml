@@ -9,7 +9,7 @@ object_relationships:
     using:
       foreign_key_constraint_on: service_id
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - seniority
@@ -25,10 +25,10 @@ select_permissions:
           _where:
             _and:
               - value:
-                  _eq: commission
+                  _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les priorités.
+    comment: En phase de assignments, les assigners peuvent voir toutes les priorités.
   - role: teacher
     permission:
       columns:
@@ -46,7 +46,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - _or:
@@ -94,4 +94,4 @@ select_permissions:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les priorités des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/attribution ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les priorités pour cet course.'
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les priorités des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/assignment ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les priorités pour cet course.'

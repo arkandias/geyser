@@ -28,7 +28,7 @@ array_relationships:
           name: track
           schema: public
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - degree_id
@@ -44,10 +44,10 @@ select_permissions:
           _where:
             _and:
               - value:
-                  _eq: commission
+                  _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir toutes les programs.
+    comment: En phase de assignments, les assigners peuvent voir toutes les programs.
   - role: teacher
     permission:
       columns:
@@ -65,7 +65,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - visible:

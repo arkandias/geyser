@@ -53,7 +53,7 @@ computed_fields:
         name: total_hours_effective
         schema: public
 select_permissions:
-  - role: commissaire
+  - role: assigner
     permission:
       columns:
         - year
@@ -85,10 +85,10 @@ select_permissions:
           _where:
             _and:
               - value:
-                  _eq: commission
+                  _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de commission, les commissaires peuvent voir tous les courses.
+    comment: En phase de assignments, les assigners peuvent voir tous les courses.
   - role: teacher
     permission:
       columns:
@@ -122,7 +122,7 @@ select_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - _or:
@@ -161,7 +161,7 @@ select_permissions:
                   service:
                     uid:
                       _eq: X-Hasura-User-Id
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir : 1) les courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) les courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) les courses pour lesquels ils ont une request/attribution ou une priorité.'
+    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir : 1) les courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) les courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) les courses pour lesquels ils ont une request/assignment ou une priorité.'
 update_permissions:
   - role: teacher
     permission:
@@ -176,7 +176,7 @@ update_permissions:
               _where:
                 _and:
                   - value:
-                      _neq: fermeture
+                      _neq: shutdown
                   - current:
                       _eq: true
           - _or:
