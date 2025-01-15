@@ -1,22 +1,6 @@
-<img src="logo.svg" alt="Geyser logo" width="500"  style="background-color: #ffffff">
-
-**Table of Contents**
-
-- [Getting Started](#getting-started)
-    - [Installation](#installation)
-    - [Configuration](#configuration)
-        - [Environment Variables](#environment-variables)
-        - [SSL Certificates](#ssl-certificates)
-    - [Running Geyser](#running-geyser)
-- [Components](#components)
-    - [Geyser database](#geyser-database)
-    - [Hasura](#hasura-graphql-engine)
-    - [Keycloak](#keycloak)
-        - [Endpoints](#endpoints)
-    - [Keycloak database](#keycloak-database)
-    - [Nginx (production only)](#nginx-production-only)
-- [Contact](#contact)
-- [License](#license)
+<div style="background-color: #ffffff">
+    <img src="logo.svg" alt="Geyser logo" width="750">
+</div>
 
 ## Getting Started
 
