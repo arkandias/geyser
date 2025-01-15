@@ -1,6 +1,4 @@
-# Geyser
-
-*Course Allocation Flow*
+<img src="logo.svg" alt="Geyser logo" width="500"  style="background-color: #ffffff">
 
 **Table of Contents**
 
