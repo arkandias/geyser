@@ -1,5 +1,4 @@
 #!/bin/bash
-# Copyright (c) 2024 Julien Hauseux <julien.hauseux@univ-lille.fr>
 
 # opening file descriptor for read/write
 exec 3<>/dev/tcp/localhost/8080
@@ -21,10 +20,10 @@ exec 3>&-
 
 # check HTTP response
 case $response in
-  HTTP/1.[01]\ 200\ *)
+HTTP/1.[01]\ 200\ *)
     exit 0
     ;;
-  *)
+*)
     echo "Incorrect response:"
     echo "$response"
     exit 1

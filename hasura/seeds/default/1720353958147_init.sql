@@ -1,9 +1,3 @@
-/******************************************************************************
- * Copyright (c) 2024 Julien Hauseux.                                         *
- * This file is part of Geyser.                                               *
- * Distributed under the GNU Affero General Public License, version 3.        *
- ******************************************************************************/
-
 INSERT INTO phase(value, en_cours, description)
 VALUES ('voeux', TRUE, 'Phase pendant laquelle les intervenants peuvent formuler leurs demandes.'),
        ('commission', NULL,
