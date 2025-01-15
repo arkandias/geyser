@@ -1,5 +1,4 @@
 services:
-
   db_keycloak:
     restart: always
 

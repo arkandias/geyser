@@ -1,7 +1,5 @@
 name: geyser
-
 services:
-
   db_keycloak:
     image: postgres:16
     restart: unless-stopped
