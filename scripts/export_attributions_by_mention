@@ -43,7 +43,7 @@ for mention_id in "${mention_ids[@]}"; do
 	EOSQL
     )
     mention_name_formatted=$(echo "${mention_name}" | tr '[:upper:]' '[:lower:]' | iconv -f utf8 -t ascii//TRANSLIT | tr -d '[:punct:]' | tr ' ' '_')
-    filename="${annee}_${mention_name_formatted}"
+    filename="${annee}_${mention_name_formatted}_$(date +"%Y%m%d_%H%M%S")"
     query_attributions=$(
         cat <<-EOSQL
 		SELECT p.nom as parcours, e.semestre, e.nom as enseignement, e.type, i.nom, i.prenom, i.uid as email, d.heures, round((d.heures / e.heures)::numeric, 2) as groupes
