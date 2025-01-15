@@ -1,4 +1,4 @@
-- "!include public_coordinator.yaml"
+- "!include public_coordination.yaml"
 - "!include public_course.yaml"
 - "!include public_course_type.yaml"
 - "!include public_degree.yaml"

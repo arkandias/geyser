@@ -1,5 +1,5 @@
 table:
-  name: coordinator
+  name: coordination
   schema: public
 object_relationships:
   - name: course

@@ -52,15 +52,15 @@ select_permissions:
           - _or:
               - course:
                   _or:
-                    - coordinators:
+                    - coordinations:
                         uid:
                           _eq: X-Hasura-User-Id
                     - track:
-                        coordinators:
+                        coordinations:
                           uid:
                             _eq: X-Hasura-User-Id
                     - program:
-                        coordinators:
+                        coordinations:
                           uid:
                             _eq: X-Hasura-User-Id
               - _and:

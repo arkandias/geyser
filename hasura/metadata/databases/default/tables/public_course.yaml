@@ -18,12 +18,12 @@ object_relationships:
     using:
       foreign_key_constraint_on: year
 array_relationships:
-  - name: coordinators
+  - name: coordinations
     using:
       foreign_key_constraint_on:
         column: course_id
         table:
-          name: coordinator
+          name: coordination
           schema: public
   - name: enfants
     using:
@@ -142,15 +142,15 @@ select_permissions:
                         _eq: true
                   - visible:
                       _eq: true
-              - coordinators:
+              - coordinations:
                   uid:
                     _eq: X-Hasura-User-Id
               - track:
-                  coordinators:
+                  coordinations:
                     uid:
                       _eq: X-Hasura-User-Id
               - program:
-                  coordinators:
+                  coordinations:
                     uid:
                       _eq: X-Hasura-User-Id
               - requests:
@@ -180,15 +180,15 @@ update_permissions:
                   - current:
                       _eq: true
           - _or:
-              - coordinators:
+              - coordinations:
                   uid:
                     _eq: X-Hasura-User-Id
               - track:
-                  coordinators:
+                  coordinations:
                     uid:
                       _eq: X-Hasura-User-Id
               - program:
-                  coordinators:
+                  coordinations:
                     uid:
                       _eq: X-Hasura-User-Id
       check: null

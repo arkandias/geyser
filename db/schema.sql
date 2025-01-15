@@ -329,7 +329,7 @@ CREATE TRIGGER check_track_program_on_track_update
     FOR EACH ROW
 EXECUTE FUNCTION check_track_program();
 
-CREATE TABLE IF NOT EXISTS coordinator
+CREATE TABLE IF NOT EXISTS coordination
 (
     id         serial PRIMARY KEY,
     uid        text NOT NULL REFERENCES teacher ON UPDATE CASCADE,
@@ -341,13 +341,13 @@ CREATE TABLE IF NOT EXISTS coordinator
     CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
 
-COMMENT ON TABLE coordinator IS 'Academic coordination responsibilities at program, track, or course level';
-COMMENT ON COLUMN coordinator.id IS 'Unique coordinator assignment identifier';
-COMMENT ON COLUMN coordinator.uid IS 'Teacher assigned as coordinator';
-COMMENT ON COLUMN coordinator.program_id IS 'Program being coordinated (mutually exclusive with track_id and course_id)';
-COMMENT ON COLUMN coordinator.track_id IS 'Track being coordinated (mutually exclusive with program_id and course_id)';
-COMMENT ON COLUMN coordinator.course_id IS 'Course being coordinated (mutually exclusive with program_id and track_id)';
-COMMENT ON COLUMN coordinator.comment IS 'Additional coordination details';
+COMMENT ON TABLE coordination IS 'Academic coordination assignments at program, track, or course level';
+COMMENT ON COLUMN coordination.id IS 'Unique coordination identifier';
+COMMENT ON COLUMN coordination.uid IS 'Coordinating teacher';
+COMMENT ON COLUMN coordination.program_id IS 'Program being coordinated (mutually exclusive with track_id and course_id)';
+COMMENT ON COLUMN coordination.track_id IS 'Track being coordinated (mutually exclusive with program_id and course_id)';
+COMMENT ON COLUMN coordination.course_id IS 'Course being coordinated (mutually exclusive with program_id and track_id)';
+COMMENT ON COLUMN coordination.comment IS 'Additional coordination details';
 
 
 --
