@@ -304,20 +304,37 @@ hasura() {
 ###############################################################################
 
 wait_until_healthy() {
-    info "Waiting for service ${1} to become healthy..."
-    local health
-    health=$(compose ps "${1}" --format json | jq '.Health')
-    while [[ "${health}" != "\"healthy\"" ]]; do
-        if [[ "${health}" == "\"unhealthy\"" ]]; then
-            error "Service ${1} is unhealthy"
+    local service=$1
+    local timeout=${2:-300} # 5 minutes default timeout
+    local start_time
+    start_time=$(date +%s)
+
+    info "Waiting for service ${service} to become healthy..."
+    while true; do
+        local current_time
+        current_time=$(date +%s)
+        if ((current_time - start_time > timeout)); then
+            error "Timeout waiting for ${service} to become healthy"
         fi
-        if [[ -z "${health}" ]]; then
-            error "Service ${1} stopped"
-        fi
+
+        local health
+        health=$(compose ps "${service}" --format json | jq '.Health')
+
+        case "${health}" in
+        "\"healthy\"")
+            info "Service ${service} is healthy"
+            return 0
+            ;;
+        "\"unhealthy\"")
+            error "Service ${service} is unhealthy"
+            ;;
+        "")
+            error "Service ${service} stopped unexpectedly"
+            ;;
+        esac
+
         sleep 1
-        health=$(compose ps "${1}" --format json | jq '.Health')
     done
-    info "Done"
 }
 
 wait_until_exit() {
@@ -470,6 +487,28 @@ handle_init() {
     info "Initialization completed successfully"
 }
 
+handle_start() {
+    info "Starting services..."
+
+    if [[ "${BYPASS_AUTH}" == "true" ]]; then
+        info "Starting in bypass auth mode (db and hasura only)..."
+        compose up -d db hasura
+        wait_until_healthy db
+        wait_until_healthy hasura
+    else
+        compose up -d
+        wait_until_healthy db
+        wait_until_healthy db_keycloak
+        wait_until_healthy keycloak
+        wait_until_healthy hasura
+        if [[ "${GEYSER_MODE}" == "production" ]]; then
+            wait_until_healthy web
+        fi
+    fi
+
+    info "All services started successfully"
+}
+
 handle_update() {
     info "Starting update process..."
 
@@ -548,7 +587,6 @@ handle_update() {
     fi
 }
 
-# Add a simpler force update option
 handle_force_update() {
     info "Starting forced update..."
 
