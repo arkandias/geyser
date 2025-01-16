@@ -1,0 +1,9 @@
+name: geyser
+services:
+  hasura:
+    depends_on:
+      keycloak:
+        condition: service_started
+        required: false
+    environment:
+      - HASURA_GRAPHQL_JWT_SECRET=
