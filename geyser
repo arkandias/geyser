@@ -177,13 +177,12 @@ ensure_directory() {
 }
 
 show_configuration() {
-    cat <<EOF
-Current Configuration:
-Mode: ${GEYSER_MODE}
-Log Level: ${LOG_LEVEL}
-Server Host: ${SERVER_HOST}
-Log File: ${LOG_FILE}
-EOF
+    info "Current configuration:"
+    info "- Mode: ${GEYSER_MODE}"
+    info "- Log level: ${LOG_LEVEL}"
+    info "- Server host: ${SERVER_HOST}"
+    info "- Log file: ${LOG_FILE}"
+    [[ "${BYPASS_AUTH}" == "true" ]] && info "- Authentication bypass: ENABLED"
 }
 
 ###############################################################################
