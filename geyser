@@ -297,7 +297,7 @@ kc() {
 }
 
 kc_run() {
-    KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
+    BYPASS_AUTH="false" KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
 }
 
 kcadm() {
@@ -461,7 +461,6 @@ handle_update() {
     info "Update completed successfully"
 }
 
-# Database backup/restore functions
 handle_backup() {
     local backup_dir="${GEYSER_DIR}/backups"
     local date
@@ -472,58 +471,54 @@ handle_backup() {
     mkdir -p "${backup_path}"
 
     info "Backing up databases..."
-    info "- Backing up Geyser database..."
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc \
-        -f "/backups/${date}/geyser.dump" || error "Failed to backup Geyser database"
-
     info "- Backing up Keycloak database..."
     compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_dump -U postgres -h localhost -p 5432 -d keycloak -Fc \
-        -f "/backups/${date}/keycloak.dump" || error "Failed to backup Keycloak database"
+        pg_dump -U postgres -h localhost -p 5433 -Fc -f "/backups/${date}/keycloak.dump"
+
+    info "- Backing up Geyser database..."
+    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
+        pg_dump -U postgres -h localhost -p 5432 -Fc -f "/backups/${date}/geyser.dump"
 
     info "Backup completed successfully in ${backup_path}"
 }
 
 handle_restore() {
+    if [[ -n $(compose ps -q) ]]; then
+        notice "Warning: There are running services that need to be stopped for the restore."
+        if ! confirm "Would you like to stop them now?"; then
+            notice "Restore cancelled. Please stop services first with: 'geyser stop'"
+            return
+        fi
+        info "Stopping all services..."
+        compose down
+    fi
+
     local backup_dir="${GEYSER_DIR}/backups"
 
-    # List available backups
     info "Available backups:"
-    list_backups "${backup_dir}"
-
-    # Prompt for backup selection
-    echo -n "Enter backup date to restore (YYYY-MM-DD-HH-MM-SS): "
-    read -r backup_date
+    backup_date=$(select_backup "${backup_dir}" "Select backup to restore")
 
     local backup_path="${backup_dir}/${backup_date}"
     if [[ ! -d "${backup_path}" ]]; then
         error "Backup ${backup_date} not found"
     fi
 
-    # Stop all services before restore
-    info "Stopping all services..."
-    compose down
-
-    # Start databases
     info "Starting databases..."
-    compose up -d db db_keycloak
-    wait_until_healthy db
+    compose up -d db_keycloak db
     wait_until_healthy db_keycloak
+    wait_until_healthy db
 
     info "Restoring databases..."
-    info "- Restoring Geyser database..."
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_restore -U postgres -h localhost -p 5432 -d geyser --clean --if-exists \
-        "/backups/${backup_date}/geyser.dump" || error "Failed to restore Geyser database"
-
     info "- Restoring Keycloak database..."
     compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_restore -U postgres -h localhost -p 5432 -d keycloak --clean --if-exists \
-        "/backups/${backup_date}/keycloak.dump" || error "Failed to restore Keycloak database"
+        pg_restore -U postgres -h localhost -p 5433 --clean --if-exists -v "/backups/${backup_date}/keycloak.dump"
 
-    info "Starting all services..."
-    compose up -d
+    info "- Restoring Geyser database..."
+    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
+        pg_restore -U postgres -h localhost -p 5432 --clean --if-exists -v "/backups/${backup_date}/geyser.dump"
+
+    info "Stopping all services..."
+    compose down
 
     info "Restore completed successfully"
 }
@@ -555,6 +550,7 @@ handle_realm_export() {
             notice "Realm export cancelled. Please stop services first with: 'geyser stop'"
             return
         fi
+        info "Stopping all services..."
         compose down
     fi
 
@@ -579,9 +575,10 @@ handle_realm_import() {
             notice "Realm import cancelled. Please stop services first with: 'geyser stop'"
             return
         fi
+        info "Stopping all services..."
         compose down
     fi
-    
+
     local backup_dir="${GEYSER_DIR}/backups"
 
     info "Available realm exports:"
