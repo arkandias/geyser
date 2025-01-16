@@ -20,15 +20,24 @@ Geyser Administration Script
 
 Usage: geyser [OPTIONS] COMMAND
 
-Commands:
-  init          Initialize Geyser (create volumes, apply migrations and metadata)
-  start         Start Geyser containers
-  stop          Stop Geyser containers
-  restart       Restart Geyser containers (equivalent to stop then start)
-  update        Update Geyser containers (pull and build images)
-  reset         Reset Geyser (delete volumes and start fresh)
-  backup        Backup databases and Keycloak realm
-  restore       Restore from a previous backup
+Core Commands:
+  init          Initialize a fresh Geyser installation (migrations and configuration)
+  start         Start all Geyser services
+  stop          Stop all Geyser services
+  restart       Restart all Geyser services
+  reset         Delete all data and reset to a clean state
+
+Update Commands:
+  update        Safely update services with migrations and backups
+  force-update  Quickly rebuild and update all services (no safety checks)
+
+Backup & Restore:
+  backup        Create a backup of PostgreSQL databases
+  restore       Restore databases from a previous backup
+  realm-export  Export Keycloak realms configuration (requires service restart)
+  realm-import  Import Keycloak realms configuration (requires service restart)
+
+Utility:
   help          Show this help message
 
 Options:
@@ -39,12 +48,26 @@ Options:
   --bypass-auth Start only db and hasura (development mode only)
 
 Examples:
-  geyser init --dev                Initialize Geyser in development mode
-  geyser start --dev --bypass-auth Start with direct database access
-  geyser start --prod             Start Geyser in production mode
-  geyser backup --log-level DEBUG Create a backup with debug logging
+  # Initialize in development mode
+  geyser --dev init
 
-For more information, see: https://gitlab.univ-lille.fr/julien.hauseux/geyser-backend
+  # Start in production
+  geyser --prod start
+
+  # Create a backup with debug logging
+  geyser backup --log-level DEBUG
+
+  # Update with detailed output
+  geyser update --log-level DEBUG
+
+  # Development mode with direct database access
+  geyser --dev start --bypass-auth
+
+  # Export realm configuration
+  geyser realm-export
+
+Note: Some commands require setting environment variables in .env files.
+For more information, see: https://github.com/arkandias/geyser-backend
 EOF
 }
 
@@ -95,6 +118,33 @@ debug() { log "DEBUG" "${1}"; }
 ###############################################################################
 # 3. CORE UTILITY FUNCTIONS
 ###############################################################################
+
+prompt() {
+    echo -n "$1 "
+}
+
+confirm() {
+    local message="$1"
+    local default="${2:-n}" # Default to 'n' if not specified
+
+    if [[ "$default" == "y" ]]; then
+        prompt "$message [Y/n]"
+    else
+        prompt "$message [y/N]"
+    fi
+
+    read -r response
+
+    if [[ "$default" == "y" ]]; then
+        [[ ! "$response" =~ ^[Nn]$ ]]
+    else
+        [[ "$response" =~ ^[Yy]$ ]]
+    fi
+}
+
+notice() {
+    echo "$1"
+}
 
 validate_environment() {
     # Check and export Geyser Mode
@@ -290,33 +340,230 @@ wait_until_exit() {
 # 6. COMMAND HANDLERS
 ###############################################################################
 
+handle_reset() {
+    info "Starting reset process..."
+
+    notice "WARNING: This will completely reset your Geyser installation:"
+    notice "- All databases will be deleted"
+    notice "- All Docker resources will be cleaned"
+    notice "- All configuration will be reset"
+    notice "- All logs will be cleared"
+    notice "Note: Backup files in ${GEYSER_DIR}/backups will be preserved"
+
+    if ! confirm "Are you sure you want to proceed?"; then
+        info "Reset cancelled"
+        return
+    fi
+
+    info "Stopping all services and removing volumes..."
+    compose down -v
+
+    info "Cleaning up Docker resources..."
+    # Remove orphaned volumes
+    docker volume ls -qf "name=geyser" | xargs -r docker volume rm
+
+    # Remove old images
+    docker images "geyser_*" -q | xargs -r docker rmi
+    docker images "keycloak" -q | xargs -r docker rmi
+
+    # Clean build cache and dangling images
+    docker builder prune -f
+    docker image prune -f
+
+    # Remove unused networks
+    docker network prune -f --filter "until=1h"
+
+    info "Cleaning project files..."
+    # Clean logs
+    rm -f "${GEYSER_DIR}/geyser.log"
+    rm -f "${GEYSER_DIR}/hasura/hasura.log"
+
+    # Clean Hasura metadata and migrations
+    rm -rf "${GEYSER_DIR}/hasura/migrations"
+    rm -rf "${GEYSER_DIR}/hasura/metadata/migrations"
+
+    # Clean temporary files
+    find "${GEYSER_DIR}" -name "*.tmp" -type f -delete
+    find "${GEYSER_DIR}" -name "*.bak" -type f -delete
+    find "${GEYSER_DIR}" -name ".DS_Store" -type f -delete
+
+    info "Reset completed successfully"
+
+    if confirm "Would you like to initialize Geyser now?" "y"; then
+        handle_init
+    else
+        notice "You can initialize later using: geyser init"
+    fi
+}
+
 handle_init() {
-    compose up -d keycloak
-    wait_until_healthy keycloak
-    kcadm --login
-    kcadm update realms/master -s attributes.frontendUrl=http://localhost:8080
-    compose up -d
-    wait_until_healthy hasura
+    info "Starting initialization process..."
+
+    # Check if volumes exist
+    if docker volume inspect geyser_data >/dev/null 2>&1 ||
+        docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
+        notice "Warning: Existing data volumes found. This may cause conflicts."
+        if ! confirm "Initialize anyway?"; then
+            notice "If you want to start fresh, use: geyser reset"
+            return
+        fi
+    fi
+
+    # 1. Start databases first
+    info "Starting databases..."
+    compose up -d db db_keycloak
+    wait_until_healthy db
+    wait_until_healthy db_keycloak
+
+    # 2. Initialize Hasura database
+    info "Initializing Hasura database..."
     hasura migrate apply --database-name default
     hasura seed apply --database-name default
     hasura metadata apply
-}
 
-handle_start() {
-    if ! docker volume inspect geyser_data >/dev/null 2>&1; then
-        error "Volume 'geyser_data' does not exists. You must initialize Geyser first"
-    fi
-    if [[ "${BYPASS_AUTH}" == true ]]; then
-        info "Starting without authentication (db and hasura only)..."
-        compose up -d db hasura
+    # 3. Import Keycloak realms using standalone import
+    info "Importing Keycloak realms..."
+    # Stop any running Keycloak instance first
+    compose stop keycloak || true
+    # Run import
+    KC_CMD="import \
+        --dir /opt/keycloak/data/import \
+        --override true" compose -f "${GEYSER_DIR}"/compose.kc-run.yaml run --rm keycloak || error "Failed to import Keycloak realms"
+
+    # 4. Start Keycloak normally to configure it
+    info "Starting Keycloak..."
+    compose up -d keycloak
+    wait_until_healthy keycloak
+
+    # 5. Configure both realms
+    info "Configuring Keycloak realms..."
+    kcadm --login
+
+    # Configure master realm
+    info "- Configuring master realm..."
+    if [[ ${GEYSER_MODE} == "production" ]]; then
+        frontend_url="https://${SERVER_HOST}"
     else
-        if ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-            error "Volume 'geyser_data_keycloak' does not exists. You must initialize Geyser first"
+        frontend_url="http://localhost:8080"
+    fi
+
+    kcadm update realms/master -s "attributes.frontendUrl=${frontend_url}"
+
+    # Configure geyser realm
+    info "- Configuring geyser realm..."
+    if [[ ${GEYSER_MODE} == "production" ]]; then
+        frontend_url="https://${SERVER_HOST}/auth"
+        admin_url="http://localhost:8080/auth"
+    else
+        frontend_url="http://localhost:8080/auth"
+        admin_url="http://localhost:8080/auth"
+    fi
+
+    kcadm update realms/geyser \
+        -s "attributes.frontendUrl=${frontend_url}" \
+        -s "attributes.adminUrl=${admin_url}"
+
+    # 6. Start remaining services
+    info "Starting remaining services..."
+    compose up -d
+
+    info "Initialization completed successfully"
+}
+
+handle_update() {
+    info "Starting update process..."
+
+    # 1. Check if there are running containers
+    if [[ -n $(compose ps -q) ]]; then
+        notice "There are running services that need to be stopped for the update."
+        if ! confirm "Would you like to stop them now?"; then
+            notice "Update cancelled. Please stop services first with: geyser stop"
+            return
         fi
-        compose up -d
+        compose down
+    fi
+
+    # 2. Backup before update
+    notice "It's recommended to backup before updating."
+    if confirm "Would you like to create a backup?" "y"; then
+        info "Creating pre-update backup..."
+        handle_backup || error "Backup failed, aborting update"
+    fi
+
+    # 3. Update images
+    info "Updating Docker images..."
+
+    # Pull latest versions of base images
+    info "- Pulling base images..."
+    compose pull db db_keycloak hasura || error "Failed to pull base images"
+
+    # Build custom images
+    info "- Building custom images..."
+    compose build --pull keycloak web || error "Failed to build custom images"
+
+    # 4. Apply migrations if any
+    info "Checking for migrations..."
+
+    # Start databases only
+    compose up -d db db_keycloak
+    wait_until_healthy db
+    wait_until_healthy db_keycloak
+
+    # Apply Hasura migrations if any exist
+    if [[ -d "${GEYSER_DIR}/hasura/migrations" ]]; then
+        info "- Applying Hasura migrations..."
+        hasura migrate apply --database-name default || error "Failed to apply Hasura migrations"
+        hasura metadata apply || error "Failed to apply Hasura metadata"
+    else
+        info "- No Hasura migrations found"
+    fi
+
+    # Check for Keycloak updates
+    if [[ -d "${GEYSER_DIR}/keycloak/templates" ]]; then
+        info "- Updating Keycloak configuration..."
+        KC_CMD="import \
+            --dir /opt/keycloak/data/import \
+            --override true" compose -f "${GEYSER_DIR}"/compose.kc-run.yaml run --rm keycloak || error "Failed to update Keycloak configuration"
+    fi
+
+    # 5. Start services with new images
+    info "Starting services with updated images..."
+    compose up -d
+
+    # 6. Cleanup
+    info "Cleaning up old images..."
+    docker image prune -f
+
+    info "Update completed successfully"
+
+    # Show post-update notices
+    notice ""
+    notice "Update complete! Some important notes:"
+    notice "- Please verify that all services are running correctly"
+    notice "- Check the application logs for any warnings or errors"
+    notice "- If you experience any issues, you can restore the backup"
+    notice "  using: geyser restore"
+    if [[ ${GEYSER_MODE} == "production" ]]; then
+        notice "- Remember to check SSL certificate expiration"
     fi
 }
 
+# Add a simpler force update option
+handle_force_update() {
+    info "Starting forced update..."
+
+    compose down
+    compose pull
+    compose build --pull --no-cache
+    compose up -d
+
+    docker image prune -f
+
+    info "Forced update completed"
+    notice "Note: This was a forced update. Please check everything is working correctly."
+}
+
+# Database backup/restore functions
 handle_backup() {
     local backup_dir="${GEYSER_DIR}/backups"
     local date
@@ -326,18 +573,128 @@ handle_backup() {
     info "Creating backup in ${backup_path}"
     mkdir -p "${backup_path}"
 
-    info "Backing up Keycloak realm..."
-    kc_run export --dir "/opt/keycloak/data/backups/${date}/" --realm geyser || error "Failed to backup Keycloak"
-
-    info "Backing up Geyser database..."
+    info "Backing up databases..."
+    info "- Backing up Geyser database..."
     compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc -f "/backups/geyser_${date}.dump" || error "Failed to backup Geyser database"
+        pg_dump -U postgres -h localhost -p 5432 -d geyser -Fc \
+        -f "/backups/${date}/geyser.dump" || error "Failed to backup Geyser database"
 
-    info "Backing up Keycloak database..."
+    info "- Backing up Keycloak database..."
     compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_dump -U postgres -h localhost -p 5432 -d keycloak -Fc -f "/backups/keycloak_${date}.dump" || error "Failed to backup Keycloak database"
+        pg_dump -U postgres -h localhost -p 5432 -d keycloak -Fc \
+        -f "/backups/${date}/keycloak.dump" || error "Failed to backup Keycloak database"
 
-    info "Backup completed successfully"
+    info "Backup completed successfully in ${backup_path}"
+}
+
+handle_restore() {
+    local backup_dir="${GEYSER_DIR}/backups"
+
+    # List available backups
+    info "Available backups:"
+    ls -1t "${backup_dir}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$' || error "No backups found"
+
+    # Prompt for backup selection
+    echo -n "Enter backup date to restore (YYYY-MM-DD-HH-MM-SS): "
+    read -r backup_date
+
+    local backup_path="${backup_dir}/${backup_date}"
+    if [[ ! -d "${backup_path}" ]]; then
+        error "Backup ${backup_date} not found"
+    fi
+
+    # Stop all services before restore
+    info "Stopping all services..."
+    compose down
+
+    # Start databases
+    info "Starting databases..."
+    compose up -d db db_keycloak
+    wait_until_healthy db
+    wait_until_healthy db_keycloak
+
+    info "Restoring databases..."
+    info "- Restoring Geyser database..."
+    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
+        pg_restore -U postgres -h localhost -p 5432 -d geyser --clean --if-exists \
+        "/backups/${backup_date}/geyser.dump" || error "Failed to restore Geyser database"
+
+    info "- Restoring Keycloak database..."
+    compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
+        pg_restore -U postgres -h localhost -p 5432 -d keycloak --clean --if-exists \
+        "/backups/${backup_date}/keycloak.dump" || error "Failed to restore Keycloak database"
+
+    info "Starting all services..."
+    compose up -d
+
+    info "Restore completed successfully"
+}
+
+# Keycloak realm import/export functions
+handle_realm_export() {
+    local backup_dir="${GEYSER_DIR}/backups"
+    local date
+    date=$(date +%Y-%m-%d-%H-%M-%S)
+    local backup_path="${backup_dir}/${date}"
+
+    info "Creating export directory in ${backup_path}"
+    mkdir -p "${backup_path}"
+
+    # Stop all services
+    info "Stopping all services..."
+    compose down
+
+    info "Exporting Keycloak realm..."
+    # Run Keycloak in export mode only
+    KC_CMD="export \
+        --dir /opt/keycloak/data/backups/${date} \
+        --realm geyser \
+        --users realm \
+        --groups \
+        --clients \
+        --realm-roles \
+        --client-roles" compose -f "${GEYSER_DIR}"/compose.kc-run.yaml run --rm keycloak || error "Failed to export Keycloak realm"
+
+    # Ensure proper permissions
+    compose run --rm keycloak chown -R root:root "/opt/keycloak/data/backups/${date}"
+    compose run --rm keycloak chmod -R u=rw,g=r,o=r "/opt/keycloak/data/backups/${date}"
+
+    info "Starting all services..."
+    compose up -d
+
+    info "Realm export completed successfully in ${backup_path}"
+}
+
+handle_realm_import() {
+    local backup_dir="${GEYSER_DIR}/backups"
+
+    # List available exports
+    info "Available realm exports:"
+    ls -1t "${backup_dir}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$' || error "No exports found"
+
+    # Prompt for export selection
+    echo -n "Enter export date to import (YYYY-MM-DD-HH-MM-SS): "
+    read -r export_date
+
+    local export_path="${backup_dir}/${export_date}"
+    if [[ ! -d "${export_path}" ]]; then
+        error "Export ${export_date} not found"
+    fi
+
+    # Stop all services
+    info "Stopping all services..."
+    compose down
+
+    info "Importing Keycloak realm..."
+    # Run Keycloak in import mode only
+    KC_CMD="import \
+        --dir /opt/keycloak/data/backups/${export_date} \
+        --override true" compose -f "${GEYSER_DIR}"/compose.kc-run.yaml run --rm keycloak || error "Failed to import Keycloak realm"
+
+    info "Starting all services..."
+    compose up -d
+
+    info "Realm import completed successfully"
 }
 
 ###############################################################################
@@ -354,9 +711,11 @@ main() {
             ;;
         --dev)
             GEYSER_MODE=development
+            shift
             ;;
         --prod)
             GEYSER_MODE=production
+            shift
             ;;
         --log-level)
             if [[ "${2^^}" =~ ^(DEBUG|INFO|WARN|ERROR)$ ]]; then
@@ -374,7 +733,6 @@ main() {
             break
             ;;
         esac
-        shift
     done
 
     # Validate environment and configuration
@@ -385,22 +743,57 @@ main() {
 
     # Execute command
     case "${1}" in
-    init) handle_init ;;
-    start) handle_start ;;
-    stop) compose down ;;
-    restart) compose down && compose up -d ;;
+    # Core operations
+    init)
+        handle_init
+        ;;
+    start)
+        handle_start
+        ;;
+    stop)
+        info "Stopping all services..."
+        compose down
+        ;;
+    restart)
+        info "Restarting all services..."
+        compose down
+        compose up -d
+        ;;
+
+    # Update operations
     update)
-        compose pull
-        compose build
-        info "Geyser has been updated. You must now restart Geyser"
+        handle_update
+        ;;
+    force-update)
+        handle_force_update
+        ;;
+
+    # Data operations
+    backup)
+        handle_backup
+        ;;
+    restore)
+        handle_restore
         ;;
     reset)
-        compose down -v
-        info "Geyser has been reset. You must now initialize Geyser"
+        handle_reset
         ;;
-    backup) handle_backup ;;
-    restore) handle_restore ;;
-    *) error "Unknown command: ${1}. Try 'geyser --help' for usage information." ;;
+
+    # Keycloak realm operations
+    realm-export)
+        handle_realm_export
+        ;;
+    realm-import)
+        handle_realm_import
+        ;;
+
+    # Help
+    help)
+        show_help
+        ;;
+    *)
+        error "Unknown command: ${1}. Try 'geyser --help' for usage information"
+        ;;
     esac
 }
 

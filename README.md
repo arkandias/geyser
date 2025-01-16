@@ -12,7 +12,7 @@ purposes.
 Start by cloning the project's repository (you need Git for this):
 
 ```shell
-git clone https://gitlab.univ-lille.fr/julien.hauseux/geyser-backend.git
+git clone https://github.com/arkandias/geyser-backend.git
 ```
 
 This will create a directory `geyser-backend` in your working directory. Switch to this directory:
