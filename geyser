@@ -25,15 +25,15 @@ Core Commands:
   start         Start all Geyser services
   stop          Stop all Geyser services
   restart       Restart all Geyser services
-  reset         Delete all data and reset to a clean state
 
 Update Commands:
   update        Safely update services with migrations and backups
   force-update  Quickly rebuild and update all services (no safety checks)
 
-Backup & Restore:
+Data Operations:
   backup        Create a backup of PostgreSQL databases
   restore       Restore databases from a previous backup
+  reset         Delete all data and reset to a clean state
   realm-export  Export Keycloak realms configuration (requires service restart)
   realm-import  Import Keycloak realms configuration (requires service restart)
 
@@ -72,14 +72,12 @@ EOF
 }
 
 ###############################################################################
-# 2. CONFIGURATION AND ENVIRONMENT
+# 2. LOGGING
 ###############################################################################
 
-# Default configurations
-: "${GEYSER_DIR:=$(dirname "${0}")}"
+# Logging configuration
 LOG_FILE="./geyser.log"
 LOG_LEVEL="INFO"
-BYPASS_AUTH=false
 
 # Logging functions
 log() {
@@ -116,9 +114,62 @@ info() { log "INFO" "${1}"; }
 debug() { log "DEBUG" "${1}"; }
 
 ###############################################################################
-# 3. CORE UTILITY FUNCTIONS
+# 3. CONFIGURATION AND ENVIRONMENT
 ###############################################################################
 
+# Default configuration
+: "${GEYSER_DIR:=$(dirname "${0}")}"
+BYPASS_AUTH=false
+
+show_configuration() {
+    info "Current configuration:"
+    info "- Mode: ${GEYSER_MODE}"
+    info "- Log level: ${LOG_LEVEL}"
+    info "- Server host: ${SERVER_HOST}"
+    info "- Log file: ${LOG_FILE}"
+    [[ "${BYPASS_AUTH}" == "true" ]] && info "- Authentication bypass: ENABLED"
+}
+
+validate_environment() {
+    check_required_tools
+
+    # Check and export Geyser Mode
+    if [[ "${GEYSER_MODE}" != @(development|production) ]]; then
+        error "Invalid mode '${GEYSER_MODE}'. Must be 'development' or 'production'.
+        Use option --dev/--prod or set GEYSER_MODE environment variable"
+    fi
+    export GEYSER_MODE
+
+    # Check or create env files
+    touch "${GEYSER_DIR}/.env"
+    touch "${GEYSER_DIR}/.env.local"
+    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}"
+    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
+
+    # Source env files
+    . "${GEYSER_DIR}/.env"
+    . "${GEYSER_DIR}/.env.local"
+    # shellcheck disable=SC1090
+    . "${GEYSER_DIR}/.env.${GEYSER_MODE}"
+    # shellcheck disable=SC1090
+    . "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
+}
+
+check_required_tools() {
+    command -v jq >/dev/null 2>&1 || error "jq is required for this script"
+    command -v docker >/dev/null 2>&1 || error "Docker is not installed"
+    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required for this script"
+    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is required for this script"
+    command -v psql >/dev/null 2>&1 || error "PostgreSQL client (psql) is required for this script"
+    command -v pg_dump >/dev/null 2>&1 || error "PostgreSQL client (pg_dump) is required for this script"
+    command -v pg_restore >/dev/null 2>&1 || error "PostgreSQL client (pg_restore) is required for this script"
+}
+
+###############################################################################
+# 4. CORE UTILITY FUNCTIONS
+###############################################################################
+
+# User interaction functions
 prompt() {
     echo -n "$1 "
 }
@@ -146,97 +197,36 @@ notice() {
     echo "$1"
 }
 
-validate_environment() {
-    # Check and export Geyser Mode
-    if [[ "${GEYSER_MODE}" != @(development|production) ]]; then
-        error "Invalid mode '${GEYSER_MODE}'. Must be 'development' or 'production'.
-        Use option --dev/--prod or set GEYSER_MODE environment variable"
-    fi
-    export GEYSER_MODE
+# Function to list backups sorted by date (most recent first)
+list_backups() {
+    local backup_dir="$1"
+    local found=false
+    local -a backups=()
 
-    # Check required env files exist
-    touch "${GEYSER_DIR}/.env"
-    touch "${GEYSER_DIR}/.env.local"
-    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}"
-    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
-
-    # Source env files
-    . "${GEYSER_DIR}/.env"
-    . "${GEYSER_DIR}/.env.local"
-    # shellcheck disable=SC1090
-    . "${GEYSER_DIR}/.env.${GEYSER_MODE}"
-    # shellcheck disable=SC1090
-    . "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
-
-    # Check required tools are installed
-    command -v docker >/dev/null 2>&1 || error "Docker is not installed"
-    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required"
-    command -v jq >/dev/null 2>&1 || error "jq is required for this script"
-    command -v hasura >/dev/null 2>&1 || error "hasura cli is required for this script"
-    command -v psql >/dev/null 2>&1 || error "PostgreSQL client (psql) is required for this script"
-    command -v pg_dump >/dev/null 2>&1 || error "PostgreSQL client (pg_dump) is required for this script"
-    command -v pg_restore >/dev/null 2>&1 || error "PostgreSQL client (pg_restore) is required for this script"
-
-    # Check required directories exist and are writable
-    local required_dirs=(
-        "${GEYSER_DIR}/backups"
-        "${GEYSER_DIR}/certs"
-        "${GEYSER_DIR}/nginx/templates"
-    )
-
-    for dir in "${required_dirs[@]}"; do
-        ensure_directory "${dir}"
-    done
-
-    # Check required environment variables
-    # Variables always required
-    local always_required=(
-        "POSTGRES_PASSWORD"
-        "HASURA_GRAPHQL_ADMIN_SECRET"
-        "SERVER_HOST"
-    )
-
-    for var in "${always_required[@]}"; do
-        if [[ -z "${!var}" ]]; then
-            error "Required environment variable ${var} is not set"
+    # Collect all backup directories matching our date pattern
+    for backup in "${backup_dir}"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]; do
+        # Check if the glob expanded to an actual directory
+        if [[ -d "$backup" ]]; then
+            # Get just the directory name without the path
+            backup="${backup##*/}"
+            # Validate the format explicitly
+            if [[ "$backup" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
+                backups+=("$backup")
+                found=true
+            fi
         fi
     done
 
-    # Variables required unless --bypass-auth is set
-    if [[ "${BYPASS_AUTH}" != "true" ]]; then
-        local auth_required=(
-            "POSTGRES_KC_PASSWORD"
-            "KEYCLOAK_ADMIN_PASSWORD"
-        )
-
-        for var in "${auth_required[@]}"; do
-            if [[ -z "${!var}" ]]; then
-                error "Required environment variable ${var} is not set (required when authentication is enabled)"
-            fi
-        done
-    elif [[ "${GEYSER_MODE}" == "production" ]]; then
-        error "Cannot use --bypass-auth in production mode"
+    if [[ "$found" == "false" ]]; then
+        error "No backups found"
     fi
-}
 
-ensure_directory() {
-    local dir="${1}"
-    if [[ ! -d "${dir}" ]]; then
-        mkdir -p "${dir}" || error "Cannot create directory: ${dir}"
-    fi
-}
-
-show_configuration() {
-    info "Current configuration:"
-    info "- Mode: ${GEYSER_MODE}"
-    info "- Log level: ${LOG_LEVEL}"
-    info "- Server host: ${SERVER_HOST}"
-    info "- Log file: ${LOG_FILE}"
-    [[ "${BYPASS_AUTH}" == "true" ]] && info "- Authentication bypass: ENABLED"
+    # Sort backups by date (most recent first)
+    printf '%s\n' "${backups[@]}" | sort -r
 }
 
 ###############################################################################
-# 4. SERVICE MANAGEMENT FUNCTIONS
+# 5. SERVICE MANAGEMENT FUNCTIONS
 ###############################################################################
 
 # Docker Compose wrapper
@@ -294,15 +284,12 @@ kcadm() {
     fi
 }
 
-# Hasura wrapper
+# Hasura CLI wrapper
 hasura() {
     command hasura --project "${GEYSER_DIR}"/hasura --admin-secret "${HASURA_GRAPHQL_ADMIN_SECRET}" "$@"
 }
 
-###############################################################################
-# 5. HEALTH CHECK AND MONITORING
-###############################################################################
-
+# Service health monitoring
 wait_until_healthy() {
     local service=$1
     local timeout=${2:-300} # 5 minutes default timeout
@@ -337,109 +324,9 @@ wait_until_healthy() {
     done
 }
 
-wait_until_exit() {
-    info "Waiting for service ${1} to exit..."
-    while [[ -n $(compose ps -q "${1}") ]]; do
-        sleep 1
-    done
-    container_id=$(compose ps -aq "${1}")
-    if [[ -n "${container_id}" ]]; then
-        exit_code=$(docker inspect --format='{{.State.ExitCode}}' "${container_id}")
-    fi
-    if [[ ${exit_code} -eq 0 ]]; then
-        info "Done"
-    else
-        warn "${1} exited with code ${exit_code}"
-    fi
-}
-
-# Function to list backups sorted by date (most recent first)
-list_backups() {
-    local backup_dir="$1"
-    local found=false
-    local -a backups=()
-
-    # Collect all backup directories matching our date pattern
-    for backup in "${backup_dir}"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]; do
-        # Check if the glob expanded to an actual directory
-        if [[ -d "$backup" ]]; then
-            # Get just the directory name without the path
-            backup="${backup##*/}"
-            # Validate the format explicitly
-            if [[ "$backup" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
-                backups+=("$backup")
-                found=true
-            fi
-        fi
-    done
-
-    if [[ "$found" == "false" ]]; then
-        error "No backups found"
-    fi
-
-    # Sort backups by date (most recent first)
-    printf '%s\n' "${backups[@]}" | sort -r
-}
-
 ###############################################################################
 # 6. COMMAND HANDLERS
 ###############################################################################
-
-handle_reset() {
-    info "Starting reset process..."
-
-    notice "WARNING: This will completely reset your Geyser installation:"
-    notice "- All databases will be deleted"
-    notice "- All Docker resources will be cleaned"
-    notice "- All configuration will be reset"
-    notice "- All logs will be cleared"
-    notice "Note: Backup files in ${GEYSER_DIR}/backups will be preserved"
-
-    if ! confirm "Are you sure you want to proceed?"; then
-        info "Reset cancelled"
-        return
-    fi
-
-    info "Stopping all services and removing volumes..."
-    compose down -v
-
-    info "Cleaning up Docker resources..."
-    # Remove orphaned volumes
-    docker volume ls -qf "name=geyser" | xargs -r docker volume rm
-
-    # Remove old images
-    docker images "geyser_*" -q | xargs -r docker rmi
-    docker images "keycloak" -q | xargs -r docker rmi
-
-    # Clean build cache and dangling images
-    docker builder prune -f
-    docker image prune -f
-
-    # Remove unused networks
-    docker network prune -f --filter "until=1h"
-
-    info "Cleaning project files..."
-    # Clean logs
-    rm -f "${GEYSER_DIR}/geyser.log"
-    rm -f "${GEYSER_DIR}/hasura/hasura.log"
-
-    # Clean Hasura metadata and migrations
-    rm -rf "${GEYSER_DIR}/hasura/migrations"
-    rm -rf "${GEYSER_DIR}/hasura/metadata/migrations"
-
-    # Clean temporary files
-    find "${GEYSER_DIR}" -name "*.tmp" -type f -delete
-    find "${GEYSER_DIR}" -name "*.bak" -type f -delete
-    find "${GEYSER_DIR}" -name ".DS_Store" -type f -delete
-
-    info "Reset completed successfully"
-
-    if confirm "Would you like to initialize Geyser now?" "y"; then
-        handle_init
-    else
-        notice "You can initialize later using: geyser init"
-    fi
-}
 
 handle_init() {
     info "Starting initialization process..."
@@ -696,6 +583,62 @@ handle_restore() {
     info "Restore completed successfully"
 }
 
+handle_reset() {
+    info "Starting reset process..."
+
+    notice "WARNING: This will completely reset your Geyser installation:"
+    notice "- All databases will be deleted"
+    notice "- All Docker resources will be cleaned"
+    notice "- All configuration will be reset"
+    notice "- All logs will be cleared"
+    notice "Note: Backup files in ${GEYSER_DIR}/backups will be preserved"
+
+    if ! confirm "Are you sure you want to proceed?"; then
+        info "Reset cancelled"
+        return
+    fi
+
+    info "Stopping all services and removing volumes..."
+    compose down -v
+
+    info "Cleaning up Docker resources..."
+    # Remove orphaned volumes
+    docker volume ls -qf "name=geyser" | xargs -r docker volume rm
+
+    # Remove old images
+    docker images "geyser_*" -q | xargs -r docker rmi
+    docker images "keycloak" -q | xargs -r docker rmi
+
+    # Clean build cache and dangling images
+    docker builder prune -f
+    docker image prune -f
+
+    # Remove unused networks
+    docker network prune -f --filter "until=1h"
+
+    info "Cleaning project files..."
+    # Clean logs
+    rm -f "${GEYSER_DIR}/geyser.log"
+    rm -f "${GEYSER_DIR}/hasura/hasura.log"
+
+    # Clean Hasura metadata and migrations
+    rm -rf "${GEYSER_DIR}/hasura/migrations"
+    rm -rf "${GEYSER_DIR}/hasura/metadata/migrations"
+
+    # Clean temporary files
+    find "${GEYSER_DIR}" -name "*.tmp" -type f -delete
+    find "${GEYSER_DIR}" -name "*.bak" -type f -delete
+    find "${GEYSER_DIR}" -name ".DS_Store" -type f -delete
+
+    info "Reset completed successfully"
+
+    if confirm "Would you like to initialize Geyser now?" "y"; then
+        handle_init
+    else
+        notice "You can initialize later using: geyser init"
+    fi
+}
+
 # Keycloak realm import/export functions
 handle_realm_export() {
     local backup_dir="${GEYSER_DIR}/backups"
@@ -737,7 +680,7 @@ handle_realm_import() {
     # List available exports using same function as backup listing
     info "Available realm exports:"
     list_backups "${backup_dir}"
-    
+
     # Prompt for export selection
     echo -n "Enter export date to import (YYYY-MM-DD-HH-MM-SS): "
     read -r export_date
@@ -797,6 +740,9 @@ main() {
             fi
             ;;
         --bypass-auth)
+            if [[ "${GEYSER_MODE}" == "production" ]]; then
+                error "Cannot use --bypass-auth in production mode"
+            fi
             BYPASS_AUTH=true
             shift
             ;;
@@ -832,9 +778,7 @@ main() {
         ;;
 
     # Update operations
-    update)
-        handle_update
-        ;;
+    update) handle_update ;;
     force-update)
         handle_force_update
         ;;
@@ -849,8 +793,6 @@ main() {
     reset)
         handle_reset
         ;;
-
-    # Keycloak realm operations
     realm-export)
         handle_realm_export
         ;;
@@ -858,7 +800,7 @@ main() {
         handle_realm_import
         ;;
 
-    # Help
+    # Utility
     help)
         show_help
         ;;
