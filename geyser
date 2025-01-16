@@ -353,6 +353,34 @@ wait_until_exit() {
     fi
 }
 
+# Function to list backups sorted by date (most recent first)
+list_backups() {
+    local backup_dir="$1"
+    local found=false
+    local -a backups=()
+
+    # Collect all backup directories matching our date pattern
+    for backup in "${backup_dir}"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]; do
+        # Check if the glob expanded to an actual directory
+        if [[ -d "$backup" ]]; then
+            # Get just the directory name without the path
+            backup="${backup##*/}"
+            # Validate the format explicitly
+            if [[ "$backup" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
+                backups+=("$backup")
+                found=true
+            fi
+        fi
+    done
+
+    if [[ "$found" == "false" ]]; then
+        error "No backups found"
+    fi
+
+    # Sort backups by date (most recent first)
+    printf '%s\n' "${backups[@]}" | sort -r
+}
+
 ###############################################################################
 # 6. COMMAND HANDLERS
 ###############################################################################
@@ -630,7 +658,7 @@ handle_restore() {
 
     # List available backups
     info "Available backups:"
-    ls -1t "${backup_dir}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$' || error "No backups found"
+    list_backups "${backup_dir}"
 
     # Prompt for backup selection
     echo -n "Enter backup date to restore (YYYY-MM-DD-HH-MM-SS): "
@@ -706,13 +734,18 @@ handle_realm_export() {
 handle_realm_import() {
     local backup_dir="${GEYSER_DIR}/backups"
 
-    # List available exports
+    # List available exports using same function as backup listing
     info "Available realm exports:"
-    ls -1t "${backup_dir}" | grep -E '^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$' || error "No exports found"
-
+    list_backups "${backup_dir}"
+    
     # Prompt for export selection
     echo -n "Enter export date to import (YYYY-MM-DD-HH-MM-SS): "
     read -r export_date
+
+    # Validate input format
+    if [[ ! "${export_date}" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
+        error "Invalid date format. Expected: YYYY-MM-DD-HH-MM-SS"
+    fi
 
     local export_path="${backup_dir}/${export_date}"
     if [[ ! -d "${export_path}" ]]; then
