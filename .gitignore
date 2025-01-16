@@ -1,3 +1,4 @@
+node_modules/
 /attributions_by_mention/
 /backups/*
 !/backups/README.md

@@ -42,7 +42,7 @@ well as some convenient aliases:
 
 ```shell
 source ./scripts/add_configuration
-``` 
+```
 
 ### Configuration
 
@@ -57,7 +57,7 @@ Environment variables can be stored in either of the following .env files:
 The passwords/secrets that must be set (typically in `.env.local`):
 
 | Environment variable          | Explanation                                                           |
-|-------------------------------|-----------------------------------------------------------------------|
+| ----------------------------- | --------------------------------------------------------------------- |
 | `POSTGRES_PASSWORD`           | Password for the role `postgres` in the Geyser database (superuser)   |
 | `POSTGRES_KC_PASSWORD`        | Password for the role `postgres` in the Keycloak database (superuser) |
 | `KEYCLOAK_ADMIN_PASSWORD`     | Password for the initial admin user `admin` of the keycloak container |
@@ -66,12 +66,8 @@ The passwords/secrets that must be set (typically in `.env.local`):
 The following environment variable must also be set (either in `.env.local` or one of `.env.dev` and `.env.prod`):
 
 | Environment variable | Explanation                                                                                                              |
-|----------------------|--------------------------------------------------------------------------------------------------------------------------|
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------ |
 | `SERVER_HOST`        | The hostname and, optionally, the port number at which the web app will be served (e.g. `localhost:5173`, `example.com`) |
-
-[//]: # (TODO: update)
-*N.B. In order to run the application, all three files `.env.development`, `.env.production`, and `.env.local` must
-exist at the root of the project.*
 
 #### SSL Certificates
 
@@ -121,7 +117,7 @@ Hasura permissions are handled by giving users some of the following roles.
 In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
 
 | Role          | Explanations                                         |
-|---------------|------------------------------------------------------|
+| ------------- | ---------------------------------------------------- |
 | `intervenant` | The base user role with restricted permissions       |
 | `commissaire` | Some extra permissions during the "commission" phase |
 | `admin`       | The superuser role with all permissions              |
@@ -138,7 +134,7 @@ In development mode, Keycloak can be reached at http://localhost:8080.
 In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
 
 | Path          | Reverse proxy path                  |
-|---------------|-------------------------------------|
+| ------------- | ----------------------------------- |
 | `/js/`        | https://example.com/auth/js/        |
 | `/realms/`    | https://example.com/auth/realms/    |
 | `/resources/` | https://example.com/auth/resources/ |
