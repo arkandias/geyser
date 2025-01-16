@@ -4,8 +4,8 @@
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
-source "$GEYSER_DIR"/.env.local
-export PGPASSWORD="$POSTGRES_PASSWORD"
+source "${GEYSER_DIR}"/.env.local
+export PGPASSWORD="${POSTGRES_PASSWORD}"
 
 if [[ -z "$1" ]]; then
     echo "You must provide the year for the exports" >&2
@@ -19,7 +19,7 @@ for arg in "$@"; do
     shift
 done
 
-mkdir -p "$GEYSER_DIR"/attributions_by_mention
+mkdir -p "${GEYSER_DIR}"/attributions_by_mention
 
 query_mention_ids=$(
     cat <<-EOSQL

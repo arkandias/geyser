@@ -51,8 +51,8 @@ source ./scripts/add_configuration
 Environment variables can be stored in either of the following .env files:
 
 - `.env.local`
-- `.env.dev` (for development only)
-- `.env.prod` (for production only)
+- `.env.development` and `.env.development.local` (development mode)
+- `.env.production` and `.env.production.local` (production mode)
 
 The passwords/secrets that must be set (typically in `.env.local`):
 
@@ -69,8 +69,9 @@ The following environment variable must also be set (either in `.env.local` or o
 |----------------------|--------------------------------------------------------------------------------------------------------------------------|
 | `SERVER_HOST`        | The hostname and, optionally, the port number at which the web app will be served (e.g. `localhost:5173`, `example.com`) |
 
-*N.B. In order to run the application, all three files `.env.dev`, `.env.prod`, and `.env.local` must exist at
-the root of the project.*
+[//]: # (TODO: update)
+*N.B. In order to run the application, all three files `.env.development`, `.env.production`, and `.env.local` must
+exist at the root of the project.*
 
 #### SSL Certificates
 

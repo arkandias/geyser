@@ -1,7 +1,0 @@
-#!/bin/bash
-# This script is a shorthand to execute a Keycloak command on a running Keycloak
-# instance.
-
-: "${GEYSER_DIR:=$(dirname "$0")/..}"
-
-"$GEYSER_DIR"/scripts/compose exec keycloak /opt/keycloak/bin/kc.sh "$@"

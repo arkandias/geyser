@@ -5,14 +5,14 @@
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
-source "$GEYSER_DIR"/.env.local
-export PGPASSWORD="$POSTGRES_PASSWORD"
+source "${GEYSER_DIR}"/.env.local
+export PGPASSWORD="${POSTGRES_PASSWORD}"
 
 timestamp=$(date +%Y-%m-%d-%H-%M-%S)
 filename="db_geyser_${timestamp}"
 filepath="${GEYSER_DIR}/backups/${filename}.dump"
 
-"$GEYSER_DIR"/scripts/db dump --file="$filepath"
+"${GEYSER_DIR}"/scripts/db dump --file="$filepath"
 hash=$(sha256sum "$filepath" | cut -c 1-8)
 
 url="${NEXTCLOUD_URL}/remote.php/dav/files/${NEXTCLOUD_USER}/geyser/backups/${filename}_${hash}.dump"

@@ -1,9 +1,0 @@
-#!/bin/bash
-# This script serves as a shorthand for executing Keycloak commands which cannot
-# be run on a started Keycloak (e.g., `import`). For commands executable on a
-# started Keycloak, consider using the companion script `kc`.
-
-: "${GEYSER_DIR:=$(dirname "$0")/..}"
-export KC_CMD="$*" KC_RESTART=no
-
-"$GEYSER_DIR"/scripts/compose up keycloak

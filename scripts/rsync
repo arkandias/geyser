@@ -4,4 +4,4 @@
 
 : "${GEYSER_DIR:=$(dirname "$0")/..}"
 
-rsync -rlv --delete --files-from="$GEYSER_DIR"/rsync-files --exclude-from="$GEYSER_DIR"/rsync-exclude "$GEYSER_DIR"/ "$@"
+rsync -rlv --delete --files-from="${GEYSER_DIR}"/rsync-files --exclude-from="${GEYSER_DIR}"/rsync-exclude "${GEYSER_DIR}"/ "$@"

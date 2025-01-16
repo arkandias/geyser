@@ -3,7 +3,7 @@ services:
     restart: always
 
   keycloak:
-    restart: ${KC_RESTART:-always}
+    restart: always
     environment:
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME=https://${SERVER_HOST}/auth
@@ -17,7 +17,7 @@ services:
       - frontend
     volumes:
       - ./certs:/opt/keycloak/certs:ro
-    command: ${KC_CMD:-start --optimized --import-realm}
+    command: start --optimized --import-realm
   
   db:
     restart: always

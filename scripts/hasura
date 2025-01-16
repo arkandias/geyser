@@ -1,9 +1,0 @@
-#!/bin/bash
-# This script is a shorthand to run Hasura CLI commands.
-
-: "${GEYSER_DIR:=$(dirname "$0")/..}"
-
-source "$GEYSER_DIR"/.env.local
-export HASURA_GRAPHQL_ADMIN_SECRET
-
-hasura --project "$GEYSER_DIR"/hasura "$@"

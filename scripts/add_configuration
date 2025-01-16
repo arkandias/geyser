@@ -5,12 +5,12 @@
 # designed to simplify various operations to administrate Geyser.
 
 # Detect current shell
-if [ -n "$BASH_VERSION" ]; then
+if [ -n "${BASH_VERSION}" ]; then
     echo "Shell detected: Bash"
-    config_file="$HOME/.bashrc"
-elif [ -n "$ZSH_VERSION" ]; then
+    config_file="${HOME}/.bashrc"
+elif [ -n "${ZSH_VERSION}" ]; then
     echo "Shell detected: Zsh"
-    config_file="$HOME/.zshrc"
+    config_file="${HOME}/.zshrc"
 else
     echo "Unknown shell, configuration not saved"
     exit 0
@@ -18,7 +18,7 @@ fi
 
 # Set Geyser directory
 default_dir="$(cd "$(dirname "$0")"/.. && pwd)"
-printf "Geyser installation directory [%s]: " "$default_dir"
+printf "Geyser installation directory [%s]: " "${default_dir}"
 read -r install_dir
 GEYSER_DIR=${install_dir:-$default_dir}
 
@@ -31,13 +31,13 @@ while true; do
     1)
         GEYSER_MODE=development
         # shellcheck disable=SC2016
-        gcompose='docker compose --env-file "$GEYSER_DIR"/.env.dev --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml'
+        gcompose='docker compose --env-file "${GEYSER_DIR}"/.env --env-file "${GEYSER_DIR}"/.env.development --env-file "${GEYSER_DIR}"/.env.local --env-file "${GEYSER_DIR}"/.env.development.local -f "${GEYSER_DIR}"/compose.yaml'
         break
         ;;
     2)
         GEYSER_MODE=production
         # shellcheck disable=SC2016
-        gcompose='docker compose --env-file "$GEYSER_DIR"/.env.prod --env-file "$GEYSER_DIR"/.env.local -f "$GEYSER_DIR"/compose.yaml -f "$GEYSER_DIR"/compose.prod.yaml'
+        gcompose='docker compose --env-file "${GEYSER_DIR}"/.env --env-file "${GEYSER_DIR}"/.env.production --env-file "${GEYSER_DIR}"/.env.local --env-file "${GEYSER_DIR}"/.env.production.local -f "${GEYSER_DIR}"/compose.yaml -f "${GEYSER_DIR}"/compose.prod.yaml'
         break
         ;;
     *) echo "Not a valid choice" ;;
@@ -64,12 +64,12 @@ sed_i() {
 config=$(
     cat <<EOF
 # BEGIN Geyser configuration
-export GEYSER_DIR="$GEYSER_DIR"
-export GEYSER_MODE="$GEYSER_MODE"
-alias geyser='\$GEYSER_DIR/scripts/geyser'
+export GEYSER_DIR="${GEYSER_DIR}"
+export GEYSER_MODE="${GEYSER_MODE}"
+alias geyser='\${GEYSER_DIR}/scripts/geyser'
 alias gcompose="$gcompose"
-alias ghasura='source "\$GEYSER_DIR"/.env.local && export HASURA_GRAPHQL_ADMIN_SECRET && hasura --project "\$GEYSER_DIR"/hasura'
-alias grsync='rsync -rlv --delete --files-from="\$GEYSER_DIR"/rsync-files --exclude-from="\$GEYSER_DIR"/rsync-exclude "\$GEYSER_DIR"/'
+alias ghasura='source "\${GEYSER_DIR}"/.env.local && export HASURA_GRAPHQL_ADMIN_SECRET && hasura --project "\${GEYSER_DIR}"/hasura'
+alias grsync='rsync -rlv --delete --files-from="\${GEYSER_DIR}"/rsync-files --exclude-from="\${GEYSER_DIR}"/rsync-exclude "\${GEYSER_DIR}"/'
 # END Geyser configuration
 EOF
 )
@@ -106,11 +106,11 @@ echo "3) None"
 read -r selection
 case "$selection" in
 1)
-    cp "$GEYSER_DIR"/scripts/completion/geyser-completion.bash /etc/bash_completion.d/geyser
+    cp "${GEYSER_DIR}"/scripts/completion/geyser-completion.bash /etc/bash_completion.d/geyser
     ;;
 2)
     mkdir -p "$HOME"/.oh-my-zsh/completions
-    cp "$GEYSER_DIR"/scripts/completion/_geyser "$HOME"/.oh-my-zsh/completions/_geyser
+    cp "${GEYSER_DIR}"/scripts/completion/_geyser "$HOME"/.oh-my-zsh/completions/_geyser
     ;;
 3) ;;
 

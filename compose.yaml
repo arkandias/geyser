@@ -25,7 +25,7 @@ services:
 
   keycloak:
     build: ./keycloak
-    restart: ${KC_RESTART:-unless-stopped}
+    restart: unless-stopped
     depends_on:
       db_keycloak:
         condition: service_healthy
@@ -51,7 +51,7 @@ services:
     volumes:
       - ./keycloak/templates:/opt/keycloak/data/import:ro
       - ./keycloak/backups:/opt/keycloak/data/backups
-    command: ${KC_CMD:-start-dev --import-realm}
+    command: start-dev --import-realm
 
   db:
     image: postgres:16
