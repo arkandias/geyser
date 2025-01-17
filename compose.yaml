@@ -22,6 +22,7 @@ services:
       - backend
     volumes:
       - data_keycloak:/var/lib/postgresql/data
+      - ./db/backups:/backups
 
   keycloak:
     build: ./keycloak
@@ -75,7 +76,7 @@ services:
       - backend
     volumes:
       - data:/var/lib/postgresql/data
-      - ./backups:/backups
+      - ./db/backups:/backups
 
   hasura:
     image: hasura/graphql-engine:latest

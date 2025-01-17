@@ -26,13 +26,16 @@ Core Commands:
   stop          Stop all Geyser services
   restart       Restart all Geyser services
   update        Safely update services with migrations and backups
+  reset         Delete all data and reset to a clean state
 
 Data Operations:
   backup        Create a backup of PostgreSQL databases
   restore       Restore databases from a previous backup
-  reset         Delete all data and reset to a clean state
   realm-export  Export Keycloak realms configuration (requires service restart)
   realm-import  Import Keycloak realms configuration (requires service restart)
+
+Configuration:
+  configure     Set up shell configuration and aliases for Geyser
 
 Utility:
   help          Show this help message
@@ -69,63 +72,85 @@ EOF
 }
 
 ###############################################################################
-# 2. LOGGING
+# 2. CONFIGURATION AND ENVIRONMENT
 ###############################################################################
 
-# Logging configuration
-LOG_FILE="./geyser.log"
-LOG_LEVEL="INFO"
+: "${GEYSER_DIR:=$(dirname "$0")}"
+: "${GEYSER_MODE:=production}"
+: "${GEYSER_LOG_LEVEL:=2}"
+: "${GEYSER_BYPASS_AUTH:=false}"
 
-# Logging functions
-log() {
-    local level="${1^^}"
-    level="${level:-INFO}"
-    local message="${2}"
-    local timestamp
-    timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+DB_BACKUP_DIR="${GEYSER_DIR}/db/backups"
+KC_BACKUP_DIR="${GEYSER_DIR}/keycloak/backups"
+LOG_DIR="${GEYSER_DIR}/logs"
+LOG_FILE="${LOG_DIR}/geyser.log"
 
-    local -A log_levels=(
-        [ERROR]=1
-        [WARN]=2
-        [INFO]=3
-        [DEBUG]=4
-    )
+mkdir -p "${DB_BACKUP_DIR}"
+mkdir -p "${KC_BACKUP_DIR}"
+mkdir -p "${LOG_DIR}"
 
-    if [[ ${log_levels[${level}]:-3} -le ${log_levels[${LOG_LEVEL}]} ]]; then
-        case "${level}" in
-        ERROR) echo >&2 -e "\033[31m[${timestamp}] [${level}] ${message}\033[0m" ;;
-        WARN) echo -e "\033[33m[${timestamp}] [${level}] ${message}\033[0m" ;;
-        DEBUG) echo -e "\033[34m[${timestamp}] [${level}] ${message}\033[0m" ;;
-        *) echo "[${timestamp}] [${level}] ${message}" ;;
-        esac
-        echo "[${timestamp}] [${level}] ${message}" >>"${LOG_FILE}"
+show_configuration() {
+    if [[ -n "$1" ]]; then
+        info "$1"
+    else
+        info "Geyser configuration:"
+    fi
+    info "* Directory: ${GEYSER_DIR}"
+    info "* Mode: ${GEYSER_MODE}"
+    info "* Log level: ${GEYSER_LOG_LEVEL}"
+    if [[ "${GEYSER_MODE}" == "development" ]]; then
+        info "* Bypass authentication: ${GEYSER_BYPASS_AUTH}"
     fi
 }
 
-error() {
-    log "ERROR" "${1}"
-    exit 1
-}
-warn() { log "WARN" "${1}"; }
-info() { log "INFO" "${1}"; }
-debug() { log "DEBUG" "${1}"; }
+save_configuration() {
+    local config_file
+    local configuration
+    local rc_files=(
+        "${HOME}/.bashrc" # for Bash users
+        "${HOME}/.zshrc"  # for Zsh users
+    )
+    local rc_file
+    local rc_updated=false
 
-###############################################################################
-# 3. CONFIGURATION AND ENVIRONMENT
-###############################################################################
+    info "Generating configuration..."
+    configuration=$(
+        cat <<EOF
+# BEGIN Geyser configuration
+export GEYSER_DIR="${GEYSER_DIR}"
+export GEYSER_MODE="${GEYSER_MODE}"
+export GEYSER_LOG_LEVEL="${GEYSER_LOG_LEVEL}"
+export GEYSER_BYPASS_AUTH="${GEYSER_BYPASS_AUTH}"
+# END Geyser configuration
+EOF
+    )
 
-# Default configuration
-: "${GEYSER_DIR:=$(dirname "${0}")}"
-BYPASS_AUTH=false
+    for rc_file in "${rc_files[@]}"; do
+        if [[ -f "${rc_file}" ]]; then
+            info "Updating ${config_file}..."
+            debug "Removing existing configuration block..."
+            sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "${config_file}"
 
-show_configuration() {
-    info "Current configuration:"
-    info "- Mode: ${GEYSER_MODE}"
-    info "- Log level: ${LOG_LEVEL}"
-    info "- Server host: ${SERVER_HOST}"
-    info "- Log file: ${LOG_FILE}"
-    if [[ "${BYPASS_AUTH}" == "true" ]]; then
-        info "- Authentication bypass: ENABLED"
+            debug "Cleaning up empty lines..."
+            while [ "$(tail -n 1 "${config_file}" | grep -v '^$')" = "" ]; do
+                # shellcheck disable=SC2016
+                sed_i -e '$d' "${config_file}"
+            done
+
+            debug "Writing new configuration..."
+            {
+                echo ""
+                echo "${configuration}"
+                echo ""
+            } >>"$config_file"
+            rc_updated=true
+
+            success "Configuration saved successfully to ${config_file}"
+        fi
+    done
+
+    if [[ ! "${rc_updated}" = true ]]; then
+        warn "No shell configuration files found (looked for ${HOME}/.bashrc and ${HOME}/.zshrc)"
     fi
 }
 
@@ -135,7 +160,7 @@ validate_environment() {
     # Check and export Geyser Mode
     if [[ "${GEYSER_MODE}" != "development" && "${GEYSER_MODE}" != "production" ]]; then
         error "Invalid mode '${GEYSER_MODE}'. Must be 'development' or 'production'.
-        Use option --dev/--prod or set GEYSER_MODE environment variable"
+        Use option --dev/--prod or set GEYSER_MODE environment variable."
     fi
     export GEYSER_MODE
 
@@ -165,96 +190,127 @@ check_required_tools() {
 }
 
 ###############################################################################
+# 3. LOGGING
+###############################################################################
+
+log_level() {
+    case "$1" in
+    ERROR) echo 4 ;;
+    WARN) echo 3 ;;
+    INFO | SUCCESS) echo 2 ;;
+    DEBUG) echo 1 ;;
+    esac
+}
+
+print_level() {
+    case "$1" in
+    4) echo "ERROR" ;;
+    3) echo "WARN" ;;
+    2) echo "INFO" ;;
+    1) echo "DEBUG" ;;
+    esac
+}
+
+log() {
+    local level="$1"
+    local message="$2"
+    local timestamp
+    timestamp=$(date +'%Y-%m-%d %H:%M:%S')
+
+    if [ "$(log_level "${level}")" -ge "${GEYSER_LOG_LEVEL}" ]; then
+        case "${level}" in
+        ERROR) echo >&2 -e "\033[31m[${timestamp}] [${level}] ${message}\033[0m" ;;
+        SUCCESS) echo -e "\033[32m[${timestamp}] [${level}] ${message}\033[0m" ;;
+        WARN) echo -e "\033[33m[${timestamp}] [${level}] ${message}\033[0m" ;;
+        DEBUG) echo -e "\033[34m[${timestamp}] [${level}] ${message}\033[0m" ;;
+        INFO) echo "[${timestamp}] [${level}] ${message}" ;;
+        esac
+    fi
+
+    echo "[${timestamp}] [${level}] ${message}" >>"${LOG_FILE}"
+}
+
+error() {
+    log "ERROR" "$1"
+    exit 1
+}
+success() { log "SUCCESS" "$1"; }
+warn() { log "WARN" "$1"; }
+info() { log "INFO" "$1"; }
+debug() { log "DEBUG" "$1"; }
+
+###############################################################################
 # 4. CORE UTILITY FUNCTIONS
 ###############################################################################
 
-# User interaction functions
-prompt() {
-    echo -n "$1 "
+# Cross-platform wrapper for sed in-place editing (handles Linux/macOS differences)
+sed_i() {
+    case "$(uname)" in
+    "Linux") sed -i "$@" ;;
+    "Darwin") sed -i '' "$@" ;;
+    *) error "Unsupported operating system (requires Linux or macOS)" ;;
+    esac
 }
 
+# Displays a prompt and stores user input in global INPUT variable
+prompt() {
+    local message="$1"
+    INPUT= # global
+
+    echo -n "${message} "
+    debug "Prompt: ${message}"
+
+    read -r INPUT
+    debug "Input: ${INPUT}"
+}
+
+# Prompts for yes/no confirmation with optional default (returns true/false)
 confirm() {
     local message="$1"
-    local default="${2:-n}" # Default to 'n' if not specified
+    local default="$2"
 
-    if [[ "$default" == "y" ]]; then
-        prompt "$message [Y/n]"
+    if [[ "${default}" == "y" ]]; then
+        prompt "${message} [Y/n]"
+        [[ ! "${INPUT}" =~ ^[Nn]$ ]]
     else
-        prompt "$message [y/N]"
-    fi
-
-    read -r response
-
-    if [[ "$default" == "y" ]]; then
-        [[ ! "$response" =~ ^[Nn]$ ]]
-    else
-        [[ "$response" =~ ^[Yy]$ ]]
+        prompt "${message} [y/N]"
+        [[ "${INPUT}" =~ ^[Yy]$ ]]
     fi
 }
 
-notice() {
-    echo "$1"
-}
+# Prompts user to select a backup directory and stores result in global SELECTED_BACKUP variable
+select_backup() {
+    local backup_path="$1"
+    local prompt_text="$2"
+    local backups=()
+    local backup
+    SELECTED_BACKUP= # global
 
-list_backups() {
-    local backup_dir="${1}"
-    local found=false
-    local -a backups=()
-
-    # Collect all backup directories matching our date pattern
-    for backup in "${backup_dir}"/[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]-[0-9][0-9]; do
-        # Check if the glob expanded to an actual directory
+    for backup in "${backup_path}"/*; do
         if [[ -d "${backup}" ]]; then
-            # Get just the directory name without the path
-            backup="${backup##*/}"
-            # Validate the format explicitly
-            if [[ "$backup" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}-[0-9]{2}$ ]]; then
-                backups+=("${backup}")
-                found=true
-            fi
+            backups+=("${backup##*/}")
         fi
     done
 
-    if [[ "${found}" == "false" ]]; then
+    if ((${#backups[@]} == 0)); then
         error "No backups found"
     fi
 
-    # Sort backups by date (most recent first) and store in global array
-    mapfile -t BACKUP_LIST < <(printf '%s\n' "${backups[@]}" | sort -r)
-
-    # Print numbered list
-    for i in "${!BACKUP_LIST[@]}"; do
-        printf "%3d) %s\n" $((i + 1)) "${BACKUP_LIST[i]}"
-    done
-
-    echo
-}
-
-select_backup() {
-    local backup_dir="${1}"
-    local prompt_text="${2:-Enter backup number}"
-
-    # Show numbered list and populate BACKUP_LIST
-    list_backups "${backup_dir}"
-
-    # Prompt for selection
     while true; do
-        echo -n "${prompt_text} (1-${#BACKUP_LIST[@]}): "
-        read -r selection
+        prompt "${prompt_text} (1-${#backups[@]}):"
 
-        # Validate input is a number
-        if [[ ! "${selection}" =~ ^[0-9]+$ ]]; then
-            echo "Please enter a number"
+        if [[ ! "${INPUT}" =~ ^[0-9]+$ ]]; then
+            warn "Please enter a number"
             continue
         fi
 
-        # Validate input is in range
-        if ((selection >= 1 && selection <= ${#BACKUP_LIST[@]})); then
-            echo "${BACKUP_LIST[selection - 1]}"
-            return
+        if ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
+            warn "Please enter a number between 1 and ${#backups[@]}"
+            continue
         fi
 
-        echo "Please enter a number between 1 and ${#BACKUP_LIST[@]}"
+        SELECTED_BACKUP="${backups[INPUT - 1]}"
+        return
     done
 }
 
@@ -273,7 +329,7 @@ compose() {
             -f "${GEYSER_DIR}"/compose.yaml \
             -f "${GEYSER_DIR}"/compose.prod.yaml \
             "$@"
-    elif [[ ${BYPASS_AUTH} == "true" ]]; then
+    elif [[ ${GEYSER_BYPASS_AUTH} == "true" ]]; then
         docker compose \
             --env-file "${GEYSER_DIR}"/.env \
             --env-file "${GEYSER_DIR}"/.env.development \
@@ -297,26 +353,26 @@ compose() {
 kc() {
     compose exec keycloak /opt/keycloak/bin/kc.sh "$@"
 }
-
 kc_run() {
-    BYPASS_AUTH="false" KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
+    GEYSER_BYPASS_AUTH="false" KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
 }
-
 kcadm() {
-    login=false
+    local login=false
+    local arg
+
     for arg in "$@"; do
         shift
-        case "$arg" in
+        case "${arg}" in
         --login)
             login=true
             ;;
         *)
-            set -- "$@" "$arg"
+            set -- "$@" "${arg}"
             ;;
         esac
     done
 
-    if [[ "$login" == true ]]; then
+    if [[ "${login}" == true ]]; then
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
             --server http://localhost:8080 --realm master --user admin --password "$KEYCLOAK_ADMIN_PASSWORD"
     fi
@@ -331,7 +387,6 @@ hasura() {
     command hasura --project "${GEYSER_DIR}"/hasura --admin-secret "${HASURA_GRAPHQL_ADMIN_SECRET}" "$@"
 }
 
-# Service health monitoring
 wait_until_healthy() {
     local service=$1
     local timeout=${2:-300} # 5 minutes default timeout
@@ -375,9 +430,9 @@ handle_init() {
 
     if docker volume inspect geyser_data >/dev/null 2>&1 ||
         docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-        notice "Warning: Existing data volumes found (this may cause conflicts). You should reset Geyser first."
+        warn "Existing data volumes found (this may cause conflicts). You should reset Geyser first."
         if ! confirm "Initialize anyway?"; then
-            notice "Initialization cancelled. Please reset Geyser first with: 'geyser reset'."
+            info "Initialization cancelled. Please reset Geyser first with: 'geyser reset'."
             return
         fi
     fi
@@ -407,7 +462,7 @@ handle_init() {
         wait_until_healthy hasura
     fi
 
-    info "Initialization completed successfully"
+    success "Initialization completed successfully"
 }
 
 handle_start() {
@@ -415,36 +470,42 @@ handle_start() {
 
     if ! docker volume inspect geyser_data >/dev/null 2>&1 ||
         ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-        notice "Warning: Missing data volumes. You should initialize Geyser first."
+        warn "Missing data volumes. You should initialize Geyser first."
         if ! confirm "Start anyway?"; then
-            notice "Initialization cancelled. Please initialize Geyser first with: 'geyser init'."
+            info "Initialization cancelled. Please initialize Geyser first with: 'geyser init'."
             return
         fi
     fi
 
     compose up -d
 
-    info "All services started successfully"
+    success "All services started successfully"
 }
 
 handle_stop() {
     info "Stopping all services..."
+
     compose down
+
+    success "All services stopped successfully"
 }
 
 handle_restart() {
     info "Restarting all services..."
+
     compose down
     compose up -d
+
+    success "All services restarted successfully"
 }
 
 handle_update() {
     info "Starting update process..."
 
     if [[ -n $(compose ps -q) ]]; then
-        notice "Warning: There are running services that need to be stopped for the update."
+        warn "Warning: There are running services that need to be stopped for the update."
         if ! confirm "Would you like to stop them now?"; then
-            notice "Update cancelled. Please stop services first with: 'geyser stop'."
+            info "Update cancelled. Please stop services first with: 'geyser stop'."
             return
         fi
         compose down
@@ -460,77 +521,14 @@ handle_update() {
     info "Cleaning up old images..."
     docker image prune -f
 
-    info "Update completed successfully"
-}
-
-handle_backup() {
-    local backup_dir="${GEYSER_DIR}/backups"
-    local date
-    date=$(date +%Y-%m-%d-%H-%M-%S)
-    local backup_path="${backup_dir}/${date}"
-
-    info "Creating backup in ${backup_path}"
-    mkdir -p "${backup_path}"
-
-    info "Backing up databases..."
-    info "- Backing up Keycloak database..."
-    compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_dump -U postgres -h localhost -p 5433 -Fc -f "/backups/${date}/keycloak.dump"
-
-    info "- Backing up Geyser database..."
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_dump -U postgres -h localhost -p 5432 -Fc -f "/backups/${date}/geyser.dump"
-
-    info "Backup completed successfully in ${backup_path}"
-}
-
-handle_restore() {
-    if [[ -n $(compose ps -q) ]]; then
-        notice "Warning: There are running services that need to be stopped for the restore."
-        if ! confirm "Would you like to stop them now?"; then
-            notice "Restore cancelled. Please stop services first with: 'geyser stop'."
-            return
-        fi
-        info "Stopping all services..."
-        compose down
-    fi
-
-    local backup_dir="${GEYSER_DIR}/backups"
-
-    info "Available backups:"
-    backup_date=$(select_backup "${backup_dir}" "Select backup to restore:")
-
-    local backup_path="${backup_dir}/${backup_date}"
-    if [[ ! -d "${backup_path}" ]]; then
-        error "Backup ${backup_date} not found"
-    fi
-
-    info "Starting databases..."
-    compose up -d db_keycloak db
-    wait_until_healthy db_keycloak
-    wait_until_healthy db
-
-    info "Restoring databases..."
-    info "- Restoring Keycloak database..."
-    compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_restore -U postgres -h localhost -p 5433 --clean --if-exists -v "/backups/${backup_date}/keycloak.dump"
-
-    info "- Restoring Geyser database..."
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_restore -U postgres -h localhost -p 5432 --clean --if-exists -v "/backups/${backup_date}/geyser.dump"
-
-    info "Stopping all services..."
-    compose down
-
-    info "Restore completed successfully"
+    success "Update completed successfully"
 }
 
 handle_reset() {
     info "Starting reset process..."
 
-    notice "WARNING: This will completely reset your Geyser installation"
-    notice "Note: Backup files in ${GEYSER_DIR}/backups will be preserved"
-
+    warn "This will completely reset your Geyser installation"
+    info "Note: Backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
         info "Reset cancelled"
         return
@@ -542,59 +540,199 @@ handle_reset() {
     info "Cleaning logs..."
     rm -f "${GEYSER_DIR}/geyser.log"
 
-    info "Reset completed successfully"
+    success "Reset completed successfully"
+}
+
+handle_backup() {
+    local backup
+    backup=$(date +%Y-%m-%d-%H-%M-%S)
+
+    while true; do
+        prompt "Enter a backup name [${backup}]:"
+
+        if [[ -z "${INPUT}" ]]; then
+            return
+        fi
+
+        if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
+            backup="${INPUT}"
+            return
+        fi
+
+        warn "Please enter a name using only letters, numbers, underscores, and hyphens"
+    done
+
+    local backup_path="${DB_BACKUP_DIR}/${backup}"
+    mkdir -p "${backup_path}"
+
+    info "Backing up databases in ${backup_path}:"
+    info "* Backing up Keycloak database..."
+    compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
+        pg_dump -U postgres -h localhost -p 5433 -Fc -f "/backups/${backup}/keycloak.dump"
+
+    info "* Backing up Geyser database..."
+    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
+        pg_dump -U postgres -h localhost -p 5432 -Fc -f "/backups/${backup}/geyser.dump"
+
+    success "Backup completed successfully in ${backup_path}"
+}
+
+handle_restore() {
+    if [[ -n $(compose ps -q) ]]; then
+        warn "There are running services that need to be stopped for the restore."
+        if ! confirm "Would you like to stop them now?"; then
+            info "Restore cancelled. Please stop services first with: 'geyser stop'."
+            return
+        fi
+        info "Stopping all services..."
+        compose down
+    fi
+
+    select_backup "${DB_BACKUP_DIR}" "Select a backup to restore"
+    local backup_path="${DB_BACKUP_DIR}/${SELECTED_BACKUP}"
+
+    info "Starting databases..."
+    compose up -d db_keycloak db
+
+    info "Restoring databases:"
+    info "* Restoring Keycloak database..."
+    if [[ -f "${backup_path}/keycloak.dump" ]]; then
+        wait_until_healthy db_keycloak
+        compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
+            pg_restore -U postgres -h localhost -p 5433 --clean --if-exists -v "/backups/${backup}/keycloak.dump"
+    else
+        warn "Found no backup for Keycloak database in ${backup}"
+    fi
+
+    info "* Restoring Geyser database..."
+    if [[ -f "${backup_path}/geyser.dump" ]]; then
+        wait_until_healthy db
+        compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
+            pg_restore -U postgres -h localhost -p 5432 --clean --if-exists -v "/backups/${backup}/geyser.dump"
+    else
+        warn "Found no backup for Geyser database in ${backup}"
+    fi
+
+    info "Stopping all services..."
+    compose down
+
+    success "Restore completed successfully"
 }
 
 handle_realm_export() {
     if [[ -n $(compose ps -q) ]]; then
-        notice "Warning: There are running services that need to be stopped for the export."
+        warn "There are running services that need to be stopped for the realm export."
         if ! confirm "Would you like to stop them now?"; then
-            notice "Realm export cancelled. Please stop services first with: 'geyser stop'."
+            info "Realm export cancelled. Please stop services first with: 'geyser stop'."
             return
         fi
         info "Stopping all services..."
         compose down
     fi
 
-    local backup_dir="${GEYSER_DIR}/backups"
-    local date
-    date=$(date +%Y-%m-%d-%H-%M-%S)
-    local backup_path="${backup_dir}/${date}"
+    local backup
+    backup=$(date +%Y-%m-%d-%H-%M-%S)
 
-    info "Creating export directory in ${backup_path}"
+    while true; do
+        prompt "Enter an export name [${backup}]:"
+
+        if [[ -z "${INPUT}" ]]; then
+            return
+        fi
+
+        if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
+            backup="${INPUT}"
+            return
+        fi
+
+        warn "Please enter a name using only letters, numbers, underscores, and hyphens"
+    done
+
+    local backup_path="${KC_BACKUP_DIR}/${backup}"
     mkdir -p "${backup_path}"
 
-    info "Exporting Keycloak realms..."
-    kc_run export --dir "/opt/keycloak/data/backups/${date}"
+    info "Exporting Keycloak realms in ${backup_path}..."
+    kc_run export --dir "/opt/keycloak/data/backups/${backup}"
 
-    info "Realm export completed successfully in ${backup_path}"
+    success "Realm export completed successfully in ${backup_path}"
 }
 
 handle_realm_import() {
     if [[ -n $(compose ps -q) ]]; then
-        notice "Warning: There are running services that need to be stopped for the import."
+        warn "There are running services that need to be stopped for the realm import."
         if ! confirm "Would you like to stop them now?"; then
-            notice "Realm import cancelled. Please stop services first with: 'geyser stop'."
+            info "Realm import cancelled. Please stop services first with: 'geyser stop'."
             return
         fi
         info "Stopping all services..."
         compose down
     fi
 
-    local backup_dir="${GEYSER_DIR}/backups"
+    select_backup "${KC_BACKUP_DIR}" "Select a realm backup to import"
+    local backup_path="${KC_BACKUP_DIR}/${SELECTED_BACKUP}"
 
-    info "Available realm exports:"
-    export_date=$(select_backup "${backup_dir}" "Select backup to import:")
+    info "Importing Keycloak realms..."
+    kc_run import --dir "/opt/keycloak/data/backups/${backup}"
 
-    local export_path="${backup_dir}/${export_date}"
-    if [[ ! -d "${export_path}" ]]; then
-        error "Export ${export_date} not found"
+    success "Realm import completed successfully"
+}
+
+handle_configure() {
+    info "Configuring Geyser environment..."
+
+    prompt "Geyser installation directory [${GEYSER_DIR}]:"
+    if [[ -n ${INPUT} ]]; then
+        if [[ -d "${INPUT}" ]]; then
+            GEYSER_DIR="${INPUT%/}"
+        else
+            warn "${INPUT} is not a directory, keeping current value (${GEYSER_DIR})"
+        fi
     fi
 
-    info "Importing Keycloak realm..."
-    kc_run import --dir "/opt/keycloak/data/backups/${export_date}"
+    info "Geyser mode:"
+    info "1) development"
+    info "2) production"
+    prompt "Your choice [${GEYSER_MODE}]:"
+    if [[ -n "${INPUT}" ]]; then
+        case "${INPUT}" in
+        1) GEYSER_MODE="development" ;;
+        2) GEYSER_MODE="production" ;;
+        *) warn "Invalid choice, keeping current value (${GEYSER_MODE})" ;;
+        esac
+    fi
 
-    info "Realm import completed successfully"
+    info "Log level:"
+    info "1) DEBUG"
+    info "2) INFO"
+    info "3) WARN"
+    info "4) ERROR"
+    prompt "Your choice [$(print_level "${GEYSER_LOG_LEVEL}")]:"
+    if [[ -n "${INPUT}" ]]; then
+        case "${INPUT}" in
+        1 | 2 | 3 | 4) GEYSER_LOG_LEVEL="${INPUT}" ;;
+        *) warn "Invalid choice, keeping current value ($(print_level "${GEYSER_LOG_LEVEL}"))" ;;
+        esac
+    fi
+
+    if [[ "${GEYSER_MODE}" == "development" ]]; then
+        info "Bypass authentication:"
+        info "1) false"
+        info "2) true"
+        prompt "Your choice [${GEYSER_BYPASS_AUTH}]:"
+        if [[ -n "${INPUT}" ]]; then
+            case "${INPUT}" in
+            1) GEYSER_BYPASS_AUTH="false" ;;
+            2) GEYSER_BYPASS_AUTH="true" ;;
+            *) warn "Invalid choice, keeping current value (${GEYSER_BYPASS_AUTH})" ;;
+            esac
+        fi
+    fi
+
+    show_configuration "New Geyser configuration:"
+
+    if confirm "Save configuration?" "y"; then
+        save_configuration
+    fi
 }
 
 ###############################################################################
@@ -604,7 +742,7 @@ handle_realm_import() {
 main() {
     # Parse options
     while [[ $# -gt 0 ]]; do
-        case "${1}" in
+        case "$1" in
         -h | --help)
             show_help
             exit 0
@@ -618,22 +756,21 @@ main() {
             shift
             ;;
         --log-level)
-            if [[ "${2^^}" =~ ^(DEBUG|INFO|WARN|ERROR)$ ]]; then
-                LOG_LEVEL="${2^^}"
-                shift 2
-            else
-                error "Option --log-level requires one of: DEBUG, INFO, WARN, ERROR"
+            GEYSER_LOG_LEVEL="$(log_level "$2")"
+            if [ "${GEYSER_LOG_LEVEL}" -eq 0 ]; then
+                error "Option --log-level must be one of: DEBUG, INFO, WARN, ERROR"
             fi
+            shift 2
             ;;
         --bypass-auth)
             if [[ "${GEYSER_MODE}" == "production" ]]; then
-                error "Cannot use --bypass-auth in production mode"
+                warn "Cannot use option --bypass-auth in production mode (ignored)"
             fi
-            BYPASS_AUTH=true
+            GEYSER_BYPASS_AUTH=true
             shift
             ;;
         -*)
-            error "Unknown option: ${1}. Try 'geyser --help' for usage information"
+            error "Unknown option: $1. Try 'geyser --help' for usage information."
             ;;
         *)
             break
@@ -648,26 +785,29 @@ main() {
     show_configuration
 
     # Execute command
-    case "${1}" in
+    case "$1" in
     # Core operations
     init) handle_init ;;
     start) handle_start ;;
     stop) handle_stop ;;
     restart) handle_restart ;;
     update) handle_update ;;
+    reset) handle_reset ;;
 
     # Data operations
     backup) handle_backup ;;
     restore) handle_restore ;;
-    reset) handle_reset ;;
     realm-export) handle_realm_export ;;
     realm-import) handle_realm_import ;;
+
+    # Configuration
+    configure) handle_configure ;;
 
     # Utility
     help) show_help ;;
 
     *)
-        error "Unknown command: ${1}. Try 'geyser --help' for usage information"
+        error "Unknown command: $1. Try 'geyser --help' for usage information."
         ;;
     esac
 }
