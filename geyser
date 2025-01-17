@@ -6,6 +6,17 @@
 # License: GNU AGPL v3.0
 #######################################
 
+cat <<EOF
+
+   ______                         
+  / ____/__  __  __________  _____
+ / / __/ _ \/ / / / ___/ _ \/ ___/
+/ /_/ /  __/ /_/ (__  )  __/ /    
+\____/\___/\__, /____/\___/_/     
+          /____/                  
+
+EOF
+
 ###############################################################################
 # 1. HEADER SECTION
 ###############################################################################
@@ -48,26 +59,6 @@ Options:
   --log-level   Set logging level (DEBUG|INFO|WARN|ERROR)
   --bypass-auth Start only db and hasura (development mode only)
 
-Examples:
-  # Initialize in development mode
-  geyser --dev init
-
-  # Start in production
-  geyser --prod start
-
-  # Create a backup with debug logging
-  geyser backup --log-level DEBUG
-
-  # Update with detailed output
-  geyser update --log-level DEBUG
-
-  # Development mode with direct database access
-  geyser --dev start --bypass-auth
-
-  # Export realms configuration
-  geyser realms-export
-
-Note: Some commands require setting environment variables in .env files.
 For more information, see: https://github.com/arkandias/geyser-backend
 EOF
 }
