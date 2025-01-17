@@ -6,6 +6,7 @@ node_modules/
 !/db/backups/README.md
 /keycloak/backups/*
 !/keycloak/backups/README.md
-/logs
+/logs/*
+!/logs/README.md
 .DS_Store
 *.local
