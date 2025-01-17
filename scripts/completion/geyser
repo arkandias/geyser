@@ -1,0 +1,33 @@
+# Bash completion for geyser command
+_geyser_completion() {
+    local cur prev words cword
+    _init_completion || return
+
+    # List of all available commands
+    local commands="init start stop restart update reset backup restore realms-export realms-import configure help"
+    
+    # List of options
+    local options="--help --dev --prod --log-level --bypass-auth"
+    
+    # List of log levels
+    local log_levels="DEBUG INFO WARN ERROR"
+
+    # Handle previous argument completion
+    case "$prev" in
+        --log-level)
+            COMPREPLY=($(compgen -W "$log_levels" -- "$cur"))
+            return
+            ;;
+    esac
+
+    # Handle current argument completion
+    if [[ "$cur" == -* ]]; then
+        # Complete options
+        COMPREPLY=($(compgen -W "$options" -- "$cur"))
+    else
+        # Complete commands
+        COMPREPLY=($(compgen -W "$commands" -- "$cur"))
+    fi
+}
+
+complete -F _geyser_completion geyser

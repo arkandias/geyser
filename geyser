@@ -21,21 +21,22 @@ Geyser Administration Script
 Usage: geyser [OPTIONS] COMMAND
 
 Core Commands:
-  init          Initialize a fresh Geyser installation (migrations and configuration)
+  init          Initialize a fresh Geyser installation
   start         Start all Geyser services
   stop          Stop all Geyser services
   restart       Restart all Geyser services
-  update        Safely update services with migrations and backups
+  update        Update all Geyser services
   reset         Delete all data and reset to a clean state
 
 Data Operations:
   backup        Create a backup of PostgreSQL databases
   restore       Restore databases from a previous backup
-  realm-export  Export Keycloak realms configuration (requires service restart)
-  realm-import  Import Keycloak realms configuration (requires service restart)
+  realms-export Export Keycloak realms configuration (requires services restart)
+  realms-import Import Keycloak realms configuration (requires services restart)
 
 Configuration:
-  configure     Set up shell configuration and aliases for Geyser
+  configure     Set up shell configuration for Geyser
+  auto-complete Install auto-completion for bash or zsh
 
 Utility:
   help          Show this help message
@@ -63,8 +64,8 @@ Examples:
   # Development mode with direct database access
   geyser --dev start --bypass-auth
 
-  # Export realm configuration
-  geyser realm-export
+  # Export realms configuration
+  geyser realms-export
 
 Note: Some commands require setting environment variables in .env files.
 For more information, see: https://github.com/arkandias/geyser-backend
@@ -104,7 +105,6 @@ show_configuration() {
 }
 
 save_configuration() {
-    local config_file
     local configuration
     local rc_files=(
         "${HOME}/.bashrc" # for Bash users
@@ -127,14 +127,14 @@ EOF
 
     for rc_file in "${rc_files[@]}"; do
         if [[ -f "${rc_file}" ]]; then
-            info "Updating ${config_file}..."
+            info "Updating ${rc_file}..."
             debug "Removing existing configuration block..."
-            sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "${config_file}"
+            sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "${rc_file}"
 
             debug "Cleaning up empty lines..."
-            while [ "$(tail -n 1 "${config_file}" | grep -v '^$')" = "" ]; do
+            while [ "$(tail -n 1 "${rc_file}" | grep -v '^$')" = "" ]; do
                 # shellcheck disable=SC2016
-                sed_i -e '$d' "${config_file}"
+                sed_i -e '$d' "${rc_file}"
             done
 
             debug "Writing new configuration..."
@@ -142,10 +142,10 @@ EOF
                 echo ""
                 echo "${configuration}"
                 echo ""
-            } >>"$config_file"
+            } >>"${rc_file}"
             rc_updated=true
 
-            success "Configuration saved successfully to ${config_file}"
+            success "Configuration saved successfully to ${rc_file}"
         fi
     done
 
@@ -157,12 +157,11 @@ EOF
 validate_environment() {
     check_required_tools
 
-    # Check and export Geyser Mode
+    # Check Geyser Mode
     if [[ "${GEYSER_MODE}" != "development" && "${GEYSER_MODE}" != "production" ]]; then
         error "Invalid mode '${GEYSER_MODE}'. Must be 'development' or 'production'.
         Use option --dev/--prod or set GEYSER_MODE environment variable."
     fi
-    export GEYSER_MODE
 
     # Check or create env files
     touch "${GEYSER_DIR}/.env"
@@ -619,9 +618,9 @@ handle_restore() {
     success "Restore completed successfully"
 }
 
-handle_realm_export() {
+handle_realms_export() {
     if [[ -n $(compose ps -q) ]]; then
-        warn "There are running services that need to be stopped for the realm export."
+        warn "There are running services that need to be stopped for realms export."
         if ! confirm "Would you like to stop them now?"; then
             info "Realm export cancelled. Please stop services first with: 'geyser stop'."
             return
@@ -657,9 +656,9 @@ handle_realm_export() {
     success "Realm export completed successfully in ${backup_path}"
 }
 
-handle_realm_import() {
+handle_realms_import() {
     if [[ -n $(compose ps -q) ]]; then
-        warn "There are running services that need to be stopped for the realm import."
+        warn "There are running services that need to be stopped for realms import."
         if ! confirm "Would you like to stop them now?"; then
             info "Realm import cancelled. Please stop services first with: 'geyser stop'."
             return
@@ -668,7 +667,7 @@ handle_realm_import() {
         compose down
     fi
 
-    select_backup "${KC_BACKUP_DIR}" "Select a realm backup to import"
+    select_backup "${KC_BACKUP_DIR}" "Select an export to import"
     local backup_path="${KC_BACKUP_DIR}/${SELECTED_BACKUP}"
 
     info "Importing Keycloak realms..."
@@ -735,6 +734,53 @@ handle_configure() {
     fi
 }
 
+handle_auto_complete() {
+    info "Setting up shell auto-completion..."
+
+    info "Select shell type:"
+    info "1) Bash"
+    info "2) Zsh (using oh-my-zsh)"
+    prompt "Your choice [leave empty to abort]:"
+    case "${INPUT}" in
+    1)
+        local completion_dir="/etc/bash_completion.d"
+
+        if [[ ! -d "${completion_dir}" ]]; then
+            error "Bash completion directory not found: ${completion_dir}"
+        fi
+
+        info "Installing Bash completion script..."
+        if ! sudo cp "${GEYSER_DIR}/scripts/completion/geyser" "${completion_dir}/"; then
+            error "Failed to install completion script"
+        fi
+        ;;
+
+    2)
+        local completion_dir="${HOME}/.oh-my-zsh/completions"
+
+        if [[ ! -d "${completion_dir}" ]]; then
+            if ! confirm "Zsh completion directory not found. Create it?"; then
+                error "Zsh completion directory not found: ${completion_dir}"
+            fi
+            mkdir -p "${completion_dir}"
+        fi
+
+        info "Installing Zsh completion script..."
+        if ! cp "${GEYSER_DIR}/scripts/completion/_geyser" "${completion_dir}/"; then
+            error "Failed to install completion script"
+        fi
+        ;;
+
+    *)
+        warn "Auto-completion installation cancelled"
+        return
+        ;;
+    esac
+
+    success "Auto-completion installed successfully"
+    info "Please restart your shell to enable completion"
+}
+
 ###############################################################################
 # 7. MAIN EXECUTION
 ###############################################################################
@@ -797,11 +843,12 @@ main() {
     # Data operations
     backup) handle_backup ;;
     restore) handle_restore ;;
-    realm-export) handle_realm_export ;;
-    realm-import) handle_realm_import ;;
+    realms-export) handle_realms_export ;;
+    realms-import) handle_realms_import ;;
 
     # Configuration
     configure) handle_configure ;;
+    auto-complete) handle_auto_complete ;;
 
     # Utility
     help) show_help ;;

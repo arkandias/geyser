@@ -1,27 +1,55 @@
 #compdef geyser
 
-local context state line
-typeset -A opt_args
-
 _geyser() {
-  _arguments -C \
-    "--dev[Run Geyser in development mode]" \
-    "--prod[Run Geyser in production mode]" \
-    ": :_geyser_commands"
+    local -a commands options log_levels
+    
+    # Define commands with descriptions
+    commands=(
+        'init:Initialize a fresh Geyser installation'
+        'start:Start all Geyser services'
+        'stop:Stop all Geyser services'
+        'restart:Restart all Geyser services'
+        'update:Update all Geyser services'
+        'reset:Delete all data and reset to a clean state'
+        'backup:Create a backup of PostgreSQL databases'
+        'restore:Restore databases from a previous backup'
+        'realms-export:Export Keycloak realms configuration'
+        'realms-import:Import Keycloak realms configuration'
+        'configure:Set up shell configuration for Geyser'
+        'help:Show help message'
+    )
+    
+    # Define options
+    options=(
+        '--help[Show help message]'
+        '--dev[Use development configuration]'
+        '--prod[Use production configuration]'
+        '--log-level[Set logging level]:level:(DEBUG INFO WARN ERROR)'
+        '--bypass-auth[Use only db and hasura (development mode only)]'
+    )
+    
+    # Handle command line state
+    _arguments -C \
+        $options \
+        ': :->command' \
+        '*:: :->argument'
+    
+    case $state in
+        command)
+            # Complete commands
+            _describe 'command' commands
+            ;;
+        argument)
+            # Complete based on command
+            case $words[1] in
+                help)
+                    _message 'no more arguments'
+                    ;;
+                *)
+                    # Default to option completion for all other commands
+                    _arguments $options
+                    ;;
+            esac
+            ;;
+    esac
 }
-
-_geyser_commands() {
-  local -a commands
-  commands=(
-    'start:Start the Geyser service'
-    'stop:Stop the Geyser service'
-    'restart:Restart the Geyser service'
-    'update:Update the Geyser service'
-    'reset:Reset the Geyser service'
-    'backup:Backup the current configuration'
-    'restore:Restore a configuration among a list of backups'
-  )
-  _describe -t commands 'geyser commands' commands
-}
-
-_geyser "$@"
