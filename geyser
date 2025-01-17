@@ -21,7 +21,7 @@ EOF
 # 1. HEADER SECTION
 ###############################################################################
 
-# Exit on any error
+# Exit the script immediately if any command fails
 set -e
 
 # Help text function
@@ -425,7 +425,7 @@ handle_init() {
         docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
         warn "Existing data volumes found (this may cause conflicts). You should reset Geyser first."
         if ! confirm "Initialize anyway?"; then
-            info "Initialization cancelled. Please reset Geyser first with: 'geyser reset'."
+            info "Initialization cancelled. Please reset Geyser first with: geyser reset"
             return
         fi
     fi
@@ -465,7 +465,7 @@ handle_start() {
         ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
         warn "Missing data volumes. You should initialize Geyser first."
         if ! confirm "Start anyway?"; then
-            info "Initialization cancelled. Please initialize Geyser first with: 'geyser init'."
+            info "Initialization cancelled. Please initialize Geyser first with: geyser init"
             return
         fi
     fi
@@ -498,7 +498,7 @@ handle_update() {
     if [[ -n $(compose ps -q) ]]; then
         warn "Warning: There are running services that need to be stopped for the update."
         if ! confirm "Would you like to stop them now?"; then
-            info "Update cancelled. Please stop services first with: 'geyser stop'."
+            info "Update cancelled. Please stop services first with: geyser stop"
             return
         fi
         compose down
@@ -574,7 +574,7 @@ handle_restore() {
     if [[ -n $(compose ps -q) ]]; then
         warn "There are running services that need to be stopped for the restore."
         if ! confirm "Would you like to stop them now?"; then
-            info "Restore cancelled. Please stop services first with: 'geyser stop'."
+            info "Restore cancelled. Please stop services first with: geyser stop"
             return
         fi
         info "Stopping all services..."
@@ -616,7 +616,7 @@ handle_realms_export() {
     if [[ -n $(compose ps -q) ]]; then
         warn "There are running services that need to be stopped for realms export."
         if ! confirm "Would you like to stop them now?"; then
-            info "Realm export cancelled. Please stop services first with: 'geyser stop'."
+            info "Realm export cancelled. Please stop services first with: geyser stop"
             return
         fi
         info "Stopping all services..."
@@ -654,7 +654,7 @@ handle_realms_import() {
     if [[ -n $(compose ps -q) ]]; then
         warn "There are running services that need to be stopped for realms import."
         if ! confirm "Would you like to stop them now?"; then
-            info "Realm import cancelled. Please stop services first with: 'geyser stop'."
+            info "Realm import cancelled. Please stop services first with: geyser stop"
             return
         fi
         info "Stopping all services..."

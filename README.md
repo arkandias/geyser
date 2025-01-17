@@ -9,10 +9,16 @@ purposes.
 
 ### Installation
 
-Start by cloning the project's repository (you need Git for this):
+Geyser is designed to be installed on POSIX systems:
 
 ```shell
-git clone https://github.com/arkandias/geyser-backend.git
+curl -fsSL https://raw.githubusercontent.com/arkandias/geyser-backend/master/install.sh | sh | env GEYSER_VERSION=2.0 sh -
+```
+
+If you don't have `curl` installed, you may use `wget`:
+
+```shell
+wget -qO- https://raw.githubusercontent.com/arkandias/geyser-backend/master/install.sh | env GEYSER_VERSION=2.0 sh -
 ```
 
 This will create a directory `geyser-backend` in your working directory. Switch to this directory:
