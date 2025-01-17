@@ -1,3 +1,4 @@
+db/backups
 keycloak/backups
 .DS_Store
 README.md

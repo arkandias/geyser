@@ -155,6 +155,8 @@ EOF
 }
 
 validate_environment() {
+    debug "Validating environment..."
+
     check_required_tools
 
     # Check Geyser Mode
@@ -179,6 +181,7 @@ validate_environment() {
 }
 
 check_required_tools() {
+    debug "Checking required tools..."
     command -v jq >/dev/null 2>&1 || error "jq is required for this script"
     command -v docker >/dev/null 2>&1 || error "Docker is not installed"
     docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required for this script"
@@ -786,6 +789,8 @@ handle_auto_complete() {
 ###############################################################################
 
 main() {
+    debug "Entering main loop..."
+
     # Parse options
     while [[ $# -gt 0 ]]; do
         case "$1" in
