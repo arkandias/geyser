@@ -34,6 +34,9 @@ tar -xf geyser.zip || {
     exit 1
 }
 
+# Rename the installation directory
+mv "${install_dir}" "geyser"
+
 # Remove the zip file
 rm geyser.zip || {
     echo "Cleaning failed" >&2
@@ -41,4 +44,4 @@ rm geyser.zip || {
 }
 
 echo "Successfully installed Geyser ${GEYSER_VERSION}"
-echo "Navigate to the installation directory with: cd ${install_dir}"
+echo "Navigate to the installation directory with: cd geyser"

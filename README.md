@@ -16,10 +16,10 @@ If you don't have `curl` installed, you may use `wget`:
 wget -qO- https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
 ```
 
-This will create a directory `geyser-backend` in your working directory. Switch to this directory:
+This will create a directory `geyser` in your working directory. Switch to this directory:
 
 ```shell
-cd geyser-backend
+cd geyser
 ```
 
 The essential tools that need to be installed on your machine include:
