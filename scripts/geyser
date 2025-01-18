@@ -95,6 +95,12 @@ show_configuration() {
     fi
 }
 
+load_configuration() {
+    if [[ "${GEYSER_MODE}" == "production" ]]; then
+        warn "Cannot use option --bypass-auth in production mode (ignored)"
+    fi
+}
+
 save_configuration() {
     local configuration
     local rc_files=(
@@ -124,7 +130,7 @@ EOF
             sed_i '/# BEGIN Geyser configuration/,/# END Geyser configuration/d' "${rc_file}"
 
             debug "Cleaning up empty lines..."
-            while [ "$(tail -n 1 "${rc_file}" | grep -v '^$')" = "" ]; do
+            while [[ "$(tail -n 1 "${rc_file}" | grep -v '^$')" = "" ]]; do
                 # shellcheck disable=SC2016
                 sed_i -e '$d' "${rc_file}"
             done
@@ -208,7 +214,7 @@ log() {
     local timestamp
     timestamp=$(date +'%Y-%m-%d %H:%M:%S')
 
-    if [ "$(log_level "${level}")" -ge "${GEYSER_LOG_LEVEL}" ]; then
+    if [[ "$(log_level "${level}")" -ge "${GEYSER_LOG_LEVEL}" ]]; then
         case "${level}" in
         ERROR) echo >&2 -e "\033[31m[${timestamp}] [${level}] ${message}\033[0m" ;;
         SUCCESS) echo -e "\033[32m[${timestamp}] [${level}] ${message}\033[0m" ;;
@@ -793,15 +799,12 @@ main() {
             ;;
         --log-level)
             GEYSER_LOG_LEVEL="$(log_level "$2")"
-            if [ "${GEYSER_LOG_LEVEL}" -eq 0 ]; then
+            if [[ "${GEYSER_LOG_LEVEL}" -eq 0 ]]; then
                 error "Option --log-level must be one of: DEBUG, INFO, WARN, ERROR"
             fi
             shift 2
             ;;
         --bypass-auth)
-            if [[ "${GEYSER_MODE}" == "production" ]]; then
-                warn "Cannot use option --bypass-auth in production mode (ignored)"
-            fi
             GEYSER_BYPASS_AUTH=true
             shift
             ;;
