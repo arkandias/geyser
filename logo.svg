@@ -1,4 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 450 160">
+    <!-- White background -->
+    <rect width="100%" height="100%" fill="white"/>
+
     <!-- Logo symbol -->
     <g transform="translate(80,80)">
         <circle cx="0" cy="0" r="80" fill="#f0f9ff"/>
@@ -9,13 +12,11 @@
               stroke="#60a5fa"
               stroke-width="8"
               stroke-linecap="round"/>
-
         <path d="M-30,20 Q0,-30 30,20"
               fill="none"
               stroke="#3b82f6"
               stroke-width="6"
               stroke-linecap="round"/>
-
         <path d="M-20,0 Q0,-40 20,0"
               fill="none"
               stroke="#2563eb"
