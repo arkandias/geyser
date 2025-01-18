@@ -28,6 +28,7 @@ set -e
 show_help() {
     cat <<EOF
 Geyser Administration Script
+v1.0.0
 
 Usage: geyser [OPTIONS] COMMAND
 
@@ -48,9 +49,6 @@ Data Operations:
 Configuration:
   configure     Set up shell configuration for Geyser
   auto-complete Install auto-completion for bash or zsh
-
-Utility:
-  help          Show this help message
 
 Options:
   -h, --help    Show this help message
@@ -92,12 +90,6 @@ show_configuration() {
     info "* Log level: ${GEYSER_LOG_LEVEL}"
     if [[ "${GEYSER_MODE}" == "development" ]]; then
         info "* Bypass authentication: ${GEYSER_BYPASS_AUTH}"
-    fi
-}
-
-load_configuration() {
-    if [[ "${GEYSER_MODE}" == "production" ]]; then
-        warn "Cannot use option --bypass-auth in production mode (ignored)"
     fi
 }
 
@@ -157,30 +149,46 @@ validate_environment() {
 
     check_required_tools
 
-    # Check Geyser Mode
-    if [[ "${GEYSER_MODE}" != "development" && "${GEYSER_MODE}" != "production" ]]; then
-        error "Invalid mode '${GEYSER_MODE}'. Must be 'development' or 'production'.
-        Use option --dev/--prod or set GEYSER_MODE environment variable."
-    fi
-
     # Check or create env files
     touch "${GEYSER_DIR}/.env"
     touch "${GEYSER_DIR}/.env.local"
-    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}"
-    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
 
     # Source env files
     . "${GEYSER_DIR}/.env"
     . "${GEYSER_DIR}/.env.local"
+
+    # Check mode
+    if [[ "${GEYSER_MODE}" != "development" && "${GEYSER_MODE}" != "production" ]]; then
+        error "Invalid mode: '${GEYSER_MODE}'. Must be 'development' or 'production'.
+        Use option --dev/--prod or set GEYSER_MODE environment variable."
+    fi
+
+    # Check or create mode-specific env files
+    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}"
+    touch "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
+
+    # Source mode-specific env files
     # shellcheck disable=SC1090
     . "${GEYSER_DIR}/.env.${GEYSER_MODE}"
     # shellcheck disable=SC1090
     . "${GEYSER_DIR}/.env.${GEYSER_MODE}.local"
+
+    # Check incompatibilities
+    if [[ "${GEYSER_MODE}" == "production" && "${GEYSER_BYPASS_AUTH}" == "true" ]]; then
+        error "Cannot bypass authentication in production mode"
+    fi
 }
 
 check_required_tools() {
     debug "Checking required tools..."
     command -v docker >/dev/null 2>&1 || error "Docker is not installed"
+    local docker_version
+    docker_version=$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)
+    if [[ -z "${docker_version}" ]]; then
+        error "Could not determine Docker Engine version. Is Docker daemon running?"
+    elif [[ "${docker_version}" -lt 25 ]]; then
+        error "Docker Engine version must be 25.0 or higher. Current version: $(docker version --format '{{.Server.Version}}')"
+    fi
     docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required for this script"
     command -v hasura >/dev/null 2>&1 || error "Hasura CLI is required for this script.
 You can install it with: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash"
@@ -385,10 +393,10 @@ hasura() {
 }
 
 wait_until_healthy() {
-    local service=$1
-    local timeout=${2:-300} # 5 minutes default timeout
+    local service="$1"
+    local timeout="${2:-300}" # 5 minutes default timeout
     local start_time
-    start_time=$(date +%s)
+    start_time="$(date +%s)"
 
     info "Waiting for service ${service} to become healthy..."
     while true; do
@@ -843,11 +851,8 @@ main() {
     configure) handle_configure ;;
     auto-complete) handle_auto_complete ;;
 
-    # Utility
-    help) show_help ;;
-
     *)
-        error "Unknown command: $1. Try 'geyser --help' for usage information."
+        error "Unknown command: '$1'. Try 'geyser --help' for usage information."
         ;;
     esac
 }
