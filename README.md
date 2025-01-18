@@ -1,24 +1,19 @@
-<div style="background-color: #ffffff">
-    <img src="logo.svg" alt="Geyser logo" width="750">
-</div>
+<img src="logo.svg" alt="Geyser logo" width="500">
 
-## Getting Started
-
-These instructions will get you a copy of the project up and running on your local machine for development and testing
-purposes.
+## Getting started
 
 ### Installation
 
-Geyser is designed to be installed on POSIX systems:
+You can install Geyser by running the following command:
 
 ```shell
-curl -fsSL https://raw.githubusercontent.com/arkandias/geyser-backend/master/install.sh | sh | env GEYSER_VERSION=2.0 sh -
+curl -fsSL https://raw.githubusercontent.com/arkandias/geyser-backend/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
 ```
 
 If you don't have `curl` installed, you may use `wget`:
 
 ```shell
-wget -qO- https://raw.githubusercontent.com/arkandias/geyser-backend/master/install.sh | env GEYSER_VERSION=2.0 sh -
+wget -qO- https://raw.githubusercontent.com/arkandias/geyser-backend/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
 ```
 
 This will create a directory `geyser-backend` in your working directory. Switch to this directory:
@@ -29,7 +24,8 @@ cd geyser-backend
 
 The essential tools that need to be installed on your machine include:
 
-- Docker Compose
+- Docker Engine v25.0 or later
+- Docker Compose V2
 - Hasura CLI
 
 Although not necessary, the following tools are needed to use some of the convenient scripts provided with this project:
