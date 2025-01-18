@@ -112,6 +112,7 @@ export GEYSER_DIR="${GEYSER_DIR}"
 export GEYSER_MODE="${GEYSER_MODE}"
 export GEYSER_LOG_LEVEL="${GEYSER_LOG_LEVEL}"
 export GEYSER_BYPASS_AUTH="${GEYSER_BYPASS_AUTH}"
+alias geyser="${GEYSER_DIR}/scripts/geyser"
 # END Geyser configuration
 EOF
     )
@@ -173,13 +174,10 @@ validate_environment() {
 
 check_required_tools() {
     debug "Checking required tools..."
-    command -v jq >/dev/null 2>&1 || error "jq is required for this script"
     command -v docker >/dev/null 2>&1 || error "Docker is not installed"
     docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required for this script"
-    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is required for this script"
-    command -v psql >/dev/null 2>&1 || error "PostgreSQL client (psql) is required for this script"
-    command -v pg_dump >/dev/null 2>&1 || error "PostgreSQL client (pg_dump) is required for this script"
-    command -v pg_restore >/dev/null 2>&1 || error "PostgreSQL client (pg_restore) is required for this script"
+    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is required for this script.
+You can install it with: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash"
 }
 
 ###############################################################################
@@ -216,7 +214,7 @@ log() {
         SUCCESS) echo -e "\033[32m[${timestamp}] [${level}] ${message}\033[0m" ;;
         WARN) echo -e "\033[33m[${timestamp}] [${level}] ${message}\033[0m" ;;
         DEBUG) echo -e "\033[34m[${timestamp}] [${level}] ${message}\033[0m" ;;
-        INFO) echo "[${timestamp}] [${level}] ${message}" ;;
+        INFO) echo -e "[${timestamp}] [${level}] ${message}" ;;
         esac
     fi
 
@@ -395,7 +393,7 @@ wait_until_healthy() {
         fi
 
         local health
-        health=$(compose ps "${service}" --format json | jq '.Health')
+        health=$(compose ps "${service}" --format '{{.Health}}')
 
         case "${health}" in
         "\"healthy\"")
@@ -439,8 +437,7 @@ handle_init() {
 
     info "Initializing Hasura database..."
     wait_until_healthy db
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db psql -U postgres -d geyser -f /db/schema.sql
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db psql -U postgres -d geyser -f /db/init.sql
+    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql && psql -U postgres -d geyser -f /initdb/init.sql"
 
     info "Starting Hasura..."
     compose up -d hasura
@@ -560,12 +557,11 @@ handle_backup() {
 
     info "Backing up databases in ${backup_path}:"
     info "* Backing up Keycloak database..."
-    compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-        pg_dump -U postgres -h localhost -p 5433 -Fc -f "/backups/${backup}/keycloak.dump"
-
+    compose exec -T db_keycloak bash -c \
+        "pg_dump -U postgres -d keycloak -Fc > /backups/${backup}/keycloak.dump"
     info "* Backing up Geyser database..."
-    compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-        pg_dump -U postgres -h localhost -p 5432 -Fc -f "/backups/${backup}/geyser.dump"
+    compose exec -T db bash -c \
+        "pg_dump -U postgres -d geyser -Fc > /backups/${backup}/geyser.dump"
 
     success "Backup completed successfully in ${backup_path}"
 }
@@ -591,8 +587,8 @@ handle_restore() {
     info "* Restoring Keycloak database..."
     if [[ -f "${backup_path}/keycloak.dump" ]]; then
         wait_until_healthy db_keycloak
-        compose exec -e PGPASSWORD="${POSTGRES_KC_PASSWORD}" db_keycloak \
-            pg_restore -U postgres -h localhost -p 5433 --clean --if-exists -v "/backups/${backup}/keycloak.dump"
+        compose exec -T db_keycloak bash -c \
+            "pg_restore -U postgres -d keycloak --clean --if-exists -v /backups/${SELECTED_BACKUP}/keycloak.dump"
     else
         warn "Found no backup for Keycloak database in ${backup}"
     fi
@@ -600,8 +596,8 @@ handle_restore() {
     info "* Restoring Geyser database..."
     if [[ -f "${backup_path}/geyser.dump" ]]; then
         wait_until_healthy db
-        compose exec -e PGPASSWORD="${POSTGRES_PASSWORD}" db \
-            pg_restore -U postgres -h localhost -p 5432 --clean --if-exists -v "/backups/${backup}/geyser.dump"
+        compose exec -T db bash -c \
+            "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}/geyser.dump"
     else
         warn "Found no backup for Geyser database in ${backup}"
     fi
@@ -748,7 +744,6 @@ handle_auto_complete() {
             error "Failed to install completion script"
         fi
         ;;
-
     2)
         local completion_dir="${HOME}/.oh-my-zsh/completions"
 
@@ -764,7 +759,6 @@ handle_auto_complete() {
             error "Failed to install completion script"
         fi
         ;;
-
     *)
         warn "Auto-completion installation cancelled"
         return

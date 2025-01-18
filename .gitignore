@@ -2,11 +2,11 @@
 node_modules/
 /certs/*
 !/certs/README.md
-/db/backups/
-!/db/backups/README.md
 /keycloak/backups/*
 !/keycloak/backups/README.md
 /logs/*
 !/logs/README.md
+/postgres/backups/
+!/postgres/backups/README.md
 .DS_Store
 *.local
