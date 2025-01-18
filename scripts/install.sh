@@ -22,7 +22,7 @@ else
 fi
 
 # Download the GitHub repository
-download "${url}" || {
+download "${zipname}" "${url}" || {
     echo "Download failed" >&2
     exit 1
 }
