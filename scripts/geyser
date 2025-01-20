@@ -131,17 +131,17 @@ load_environment() {
     fi
     if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
         MODE="development"
-        debug "Geyser mode overridden with --dev option"
+        debug "Mode overridden with --dev option"
     fi
     if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
         MODE="production"
-        debug "Geyser mode overridden with --prod option"
+        debug "Mode overridden with --prod option"
     fi
     if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
         error "Invalid mode '${MODE}' (must be 'development' or 'production').
 Use options --dev/--prod or set MODE environment variable."
     fi
-    debug "Mode: ${MODE}"
+    debug "Mode set to '${MODE}'"
 
     # Load mode-specific env files
     touch "${ROOT_DIR}/.env.${MODE}"
@@ -164,18 +164,18 @@ Use option --bypass-auth or set BYPASS_AUTH environment variable."
         warn "Authentication is required in production mode (ignored)"
         BYPASS_AUTH="false"
     fi
-    debug "Bypass authentication setting: ${BYPASS_AUTH}"
+    debug "Bypass authentication set to '${BYPASS_AUTH}'"
 
     # Set LOG_LEVEL
     if [[ "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
         LOG_LEVEL="${OPT_LOG_LEVEL}"
-        debug "Log level setting overridden with --log-level option"
+        debug "Log level overridden with --log-level option"
     fi
     if ! LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}")"; then
         error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
 Use option --log-level or set LOG_LEVEL environment variable."
     fi
-    debug "Log level: ${LOG_LEVEL}"
+    debug "Log level set to '${LOG_LEVEL}'"
 }
 
 #------------------------------------------------------------------------------
