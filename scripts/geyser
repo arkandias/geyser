@@ -55,23 +55,30 @@ EOF
 # 2. ENVIRONMENT AND CONFIGURATION
 ###############################################################################
 
-# Set absolute root directory for Geyser installation
+#------------------------------------------------------------------------------
+# Directory Setup
+#------------------------------------------------------------------------------
+
 readonly ROOT_DIR
 ROOT_DIR="$(dirname "$0")"
-
-# Directory paths for backups and logs
 readonly DB_BACKUP_DIR="${ROOT_DIR}/db/backups"
 readonly KC_BACKUP_DIR="${ROOT_DIR}/keycloak/backups"
 readonly LOG_DIR="${ROOT_DIR}/logs"
 readonly LOG_FILE="${LOG_DIR}/geyser.log"
 
-# Default environment settings
+#------------------------------------------------------------------------------
+# Environment Variables
+#------------------------------------------------------------------------------
+
 MODE="production"   # Operational mode (development/production)
 BYPASS_AUTH="false" # Skip authentication for development
 LOG_LEVEL="INFO"    # Log level in text form
 LOG_LEVEL_NUM=2     # Log level as number (1=DEBUG, 2=INFO, 3=WARN, 4=ERROR)
 
-# Command line option flags
+#------------------------------------------------------------------------------
+# Command Line Options
+#------------------------------------------------------------------------------
+
 OPT_DEV=false          # --dev flag for development mode
 OPT_PROD=false         # --prod flag for production mode
 OPT_BYPASS_AUTH=false  # --bypass-auth flag to skip authentication
@@ -80,23 +87,31 @@ OPT_SHOW_CONFIG=false  # --show-config flag to display configuration
 OPT_CONFIGURE=false    # --configure flag to set up environment
 OPT_AUTOCOMPLETE=false # --autocomplete flag for shell completion
 
-check_required_tools() {
-    debug "Checking required tools..."
+#------------------------------------------------------------------------------
+# Dependencies
+#------------------------------------------------------------------------------
+
+check_dependencies() {
+    debug "Checking dependencies..."
     command -v docker >/dev/null 2>&1 || error "Docker is not installed"
     local docker_version
     docker_version=$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)
     if [[ -z "${docker_version}" ]]; then
-        error "Could not determine Docker Engine version. Is Docker daemon running?"
+        error "Docker daemon is not running"
     elif [[ "${docker_version}" -lt 25 ]]; then
-        error "Docker Engine version must be 25.0 or higher. Current version: $(docker version --format '{{.Server.Version}}')"
+        error "Docker Engine version 25.0 or higher is required (current: ${docker_version})"
     fi
-    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required for this script"
-    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is required for this script.
+    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required"
+    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is not installed.
 You can install it with: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash"
 }
 
-validate_environment() {
-    debug "Validating environment..."
+#------------------------------------------------------------------------------
+# Environment Validation & Loading
+#------------------------------------------------------------------------------
+
+load_environment() {
+    debug "Loading environment..."
     debug "Root directory: ${ROOT_DIR}"
 
     # Create required directories
@@ -112,7 +127,7 @@ validate_environment() {
 
     # Set MODE
     if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
-        error "Cannot use options --dev and --prod together"
+        error "Invalid options: --dev and --prod cannot be used together"
     fi
     if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
         MODE="development"
@@ -123,8 +138,8 @@ validate_environment() {
         debug "Geyser mode overridden with --prod option"
     fi
     if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid mode: '${MODE}'. Must be 'development' or 'production'.
-Use option --dev/--prod or set MODE environment variable."
+        error "Invalid mode '${MODE}' (must be 'development' or 'production').
+Use options --dev/--prod or set MODE environment variable."
     fi
     debug "Mode: ${MODE}"
 
@@ -142,11 +157,12 @@ Use option --dev/--prod or set MODE environment variable."
         debug "Bypass authentication setting overridden with --bypass-auth option"
     fi
     if [[ "${BYPASS_AUTH}" != "true" && "${BYPASS_AUTH}" != "false" ]]; then
-        error "Invalid bypass authentication setting: '${BYPASS_AUTH}'. Must be 'true' or 'false'.
+        error "Invalid bypass authentication setting '${BYPASS_AUTH}' (must be 'true' or 'false').
 Use option --bypass-auth or set BYPASS_AUTH environment variable."
     fi
     if [[ "${MODE}" == "production" && "${BYPASS_AUTH}" == "true" ]]; then
-        error "Cannot bypass authentication in production mode"
+        warn "Authentication is required in production mode (ignored)"
+        BYPASS_AUTH="false"
     fi
     debug "Bypass authentication setting: ${BYPASS_AUTH}"
 
@@ -156,11 +172,15 @@ Use option --bypass-auth or set BYPASS_AUTH environment variable."
         debug "Log level setting overridden with --log-level option"
     fi
     if ! LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}")"; then
-        error "Invalid log level: '${LOG_LEVEL}'. Must be one of: DEBUG, INFO, WARN, ERROR.
+        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
 Use option --log-level or set LOG_LEVEL environment variable."
     fi
     debug "Log level: ${LOG_LEVEL}"
 }
+
+#------------------------------------------------------------------------------
+# Configuration Display & Management
+#------------------------------------------------------------------------------
 
 show_configuration() {
     info "Geyser configuration:"
@@ -200,7 +220,7 @@ EOF
 configure() {
     info "Configuring Geyser environment..."
 
-    info "Mode:"
+    info "Available modes:"
     info "1) development"
     info "2) production"
     while true; do
@@ -215,7 +235,7 @@ configure() {
             continue
             ;;
         *)
-            warn "Invalid choice"
+            warn "Invalid input: enter a number between 1 and 2"
             ;;
         esac
     done
@@ -235,7 +255,9 @@ configure() {
                 BYPASS_AUTH="true"
                 continue
                 ;;
-            *) warn "Invalid choice" ;;
+            *)
+                warn "Invalid input: enter a number between 1 and 2"
+                ;;
             esac
         done
     fi
@@ -265,7 +287,7 @@ configure() {
             continue
             ;;
         *)
-            warn "Invalid choice"
+            warn "Invalid input: enter a number between 1 and 4"
             ;;
         esac
     done
@@ -275,46 +297,58 @@ configure() {
     fi
 }
 
+#------------------------------------------------------------------------------
+# Shell Completion Setup
+#------------------------------------------------------------------------------
+
 install_autocomplete() {
     info "Setting up shell autocompletion..."
 
-    info "Select shell type:"
+    info "Available shells:"
     info "1) bash"
     info "2) zsh (using oh-my-zsh)"
-    prompt "Your choice [leave empty to abort]:"
-    case "${INPUT}" in
-    1)
-        local completion_dir="/etc/bash_completion.d"
+    info "3) Abort"
+    while true; do
+        prompt "Your choice [Abort]:"
+        case "${INPUT}" in
+        1)
+            local completion_dir="/etc/bash_completion.d"
 
-        if [[ ! -d "${completion_dir}" ]]; then
-            error "bash completion directory not found: ${completion_dir}"
-        fi
-
-        info "Installing bash completion script..."
-        if ! sudo cp "${ROOT_DIR}/scripts/completion/geyser" "${completion_dir}/"; then
-            error "Failed to install bash completion script"
-        fi
-        ;;
-    2)
-        local completion_dir="${HOME}/.oh-my-zsh/completions"
-
-        if [[ ! -d "${completion_dir}" ]]; then
-            if ! confirm "zsh completion directory not found. Create it?"; then
-                error "zsh completion directory not found: ${completion_dir}"
+            if [[ ! -d "${completion_dir}" ]]; then
+                error "bash completion directory not found: ${completion_dir}"
             fi
-            mkdir -p "${completion_dir}"
-        fi
 
-        info "Installing zsh completion script..."
-        if ! cp "${ROOT_DIR}/scripts/completion/_geyser" "${completion_dir}/"; then
-            error "Failed to install zsh completion script"
-        fi
-        ;;
-    *)
-        warn "Autocomplete installation cancelled"
-        return
-        ;;
-    esac
+            info "Installing bash completion script..."
+            if ! sudo cp "${ROOT_DIR}/scripts/completion/geyser" "${completion_dir}/"; then
+                error "Failed to install bash completion script"
+            fi
+            continue
+            ;;
+        2)
+            local completion_dir="${HOME}/.oh-my-zsh/completions"
+
+            if [[ ! -d "${completion_dir}" ]]; then
+                if ! confirm "zsh completion directory not found. Create it?"; then
+                    error "zsh completion directory not found: ${completion_dir}"
+                fi
+                mkdir -p "${completion_dir}"
+            fi
+
+            info "Installing zsh completion script..."
+            if ! cp "${ROOT_DIR}/scripts/completion/_geyser" "${completion_dir}/"; then
+                error "Failed to install zsh completion script"
+            fi
+            continue
+            ;;
+        3 | "")
+            warn "Autocomplete installation cancelled"
+            return
+            ;;
+        *)
+            warn "Invalid input: enter a number between 1 and 3"
+            ;;
+        esac
+    done
 
     success "Autocomplete installed successfully"
     info "Please restart your shell to enable completion"
@@ -330,7 +364,7 @@ log_level() {
     WARN) echo 3 ;;
     INFO | SUCCESS) echo 2 ;;
     DEBUG) echo 1 ;;
-    *) error "Invalid log level: '$1'. Must be one of: DEBUG, INFO, WARN, ERROR" ;;
+    *) error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR')" ;;
     esac
 }
 
@@ -413,13 +447,8 @@ select_backup() {
     while true; do
         prompt "${prompt_text} (1-${#backups[@]}):"
 
-        if [[ ! "${INPUT}" =~ ^[0-9]+$ ]]; then
-            warn "Please enter a number"
-            continue
-        fi
-
-        if ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
-            warn "Please enter a number between 1 and ${#backups[@]}"
+        if [[ ! "${INPUT}" =~ ^[0-9]+$ ]] || ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
+            warn "Invalid input: enter a number between 1 and ${#backups[@]}"
             continue
         fi
 
@@ -512,7 +541,7 @@ wait_until_healthy() {
         local current_time
         current_time=$(date +%s)
         if ((current_time - start_time > timeout)); then
-            error "Timeout waiting for ${service} to become healthy"
+            error "Service ${service} health check timeout"
         fi
 
         local health
@@ -540,13 +569,13 @@ wait_until_healthy() {
 ###############################################################################
 
 handle_init() {
-    info "Starting initialization process..."
+    info "Starting initialization..."
 
     if docker volume inspect geyser_data >/dev/null 2>&1 ||
         docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-        warn "Existing data volumes found (this may cause conflicts). You should reset Geyser first."
+        warn "Existing data volumes found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
         if ! confirm "Initialize anyway?"; then
-            info "Initialization cancelled. Please reset Geyser first with: geyser reset"
+            info "Initialization cancelled: reset Geyser first with 'geyser reset'"
             return
         fi
     fi
@@ -554,7 +583,7 @@ handle_init() {
     info "Starting databases..."
     compose up -d db_keycloak db
 
-    info "Starting keycloak..."
+    info "Starting Keycloak..."
     wait_until_healthy db_keycloak
     compose up -d
 
@@ -570,7 +599,7 @@ handle_init() {
     hasura metadata apply
 
     if [[ ${MODE} == "production" ]]; then
-        info "Starting nginx..."
+        info "Starting Nginx..."
         compose up -d
         wait_until_healthy hasura
     fi
@@ -579,13 +608,13 @@ handle_init() {
 }
 
 handle_start() {
-    info "Starting services..."
+    info "Starting all services..."
 
     if ! docker volume inspect geyser_data >/dev/null 2>&1 ||
         ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-        warn "Missing data volumes. You should initialize Geyser first."
+        warn "Missing data volumes. You should initialize Geyser first with 'geyser init'"
         if ! confirm "Start anyway?"; then
-            info "Initialization cancelled. Please initialize Geyser first with: geyser init"
+            info "Initialization cancelled: initialize Geyser first with 'geyser init'"
             return
         fi
     fi
@@ -613,14 +642,15 @@ handle_restart() {
 }
 
 handle_update() {
-    info "Starting update process..."
+    info "Starting update..."
 
     if [[ -n $(compose ps -q) ]]; then
-        warn "Warning: There are running services that need to be stopped for the update."
-        if ! confirm "Would you like to stop them now?"; then
-            info "Update cancelled. Please stop services first with: geyser stop"
+        warn "Running services need to be stopped for update"
+        if ! confirm "Stop them now?"; then
+            info "Update cancelled: stop services first with 'geyser stop'"
             return
         fi
+        info "Stopping all services..."
         compose down
     fi
 
@@ -628,7 +658,7 @@ handle_update() {
     compose pull
     compose build --pull --no-cache
 
-    info "Starting services with updated images..."
+    info "Starting all services with updated images..."
     compose up -d
 
     info "Cleaning up old images..."
@@ -638,16 +668,15 @@ handle_update() {
 }
 
 handle_reset() {
-    info "Starting reset process..."
+    info "Starting reset..."
 
-    warn "This will completely reset your Geyser installation"
-    info "Note: Backup files will be preserved"
+    warn "This will completely reset your Geyser installation. Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Reset cancelled"
+        info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser realms-export'"
         return
     fi
 
-    info "Stopping all services and removing volumes..."
+    info "Stopping all services and cleaning up..."
     compose down --volumes --rmi all --remove-orphans
 
     info "Cleaning logs..."
@@ -672,17 +701,17 @@ handle_backup() {
             return
         fi
 
-        warn "Please enter a name using only letters, numbers, underscores, and hyphens"
+        warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
     done
 
     local backup_path="${DB_BACKUP_DIR}/${backup}"
     mkdir -p "${backup_path}"
 
     info "Backing up databases in ${backup_path}:"
-    info "* Backing up Keycloak database..."
+    info "→ Backing up Keycloak database..."
     compose exec -T db_keycloak bash -c \
         "pg_dump -U postgres -d keycloak -Fc > /backups/${backup}/keycloak.dump"
-    info "* Backing up Geyser database..."
+    info "→ Backing up Geyser database..."
     compose exec -T db bash -c \
         "pg_dump -U postgres -d geyser -Fc > /backups/${backup}/geyser.dump"
 
@@ -691,9 +720,9 @@ handle_backup() {
 
 handle_restore() {
     if [[ -n $(compose ps -q) ]]; then
-        warn "There are running services that need to be stopped for the restore."
-        if ! confirm "Would you like to stop them now?"; then
-            info "Restore cancelled. Please stop services first with: geyser stop"
+        warn "Running services need to be stopped for restore"
+        if ! confirm "Stop them now?"; then
+            info "Restore cancelled: stop services first with 'geyser stop'"
             return
         fi
         info "Stopping all services..."
@@ -707,22 +736,22 @@ handle_restore() {
     compose up -d db_keycloak db
 
     info "Restoring databases:"
-    info "* Restoring Keycloak database..."
+    info "→ Restoring Keycloak database..."
     if [[ -f "${backup_path}/keycloak.dump" ]]; then
         wait_until_healthy db_keycloak
         compose exec -T db_keycloak bash -c \
             "pg_restore -U postgres -d keycloak --clean --if-exists -v /backups/${SELECTED_BACKUP}/keycloak.dump"
     else
-        warn "Found no backup for Keycloak database in ${backup}"
+        warn "No backups found for Keycloak database in ${backup}"
     fi
 
-    info "* Restoring Geyser database..."
+    info "→ Restoring Geyser database..."
     if [[ -f "${backup_path}/geyser.dump" ]]; then
         wait_until_healthy db
         compose exec -T db bash -c \
             "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}/geyser.dump"
     else
-        warn "Found no backup for Geyser database in ${backup}"
+        warn "No backups found for Geyser database in ${backup}"
     fi
 
     info "Stopping all services..."
@@ -733,9 +762,9 @@ handle_restore() {
 
 handle_realms_export() {
     if [[ -n $(compose ps -q) ]]; then
-        warn "There are running services that need to be stopped for realms export."
-        if ! confirm "Would you like to stop them now?"; then
-            info "Realm export cancelled. Please stop services first with: geyser stop"
+        warn "Running services need to be stopped for realms export"
+        if ! confirm "Stop them now?"; then
+            info "Realms export cancelled: stop services first with 'geyser stop'"
             return
         fi
         info "Stopping all services..."
@@ -757,7 +786,7 @@ handle_realms_export() {
             return
         fi
 
-        warn "Please enter a name using only letters, numbers, underscores, and hyphens"
+        warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
     done
 
     local backup_path="${KC_BACKUP_DIR}/${backup}"
@@ -771,9 +800,9 @@ handle_realms_export() {
 
 handle_realms_import() {
     if [[ -n $(compose ps -q) ]]; then
-        warn "There are running services that need to be stopped for realms import."
-        if ! confirm "Would you like to stop them now?"; then
-            info "Realm import cancelled. Please stop services first with: geyser stop"
+        warn "Running services need to be stopped for realms import"
+        if ! confirm "Stop them now?"; then
+            info "Realms import cancelled: stop services first with 'geyser stop'"
             return
         fi
         info "Stopping all services..."
@@ -839,7 +868,7 @@ main() {
             break
             ;;
         -*)
-            error "Unknown option: $1. Try 'geyser --help' for usage information."
+            error "Unknown option '$1' (see 'geyser --help')"
             ;;
         *)
             break
@@ -847,8 +876,8 @@ main() {
         esac
     done
 
-    check_required_tools
-    validate_environment
+    check_dependencies
+    load_environment
 
     # Configure
     if [[ "${OPT_CONFIGURE}" == "true" ]]; then
@@ -882,7 +911,7 @@ main() {
     realms-import) handle_realms_import ;;
 
     *)
-        error "Unknown command: '$1'. Try 'geyser --help' for usage information."
+        error "Unknown command '$1' (see 'geyser --help')"
         ;;
     esac
 }
