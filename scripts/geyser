@@ -62,7 +62,7 @@ EOF
 
 readonly ROOT_DIR
 ROOT_DIR="$(dirname "$0")"
-readonly DB_BACKUP_DIR="${ROOT_DIR}/db/backups"
+readonly DB_BACKUP_DIR="${ROOT_DIR}/postgres/backups"
 readonly KC_BACKUP_DIR="${ROOT_DIR}/keycloak/backups"
 readonly LOG_DIR="${ROOT_DIR}/logs"
 readonly LOG_FILE="${LOG_DIR}/geyser.log"
