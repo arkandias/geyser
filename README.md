@@ -1,48 +1,54 @@
+# Geyser
+
 <img src="logo.svg" alt="Geyser logo" width="500">
 
 ## Getting started
 
 ### Installation
 
-You can install Geyser by running the following command:
+Install Geyser using one of the following commands:
 
 ```shell
+# Using curl
 curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
-```
 
-If you don't have `curl` installed, you may use `wget`:
-
-```shell
+# Using wget
 wget -qO- https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
 ```
 
-This will create a directory `geyser` in your working directory. Switch to this directory:
+This will create a directory `geyser` in your working directory. Navigate to it:
 
 ```shell
 cd geyser
 ```
 
-The essential tools that need to be installed on your machine include:
+### Dependencies
 
-- Docker Engine v25.0 or later
-- Docker Compose V2
-- Hasura CLI
+#### Required Dependencies
 
-Although not necessary, the following tools are needed to use some of the convenient scripts provided with this project:
+- **Docker Engine v25.0 or later**
+    - Required for container management
+    - Must be running with Docker Compose V2 support
+    - User must have permissions to run Docker commands
 
-- jq
+- **Hasura CLI**
+    - Required for managing Hasura metadata and migrations
+    - Used by administration scripts
+    - Installation: `curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash`
 
-On Ubuntu, these tools can be installed all at once:
+#### Optional Dependencies
+
+- **jq**
+    - Required for Keycloak synchronization
+    - Used to process JSON in administration scripts
+    - Installation: `sudo apt install jq` (Ubuntu) or `brew install jq` (macOS)
+
+#### Automated Installation
+
+On Ubuntu systems, you can install all dependencies using the provided script:
 
 ```shell
-./scripts/install_tools
-```
-
-If you're using Bash or Zsh, you can add the environment variables `GEYSER_DIR` and `GEYSER_MODE` to your profile, as
-well as some convenient aliases:
-
-```shell
-source ./scripts/add_configuration
+./scripts/install_deps
 ```
 
 ### Configuration
@@ -72,7 +78,7 @@ The following environment variable must also be set (either in `.env.local` or o
 
 #### SSL Certificates
 
-The SSL certificates must be placed in `certs/`, see [here](certs/README.md).
+The SSL certificates must be placed in `nginx/certs/`, see [here](nginx/certs/README.md).
 
 ### Running Geyser
 
@@ -117,11 +123,11 @@ Hasura permissions are handled by giving users some of the following roles.
 
 In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
 
-| Role          | Explanations                                         |
-|---------------|------------------------------------------------------|
-| `intervenant` | The base user role with restricted permissions       |
-| `commissaire` | Some extra permissions during the "commission" phase |
-| `admin`       | The superuser role with all permissions              |
+| Role       | Explanations                                          |
+|------------|-------------------------------------------------------|
+| `teacher`  | The base user role with restricted permissions        |
+| `assigner` | Some extra permissions during the "assignments" phase |
+| `admin`    | The superuser role with all permissions               |
 
 ### Keycloak
 
@@ -141,7 +147,7 @@ In production mode, the following ports are exposed by the reverse proxy (assumi
 | `/resources/` | https://example.com/auth/resources/ |
 
 In particular, the path `/admin/` is not exposed for security reason.
-You can access this path using SSH Tunnel: if you connect with `ssh -L  8080:localhost:80` to the production server,
+You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8080:localhost:80` to the production server,
 then `/auth/` can be reached at http://localhost:8080/auth/admin.
 In particular, the admin console is available at http://localhost:8080/auth/admin.
 

@@ -1,3 +1,6 @@
+INSERT INTO teacher(uid, firstname, lastname, alias)
+VALUES ('admin', '', '', 'Admin');
+
 INSERT INTO service_modification_type(value, label, description)
 VALUES ('autre', 'Autre', 'Tout autre type de modification'),
        ('conge_arret', 'Congé / arrêt', 'Congé maternité, arrêt maladie, etc.'),

@@ -49,17 +49,6 @@ newgrp docker
 sudo systemctl enable docker.service
 sudo systemctl enable containerd.service
 
-# PostgreSQL
-## Automated repository configuration:
-sudo apt install -y postgresql-common
-sudo /usr/share/postgresql-common/pgdg/apt.postgresql.org.sh
-
-## Installation:
-sudo apt-get install postgresql-16
-
-# jq
-sudo apt-get install jq
-
 # Hasura CLI
 ## Install:
 curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
@@ -88,3 +77,6 @@ case "$selection" in
     echo "Invalid option"
     ;;
 esac
+
+# jq
+sudo apt-get install jq
