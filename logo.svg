@@ -41,14 +41,14 @@
             GEYSER
         </text>
 
-        <!-- Course Allocation Flow -->
-        <text x="2" y="45">
+        <!-- Course Assignment Flow -->
+        <text x="0" y="45">
             <tspan
-                    font-family="Inter, Helvetica Neue, sans-serif"
+                    font-family="Roboto, Arial, Helvetica, sans-serif"
                     font-size="16"
                     font-weight="400"
                     fill="#3b82f6">
-                Course Allocation
+                Course Assignment
             </tspan>
             <tspan
                     font-family="Dancing Script, Brush Script MT, cursive"

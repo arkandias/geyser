@@ -89,7 +89,7 @@ COMMENT ON COLUMN service.id IS 'Unique service identifier';
 COMMENT ON COLUMN service.year IS 'Academic year for this service record';
 COMMENT ON COLUMN service.uid IS 'Teacher identifier linking to teacher table';
 COMMENT ON COLUMN service.hours IS 'Required teaching hours for the year before modifications';
-COMMENT ON COLUMN service.message IS 'Optional message from teacher to course allocation committee';
+COMMENT ON COLUMN service.message IS 'Optional message from teacher to course assignment committee';
 
 CREATE TABLE IF NOT EXISTS service_modification_type
 (
