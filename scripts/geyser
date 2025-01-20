@@ -60,7 +60,7 @@ EOF
 # Directory Setup
 #------------------------------------------------------------------------------
 
-ROOT_DIR="$(dirname "$0")"
+ROOT_DIR="$(dirname "$0")/.."
 readonly ROOT_DIR
 readonly DB_BACKUP_DIR="${ROOT_DIR}/postgres/backups"
 readonly KC_BACKUP_DIR="${ROOT_DIR}/keycloak/backups"
@@ -118,7 +118,6 @@ load_environment() {
     # Create required directories
     mkdir -p "${DB_BACKUP_DIR}"
     mkdir -p "${KC_BACKUP_DIR}"
-    mkdir -p "${LOG_DIR}"
 
     # Load env files
     touch "${ROOT_DIR}/.env"
@@ -385,6 +384,7 @@ log() {
         esac
     fi
 
+    mkdir -p "${LOG_DIR}"
     echo "[${timestamp}] [${level}] ${message}" >>"${LOG_FILE}"
 }
 
