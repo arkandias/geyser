@@ -16,7 +16,6 @@ _geyser() {
         'realms-export:Export Keycloak realms configuration'
         'realms-import:Import Keycloak realms configuration'
         'configure:Set up shell configuration for Geyser'
-        'help:Show help message'
     )
     
     # Define options

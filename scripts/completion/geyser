@@ -4,7 +4,7 @@ _geyser_completion() {
     _init_completion || return
 
     # List of all available commands
-    local commands="init start stop restart update reset backup restore realms-export realms-import configure help"
+    local commands="init start stop restart update reset backup restore realms-export realms-import configure"
     
     # List of options
     local options="--help --dev --prod --log-level --bypass-auth"

@@ -588,8 +588,8 @@ handle_init() {
 
     if [[ ${MODE} == "production" ]]; then
         info "Starting Nginx..."
-        compose up -d
-        wait_until_healthy hasura
+        compose up -d web
+        wait_until_healthy web
     fi
 
     success "Initialization completed successfully"
