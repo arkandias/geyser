@@ -31,7 +31,7 @@ services:
       - frontend
 
   web:
-    build: ./keycloak
+    build: ./nginx
     restart: always
     depends_on:
       keycloak:
@@ -46,6 +46,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
+      - CLIENT_VERSION=2.0
       - SERVER_HOST
     ports:
       - "80:80"
