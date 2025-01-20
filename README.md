@@ -30,7 +30,6 @@ The essential tools that need to be installed on your machine include:
 
 Although not necessary, the following tools are needed to use some of the convenient scripts provided with this project:
 
-- PostgreSQL
 - jq
 
 On Ubuntu, these tools can be installed all at once:

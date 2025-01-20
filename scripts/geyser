@@ -35,6 +35,7 @@ Data Operations:
   restore           Restore databases from a previous backup
   realms-export     Export Keycloak realms configuration (requires services restart)
   realms-import     Import Keycloak realms configuration (requires services restart)
+  sync-keycloak     Synchronize Keycloak users with active teachers
 
 Options:
   -h, --help        Show this help message
@@ -494,35 +495,22 @@ compose() {
 
 # Keycloak management functions
 kc() {
-    compose exec keycloak /opt/keycloak/bin/kc.sh "$@"
+    compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
+}
+kcadm() {
+    if [[ "$1" == "--login" ]]; then
+        shift
+        if [[ "$#" -ne 0 ]]; then
+            error "No additional arguments allowed with 'kcadm --login'"
+        fi
+        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
+            --server http://localhost:8080 --realm master --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
+    else
+        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
+    fi
 }
 kc_run() {
     BYPASS_AUTH="false" KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
-}
-kcadm() {
-    local login=false
-    local arg
-
-    for arg in "$@"; do
-        shift
-        case "${arg}" in
-        --login)
-            login=true
-            ;;
-        *)
-            set -- "$@" "${arg}"
-            ;;
-        esac
-    done
-
-    if [[ "${login}" == true ]]; then
-        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
-            --server http://localhost:8080 --realm master --user admin --password "$KEYCLOAK_ADMIN_PASSWORD"
-    fi
-
-    if [[ $# -ne 0 ]]; then
-        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
-    fi
 }
 
 # Hasura CLI wrapper
@@ -816,6 +804,104 @@ handle_realms_import() {
     kc_run import --dir "/opt/keycloak/data/backups/${backup}"
 
     success "Realm import completed successfully"
+}
+
+handle_sync_keycloak() {
+    info "Starting Keycloak synchronization..."
+
+    command -v jq >/dev/null 2>&1 || error "jq is not installed.
+You can install it with: 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
+
+    info "Fetching active teachers from Geyser database..."
+    local teachers active_teachers
+    teachers=$(compose exec -T db bash -c \
+        "psql -U postgres -d geyser -A -t -c 'SELECT json_agg(t) FROM teacher t;'")
+    if [[ -z "${teachers}" ]]; then
+        error "Failed to fetch teachers from Geyser database"
+    fi
+    active_teachers=$(echo "${teachers}" | jq -c '[.[] | select(.active==true)]')
+
+    info "Authenticating with Keycloak..."
+    kcadm --login || error "Failed to authenticate with Keycloak"
+
+    info "Fetching Keycloak users and groups..."
+    local kc_users kc_groups kc_teachers_gid kc_teachers
+    kc_users=$(kcadm get users -r geyser --limit -1)
+    debug "Keycloak users:\n${kc_users}"
+    kc_groups=$(kcadm get groups -r geyser)
+    debug "Keycloak groups:\n${kc_groups}"
+    kc_teachers_gid=$(echo "${kc_groups}" | jq -r '.[] | select(.name=="Teachers") | .id')
+    if [[ -z "${kc_teachers_gid}" ]]; then
+        error "Group 'Teachers' does not exist in Keycloak"
+    fi
+    debug "Keycloak 'Teachers' Group ID: ${kc_teachers_gid}"
+    kc_teachers=$(kcadm get groups/"${kc_teachers_gid}"/members -r geyser --limit -1 | jq -r '[.[] | .id]')
+    debug "Keycloak teachers:\n${kc_teachers}"
+
+    info "Creating or updating Keycloak users corresponding to active teachers in Geyser database..."
+    while IFS= read -r teacher; do
+        local uid firstname lastname kc_user kc_user_id
+        uid=$(echo "${teacher}" | jq -r '.uid')
+        firstname=$(echo "${teacher}" | jq -r '.firstname')
+        lastname=$(echo "${teacher}" | jq -r '.lastname')
+        kc_user=$(echo "${kc_users}" | jq --arg uid "${uid}" -c '.[] | select(.email==$uid)')
+        kc_user_id=$(echo "${kc_user}" | jq -r '.id')
+
+        if [[ -z "${kc_user_id}" ]]; then
+            info "User '${uid}' not found"
+            info "Creating user '${uid}'..."
+            debug "User creation data: email=${uid}, firstName=${firstname}, lastName=${lastname}, and enabled=true..."
+            kcadm create users -r geyser \
+                -s email="${uid}" \
+                -s firstName="${firstname}" \
+                -s lastName="${lastname}" \
+                -s enabled=true ||
+                error "Failed to create user '${uid}'"
+            kc_user_id=$(kcadm get users -r geyser -q email="${uid}" | jq -r '.[] | .id')
+        else
+            info "User '${uid}' found"
+            local kc_firstname kc_lastname kc_enabled update_fields=()
+            kc_firstname=$(echo "${kc_user}" | jq -r '.firstName')
+            kc_lastname=$(echo "${kc_user}" | jq -r '.lastName')
+            kc_enabled=$(echo "${kc_user}" | jq -r '.enabled')
+            if [[ "${kc_firstname}" != "${firstname}" ]]; then
+                debug "First name mismatch: remote '${kc_firstname}' != local '${firstname}'"
+                update_fields+=(-s "firstName=${firstname}")
+            fi
+            if [[ "${kc_lastname}" != "${lastname}" ]]; then
+                debug "Last name mismatch: remote '${kc_lastname}' != local '${lastname}'"
+                update_fields+=(-s "lastName=${lastname}")
+            fi
+            if [[ "${kc_enabled}" != "true" ]]; then
+                debug "Enabled status mismatch: remote '${kc_enabled}' != local 'true'"
+                update_fields+=(-s "enabled=true")
+            fi
+            if [[ ${#update_fields[@]} -gt 0 ]]; then
+                info "Updating user '${uid}'..."
+                kcadm update users/"${kc_user_id}" -r geyser "${update_fields[@]}"
+            fi
+        fi
+
+        if ! echo "${kc_teachers}" | jq -e --arg id "${kc_user_id}" 'contains([$id])' >/dev/null; then
+            info "Adding user '${uid}' to group 'Teachers'..."
+            kcadm update users/"${kc_user_id}"/groups/"${kc_teachers_gid}" -r geyser -s realm=geyser -s userId="${kc_user_id}"
+        fi
+    done < <(echo "${active_teachers}" | jq -c '.[]')
+
+    info "Disabling Keycloak users not corresponding to active teachers in Geyser database..."
+    while IFS= read -r kc_user; do
+        local email kc_user_id
+        email=$(echo "${kc_user}" | jq -r '.email')
+        if echo "${active_teachers}" | jq -e --arg email "${email}" '.[] | select(.uid==$email)' >/dev/null; then
+            info "User ${email} is an active teacher (ignored)"
+        else
+            info "Disabling user ${email}..."
+            kc_user_id=$(echo "${kc_user}" | jq -r '.id')
+            kcadm update kc_users/"${kc_user_id}" -r geyser -s enabled=false
+        fi
+    done < <(echo "${kc_users}" | jq -c '.[] | select(.enabled==true)')
+
+    success "Keycloak synchronization completed successfully"
 }
 
 ###############################################################################
