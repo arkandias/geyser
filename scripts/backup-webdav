@@ -13,14 +13,11 @@
 #   WEBDAV_PASS - WebDAV password
 #
 # Example crontab usage:
-#   # Hourly backups
-#   0 * * * * /path/to/scripts/backup-webdav
+#   # Hourly backups in June and July
+#   0 * * 6,7 * /path/to/scripts/backup-webdav
 #
-#   # Daily backup at 3:00 AM
-#   0 3 * * * /path/to/scripts/backup-webdav
-#
-#   # Weekly backup on Sunday at 4:00 AM
-#   0 4 * * 0 /path/to/scripts/backup-webdav
+#   # Daily at 3:00 AM every month except June and July
+#   0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
 
 set -e
 
