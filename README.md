@@ -119,8 +119,6 @@ Example crontab configurations:
 
 ### Overview
 
-### Components
-
 - **PostgreSQL Databases**
     - Main database (geyser): Stores application data
     - Keycloak database: Manages authentication
@@ -130,14 +128,14 @@ Example crontab configurations:
 
 Here we list the various components of Geyser. Each component corresponds to a single Docker container.
 
-#### Geyser database
+### Geyser database
 
 A PostgreSQL container is running as service `db`.
 It contains a database named `geyser`, which contains the data relative to Geyser in the `public` schema, and Hasura
 metadata in the `hdb_catalog` schema.
 This database is accessible on the host port `5432`.
 
-#### Hasura (GraphQL Engine)
+### Hasura (GraphQL Engine)
 
 An Hasura container is running as service `hasura`.
 It is connected to the Geyser database and is used by the web client to make GraphQL queries.
@@ -156,12 +154,12 @@ In development mode, you can run `scripts/hasura console` to access the console 
 | `assigner` | Some extra permissions during the "assignments" phase |
 | `admin`    | The superuser role with all permissions               |
 
-#### Keycloak
+### Keycloak
 
 A Keycloak container is running as service `keycloak`.
 It manages the authentication and the roles of the Hasura users using JWT tokens.
 
-##### Endpoints
+#### Endpoints
 
 In development mode, Keycloak can be reached at http://localhost:8080.
 
@@ -178,13 +176,13 @@ You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8080
 then `/auth/` can be reached at http://localhost:8080/auth/admin.
 In particular, the admin console is available at http://localhost:8080/auth/admin.
 
-#### Keycloak database
+### Keycloak database
 
 A second PostgreSQL container is running as service `db_keycloak`.
 It contains a database named `keycloak` dedicated to the Keycloak instance.
 This database is accessible on the host port `5433`.
 
-#### Nginx (production only)
+### Nginx (production only)
 
 In production, a custom Nginx container is running as service `web`.
 It is used as a reverse proxy, and serves the web client for the app.
