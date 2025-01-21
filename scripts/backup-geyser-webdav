@@ -2,16 +2,25 @@
 # This script dumps the Geyser database and uploads it to a WebDAV server.
 # It is intended to be scheduled via crontab for regular execution.
 #
+# Required environment variables can be set in:
+#   .env       - Base environment file (should be versioned)
+#   .env.local - Local overrides (should not be versioned)
+# Or directly in the environment.
+#
 # Required environment variables:
 #   WEBDAV_URL  - Base URL of the WebDAV server
 #   WEBDAV_USER - WebDAV username
 #   WEBDAV_PASS - WebDAV password
 #
-# Example usage with Nextcloud:
-#   export WEBDAV_URL="https://nextcloud.example.com"
-#   export WEBDAV_USER="username"
-#   export WEBDAV_PASS="password"
-#   ./backup-geyser-webdav
+# Example crontab usage:
+#   # Hourly backups
+#   0 * * * * /path/to/scripts/backup-geyser-webdav
+#
+#   # Daily backup at 3:00 AM
+#   0 3 * * * /path/to/scripts/backup-geyser-webdav
+#
+#   # Weekly backup on Sunday at 4:00 AM
+#   0 4 * * 0 /path/to/scripts/backup-geyser-webdav
 
 set -e
 
@@ -24,6 +33,12 @@ warn() {
     echo "Warning: $1" >&2
 }
 
+ROOT_DIR="$(dirname "$0")/.."
+readonly ROOT_DIR
+
+source "${ROOT_DIR}"/.env
+source "${ROOT_DIR}"/.env.local
+
 required_vars=(
     "WEBDAV_URL"
     "WEBDAV_USER"
@@ -35,8 +50,6 @@ for var in "${required_vars[@]}"; do
     fi
 done
 
-ROOT_DIR="$(dirname "$0")/.."
-readonly ROOT_DIR
 readonly LOCAL_BACKUPS_DIR="${ROOT_DIR}/postgres/backups"
 readonly REMOTE_BACKUPS_DIR="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/geyser/backups"
 
