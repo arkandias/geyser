@@ -91,8 +91,8 @@ Equivalently, you can set the environment variable `GEYSER_MODE` to `development
 
 ### Automatic Backups
 
-A backup script is provided to automatically dump the Geyser database and upload it to a WebDAV server (like Nextcloud,
-ownCloud, etc.). The script can be scheduled via crontab for regular backups.
+A script is provided to automatically create a backup of Geyser and upload it to a WebDAV server (like Nextcloud).
+The script can be scheduled via crontab for regular backups.
 
 Required environment variables:
 
@@ -106,13 +106,13 @@ Example crontab configurations:
 
 ```
 # Hourly backups
-0 * * * * /path/to/scripts/backup-geyser-webdav
+0 * * * * /path/to/scripts/backup-webdav
 
 # Daily backup at 3:00 AM
-0 3 * * * /path/to/scripts/backup-geyser-webdav
+0 3 * * * /path/to/scripts/backup-webdav
 
 # Weekly backup on Sunday at 4:00 AM
-0 4 * * 0 /path/to/scripts/backup-geyser-webdav
+0 4 * * 0 /path/to/scripts/backup-webdav
 ```
 
 ## Architecture
