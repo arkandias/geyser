@@ -43,14 +43,6 @@ cd geyser
     - Used to process JSON in administration scripts
     - Installation: `sudo apt install jq` (Ubuntu) or `brew install jq` (macOS)
 
-#### Automated Installation
-
-On Ubuntu systems, you can install all dependencies using the provided script:
-
-```shell
-./scripts/install_deps
-```
-
 ### Configuration
 
 #### Environment variables
