@@ -28,16 +28,15 @@ Core Commands:
   stop              Stop all Geyser services
   restart           Restart all Geyser services
   update            Update all Geyser services
-  reset             Delete all data and reset to a clean state
+  reset             Reset Geyser to a clean state
 
 Data Operations:
   backup            Create a backup of PostgreSQL databases
   restore           Restore databases from a previous backup
-  realms-export     Export Keycloak realms configuration (requires services restart)
-  realms-import     Import Keycloak realms configuration (requires services restart)
-  sync-keycloak     Synchronize Keycloak users with active teachers
+  realms-export     Export Keycloak realms configuration
+  realms-import     Import Keycloak realms configuration
 
-Options:
+Global Options:
   -h, --help        Show this help message
   -v, --version     Show version information
   --dev             Use development configuration
@@ -48,7 +47,121 @@ Options:
   --configure       Configure Geyser settings
   --autocomplete    Install autocomplete for bash or zsh (using oh-my-zsh)
 
-For more information, see: https://github.com/arkandias/geyser-backend
+Run 'geyser COMMAND --help' for more information on a command.
+EOF
+}
+
+show_init_help() {
+    cat <<EOF
+Initialize a fresh Geyser installation
+
+Usage: geyser init
+
+Creates required data volumes, initializes databases, starts all services and
+applies initial configuration.
+
+Note: Use 'geyser reset' first if you need to start fresh.
+EOF
+}
+
+show_start_help() {
+    cat <<EOF
+Start all Geyser services
+
+Usage: geyser start
+
+Start PostgreSQL databases, Keycloak authentication, Hasura GraphQL engine, and
+Nginx web server (in production mode).
+
+Note: Run 'geyser init' first if this is a fresh installation.
+EOF
+}
+
+show_stop_help() {
+    cat <<EOF
+Stop all Geyser services
+
+Usage: geyser stop
+
+Stop all services and remove containers.
+EOF
+}
+
+show_restart_help() {
+    cat <<EOF
+Restart all Geyser services
+
+Usage: geyser restart
+
+Perform a full stop and start of all services.
+EOF
+}
+
+show_update_help() {
+    cat <<EOF
+Update all Geyser services
+
+Usage: geyser update
+
+Pull latest images, rebuild local images, restart services with new images, and
+clean up old images.
+
+Note: Services will be stopped during update.
+EOF
+}
+
+show_reset_help() {
+    cat <<EOF
+Reset Geyser to a clean state
+
+Usage: geyser reset
+
+Stop all services, remove containers, delete volumes, remove images, and clean
+up logs.
+
+Warning: This will delete all data. Make backups first.
+EOF
+}
+
+show_backup_help() {
+    cat <<EOF
+Create backup of PostgreSQL databases
+
+Usage: geyser backup
+
+Dump Keycloak and Geyser databases. Backups are stored in postgres/backups.
+EOF
+}
+
+show_restore_help() {
+    cat <<EOF
+Restore databases from a previous backup
+
+Usage: geyser restore
+
+List available backups and restore selected backup to databases.
+
+Note: Services will be stopped during restore.
+EOF
+}
+
+show_realms_export_help() {
+    cat <<EOF
+Export Keycloak realms configuration
+
+Usage: geyser realms-export
+
+Note: Services must be stopped before export.
+EOF
+}
+
+show_realms_import_help() {
+    cat <<EOF
+Import Keycloak realms configuration
+
+Usage: geyser realms-import
+
+Note: Services must be stopped before import.
 EOF
 }
 
@@ -167,14 +280,13 @@ Use option --bypass-auth or set BYPASS_AUTH environment variable."
     debug "Bypass authentication set to '${BYPASS_AUTH}'"
 
     # Set LOG_LEVEL
-    if [[ "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
+    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
         LOG_LEVEL="${OPT_LOG_LEVEL}"
         debug "Log level overridden with --log-level option"
     fi
-    if ! LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}")"; then
+    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
         error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
 Use option --log-level or set LOG_LEVEL environment variable."
-    fi
     debug "Log level set to '${LOG_LEVEL}'"
 }
 
@@ -988,20 +1100,89 @@ main() {
 
     # Execute command
     case "$1" in
-    # Core operations
-    init) handle_init ;;
-    start) handle_start ;;
-    stop) handle_stop ;;
-    restart) handle_restart ;;
-    update) handle_update ;;
-    reset) handle_reset ;;
-
-    # Data operations
-    backup) handle_backup ;;
-    restore) handle_restore ;;
-    realms-export) handle_realms_export ;;
-    realms-import) handle_realms_import ;;
-
+    init)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_init_help
+            exit 0
+        }
+        handle_init
+        ;;
+    start)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_start_help
+            exit 0
+        }
+        handle_start
+        ;;
+    stop)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_stop_help
+            exit 0
+        }
+        handle_stop
+        ;;
+    restart)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_restart_help
+            exit 0
+        }
+        handle_restart
+        ;;
+    update)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_update_help
+            exit 0
+        }
+        handle_update
+        ;;
+    reset)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_reset_help
+            exit 0
+        }
+        handle_reset
+        ;;
+    backup)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_backup_help
+            exit 0
+        }
+        handle_backup
+        ;;
+    restore)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_restore_help
+            exit 0
+        }
+        handle_restore
+        ;;
+    realms-export)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_realms_export_help
+            exit 0
+        }
+        handle_realms_export "$@"
+        ;;
+    realms-import)
+        shift
+        [[ "$1" == "--help" || "$1" == "-h" ]] && {
+            show_realms_import_help
+            exit 0
+        }
+        handle_realms_import "$@"
+        ;;
+    "")
+        return
+        ;;
     *)
         error "Unknown command '$1' (see 'geyser --help')"
         ;;
