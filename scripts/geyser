@@ -43,7 +43,6 @@ Global Options:
   --prod            Use production configuration
   --bypass-auth     Start only db and hasura (development mode only)
   --log-level       Set logging level (DEBUG|INFO|WARN|ERROR)
-  --show-config     Display current configuration 
   --configure       Configure Geyser settings
   --autocomplete    Install autocomplete for bash or zsh (using oh-my-zsh)
 
@@ -190,16 +189,14 @@ LOG_LEVEL="INFO"    # Log level in text form
 LOG_LEVEL_NUM=2     # Log level as number (1=DEBUG, 2=INFO, 3=WARN, 4=ERROR)
 
 #------------------------------------------------------------------------------
-# Command Line Options
+# Command Line Options Flags
 #------------------------------------------------------------------------------
 
-OPT_DEV=false          # --dev flag for development mode
-OPT_PROD=false         # --prod flag for production mode
-OPT_BYPASS_AUTH=false  # --bypass-auth flag to skip authentication
-OPT_LOG_LEVEL=         # --log-level flag value
-OPT_SHOW_CONFIG=false  # --show-config flag to display configuration
-OPT_CONFIGURE=false    # --configure flag to set up environment
-OPT_AUTOCOMPLETE=false # --autocomplete flag for shell completion
+OPT_DEV=false         # --dev flag for development mode
+OPT_PROD=false        # --prod flag for production mode
+OPT_BYPASS_AUTH=false # --bypass-auth flag to skip authentication
+OPT_LOG_LEVEL=        # --log-level flag value
+OPT_CONFIGURE=false   # --configure flag to set up environment
 
 #------------------------------------------------------------------------------
 # Dependencies
@@ -221,116 +218,24 @@ You can install it with: curl -L https://github.com/hasura/graphql-engine/raw/st
 }
 
 #------------------------------------------------------------------------------
-# Environment Validation & Loading
+# Configuration Management
 #------------------------------------------------------------------------------
-
-load_environment() {
-    debug "Loading environment..."
-    debug "Root directory: ${ROOT_DIR}"
-
-    # Create required directories
-    mkdir -p "${DB_BACKUP_DIR}"
-    mkdir -p "${KC_BACKUP_DIR}"
-
-    # Load env files
-    touch "${ROOT_DIR}/.env"
-    touch "${ROOT_DIR}/.env.local"
-    . "${ROOT_DIR}/.env"
-    . "${ROOT_DIR}/.env.local"
-
-    # Set MODE
-    if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
-        error "Invalid options: --dev and --prod cannot be used together"
-    fi
-    if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
-        MODE="development"
-        debug "Mode overridden with --dev option"
-    fi
-    if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
-        MODE="production"
-        debug "Mode overridden with --prod option"
-    fi
-    if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid mode '${MODE}' (must be 'development' or 'production').
-Use options --dev/--prod or set MODE environment variable."
-    fi
-    debug "Mode set to '${MODE}'"
-
-    # Load mode-specific env files
-    touch "${ROOT_DIR}/.env.${MODE}"
-    touch "${ROOT_DIR}/.env.${MODE}.local"
-    # shellcheck disable=SC1090
-    . "${ROOT_DIR}/.env.${MODE}"
-    # shellcheck disable=SC1090
-    . "${ROOT_DIR}/.env.${MODE}.local"
-
-    # Set BYPASS_AUTH
-    if [[ "${OPT_BYPASS_AUTH}" != "true" ]]; then
-        BYPASS_AUTH="${OPT_BYPASS_AUTH}"
-        debug "Bypass authentication setting overridden with --bypass-auth option"
-    fi
-    if [[ "${BYPASS_AUTH}" != "true" && "${BYPASS_AUTH}" != "false" ]]; then
-        error "Invalid bypass authentication setting '${BYPASS_AUTH}' (must be 'true' or 'false').
-Use option --bypass-auth or set BYPASS_AUTH environment variable."
-    fi
-    if [[ "${MODE}" == "production" && "${BYPASS_AUTH}" == "true" ]]; then
-        warn "Authentication is required in production mode (ignored)"
-        BYPASS_AUTH="false"
-    fi
-    debug "Bypass authentication set to '${BYPASS_AUTH}'"
-
-    # Set LOG_LEVEL
-    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
-        LOG_LEVEL="${OPT_LOG_LEVEL}"
-        debug "Log level overridden with --log-level option"
-    fi
-    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
-        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
-Use option --log-level or set LOG_LEVEL environment variable."
-    debug "Log level set to '${LOG_LEVEL}'"
-}
-
-#------------------------------------------------------------------------------
-# Configuration Display & Management
-#------------------------------------------------------------------------------
-
-show_configuration() {
-    info "Geyser configuration:"
-    info "* Directory: ${ROOT_DIR}"
-    info "* Mode: ${MODE}"
-    info "* Log level: ${LOG_LEVEL}"
-    if [[ "${MODE}" == "development" ]]; then
-        info "* Bypass authentication: ${BYPASS_AUTH}"
-    fi
-}
-
-save_configuration() {
-    local env_file="${ROOT_DIR}/.env"
-    local configuration
-    configuration=$(
-        cat <<EOF
-MODE="${MODE}"
-LOG_LEVEL="${LOG_LEVEL}"
-BYPASS_AUTH="${BYPASS_AUTH}"
-EOF
-    )
-
-    if [[ -f "${env_file}" ]]; then
-        if [[ -s "${env_file}" ]]; then
-            cp "${env_file}" "${env_file}.bak"
-            info "Created backup of existing configuration at ${env_file}.bak"
-        else
-            debug "Existing configuration file is empty, no backup needed"
-        fi
-    fi
-
-    echo "${configuration}" >"${env_file}"
-
-    success "Configuration saved successfully to ${env_file}"
-}
 
 configure() {
     info "Configuring Geyser environment..."
+
+    if [[ "${OPT_DEV}" == "true" ]]; then
+        warn "Option --dev ignored for configuration"
+    fi
+    if [[ "${OPT_PROD}" == "true" ]]; then
+        warn "Option --prod ignored for configuration"
+    fi
+    if [[ "${OPT_BYPASS_AUTH}" == "true" ]]; then
+        warn "Option --bypass-auth ignored for configuration"
+    fi
+    if [[ -n "${OPT_LOG_LEVEL}" ]]; then
+        warn "Option --log-level ignored for configuration"
+    fi
 
     info "Available modes:"
     info "1) development"
@@ -407,6 +312,107 @@ configure() {
     if confirm "Save configuration?" "y"; then
         save_configuration
     fi
+}
+
+load_configuration() {
+    debug "Loading environment..."
+    debug "Root directory: ${ROOT_DIR}"
+
+    # Create required directories
+    mkdir -p "${DB_BACKUP_DIR}"
+    mkdir -p "${KC_BACKUP_DIR}"
+
+    # Load env files
+    touch "${ROOT_DIR}/.env"
+    touch "${ROOT_DIR}/.env.local"
+    . "${ROOT_DIR}/.env"
+    . "${ROOT_DIR}/.env.local"
+
+    # Set MODE
+    if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
+        error "Invalid options: --dev and --prod cannot be used together"
+    fi
+    if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
+        MODE="development"
+        debug "Mode overridden with --dev option"
+    fi
+    if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
+        MODE="production"
+        debug "Mode overridden with --prod option"
+    fi
+    if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
+        error "Invalid mode '${MODE}' (must be 'development' or 'production').
+Use options --dev/--prod or set MODE environment variable."
+    fi
+    debug "Mode set to '${MODE}'"
+
+    # Load mode-specific env files
+    touch "${ROOT_DIR}/.env.${MODE}"
+    touch "${ROOT_DIR}/.env.${MODE}.local"
+    # shellcheck disable=SC1090
+    . "${ROOT_DIR}/.env.${MODE}"
+    # shellcheck disable=SC1090
+    . "${ROOT_DIR}/.env.${MODE}.local"
+
+    # Set BYPASS_AUTH
+    if [[ "${OPT_BYPASS_AUTH}" != "true" ]]; then
+        BYPASS_AUTH="${OPT_BYPASS_AUTH}"
+        debug "Bypass authentication setting overridden with --bypass-auth option"
+    fi
+    if [[ "${BYPASS_AUTH}" != "true" && "${BYPASS_AUTH}" != "false" ]]; then
+        error "Invalid bypass authentication setting '${BYPASS_AUTH}' (must be 'true' or 'false').
+Use option --bypass-auth or set BYPASS_AUTH environment variable."
+    fi
+    if [[ "${MODE}" == "production" && "${BYPASS_AUTH}" == "true" ]]; then
+        warn "Authentication is required in production mode (ignored)"
+        BYPASS_AUTH="false"
+    fi
+    debug "Bypass authentication set to '${BYPASS_AUTH}'"
+
+    # Set LOG_LEVEL
+    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
+        LOG_LEVEL="${OPT_LOG_LEVEL}"
+        debug "Log level overridden with --log-level option"
+    fi
+    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
+        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
+Use option --log-level or set LOG_LEVEL environment variable."
+    debug "Log level set to '${LOG_LEVEL}'"
+}
+
+show_configuration() {
+    info "Geyser configuration:"
+    info "* Directory: ${ROOT_DIR}"
+    info "* Mode: ${MODE}"
+    info "* Log level: ${LOG_LEVEL}"
+    if [[ "${MODE}" == "development" ]]; then
+        info "* Bypass authentication: ${BYPASS_AUTH}"
+    fi
+}
+
+save_configuration() {
+    local env_file="${ROOT_DIR}/.env"
+    local configuration
+    configuration=$(
+        cat <<EOF
+MODE="${MODE}"
+LOG_LEVEL="${LOG_LEVEL}"
+BYPASS_AUTH="${BYPASS_AUTH}"
+EOF
+    )
+
+    if [[ -f "${env_file}" ]]; then
+        if [[ -s "${env_file}" ]]; then
+            cp "${env_file}" "${env_file}.bak"
+            info "Created backup of existing configuration at ${env_file}.bak"
+        else
+            debug "Existing configuration file is empty, no backup needed"
+        fi
+    fi
+
+    echo "${configuration}" >"${env_file}"
+
+    success "Configuration saved successfully to ${env_file}"
 }
 
 #------------------------------------------------------------------------------
@@ -1056,17 +1062,13 @@ main() {
             OPT_LOG_LEVEL="$2"
             shift 2
             ;;
-        --show-config)
-            OPT_SHOW_CONFIG=true
-            shift
-            ;;
         --configure)
             OPT_CONFIGURE=true
             shift
             ;;
         --autocomplete)
-            OPT_AUTOCOMPLETE=true
-            shift
+            install_autocomplete
+            exit 0
             ;;
         --)
             break
@@ -1080,23 +1082,14 @@ main() {
         esac
     done
 
+    # Configuration
     check_dependencies
-    load_environment
-
-    # Configure
     if [[ "${OPT_CONFIGURE}" == "true" ]]; then
         configure
+    else
+        load_configuration
     fi
-
-    # Autocomplete
-    if [[ "${OPT_AUTOCOMPLETE}" == "true" ]]; then
-        install_autocomplete
-    fi
-
-    # Show current configuration
-    if [[ "${OPT_SHOW_CONFIG}" == "true" ]]; then
-        show_configuration
-    fi
+    show_configuration
 
     # Execute command
     case "$1" in
