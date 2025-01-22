@@ -9,3 +9,4 @@
 !/postgres/backups/README.md
 .DS_Store
 *.local
+*.bak

@@ -10,8 +10,8 @@ scripts
 .env.development.local
 .env.production
 .env.production.local
-compose.bypass-auth.yaml
-compose.kc-run.yaml
+compose.auth.yaml
+compose.kc.yaml
 compose.prod.yaml
 compose.yaml
 geyser

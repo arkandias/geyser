@@ -39,6 +39,11 @@ This will create a the installation directory `geyser` in your working directory
     - Used to process JSON in administration scripts
     - Installation: `sudo apt install jq` (Ubuntu) or `brew install jq` (macOS)
 
+- **Oh My Zsh**
+  TODO
+
+### Autocomplete
+
 ## Configuration
 
 ### Environment Variables
@@ -161,7 +166,7 @@ It manages the authentication and the roles of the Hasura users using JWT tokens
 
 #### Endpoints
 
-In development mode, Keycloak can be reached at http://localhost:8080.
+In development mode, Keycloak can be reached at http://localhost:8081.
 
 In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
 
@@ -172,13 +177,13 @@ In production mode, the following ports are exposed by the reverse proxy (assumi
 | `/resources/` | https://example.com/auth/resources/ |
 
 In particular, the path `/admin/` is not exposed for security reason.
-You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8080:localhost:80` to the production server,
-then `/auth/` can be reached at http://localhost:8080/auth/admin.
-In particular, the admin console is available at http://localhost:8080/auth/admin.
+You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8081:localhost:8081` to the production
+server, then `/auth/` can be reached at http://localhost:8081/auth/admin.
+In particular, the admin console is available at http://localhost:8081/auth/admin.
 
 ### Keycloak database
 
-A second PostgreSQL container is running as service `db_keycloak`.
+A second PostgreSQL container is running as service `kc-db`.
 It contains a database named `keycloak` dedicated to the Keycloak instance.
 This database is accessible on the host port `5433`.
 

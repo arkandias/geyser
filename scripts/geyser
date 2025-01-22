@@ -36,15 +36,24 @@ Data Operations:
   realms-export     Export Keycloak realms configuration
   realms-import     Import Keycloak realms configuration
 
+Service Management:
+  compose           Run Docker Compose
+  hasura            Run Hasura CLI
+  kc                Run Keycloak CLI
+  kcadm             Run Keycloak Admin CLI
+
+Tools
+  completion        Install autocomplete for zsh (using oh-my-zsh)
+
 Global Options:
   -h, --help        Show this help message
   -v, --version     Show version information
   --dev             Use development configuration
   --prod            Use production configuration
-  --bypass-auth     Start only db and hasura (development mode only)
+  --auth            Enable Keycloak authentication service in development
+  --web             Enable Nginx reverse proxy frontend in development
   --log-level       Set logging level (DEBUG|INFO|WARN|ERROR)
   --configure       Configure Geyser settings
-  --autocomplete    Install autocomplete for bash or zsh (using oh-my-zsh)
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -165,315 +174,7 @@ EOF
 }
 
 ###############################################################################
-# 2. ENVIRONMENT AND CONFIGURATION
-###############################################################################
-
-#------------------------------------------------------------------------------
-# Directory Setup
-#------------------------------------------------------------------------------
-
-ROOT_DIR="$(dirname "$0")/.."
-readonly ROOT_DIR
-readonly DB_BACKUP_DIR="${ROOT_DIR}/postgres/backups"
-readonly KC_BACKUP_DIR="${ROOT_DIR}/keycloak/backups"
-readonly LOG_DIR="${ROOT_DIR}/logs"
-readonly LOG_FILE="${LOG_DIR}/geyser.log"
-
-#------------------------------------------------------------------------------
-# Environment Variables
-#------------------------------------------------------------------------------
-
-MODE="production"   # Operational mode (development/production)
-BYPASS_AUTH="false" # Skip authentication for development
-LOG_LEVEL="INFO"    # Log level in text form
-LOG_LEVEL_NUM=2     # Log level as number (1=DEBUG, 2=INFO, 3=WARN, 4=ERROR)
-
-#------------------------------------------------------------------------------
-# Command Line Options Flags
-#------------------------------------------------------------------------------
-
-OPT_DEV=false         # --dev flag for development mode
-OPT_PROD=false        # --prod flag for production mode
-OPT_BYPASS_AUTH=false # --bypass-auth flag to skip authentication
-OPT_LOG_LEVEL=        # --log-level flag value
-OPT_CONFIGURE=false   # --configure flag to set up environment
-
-#------------------------------------------------------------------------------
-# Dependencies
-#------------------------------------------------------------------------------
-
-check_dependencies() {
-    debug "Checking dependencies..."
-    command -v docker >/dev/null 2>&1 || error "Docker is not installed"
-    local docker_version
-    docker_version=$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)
-    if [[ -z "${docker_version}" ]]; then
-        error "Failed to get Docker version. Is Docker daemon running?"
-    elif [[ "${docker_version}" -lt 25 ]]; then
-        error "Docker Engine version 25.0 or higher is required (current: ${docker_version})"
-    fi
-    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required"
-    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is not installed.
-You can install it with: curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash"
-}
-
-#------------------------------------------------------------------------------
-# Configuration Management
-#------------------------------------------------------------------------------
-
-configure() {
-    info "Configuring Geyser environment..."
-
-    if [[ "${OPT_DEV}" == "true" ]]; then
-        warn "Option --dev ignored for configuration"
-    fi
-    if [[ "${OPT_PROD}" == "true" ]]; then
-        warn "Option --prod ignored for configuration"
-    fi
-    if [[ "${OPT_BYPASS_AUTH}" == "true" ]]; then
-        warn "Option --bypass-auth ignored for configuration"
-    fi
-    if [[ -n "${OPT_LOG_LEVEL}" ]]; then
-        warn "Option --log-level ignored for configuration"
-    fi
-
-    info "Available modes:"
-    info "1) development"
-    info "2) production"
-    while true; do
-        prompt "Your choice [production]:"
-        case "${INPUT}" in
-        1 | "")
-            MODE="production"
-            continue
-            ;;
-        2)
-            MODE="development"
-            continue
-            ;;
-        *)
-            warn "Invalid input: enter a number between 1 and 2"
-            ;;
-        esac
-    done
-
-    if [[ "${MODE}" == "development" ]]; then
-        info "Bypass authentication:"
-        info "1) false"
-        info "2) true"
-        while true; do
-            prompt "Your choice [false]:"
-            case "${INPUT}" in
-            1 | "")
-                BYPASS_AUTH="false"
-                continue
-                ;;
-            2)
-                BYPASS_AUTH="true"
-                continue
-                ;;
-            *)
-                warn "Invalid input: enter a number between 1 and 2"
-                ;;
-            esac
-        done
-    fi
-
-    info "Log level:"
-    info "1) DEBUG"
-    info "2) INFO"
-    info "3) WARN"
-    info "4) ERROR"
-    while true; do
-        prompt "Your choice [INFO]:"
-        case "${INPUT}" in
-        1)
-            LOG_LEVEL="DEBUG"
-            continue
-            ;;
-        2 | "")
-            LOG_LEVEL="INFO"
-            continue
-            ;;
-        3)
-            LOG_LEVEL="WARN"
-            continue
-            ;;
-        4)
-            LOG_LEVEL="ERROR"
-            continue
-            ;;
-        *)
-            warn "Invalid input: enter a number between 1 and 4"
-            ;;
-        esac
-    done
-
-    if confirm "Save configuration?" "y"; then
-        save_configuration
-    fi
-}
-
-load_configuration() {
-    debug "Loading environment..."
-    debug "Root directory: ${ROOT_DIR}"
-
-    # Create required directories
-    mkdir -p "${DB_BACKUP_DIR}"
-    mkdir -p "${KC_BACKUP_DIR}"
-
-    # Load env files
-    touch "${ROOT_DIR}/.env"
-    touch "${ROOT_DIR}/.env.local"
-    . "${ROOT_DIR}/.env"
-    . "${ROOT_DIR}/.env.local"
-
-    # Set MODE
-    if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
-        error "Invalid options: --dev and --prod cannot be used together"
-    fi
-    if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
-        MODE="development"
-        debug "Mode overridden with --dev option"
-    fi
-    if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
-        MODE="production"
-        debug "Mode overridden with --prod option"
-    fi
-    if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid mode '${MODE}' (must be 'development' or 'production').
-Use options --dev/--prod or set MODE environment variable."
-    fi
-    debug "Mode set to '${MODE}'"
-
-    # Load mode-specific env files
-    touch "${ROOT_DIR}/.env.${MODE}"
-    touch "${ROOT_DIR}/.env.${MODE}.local"
-    # shellcheck disable=SC1090
-    . "${ROOT_DIR}/.env.${MODE}"
-    # shellcheck disable=SC1090
-    . "${ROOT_DIR}/.env.${MODE}.local"
-
-    # Set BYPASS_AUTH
-    if [[ "${OPT_BYPASS_AUTH}" != "true" ]]; then
-        BYPASS_AUTH="${OPT_BYPASS_AUTH}"
-        debug "Bypass authentication setting overridden with --bypass-auth option"
-    fi
-    if [[ "${BYPASS_AUTH}" != "true" && "${BYPASS_AUTH}" != "false" ]]; then
-        error "Invalid bypass authentication setting '${BYPASS_AUTH}' (must be 'true' or 'false').
-Use option --bypass-auth or set BYPASS_AUTH environment variable."
-    fi
-    if [[ "${MODE}" == "production" && "${BYPASS_AUTH}" == "true" ]]; then
-        warn "Authentication is required in production mode (ignored)"
-        BYPASS_AUTH="false"
-    fi
-    debug "Bypass authentication set to '${BYPASS_AUTH}'"
-
-    # Set LOG_LEVEL
-    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
-        LOG_LEVEL="${OPT_LOG_LEVEL}"
-        debug "Log level overridden with --log-level option"
-    fi
-    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
-        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
-Use option --log-level or set LOG_LEVEL environment variable."
-    debug "Log level set to '${LOG_LEVEL}'"
-}
-
-show_configuration() {
-    info "Geyser configuration:"
-    info "* Directory: ${ROOT_DIR}"
-    info "* Mode: ${MODE}"
-    info "* Log level: ${LOG_LEVEL}"
-    if [[ "${MODE}" == "development" ]]; then
-        info "* Bypass authentication: ${BYPASS_AUTH}"
-    fi
-}
-
-save_configuration() {
-    local env_file="${ROOT_DIR}/.env"
-    local configuration
-    configuration=$(
-        cat <<EOF
-MODE="${MODE}"
-LOG_LEVEL="${LOG_LEVEL}"
-BYPASS_AUTH="${BYPASS_AUTH}"
-EOF
-    )
-
-    if [[ -f "${env_file}" ]]; then
-        if [[ -s "${env_file}" ]]; then
-            cp "${env_file}" "${env_file}.bak"
-            info "Created backup of existing configuration at ${env_file}.bak"
-        else
-            debug "Existing configuration file is empty, no backup needed"
-        fi
-    fi
-
-    echo "${configuration}" >"${env_file}"
-
-    success "Configuration saved successfully to ${env_file}"
-}
-
-#------------------------------------------------------------------------------
-# Shell Completion Setup
-#------------------------------------------------------------------------------
-
-install_autocomplete() {
-    info "Setting up shell autocompletion..."
-
-    info "Available shells:"
-    info "1) bash"
-    info "2) zsh (using oh-my-zsh)"
-    info "3) Abort"
-    while true; do
-        prompt "Your choice [Abort]:"
-        case "${INPUT}" in
-        1)
-            local completion_dir="/etc/bash_completion.d"
-
-            if [[ ! -d "${completion_dir}" ]]; then
-                error "bash completion directory not found: ${completion_dir}"
-            fi
-
-            info "Installing bash completion script..."
-            if ! sudo cp "${ROOT_DIR}/scripts/completion/geyser" "${completion_dir}/"; then
-                error "Failed to install bash completion script"
-            fi
-            continue
-            ;;
-        2)
-            local completion_dir="${HOME}/.oh-my-zsh/completions"
-
-            if [[ ! -d "${completion_dir}" ]]; then
-                if ! confirm "zsh completion directory not found. Create it?"; then
-                    error "zsh completion directory not found: ${completion_dir}"
-                fi
-                mkdir -p "${completion_dir}"
-            fi
-
-            info "Installing zsh completion script..."
-            if ! cp "${ROOT_DIR}/scripts/completion/_geyser" "${completion_dir}/"; then
-                error "Failed to install zsh completion script"
-            fi
-            continue
-            ;;
-        3 | "")
-            warn "Autocomplete installation cancelled"
-            return
-            ;;
-        *)
-            warn "Invalid input: enter a number between 1 and 3"
-            ;;
-        esac
-    done
-
-    success "Autocomplete installed successfully"
-    info "Please restart your shell to enable completion"
-}
-
-###############################################################################
-# 3. LOGGING
+# 2. LOGGING
 ###############################################################################
 
 log_level() {
@@ -482,7 +183,10 @@ log_level() {
     WARN) echo 3 ;;
     INFO | SUCCESS) echo 2 ;;
     DEBUG) echo 1 ;;
-    *) error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR')" ;;
+    *)
+        echo "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR')" >&2
+        exit 1
+        ;;
     esac
 }
 
@@ -516,6 +220,297 @@ info() { log "INFO" "$1"; }
 debug() { log "DEBUG" "$1"; }
 
 ###############################################################################
+# 3. ENVIRONMENT AND CONFIGURATION
+###############################################################################
+
+#------------------------------------------------------------------------------
+# Directory Setup
+#------------------------------------------------------------------------------
+
+: "${GEYSER_HOME:-"$(cd "$(dirname "$0")"/.. &>/dev/null && pwd)"}"
+
+readonly GEYSER_HOME
+readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
+readonly KC_BACKUP_DIR="${GEYSER_HOME}/keycloak/backups"
+readonly LOG_DIR="${GEYSER_HOME}/logs"
+readonly LOG_FILE="${LOG_DIR}/geyser.log"
+
+#------------------------------------------------------------------------------
+# Environment Variables
+#------------------------------------------------------------------------------
+
+MODE=development # Application deployment context (development/production)
+USE_AUTH=false   # Enable Keycloak authentication service
+USE_WEB=false    # Enable Nginx reverse proxy frontend
+LOG_LEVEL=INFO   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
+LOG_LEVEL_NUM=2  # Numeric log level identifier
+INPUT=           # Temporary user input buffer
+
+#------------------------------------------------------------------------------
+# Command Line Options Flags
+#------------------------------------------------------------------------------
+
+OPT_DEV="false"       # --dev flag for development mode
+OPT_PROD="false"      # --prod flag for production mode
+OPT_AUTH="false"      # --auth flag to enable authentication
+OPT_WEB="false"       # --web flag to enable reverse proxy
+OPT_LOG_LEVEL=        # --log-level flag value
+OPT_CONFIGURE="false" # --configure flag to set up environment
+
+#------------------------------------------------------------------------------
+# Dependencies
+#------------------------------------------------------------------------------
+
+check_dependencies() {
+    debug "Checking dependencies..."
+    command -v docker >/dev/null 2>&1 || error "Docker is not installed"
+    local docker_version
+    docker_version=$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)
+    if [[ -z "${docker_version}" ]]; then
+        error "Failed to get Docker version. Is Docker daemon running?"
+    elif [[ "${docker_version}" -lt 25 ]]; then
+        error "Docker Engine version 25.0 or higher is required (current: ${docker_version})"
+    fi
+    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required"
+    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is not installed.
+You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
+}
+
+#------------------------------------------------------------------------------
+# Configuration Management
+#------------------------------------------------------------------------------
+
+configure() {
+    info "Configuring Geyser environment..."
+
+    if [[ "${OPT_DEV}" == "true" ]]; then
+        warn "Option --dev ignored for configuration"
+    fi
+    if [[ "${OPT_PROD}" == "true" ]]; then
+        warn "Option --prod ignored for configuration"
+    fi
+    if [[ "${OPT_BYPASS_AUTH}" == "true" ]]; then
+        warn "Option --bypass-auth ignored for configuration"
+    fi
+    if [[ -n "${OPT_LOG_LEVEL}" ]]; then
+        warn "Option --log-level ignored for configuration"
+    fi
+
+    info "Available modes:"
+    info "1) production"
+    info "2) development"
+    while true; do
+        prompt "Your choice [production]:"
+        case "${INPUT}" in
+        1 | "")
+            MODE="production"
+            break
+            ;;
+        2)
+            MODE="development"
+            break
+            ;;
+        *)
+            warn "Invalid input: enter a number between 1 and 2"
+            ;;
+        esac
+    done
+
+    if [[ "${MODE}" == "development" ]]; then
+        info "Bypass authentication?"
+        info "1) No"
+        info "2) Yes"
+        while true; do
+            prompt "Your choice [No]:"
+            case "${INPUT}" in
+            1 | "")
+                USE_AUTH="false"
+                break
+                ;;
+            2)
+                USE_AUTH="true"
+                break
+                ;;
+            *)
+                warn "Invalid input: enter a number between 1 and 2"
+                ;;
+            esac
+        done
+    fi
+
+    info "Log level:"
+    info "1) DEBUG"
+    info "2) INFO"
+    info "3) WARN"
+    info "4) ERROR"
+    while true; do
+        prompt "Your choice [INFO]:"
+        case "${INPUT}" in
+        1)
+            LOG_LEVEL="DEBUG"
+            break
+            ;;
+        2 | "")
+            LOG_LEVEL="INFO"
+            break
+            ;;
+        3)
+            LOG_LEVEL="WARN"
+            break
+            ;;
+        4)
+            LOG_LEVEL="ERROR"
+            break
+            ;;
+        *)
+            warn "Invalid input: enter a number between 1 and 4"
+            ;;
+        esac
+    done
+    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)"
+
+    if confirm "Save configuration?" "y"; then
+        save_configuration
+    fi
+}
+
+load_configuration() {
+    debug "Loading environment..."
+    debug "Root directory: ${GEYSER_HOME}"
+
+    # Create required directories
+    mkdir -p "${DB_BACKUP_DIR}"
+    mkdir -p "${KC_BACKUP_DIR}"
+
+    # Load env files
+    touch "${GEYSER_HOME}/.env"
+    touch "${GEYSER_HOME}/.env.local"
+    . "${GEYSER_HOME}/.env"
+    . "${GEYSER_HOME}/.env.local"
+
+    # Set MODE
+    if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
+        error "Invalid options: --dev and --prod cannot be used together"
+    fi
+    if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
+        MODE="development"
+        debug "Mode overridden with --dev option"
+    fi
+    if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
+        MODE="production"
+        debug "Mode overridden with --prod option"
+    fi
+    if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
+        error "Invalid mode '${MODE}' (must be 'development' or 'production').
+Use options --dev/--prod or set MODE environment variable."
+    fi
+    debug "Mode set to '${MODE}'"
+
+    # Load mode-specific env files
+    touch "${GEYSER_HOME}/.env.${MODE}"
+    touch "${GEYSER_HOME}/.env.${MODE}.local"
+    # shellcheck disable=SC1090
+    . "${GEYSER_HOME}/.env.${MODE}"
+    # shellcheck disable=SC1090
+    . "${GEYSER_HOME}/.env.${MODE}.local"
+
+    # Set USE_AUTH
+    if [[ "${OPT_AUTH}" == "true" && "${USE_AUTH}" != "true" ]]; then
+        USE_AUTH="true"
+        debug "Bypass authentication setting overridden with --bypass-auth option"
+    fi
+    if [[ "${USE_AUTH}" != "true" && "${USE_AUTH}" != "false" ]]; then
+        error "Invalid use authentication setting '${USE_AUTH}' (must be 'true' or 'false').
+Use option --auth or set USE_AUTH environment variable."
+    fi
+    if [[ "${MODE}" == "production" && "${USE_AUTH}" == "false" ]]; then
+        warn "Authentication is required in production mode (ignored)"
+        USE_AUTH="false"
+    fi
+    debug "Use authentication set to '${USE_AUTH}'"
+
+    # Set LOG_LEVEL
+    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
+        LOG_LEVEL="${OPT_LOG_LEVEL}"
+        debug "Log level overridden with --log-level option"
+    fi
+    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
+        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
+Use option --log-level or set LOG_LEVEL environment variable."
+    debug "Log level set to '${LOG_LEVEL}'"
+}
+
+show_configuration() {
+    info "************ CONFIGURATION ************"
+    info "Mode: ${MODE}"
+    info "Log level: ${LOG_LEVEL}"
+    if [[ "${MODE}" == "development" ]]; then
+        info "Bypass authentication: ${USE_AUTH}"
+    fi
+    info "***************************************"
+}
+
+save_configuration() {
+    local env_file="${GEYSER_HOME}/.env"
+    local configuration
+    configuration=$(
+        cat <<EOF
+MODE="${MODE}"
+LOG_LEVEL="${LOG_LEVEL}"
+USE_AUTH="${USE_AUTH}"
+EOF
+    )
+
+    if [[ -f "${env_file}" ]]; then
+        if [[ -s "${env_file}" ]]; then
+            cp "${env_file}" "${env_file}.bak"
+            info "Created backup of existing configuration at ${env_file}.bak"
+        else
+            debug "Existing configuration file is empty, no backup needed"
+        fi
+    fi
+
+    echo "${configuration}" >"${env_file}"
+
+    success "Configuration saved successfully to ${env_file}"
+}
+
+#------------------------------------------------------------------------------
+# Shell Completion Setup
+#------------------------------------------------------------------------------
+
+install_autocomplete() {
+    info "You need Oh My Zsh to use autocomplete"
+    prompt "Oh My Zsh installation directory [${HOME}/.oh-my-zsh]:"
+    local omz_completions_dir="${INPUT}/completions"
+    local completions_dir="${GEYSER_HOME}/scripts/completions"
+
+    info "Installing autocomplete..."
+    if [[ ! -d "${omz_completions_dir}" ]]; then
+        if ! confirm "Oh My Zsh completions directory not found. Create it in ${omz_completions_dir}?" "y"; then
+            info "Installation cancelled"
+        fi
+        mkdir -p "${omz_completions_dir}"
+    fi
+
+    cp "${completions_dir}/_geyser" "${omz_completions_dir}/" || {
+        warn "Failed to install Geyser completions script"
+    }
+    cp "${completions_dir}/_kc" "${omz_completions_dir}/" || {
+        warn "Failed to install Keycloak CLI completions script"
+    }
+    hasura completion zsh --file="${omz_completions_dir}/_hasura" || {
+        warn "Failed to install Hasura CLI completions script"
+    }
+    docker completion zsh >"${omz_completions_dir}/_docker" || {
+        warn "Failed to install Docker completions script"
+    }
+
+    success "Autocomplete installed successfully"
+    info "Please restart your shell to enable completion"
+}
+
+###############################################################################
 # 4. CORE UTILITY FUNCTIONS
 ###############################################################################
 
@@ -524,8 +519,8 @@ prompt() {
     local message="$1"
     INPUT= # global
 
-    echo -n "${message} "
     debug "Prompt: ${message}"
+    echo -n "${message} "
 
     read -r INPUT
     debug "Input: ${INPUT}"
@@ -582,39 +577,44 @@ select_backup() {
 
 # Docker Compose wrapper
 compose() {
-    if [[ ${MODE} == "production" ]]; then
-        docker compose \
-            --env-file "${ROOT_DIR}"/.env \
-            --env-file "${ROOT_DIR}"/.env.production \
-            --env-file "${ROOT_DIR}"/.env.local \
-            --env-file "${ROOT_DIR}"/.env.production.local \
-            -f "${ROOT_DIR}"/compose.yaml \
-            -f "${ROOT_DIR}"/compose.prod.yaml \
-            "$@"
-    elif [[ ${BYPASS_AUTH} == "true" ]]; then
-        docker compose \
-            --env-file "${ROOT_DIR}"/.env \
-            --env-file "${ROOT_DIR}"/.env.development \
-            --env-file "${ROOT_DIR}"/.env.local \
-            --env-file "${ROOT_DIR}"/.env.development.local \
-            -f "${ROOT_DIR}"/compose.yaml \
-            -f "${ROOT_DIR}"/compose.bypass-auth.yaml \
-            "$@"
+    env_files=(
+        "--env-file" "${GEYSER_HOME}/.env"
+        "--env-file" "${GEYSER_HOME}/.env.local"
+        "--env-file" "${GEYSER_HOME}/.env.${MODE}"
+        "--env-file" "${GEYSER_HOME}/.env.${MODE}.local"
+    )
+    compose_files=(
+        -f "${GEYSER_HOME}"/compose.yaml
+    )
+    if [[ "${MODE}" == "production" || "${USE_AUTH}" == "true" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
+    fi
+    if [[ "${MODE}" == "production" || "${USE_WEB}" == "true" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
+    fi
+    if [[ "${MODE}" == "production" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
+    fi
+    docker compose "${env_files[@]}" "${compose_files[@]}" "$@"
+}
+
+# Hasura CLI wrapper
+hasura() {
+    export HASURA_GRAPHQL_ADMIN_SECRET
+    command hasura --project "${GEYSER_HOME}/hasura" "$@"
+}
+
+# Keycloak CLI wrapper
+kc() {
+    if [[ "$1" == "--restart-with" ]]; then
+        shift
+        KC_CMD="$*" compose -f compose.kc.yaml up keycloak
     else
-        docker compose \
-            --env-file "${ROOT_DIR}"/.env \
-            --env-file "${ROOT_DIR}"/.env.development \
-            --env-file "${ROOT_DIR}"/.env.local \
-            --env-file "${ROOT_DIR}"/.env.development.local \
-            -f "${ROOT_DIR}"/compose.yaml \
-            "$@"
+        compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
     fi
 }
 
-# Keycloak management functions
-kc() {
-    compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
-}
+# Keycloak Admin CLI wrapper
 kcadm() {
     if [[ "$1" == "--login" ]]; then
         shift
@@ -622,18 +622,10 @@ kcadm() {
             error "No additional arguments allowed with 'kcadm --login'"
         fi
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
-            --server http://localhost:8080 --realm master --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
+            --server http://localhost:8081 --realm master --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
     else
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
     fi
-}
-kc_run() {
-    BYPASS_AUTH="false" KC_CMD="$*" compose -f compose.kc-run.yaml up keycloak
-}
-
-# Hasura CLI wrapper
-hasura() {
-    command hasura --project "${ROOT_DIR}"/hasura --admin-secret "${HASURA_GRAPHQL_ADMIN_SECRET}" "$@"
 }
 
 wait_until_healthy() {
@@ -654,11 +646,11 @@ wait_until_healthy() {
         health=$(compose ps "${service}" --format '{{.Health}}')
 
         case "${health}" in
-        "\"healthy\"")
+        "healthy")
             info "Service ${service} is healthy"
             return 0
             ;;
-        "\"unhealthy\"")
+        "unhealthy")
             error "Service ${service} is unhealthy"
             ;;
         "")
@@ -677,38 +669,41 @@ wait_until_healthy() {
 handle_init() {
     info "Starting initialization..."
 
-    if docker volume inspect geyser_data >/dev/null 2>&1 ||
-        docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
-        warn "Existing data volumes found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
+    # Check if data volumes already exist
+    local volume_exists="false"
+    if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
+        warn "Existing Geyser data volume found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
+        volume_exists="true"
+    fi
+    if docker volume ls --format '{{.Name}}' | grep -q '^geyser_kc-data$'; then
+        warn "Existing Keycloak data volume found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
+        volume_exists="true"
+    fi
+    if [[ "${volume_exists}" == "true" ]]; then
         if ! confirm "Initialize anyway?"; then
             info "Initialization cancelled: reset Geyser first with 'geyser reset'"
             return
         fi
     fi
 
-    info "Starting databases..."
-    compose up -d db_keycloak db
+    info "Pulling and building Docker images..."
+    compose pull
+    compose build --pull --no-cache
 
-    info "Starting Keycloak..."
-    wait_until_healthy db_keycloak
+    info "Initializing Keycloak..."
+    compose up -d keycloak
+    wait_until_healthy keycloak
+
+    info "Initializing Geyser database..."
     compose up -d
-
-    info "Initializing Hasura database..."
     wait_until_healthy db
     compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql && psql -U postgres -d geyser -f /initdb/init.sql"
-
-    info "Starting Hasura..."
     compose up -d hasura
-
-    info "Applying Hasura metadata..."
     wait_until_healthy hasura
     hasura metadata apply
 
-    if [[ ${MODE} == "production" ]]; then
-        info "Starting Nginx..."
-        compose up -d web
-        wait_until_healthy web
-    fi
+    info "Stopping all services..."
+    compose down
 
     success "Initialization completed successfully"
 }
@@ -717,7 +712,7 @@ handle_start() {
     info "Starting all services..."
 
     if ! docker volume inspect geyser_data >/dev/null 2>&1 ||
-        ! docker volume inspect geyser_data_keycloak >/dev/null 2>&1; then
+        ! docker volume inspect geyser_kc-data >/dev/null 2>&1; then
         warn "Missing data volumes. You should initialize Geyser first with 'geyser init'"
         if ! confirm "Start anyway?"; then
             info "Initialization cancelled: initialize Geyser first with 'geyser init'"
@@ -776,17 +771,19 @@ handle_update() {
 handle_reset() {
     info "Starting reset..."
 
-    warn "This will completely reset your Geyser installation. Note: backup files will be preserved"
+    warn "This will completely reset your Geyser installation"
+    warn "You should backup Geyser first with 'geyser backup' and 'geyser realms-export'"
+    warn "Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
         info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser realms-export'"
         return
     fi
 
     info "Stopping all services and cleaning up..."
-    compose down --volumes --rmi all --remove-orphans
+    compose down --volumes --remove-orphans
 
     info "Cleaning logs..."
-    rm -f "${ROOT_DIR}/geyser.log"
+    rm -f "${GEYSER_HOME}/geyser.log"
 
     success "Reset completed successfully"
 }
@@ -815,7 +812,7 @@ handle_backup() {
 
     info "Backing up databases in ${backup_path}:"
     info "→ Backing up Keycloak database..."
-    compose exec -T db_keycloak bash -c \
+    compose exec -T kc-db bash -c \
         "pg_dump -U postgres -d keycloak -Fc > /backups/${backup}/keycloak.dump"
     info "→ Backing up Geyser database..."
     compose exec -T db bash -c \
@@ -839,13 +836,13 @@ handle_restore() {
     local backup_path="${DB_BACKUP_DIR}/${SELECTED_BACKUP}"
 
     info "Starting databases..."
-    compose up -d db_keycloak db
+    compose up -d kc-db db
 
     info "Restoring databases:"
     info "→ Restoring Keycloak database..."
     if [[ -f "${backup_path}/keycloak.dump" ]]; then
-        wait_until_healthy db_keycloak
-        compose exec -T db_keycloak bash -c \
+        wait_until_healthy kc-db
+        compose exec -T kc-db bash -c \
             "pg_restore -U postgres -d keycloak --clean --if-exists -v /backups/${SELECTED_BACKUP}/keycloak.dump"
     else
         warn "No backups found for Keycloak database in ${backup}"
@@ -928,7 +925,7 @@ handle_sync_keycloak() {
     info "Starting Keycloak synchronization..."
 
     command -v jq >/dev/null 2>&1 || error "jq is not installed.
-You can install it with: 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
+You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
 
     info "Fetching active teachers from Geyser database..."
     local teachers active_teachers
@@ -984,17 +981,17 @@ You can install it with: 'sudo apt install jq' (Ubuntu) or 'brew install jq' (ma
             kc_enabled=$(echo "${kc_user}" | jq -r '.enabled')
             if [[ "${kc_firstname}" != "${firstname}" ]]; then
                 debug "First name mismatch: remote '${kc_firstname}' != local '${firstname}'"
-                update_fields+=(-s "firstName=${firstname}")
+                update_fields+=(-s firstName="${firstname}")
             fi
             if [[ "${kc_lastname}" != "${lastname}" ]]; then
                 debug "Last name mismatch: remote '${kc_lastname}' != local '${lastname}'"
-                update_fields+=(-s "lastName=${lastname}")
+                update_fields+=(-s lastName="${lastname}")
             fi
             if [[ "${kc_enabled}" != "true" ]]; then
                 debug "Enabled status mismatch: remote '${kc_enabled}' != local 'true'"
-                update_fields+=(-s "enabled=true")
+                update_fields+=(-s enabled=true)
             fi
-            if [[ ${#update_fields[@]} -gt 0 ]]; then
+            if [[ "${#update_fields[@]}" -gt 0 ]]; then
                 info "Updating user '${uid}'..."
                 kcadm update users/"${kc_user_id}" -r geyser "${update_fields[@]}"
             fi
@@ -1027,16 +1024,16 @@ You can install it with: 'sudo apt install jq' (Ubuntu) or 'brew install jq' (ma
 ###############################################################################
 
 main() {
-    debug "Entering main loop..."
+    debug "Entering main loop with args: $*"
 
     # If no arguments provided, show help
-    if [[ $# -eq 0 ]]; then
+    if [[ "$#" -eq 0 ]]; then
         show_help
         exit 0
     fi
 
-    # Parse options
-    while [[ $# -gt 0 ]]; do
+    # Parse global options
+    while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
             show_help
@@ -1046,24 +1043,28 @@ main() {
             echo "Geyser Administration Script v${VERSION}"
             exit 0
             ;;
-        --dev)
-            OPT_DEV=true
-            shift
-            ;;
-        --prod)
-            OPT_PROD=true
-            shift
-            ;;
-        --bypass-auth)
-            OPT_BYPASS_AUTH=true
-            shift
-            ;;
         --log-level)
             OPT_LOG_LEVEL="$2"
             shift 2
             ;;
+        --dev)
+            OPT_DEV="true"
+            shift
+            ;;
+        --prod)
+            OPT_PROD="true"
+            shift
+            ;;
+        --auth)
+            OPT_AUTH="true"
+            shift
+            ;;
+        --web)
+            OPT_WEB="true"
+            shift
+            ;;
         --configure)
-            OPT_CONFIGURE=true
+            OPT_CONFIGURE="true"
             shift
             ;;
         --autocomplete)

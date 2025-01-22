@@ -10,4 +10,4 @@ VALUES ('autre', 'Autre', 'Tout autre type de modification'),
        ('decharge', 'Décharge', 'Décharge d''enseignement pour une responsabilité'),
        ('depart', 'Départ', 'Service partiel en cas de départ en cours d''année'),
        ('enseignements_exterieurs', 'Enseignements extérieurs', 'Déduction des heures d''enseignement hors Geyser'),
-       ('temps_partiel', 'Service à temps partiel');
+       ('temps_partiel', 'Service à temps partiel', '');
