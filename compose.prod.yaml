@@ -1,24 +1,5 @@
 services:
-  db_keycloak:
-    restart: always
 
-  keycloak:
-    restart: always
-    environment:
-      - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME=https://${SERVER_HOST}/auth
-      - KC_HOSTNAME_ADMIN=http://localhost:8080
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${SERVER_HOST}/fullchain.cer
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${SERVER_HOST}/private.key
-      - FRONTEND_URL=https://${SERVER_HOST}
-    ports:
-      - "8443:8443"
-    networks:
-      - frontend
-    volumes:
-      - ./certs:/opt/keycloak/certs:ro
-    command: start --optimized --import-realm
-  
   db:
     restart: always
 
@@ -29,9 +10,28 @@ services:
       - HASURA_GRAPHQL_ENABLE_CONSOLE=false
     networks:
       - frontend
+  
+  kc-db:
+    restart: always
 
-  web:
-    build: ./nginx
+  keycloak:
+    restart: always
+    environment:
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME=https://${SERVER_HOST}/auth
+      - KC_HOSTNAME_ADMIN=http://localhost:8081
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${SERVER_HOST}/fullchain.cer
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${SERVER_HOST}/private.key
+      - FRONTEND_URL=https://${SERVER_HOST}
+    ports:
+      - "8443:8443"
+    networks:
+      - frontend
+    volumes:
+      - ./certs:/opt/keycloak/certs:ro
+    command: start --optimized --import-realm
+
+  nginx:
     restart: always
     depends_on:
       keycloak:
@@ -49,13 +49,10 @@ services:
       - CLIENT_VERSION=2.0
       - SERVER_HOST
     ports:
-      - "80:80"
       - "443:443"
-    networks:
-      - frontend
-    volumes:
+    volumes: !override
       - ./certs:/etc/nginx/certs:ro
-      - ./nginx/templates:/etc/nginx/templates:ro
+      - ./nginx/templates/https:/etc/nginx/templates:ro
 
 networks:
   frontend:

@@ -1,0 +1,61 @@
+services:
+  kc-db:
+    image: postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: pg_isready -U postgres || exit 1
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      - POSTGRES_DB=keycloak
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=$POSTGRES_KC_PASSWORD
+      - POSTGRES_HOST_AUTH_METHOD=scram-sha-256
+      - POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+    ports:
+      - "5433:5432"
+    networks:
+      - backend
+    volumes:
+      - kc-data:/var/lib/postgresql/data
+      - ./postgres/backups:/backups
+
+  keycloak:
+    build: ./keycloak
+    restart: unless-stopped
+    depends_on:
+      kc-db:
+        condition: service_healthy
+    healthcheck:
+      test: /usr/local/bin/healthcheck
+      interval: 10s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD
+      - KC_DB_URL=jdbc:postgresql://kc-db:5432/keycloak
+      - KC_DB_USERNAME=postgres
+      - KC_DB_PASSWORD=$POSTGRES_KC_PASSWORD
+      - KC_DB_SCHEMA=public
+      - FRONTEND_URL=http://${SERVER_HOST}
+    ports:
+      - "8081:8080"
+    networks:
+      - backend
+    volumes:
+      - ./keycloak/templates:/opt/keycloak/data/import:ro
+      - ./keycloak/backups:/opt/keycloak/data/backups
+    command: start-dev --import-realm
+  
+  hasura:
+    depends_on:
+      keycloak:
+        condition: service_healthy
+    environment:
+      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8081/realms/geyser/protocol/openid-connect/certs"}
