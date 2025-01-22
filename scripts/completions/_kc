@@ -1,0 +1,124 @@
+#compdef kc.sh
+
+_kc() {
+    local state
+    local -a commands subcommands
+
+    _arguments -C \
+        '(-h --help)'{-h,--help}'[Show help information]' \
+        '(-V --version)'{-V,--version}'[Show version information]' \
+        '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+        '(-cf --config-file)'{-cf,--config-file}'[Config file]:filename:_files' \
+        ': :->command' \
+        '*:: :->args'
+
+    case "${state}" in
+    command)
+        # shellcheck disable=SC2034
+        commands=(
+            'build:Build the project'
+            'start:Start the server'
+            'start-dev:Start in development mode'
+            'export:Export data'
+            'import:Import data'
+            'show-config:Show configuration'
+            'tools:Tools commands'
+            'bootstrap-admin:Bootstrap admin commands'
+        )
+        _describe -t commands 'kc commands' commands
+        ;;
+    args)
+        # shellcheck disable=SC2154
+        case "${words[1]}" in
+        build)
+            _arguments \
+                '--help-all[Show all help information]' \
+                '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]'
+            ;;
+        start)
+            _arguments \
+                '--optimized[Run in optimized mode]' \
+                '--help-all[Show all help information]' \
+                '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                '--import-realm[Import realm]:filename:_files'
+            ;;
+        start-dev)
+            _arguments \
+                '--help-all[Show all help information]' \
+                '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                '--import-realm[Import realm]:filename:_files'
+            ;;
+        export | import)
+            _arguments \
+                '--optimized[Run in optimized mode]' \
+                '--help-all[Show all help information]' \
+                '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]'
+            ;;
+        show-config)
+            _arguments \
+                '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]'
+            ;;
+        tools)
+            case "${words[2]}" in
+            completion)
+                _arguments \
+                    '(-h --help)'{-h,--help}'[Show help information]' \
+                    '(-V --version)'{-V,--version}'[Show version information]' \
+                    '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]'
+                ;;
+            *)
+                subcommands=(
+                    'completion:Completion commands'
+                )
+                _arguments \
+                    '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                    '(-h --help)'{-h,--help}'[Show help information]' \
+                    ': :->subcmd'
+
+                [[ "${state}" == subcmd ]] && _describe -t subcommands 'tools subcommands' subcommands
+                ;;
+            esac
+            ;;
+        bootstrap-admin)
+            case "${words[2]}" in
+            user)
+                _arguments \
+                    '--optimized[Run in optimized mode]' \
+                    '--help-all[Show all help information]' \
+                    '--no-prompt[Disable prompts]' \
+                    '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                    '--username[Set username]:username' \
+                    '--username\:env[Username environment variable]:env' \
+                    '--password\:env[Password environment variable]:env'
+                ;;
+            service)
+                _arguments \
+                    '--optimized[Run in optimized mode]' \
+                    '--help-all[Show all help information]' \
+                    '--no-prompt[Disable prompts]' \
+                    '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                    '--client-id[Set client ID]:client_id' \
+                    '--client-id\:env[Client ID environment variable]:env' \
+                    '--client-secret\:env[Client secret environment variable]:env'
+                ;;
+            *)
+                # shellcheck disable=SC2034
+                subcommands=(
+                    'user:User management commands'
+                    'service:Service management commands'
+                )
+                _arguments \
+                    '--no-prompt[Disable prompts]' \
+                    '(-v --verbose)'{-v,--verbose}'[Enable verbose mode]' \
+                    ': :->subcmd'
+
+                [[ "${state}" == subcmd ]] && _describe -t subcommands 'bootstrap-admin subcommands' subcommands
+                ;;
+            esac
+            ;;
+        esac
+        ;;
+    esac
+}
+
+_kc "$@"

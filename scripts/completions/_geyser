@@ -1,0 +1,140 @@
+#compdef geyser
+
+# shellcheck disable=SC2120
+_geyser() {
+    if [[ " ${words[*]} " == *" compose "* ]]; then
+        _geyser_compose
+    elif [[ " ${words[*]} " == *" hasura "* ]]; then
+        _geyser_hasura
+    elif [[ " ${words[*]} " == *" kc "* ]]; then
+        _geyser_kc
+    elif [[ " ${words[*]} " == *" kcadm "* ]]; then
+        _geyser_kcadm
+    else
+        pass
+    fi
+}
+
+# shellcheck disable=SC2120
+_geyser_compose() {
+    if [[ -z "${GEYSER_HOME}" ]]; then
+        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        return 1
+    fi
+
+    # Parse options before compose and store words after
+    local opt_dev=false opt_prod=false opt_auth=false opt_web=false
+    for ((i = 2; i <= $#words; i++)); do
+        case "${words[i]}" in
+        compose) break ;;
+        --dev) opt_dev=true ;;
+        --prod) opt_prod=true ;;
+        --auth) opt_auth=true ;;
+        --web) opt_web=true ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    words_after_compose=("${words[@]:$((i))}")
+
+    # Load configuration from .env files
+    local MODE=development
+    local USE_AUTH=false
+    local USE_WEB=false
+
+    . "${GEYSER_HOME}/.env" || true
+    . "${GEYSER_HOME}/.env.local" || true
+
+    [[ "${opt_dev}" == "true" ]] && MODE="development"
+    [[ "${opt_prod}" == "true" ]] && MODE="production"
+
+    # shellcheck disable=SC1090
+    . "${GEYSER_HOME}/.env.${MODE}" || true
+    # shellcheck disable=SC1090
+    . "${GEYSER_HOME}/.env.${MODE}.local" || true
+
+    if [[ "${MODE}" == "development" ]]; then
+        [[ "${opt_auth}" == "true" ]] && USE_AUTH="true"
+        [[ "${opt_web}" == "true" ]] && USE_WEB="true"
+    fi
+
+    local -a compose_files=(-f "${GEYSER_HOME}"/compose.yaml)
+    if [[ "${MODE}" == "production" || "${USE_AUTH}" == "true" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
+    fi
+    if [[ "${MODE}" == "production" || "${USE_WEB}" == "true" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
+    fi
+    if [[ "${MODE}" == "production" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
+    fi
+
+    words=("docker" "compose" "${compose_files[@]}" "${words_after_compose[@]}")
+    ((CURRENT = CURRENT + 2 - i + 2 * ${#compose_files[@]}))
+
+    _docker
+}
+
+# shellcheck disable=SC2120
+_geyser_hasura() {
+    # Parse options before hasura and store words after
+    for ((i = 2; i <= $#words; i++)); do
+        case "${words[i]}" in
+        hasura) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    words_after_hasura=("${words[@]:$((i))}")
+
+    words=("hasura" "--project" "${GEYSER_HOME}/hasura" "${words_after_hasura[@]}")
+    ((CURRENT = CURRENT + 3 - i))
+
+    _hasura
+}
+
+# shellcheck disable=SC2120
+_geyser_kc() {
+    # Parse options before kc and store words after
+    for ((i = 2; i <= $#words; i++)); do
+        case "${words[i]}" in
+        kc) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    # Remove option --restart-with
+    if [[ "${words[i]}" == "--restart-with" ]]; then
+        ((i++))
+    fi
+    words_after_kc=("${words[@]:$((i))}")
+
+    words=("kc.sh" "${words_after_kc[@]}")
+    ((CURRENT = CURRENT + 1 - i))
+
+    _kc
+}
+
+# shellcheck disable=SC2120
+_geyser_kcadm() {
+    # Parse options before kcadm and store words after
+    for ((i = 2; i <= $#words; i++)); do
+        case "${words[i]}" in
+        kcadm) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    # Remove option --login
+    if [[ "${words[i]}" == "--login" ]]; then
+        ((i++))
+    fi
+    words_after_kc=("${words[@]:$((i))}")
+
+    words=("kcadm.sh" "${words_after_kc[@]}")
+    ((CURRENT = CURRENT + 1 - i))
+
+    _kcadm
+}
+
+_geyser
