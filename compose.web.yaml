@@ -9,7 +9,12 @@ services:
       - frontend
   
   nginx:
-    build: ./nginx
+    build:
+      context: ./nginx
+      args:
+        - CLIENT_VERSION
+        - SERVER_HOST
+        - LEGAL_NOTICE
     restart: unless-stopped
     depends_on:
       keycloak:

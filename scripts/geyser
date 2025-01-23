@@ -51,8 +51,8 @@ Options:
   -v, --version     Show version information
   --dev             Use development configuration
   --prod            Use production configuration
-  --auth            Enable Keycloak authentication service in development
-  --web             Enable Nginx reverse proxy frontend in development
+  --no-auth         Disable Keycloak authentication service in development
+  --no-web          Disable Nginx reverse proxy frontend in development
   --log-level       Logging verbosity threshold (DEBUG|INFO|WARN|ERROR)
   --configure       Configure Geyser settings
 
@@ -359,23 +359,22 @@ readonly LOG_FILE="${LOG_DIR}/geyser.log"
 # Environment Variables
 #------------------------------------------------------------------------------
 
-MODE=development # Application deployment context (development/production)
-USE_AUTH=false   # Enable Keycloak authentication service
-USE_WEB=false    # Enable Nginx reverse proxy frontend
-LOG_LEVEL=INFO   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
-LOG_LEVEL_NUM=2  # Numeric log level identifier
-INPUT=           # Temporary user input buffer
+MODE="development" # Application deployment context (development/production)
+NO_AUTH="false"    # Disable Keycloak authentication service in development
+NO_WEB="false"     # Disable Nginx reverse proxy frontend in development
+LOG_LEVEL="INFO"   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
+LOG_LEVEL_NUM=2    # Numeric log level identifier
 
 #------------------------------------------------------------------------------
 # Command Line Options Flags
 #------------------------------------------------------------------------------
 
-OPT_DEV=false       # --dev flag for development mode
-OPT_PROD=false      # --prod flag for production mode
-OPT_AUTH=false      # --auth flag to enable authentication
-OPT_WEB=false       # --web flag to enable reverse proxy
-OPT_LOG_LEVEL=      # --log-level flag value
-OPT_CONFIGURE=false # --configure flag to set up environment
+OPT_DEV="false"       # --dev
+OPT_PROD="false"      # --prod
+OPT_NO_AUTH="false"   # --no-auth
+OPT_NO_WEB="false"    # --no-web
+OPT_LOG_LEVEL=        # --log-level
+OPT_CONFIGURE="false" # --configure
 
 #------------------------------------------------------------------------------
 # Dependencies
@@ -444,11 +443,11 @@ configure() {
             prompt "Your choice [No]:"
             case "${INPUT}" in
             1 | "")
-                USE_AUTH="false"
+                NO_AUTH="false"
                 break
                 ;;
             2)
-                USE_AUTH="true"
+                NO_AUTH="true"
                 break
                 ;;
             *)
@@ -464,11 +463,11 @@ configure() {
             prompt "Your choice [No]:"
             case "${INPUT}" in
             1 | "")
-                USE_WEB="false"
+                NO_WEB="false"
                 break
                 ;;
             2)
-                USE_WEB="true"
+                NO_WEB="true"
                 break
                 ;;
             *)
@@ -534,17 +533,17 @@ load_configuration() {
     fi
     if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
         MODE="development"
-        debug "Mode overridden with --dev option"
+        debug "MODE overridden with --dev option"
     fi
     if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
         MODE="production"
-        debug "Mode overridden with --prod option"
+        debug "MODE overridden with --prod option"
     fi
     if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid mode '${MODE}' (must be 'development' or 'production').
+        error "Invalid MODE value '${MODE}' (must be 'development' or 'production').
 Use options --dev/--prod or set MODE environment variable."
     fi
-    debug "Mode set to '${MODE}'"
+    debug "MODE set to '${MODE}'"
 
     # Load mode-specific env files
     touch "${GEYSER_HOME}/.env.${MODE}"
@@ -554,53 +553,57 @@ Use options --dev/--prod or set MODE environment variable."
     # shellcheck disable=SC1090
     . "${GEYSER_HOME}/.env.${MODE}.local"
 
-    # Set USE_AUTH
-    if [[ "${OPT_AUTH}" == "true" && "${USE_AUTH}" != "true" ]]; then
-        USE_AUTH="true"
-        debug "Authentication setting overridden with --auth option"
+    # Set NO_AUTH
+    if [[ "${OPT_NO_AUTH}" == "true" && "${NO_AUTH}" != "true" ]]; then
+        NO_AUTH="true"
+        debug "NO_AUTH overridden with --no-auth option"
     fi
-    if [[ "${USE_AUTH}" != "true" && "${USE_AUTH}" != "false" ]]; then
-        error "Invalid authentication setting '${USE_AUTH}' (must be 'true' or 'false').
-Use option --auth or set USE_AUTH environment variable."
+    if [[ "${NO_AUTH}" != "true" && "${NO_AUTH}" != "false" ]]; then
+        error "Invalid NO_AUTH value '${NO_AUTH}' (must be 'true' or 'false').
+Use option --no-auth or set NO_AUTH environment variable."
     fi
-    if [[ "${MODE}" == "production" && "${USE_AUTH}" == "false" ]]; then
-        warn "Authentication is required in production mode (authentication setting ignored)"
-        USE_AUTH="false"
+    if [[ "${MODE}" == "production" && "${NO_AUTH}" == "true" ]]; then
+        warn "Authentication is required in production mode (NO_AUTH ignored)"
+        NO_AUTH="false"
     fi
-    debug "Authentication set to '${USE_AUTH}'"
+    debug "NO_AUTH set to '${NO_AUTH}'"
 
-    # Set USE_WEB
-    if [[ "${OPT_WEB}" == "true" && "${USE_WEB}" != "true" ]]; then
-        USE_WEB="true"
-        debug "Web setting overridden with --web option"
+    # Set NO_WEB
+    if [[ "${OPT_NO_WEB}" == "true" && "${NO_WEB}" != "true" ]]; then
+        NO_WEB="true"
+        debug "NO_WEB overridden with --no-web option"
     fi
-    if [[ "${USE_WEB}" != "true" && "${USE_WEB}" != "false" ]]; then
-        error "Invalid web setting '${USE_WEB}' (must be 'true' or 'false').
-Use option --web or set USE_WEB environment variable."
+    if [[ "${NO_WEB}" != "true" && "${NO_WEB}" != "false" ]]; then
+        error "Invalid NO_WEB value '${NO_WEB}' (must be 'true' or 'false').
+Use option --no-web or set NO_WEB environment variable."
     fi
-    if [[ "${MODE}" == "production" && "${USE_WEB}" == "false" ]]; then
-        warn "Web is required in production mode (web setting ignored)"
-        USE_WEB="false"
+    if [[ "${MODE}" == "production" && "${NO_WEB}" == "true" ]]; then
+        warn "Web is required in production mode (NO_WEB ignored)"
+        NO_WEB="false"
     fi
-    debug "Web set to '${USE_WEB}'"
+    if [[ "${NO_AUTH}" == "true" && "${NO_WEB}" == "false" ]]; then
+        warn "Cannot run web with no authentication (NO_WEB set to 'true')"
+        NO_WEB="true"
+    fi
+    debug "NO_WEB set to '${NO_WEB}'"
 
     # Set LOG_LEVEL
     if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
         LOG_LEVEL="${OPT_LOG_LEVEL}"
-        debug "Log level overridden with --log-level option"
+        debug "LOG_LEVEL overridden with --log-level option"
     fi
     LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
         error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
 Use option --log-level or set LOG_LEVEL environment variable."
-    debug "Log level set to '${LOG_LEVEL}'"
+    debug "LOG_LEVEL set to '${LOG_LEVEL}'"
 }
 
 show_configuration() {
     info "************ CONFIGURATION ************"
     info "GEYSER_HOME: ${GEYSER_HOME}"
     info "MODE: ${MODE}"
-    info "USE_AUTH: ${USE_AUTH}"
-    info "USE_WEB: ${USE_WEB}"
+    info "NO_AUTH: ${NO_AUTH}"
+    info "NO_WEB: ${NO_WEB}"
     info "LOG_LEVEL: ${LOG_LEVEL}"
     info "***************************************"
 }
@@ -612,7 +615,7 @@ save_configuration() {
         cat <<EOF
 MODE="${MODE}"
 LOG_LEVEL="${LOG_LEVEL}"
-USE_AUTH="${USE_AUTH}"
+NO_AUTH="${NO_AUTH}"
 EOF
     )
 
@@ -767,16 +770,16 @@ compose() {
         "--env-file" "${GEYSER_HOME}/.env.${MODE}.local"
     )
     compose_files=(
-        -f "${GEYSER_HOME}"/compose.yaml
+        "-f" "${GEYSER_HOME}/compose.yaml"
     )
-    if [[ "${MODE}" == "production" || "${USE_AUTH}" == "true" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
+    if [[ "${NO_AUTH}" == "false" ]]; then
+        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
     fi
-    if [[ "${MODE}" == "production" || "${USE_WEB}" == "true" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
+    if [[ "${NO_WEB}" == "false" ]]; then
+        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
     fi
     if [[ "${MODE}" == "production" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
+        compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
     fi
     docker compose "${env_files[@]}" "${compose_files[@]}" "$@"
 }
@@ -902,6 +905,9 @@ handle_init() {
     info "Stopping services..."
     compose down
 
+    info "Cleaning up..."
+    docker system prune -f
+
     success "Initialization completed successfully"
 }
 
@@ -1011,8 +1017,8 @@ handle_update() {
     info "Starting services with updated images..."
     compose up -d
 
-    info "Cleaning up old images..."
-    docker image prune -f
+    info "Cleaning up..."
+    docker system prune -f
 
     success "Update completed successfully"
 }
@@ -1042,7 +1048,8 @@ handle_reset() {
     fi
 
     info "Stopping services and cleaning up..."
-    compose down --volumes --remove-orphans
+    compose down --volumes --rmi all --remove-orphans
+    docker system prune -f
 
     info "Cleaning logs..."
     mv "${LOG_FILE}" "${LOG_FILE}.bak"
@@ -1433,12 +1440,12 @@ main() {
             OPT_PROD="true"
             shift
             ;;
-        --auth)
-            OPT_AUTH="true"
+        --no-auth)
+            OPT_NO_AUTH="true"
             shift
             ;;
-        --web)
-            OPT_WEB="true"
+        --no-web)
+            OPT_NO_WEB="true"
             shift
             ;;
         --configure)

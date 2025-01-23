@@ -1,5 +1,4 @@
 services:
-
   db:
     restart: always
 
@@ -32,7 +31,6 @@ services:
   nginx:
     restart: always
     environment:
-      - CLIENT_VERSION=2.0
       - SERVER_HOST
     ports:
       - "443:443"
