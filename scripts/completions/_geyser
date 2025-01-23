@@ -3,7 +3,7 @@
 # shellcheck disable=SC2120
 _geyser() {
     local state
-    local -a commands options
+    local -a commands options subcommand_options
 
     if [[ " ${words[*]} " == *" compose "* ]]; then
         _geyser_compose
@@ -17,19 +17,20 @@ _geyser() {
         # shellcheck disable=SC2034
         commands=(
             'init:Initialize a fresh Geyser installation'
-            'start:Start all Geyser services'
-            'stop:Stop all Geyser services'
-            'restart:Restart all Geyser services'
-            'update:Update all Geyser services'
+            'start:Start Geyser services'
+            'stop:Stop Geyser services'
+            'restart:Restart Geyser services'
+            'update:Update Geyser services'
             'reset:Reset Geyser to a clean state'
             'backup:Create a backup of PostgreSQL databases'
             'restore:Restore databases from a previous backup'
-            'realms-export:Export Keycloak realms configuration'
-            'realms-import:Import Keycloak realms configuration'
-            'compose:Run Docker Compose'
-            'hasura:Run Hasura CLI'
-            'kc:Run Keycloak CLI'
-            'kcadm:Run Keycloak Admin CLI'
+            'realms-export:Export Keycloak realms'
+            'realms-import:Import Keycloak realms'
+            'sync-keycloak:Synchronize Keycloak users with active teachers'
+            'compose:Run Docker Compose with loaded configuration'
+            'hasura:Run Hasura CLI with loaded configuration'
+            'kc:Run Keycloak CLI in container'
+            'kcadm:Run Keycloak Admin CLI in container'
             'completion:Install completion for zsh'
         )
 
@@ -40,26 +41,67 @@ _geyser() {
             '--prod[Use production configuration]'
             '--auth[Enable Keycloak authentication service in development]'
             '--web[Enable Nginx reverse proxy frontend in development]'
-            '--log-level[Set logging level]:level:(DEBUG INFO WARN ERROR)'
+            '--log-level[Logging verbosity threshold]:level:(DEBUG INFO WARN ERROR)'
             '--configure[Configure Geyser settings]'
         )
+
+        case "${words[1]}" in
+        backup)
+            subcommand_options=(
+                '(-h --help)'{-h,--help}'[Show help message]'
+                '--name:[Set the name of the backup to create]:name'
+            )
+            ;;
+        restore)
+            subcommand_options=(
+                '(-h --help)'{-h,--help}'[Show help message]'
+                '--name[Set the name of the backup to restore]:name'
+            )
+            ;;
+        realms-export)
+            subcommand_options=(
+                '(-h --help)'{-h,--help}'[Show help message]'
+                '--name[Set the name of the export]:name'
+            )
+            ;;
+        realms-import)
+            subcommand_options=(
+                '(-h --help)'{-h,--help}'[Show help message]'
+                '--name[Set the name of the import]:name'
+            )
+            ;;
+        kc)
+            subcommand_options=(
+                '--restart-with[Restart container and run given command]:command'
+            )
+            ;;
+        kcadm)
+            subcommand_options=(
+                '--login[Start an authenticated session]'
+            )
+            ;;
+        *)
+            subcommand_options=(
+                '(-h --help)'{-h,--help}'[Show help message]'
+            )
+            ;;
+        esac
 
         _arguments -C \
             "${options[@]}" \
             ': :->command' \
-            '*:: :->argument'
+            '*::arg:->argument'
 
         case "${state}" in
-                command)
-            if (( ${words[(I)--help]} + ${words[(I)-h]} )); then
-                        return 0 
-                    fi 
-                    _describe 'command' commands
-                    ;;
-                argument)
-                    return 0
-                    ;;
-            esac
+        command)
+            [[ "${words[*]}" =~ "--help" || "${words[*]}" =~ "-h" ]] && return 0
+            _describe 'command' commands
+            ;;
+        argument)
+            [[ -n "${words[1]}" ]] && _arguments "${subcommand_options[@]}"
+            return 0
+            ;;
+        esac
     fi
 }
 

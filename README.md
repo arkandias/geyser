@@ -91,7 +91,7 @@ The SSL certificates must be placed in `nginx/certs/`, see [here](nginx/certs/RE
 Geyser comes with an administration script `scripts/geyser`.
 
 ```
-Geyser Administration Script v1.0.0
+Geyser Administration Script v${VERSION}
 
 Usage: geyser [OPTIONS] COMMAND
 
@@ -108,12 +108,13 @@ Data Operations:
   restore           Restore databases from a previous backup
   realms-export     Export Keycloak realms
   realms-import     Import Keycloak realms
+  sync-keycloak     Synchronize Keycloak users with active teachers
 
 Service Management:
-  compose           Run Docker Compose
-  hasura            Run Hasura CLI
-  kc                Run Keycloak CLI
-  kcadm             Run Keycloak Admin CLI
+  compose           Run Docker Compose with loaded configuration
+  hasura            Run Hasura CLI with loaded configuration
+  kc                Run Keycloak CLI in container
+  kcadm             Run Keycloak Admin CLI in container
 
 Tools:
   completion        Install completion for zsh (with oh-my-zsh)

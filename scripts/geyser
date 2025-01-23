@@ -53,7 +53,7 @@ Options:
   --prod            Use production configuration
   --auth            Enable Keycloak authentication service in development
   --web             Enable Nginx reverse proxy frontend in development
-  --log-level       Set logging level (DEBUG|INFO|WARN|ERROR)
+  --log-level       Logging verbosity threshold (DEBUG|INFO|WARN|ERROR)
   --configure       Configure Geyser settings
 
 Run 'geyser COMMAND --help' for more information on a command.
@@ -260,7 +260,7 @@ Pass arguments to kc.sh in keycloak container.
 
 Options:
   -h, --help        Show this help message
-  --restart-with    Restart container with given command
+  --restart-with    Restart container and run given command
 EOF
 }
 
@@ -274,7 +274,7 @@ Pass arguments to kcadm.sh in keycloak container.
 
 Options:
   -h, --help        Show this help message
-  --login           Start an autenticated session
+  --login           Start an authenticated session
 EOF
 }
 
@@ -417,17 +417,17 @@ configure() {
     fi
 
     info "Available modes:"
-    info "1) production"
-    info "2) development"
+    info "1) development"
+    info "2) production"
     while true; do
-        prompt "Your choice [production]:"
+        prompt "Your choice [development]:"
         case "${INPUT}" in
         1 | "")
-            MODE="production"
+            MODE="development"
             break
             ;;
         2)
-            MODE="development"
+            MODE="production"
             break
             ;;
         *)
@@ -437,7 +437,7 @@ configure() {
     done
 
     if [[ "${MODE}" == "development" ]]; then
-        info "Bypass authentication?"
+        info "Enable Keycloak authentication service?"
         info "1) No"
         info "2) Yes"
         while true; do
@@ -449,6 +449,26 @@ configure() {
                 ;;
             2)
                 USE_AUTH="true"
+                break
+                ;;
+            *)
+                warn "Invalid input: enter a number between 1 and 2"
+                ;;
+            esac
+        done
+
+        info "Enable Nginx reverse proxy frontend?"
+        info "1) No"
+        info "2) Yes"
+        while true; do
+            prompt "Your choice [No]:"
+            case "${INPUT}" in
+            1 | "")
+                USE_WEB="false"
+                break
+                ;;
+            2)
+                USE_WEB="true"
                 break
                 ;;
             *)
