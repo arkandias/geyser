@@ -35,17 +35,18 @@ Data Operations:
   restore           Restore databases from a previous backup
   realms-export     Export Keycloak realms
   realms-import     Import Keycloak realms
+  sync-keycloak     Synchronize Keycloak users with active teachers
 
 Service Management:
-  compose           Run Docker Compose
-  hasura            Run Hasura CLI
-  kc                Run Keycloak CLI
-  kcadm             Run Keycloak Admin CLI
+  compose           Run Docker Compose with loaded configuration
+  hasura            Run Hasura CLI with loaded configuration
+  kc                Run Keycloak CLI in container
+  kcadm             Run Keycloak Admin CLI in container
 
 Tools:
-  autocomplete      Install autocomplete for zsh (using oh-my-zsh)
+  completion        Install completion for zsh (with oh-my-zsh)
 
-Global Options:
+Options:
   -h, --help        Show this help message
   -v, --version     Show version information
   --dev             Use development configuration
@@ -69,7 +70,7 @@ Creates required data volumes, initializes databases, starts services and
 applies initial configuration.
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 
 Note: Use 'geyser reset' first if you need to start fresh.
 EOF
@@ -85,7 +86,7 @@ Start PostgreSQL databases, Keycloak authentication, Hasura GraphQL engine, and
 Nginx web server (in production mode).
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 
 Note: Run 'geyser init' first if this is a fresh installation.
 EOF
@@ -100,7 +101,7 @@ Usage: geyser stop
 Stop services and remove containers.
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 EOF
 }
 
@@ -113,7 +114,7 @@ Usage: geyser restart
 Perform a full stop and start of services.
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 EOF
 }
 
@@ -127,7 +128,7 @@ Pull latest images, rebuild local images, restart services with new images, and
 clean up old images.
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 
 Note: Services will be stopped during update.
 EOF
@@ -143,7 +144,7 @@ Stop services, remove containers, delete volumes, remove images, and clean
 up logs.
 
 Options:
-  -h, --help    Show this help message
+  -h, --help        Show this help message
 
 Warning: This will delete data. Make backups first.
 EOF
@@ -158,8 +159,8 @@ Usage: geyser backup
 Dump Keycloak and Geyser databases. Backups are stored in postgres/backups.
 
 Options:
-  -h, --help    Show this help message
-  --name        Set the name of the backup to create
+  -h, --help        Show this help message
+  --name            Set the name of the backup to create
 EOF
 }
 
@@ -172,8 +173,8 @@ Usage: geyser restore
 List available backups and restore selected backup to databases.
 
 Options:
-  -h, --help    Show this help message
-  --name        Set the name of the backup to restore
+  -h, --help        Show this help message
+  --name            Set the name of the backup to restore
 
 Note: Services will be stopped during restore.
 EOF
@@ -186,8 +187,8 @@ Export Keycloak realms configuration
 Usage: geyser realms-export
 
 Options:
-  -h, --help    Show this help message
-  --name        Set the name of the export
+  -h, --help        Show this help message
+  --name            Set the name of the export
 
 Note: Services must be stopped before export.
 EOF
@@ -200,24 +201,94 @@ Import Keycloak realms configuration
 Usage: geyser realms-import
 
 Options:
-  -h, --help    Show this help message
-  --name        Set the name of the import
+  -h, --help        Show this help message
+  --name            Set the name of the import
 
 Note: Services must be stopped before import.
 EOF
 }
 
-show_realms_import_help() {
+show_sync_keycloak_help() {
     cat <<EOF
-Import Keycloak realms configuration
+Synchronize Keycloak users with active teachers
 
-Usage: geyser realms-import
+Usage: geyser sync-keycloak
+
+Create or update Keycloak users based on active teachers in Geyser database.
+Disable Keycloak users not corresponding to active teachers.
 
 Options:
-  -h, --help    Show this help message
-  --name        Set the name of the import
+  -h, --help        Show this help message
 
-Note: Services must be stopped before import.
+Note: Requires jq to be installed.
+EOF
+}
+
+show_compose_help() {
+    cat <<EOF
+Run Docker Compose with loaded configuration
+
+Usage: geyser compose [ARGS...]
+
+Pass arguments to docker compose after loading environment and compose files.
+
+Options:
+  -h, --help        Show this help message
+EOF
+}
+
+show_hasura_help() {
+    cat <<EOF
+Run Hasura CLI with loaded configuration
+
+Usage: geyser hasura [ARGS...]
+
+Pass arguments to hasura-cli after loading environment and project settings.
+
+Options:
+  -h, --help        Show this help message
+EOF
+}
+
+show_kc_help() {
+    cat <<EOF
+Run Keycloak CLI in container
+
+Usage: geyser kc [ARGS...]
+
+Pass arguments to kc.sh in keycloak container.
+
+Options:
+  -h, --help        Show this help message
+  --restart-with    Restart container with given command
+EOF
+}
+
+show_kcadm_help() {
+    cat <<EOF
+Run Keycloak Admin CLI in container
+
+Usage: geyser kcadm [ARGS...]
+
+Pass arguments to kcadm.sh in keycloak container.
+
+Options:
+  -h, --help        Show this help message
+  --login           Start an autenticated session
+EOF
+}
+
+show_completion_help() {
+    cat <<EOF
+Install shell completion
+
+Usage: geyser completion
+
+Install completion scripts for bash or zsh (using oh-my-zsh).
+Updates PATH and GEYSER_HOME environment variables if needed.
+
+Options:
+  -h, --help        Show this help message
 EOF
 }
 
@@ -540,15 +611,18 @@ EOF
 }
 
 #------------------------------------------------------------------------------
-# Shell Autocomplete Setup
+# Shell Completion Installation
 #------------------------------------------------------------------------------
 
-install_autocomplete() {
-    prompt "Oh My Zsh installation directory [${HOME}/.oh-my-zsh]:"
-    local omz_completions="${INPUT:-"${HOME}/.oh-my-zsh"}/completions"
+install_completion() {
+    [[ -n "${ZSH}" ]] || error "Oh My Zsh is not installed.
+You can install it with 'sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"'"
+
+    prompt "oh-my-zsh directory [${ZSH}]:"
+    local omz_completions="${INPUT:-"${ZSH}/completions"}"
     local geyser_completions="${GEYSER_HOME}/scripts/completions"
 
-    info "Installing autocomplete..."
+    info "Installing completion..."
     if [[ ! -d "${omz_completions}" ]]; then
         if ! confirm "Oh My Zsh completions directory not found.
 Create it in ${omz_completions}?" "y"; then
@@ -570,7 +644,7 @@ Create it in ${omz_completions}?" "y"; then
         warn "Failed to install Docker completion script"
     }
 
-    if confirm "Add GEYSER_HOME to your .zshrc (required for advanced autocomplete)?" "y"; then
+    if confirm "Add GEYSER_HOME to your .zshrc (required for advanced completion)?" "y"; then
         # Remove any existing GEYSER_HOME line
         sed_i '/^export GEYSER_HOME=/d' "${HOME}/.zshrc"
         # Add the new GEYSER_HOME line at the end of .zshrc
@@ -586,8 +660,8 @@ Create it in ${omz_completions}?" "y"; then
         ln -sf "${GEYSER_HOME}/scripts/geyser" "${HOME}/.local/bin/geyser"
     fi
 
-    success "Autocomplete installed successfully"
-    info "Please restart zsh or run 'omz reload' to enable autocomplete"
+    success "Completion installed successfully"
+    info "Please restart zsh or run 'omz reload' to enable completion"
 }
 
 ###############################################################################
@@ -1317,7 +1391,7 @@ main() {
         exit 0
     fi
 
-    # Parse global options
+    # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
@@ -1389,7 +1463,7 @@ main() {
     hasura) hasura "$@" ;;
     kc) kc "$@" ;;
     kcadm) kcadm "$@" ;;
-    autocomplete) install_autocomplete ;;
+    completion) install_completion ;;
     "") return ;;
     *) error "Unknown command '$1' (see 'geyser --help')" ;;
     esac

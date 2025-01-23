@@ -30,7 +30,7 @@ _geyser() {
             'hasura:Run Hasura CLI'
             'kc:Run Keycloak CLI'
             'kcadm:Run Keycloak Admin CLI'
-            'autocomplete:Install autocomplete for zsh'
+            'completion:Install completion for zsh'
         )
 
         options=(

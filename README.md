@@ -40,9 +40,16 @@ This will create a the installation directory `geyser` in your working directory
     - Installation: `sudo apt install jq` (Ubuntu) or `brew install jq` (macOS)
 
 - **Oh My Zsh**
-  TODO
+    - Required for shell completion
+    - Installation: `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
 
-### Autocomplete
+### Shell completion
+
+[//]: # (TODO)
+
+```shell
+./scripts/geyser completion
+```
 
 ## Configuration
 
@@ -50,13 +57,17 @@ This will create a the installation directory `geyser` in your working directory
 
 The following environment variables are required.
 
-| Environment variable          | Explanation                                                                                                               |
-|-------------------------------|---------------------------------------------------------------------------------------------------------------------------|
-| `POSTGRES_PASSWORD`           | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                            |
-| `POSTGRES_KC_PASSWORD`        | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                                          |
-| `KEYCLOAK_ADMIN_PASSWORD`     | Password for the initial admin user `admin` in the Keycloak container                                                     |
-| `HASURA_GRAPHQL_ADMIN_SECRET` | Admin secret for Hasura GraphQL Engine                                                                                    |
-| `SERVER_HOST`                 | The hostname and, optionally, the port number at which the web app will be served (e.g., `localhost:5173`, `example.com`) |
+| Environment variable          | Default value        | Explanation                                                                                                   |
+|-------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------|
+| `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**         | Admin secret for Hasura GraphQL Engine                                                                        |
+| `POSTGRES_KC_PASSWORD`        | Required to use auth | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                              |
+| `KEYCLOAK_ADMIN_PASSWORD`     | Required to use auth | Password for the initial admin user `admin` in the Keycloak container                                         |
+| `SERVER_HOST`                 | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
+| `MODE`                        | `development`        | Application deployment context (`development`/`production`)                                                   |
+| `USE_AUTH`                    | `false`              | Enable/disable Keycloak authentication service (`true`/`false`, for development only)                         |
+| `USE_WEB`                     | `false`              | Enable/disable Nginx reverse proxy frontend (`true`/`false`, for development only)                            |
+| `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
 
 ### Environment Files
 
@@ -77,22 +88,58 @@ The SSL certificates must be placed in `nginx/certs/`, see [here](nginx/certs/RE
 
 ### Running Geyser
 
-The script `scripts/geyser` provides the following commands:
+Geyser comes with an administration script `scripts/geyser`.
 
-- `start` to start Geyser
-- `stop` to stop Geyser
-- `restart` to restart Geyser
-- `update` to update Geyser
-- `reset` to starts a fresh configuration
-- `backup` to make a backup of the databases
-- `restore` to restore a backup of the databases
+```
+Geyser Administration Script v1.0.0
 
-Use these command with one of the following options:
+Usage: geyser [OPTIONS] COMMAND
 
-- `--dev` in a development environment
-- `--prod` in a production/staging environment
+Core Commands:
+  init              Initialize a fresh Geyser installation
+  start             Start Geyser services
+  stop              Stop Geyser services
+  restart           Restart Geyser services
+  update            Update Geyser services
+  reset             Reset Geyser to a clean state
 
-Equivalently, you can set the environment variable `GEYSER_MODE` to `development` or `production`.
+Data Operations:
+  backup            Create a backup of PostgreSQL databases
+  restore           Restore databases from a previous backup
+  realms-export     Export Keycloak realms
+  realms-import     Import Keycloak realms
+
+Service Management:
+  compose           Run Docker Compose
+  hasura            Run Hasura CLI
+  kc                Run Keycloak CLI
+  kcadm             Run Keycloak Admin CLI
+
+Tools:
+  completion        Install completion for zsh (with oh-my-zsh)
+
+Options:
+  -h, --help        Show this help message
+  -v, --version     Show version information
+  --dev             Use development configuration
+  --prod            Use production configuration
+  --auth            Enable Keycloak authentication service in development
+  --web             Enable Nginx reverse proxy frontend in development
+  --log-level       Set logging level (DEBUG|INFO|WARN|ERROR)
+  --configure       Configure Geyser settings
+
+Run 'geyser COMMAND --help' for more information on a command.
+```
+
+**Note:** Some options override their counterpart environment variables:
+
+| Option        | Environment variable | Remark                   |
+|---------------|----------------------|--------------------------|
+| `--dev`       | `MODE=development`   |                          |
+| `--prod`      | `MODE=production`    |                          |
+| `--auth`      | `USE_AUTH=true`      | In development mode only |
+| `--web`       | `USE_WEB=true`       | In development mode only |
+| `--log-level` | `LOG_LEVEL`          |                          |
 
 ### Automatic Backups
 

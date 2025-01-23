@@ -30,11 +30,13 @@ warn() {
     echo "Warning: $1" >&2
 }
 
-ROOT_DIR="$(dirname "$0")/.."
-readonly ROOT_DIR
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+: "${GEYSER_HOME:-"$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 
-source "${ROOT_DIR}"/.env
-source "${ROOT_DIR}"/.env.local
+readonly GEYSER_HOME
+
+source "${GEYSER_HOME}"/.env
+source "${GEYSER_HOME}"/.env.local
 
 required_vars=(
     "WEBDAV_URL"
@@ -47,7 +49,7 @@ for var in "${required_vars[@]}"; do
     fi
 done
 
-readonly LOCAL_BACKUPS_DIR="${ROOT_DIR}/postgres/backups"
+readonly LOCAL_BACKUPS_DIR="${GEYSER_HOME}/postgres/backups"
 readonly REMOTE_BACKUPS_DIR="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/geyser/backups"
 
 timestamp=$(date +%Y-%m-%d-%H-%M-%S)
@@ -57,7 +59,7 @@ echo "Local backup directory: ${local_backup_dir}"
 echo "Remote backup directory: ${remote_backup_dir}"
 
 echo "Backing up Geyser..."
-"${ROOT_DIR}/geyser" backup --name="${timestamp}" || error "Backup failed"
+"${GEYSER_HOME}/geyser" backup --name="${timestamp}" || error "Backup failed"
 
 shopt -s nullglob
 for file in "${local_backup_dir}"/*.dump; do
