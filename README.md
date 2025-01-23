@@ -2,21 +2,109 @@
 
 <img src="logo.svg" alt="Geyser logo" width="500">
 
+## Table of Contents
+
+- [Getting Started](#getting-started)
+    - [Installation](#installation)
+    - [Dependencies](#dependencies)
+    - [Shell Completion](#shell-completion)
+- [Configuration](#configuration)
+    - [Environment Variables](#environment-variables)
+    - [Environment Files](#environment-files)
+    - [SSL Certificates](#ssl-certificates)
+- [Architecture](#architecture)
+    - [Overview](#overview)
+    - [Geyser Database](#geyser-database)
+    - [Hasura](#hasura-graphql-engine)
+    - [Keycloak](#keycloak)
+    - [Keycloak Database](#keycloak-database)
+    - [Nginx](#nginx-production-only)
+- [Administration](#administration)
+    - [Running Geyser](#running-geyser)
+    - [Automatic Backups](#automatic-backups)
+- [Contact](#contact)
+- [License](#license)
+
 ## Getting Started
+
+### Pre-Installation Setup
+
+#### Docker Setup
+
+```bash
+# Install Docker Engine
+curl -fsSL https://get.docker.com | sh
+sudo usermod -aG docker $USER  # Log out and back in after this 
+```
+
+#### Required Tools
+
+```bash
+# Install Hasura CLI
+curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+
+# Install jq (Optional, needed for Keycloak sync)
+sudo apt install jq
+
+# Oh My Zsh (for zsh users)
+sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+```
 
 ### Installation
 
-Install Geyser using one of the following commands:
+#### Download and Install
 
 ```shell
 # Using curl
-curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
+curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
 
-# Using wget
-wget -qO- https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh | env GEYSER_VERSION=2.0 sh -
+# Or specify a version
+curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | env GEYSER_VERSION=2.0 sh
 ```
 
-This will create a the installation directory `geyser` in your working directory.
+#### Initial Configuration
+
+```bash
+cd geyser
+cp .env.example .env
+```
+
+#### Initialize the App
+
+```bash
+./scripts/geyser init
+```
+
+### Quick Start
+
+#### Start the App
+
+```bash
+./scripts/geyser start
+```
+
+#### Access Services
+
+```bash
+./scripts/geyser hasura console
+```
+
+- Hasura Console: [http://localhost:8080](http://localhost:8080)
+- Keycloak Admin: [http://localhost:8081](http://localhost:8081)
+- App: [http://localhost:80](http://localhost:80)
+
+#### Basic operations
+
+```bash
+# Stop all services
+./scripts/geyser stop
+
+# Create a backup
+./scripts/geyser backup
+
+# View logs
+./scripts/geyser --log-level DEBUG start
+```
 
 ### Dependencies
 
@@ -42,14 +130,6 @@ This will create a the installation directory `geyser` in your working directory
 - **Oh My Zsh**
     - Required for shell completion
     - Installation: `sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"`
-
-### Shell completion
-
-[//]: # (TODO)
-
-```shell
-./scripts/geyser completion
-```
 
 ## Configuration
 
@@ -84,14 +164,94 @@ shared.
 
 The SSL certificates must be placed in `nginx/certs/`, see [here](nginx/certs/README.md).
 
+## Architecture
+
+### Overview
+
+- **PostgreSQL Databases**
+    - Main database (geyser): Stores application data
+    - Keycloak database: Manages authentication
+- **Keycloak**: Authentication server
+- **Hasura**: GraphQL API and database access layer
+- **Nginx**: Web server and reverse proxy
+
+Here we list the various components of Geyser. Each component corresponds to a single Docker container.
+
+### Geyser database
+
+A PostgreSQL container is running as service `db`.
+It contains a database named `geyser`, which contains the data relative to Geyser in the `public` schema, and Hasura
+metadata in the `hdb_catalog` schema.
+This database is accessible on the host port `5432`.
+
+### Hasura (GraphQL Engine)
+
+An Hasura container is running as service `hasura`.
+It is connected to the Geyser database and is used by the web client to make GraphQL queries.
+The GraphQL API is available at:
+
+- http://localhost:8080/v1/graphql in development mode
+- https://example.com/graphql in production mode (assuming `SERVER_HOST=example.com`)
+
+Hasura permissions are handled by giving users some of the following roles.
+
+In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
+
+| Role       | Explanations                                          |
+|------------|-------------------------------------------------------|
+| `teacher`  | The base user role with restricted permissions        |
+| `assigner` | Some extra permissions during the "assignments" phase |
+| `admin`    | The superuser role with all permissions               |
+
+### Keycloak
+
+A Keycloak container is running as service `keycloak`.
+It manages the authentication and the roles of the Hasura users using JWT tokens.
+
+#### Endpoints
+
+In development mode, Keycloak can be reached at http://localhost:8081.
+
+In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
+
+| Path          | Reverse proxy path                  |
+|---------------|-------------------------------------|
+| `/js/`        | https://example.com/auth/js/        |
+| `/realms/`    | https://example.com/auth/realms/    |
+| `/resources/` | https://example.com/auth/resources/ |
+
+In particular, the path `/admin/` is not exposed for security reason.
+You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8081:localhost:8081` to the production
+server, then `/auth/` can be reached at http://localhost:8081/auth/admin.
+In particular, the admin console is available at http://localhost:8081/auth/admin.
+
+### Keycloak database
+
+A second PostgreSQL container is running as service `kc-db`.
+It contains a database named `keycloak` dedicated to the Keycloak instance.
+This database is accessible on the host port `5433`.
+
+### Nginx (production only)
+
+In production, a custom Nginx container is running as service `nginx`.
+It is used as a reverse proxy, and serves the web client for the app.
+
 ## Administration
+
+### Shell completion
+
+[//]: # (TODO)
+
+```shell
+./scripts/geyser completion
+```
 
 ### Running Geyser
 
 Geyser comes with an administration script `scripts/geyser`.
 
 ```
-Geyser Administration Script v${VERSION}
+Geyser Administration Script v1.0.0
 
 Usage: geyser [OPTIONS] COMMAND
 
@@ -167,78 +327,6 @@ Example crontab configurations:
 # Weekly backup on Sunday at 4:00 AM
 0 4 * * 0 /path/to/scripts/backup-webdav
 ```
-
-## Architecture
-
-### Overview
-
-- **PostgreSQL Databases**
-    - Main database (geyser): Stores application data
-    - Keycloak database: Manages authentication
-- **Keycloak**: Authentication server
-- **Hasura**: GraphQL API and database access layer
-- **Nginx**: Web server and reverse proxy
-
-Here we list the various components of Geyser. Each component corresponds to a single Docker container.
-
-### Geyser database
-
-A PostgreSQL container is running as service `db`.
-It contains a database named `geyser`, which contains the data relative to Geyser in the `public` schema, and Hasura
-metadata in the `hdb_catalog` schema.
-This database is accessible on the host port `5432`.
-
-### Hasura (GraphQL Engine)
-
-An Hasura container is running as service `hasura`.
-It is connected to the Geyser database and is used by the web client to make GraphQL queries.
-The GraphQL API is available at:
-
-- http://localhost:8090/v1/graphql in development mode
-- https://example.com/graphql in production mode (assuming `SERVER_HOST=example.com`)
-
-Hasura permissions are handled by giving users some of the following roles.
-
-In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
-
-| Role       | Explanations                                          |
-|------------|-------------------------------------------------------|
-| `teacher`  | The base user role with restricted permissions        |
-| `assigner` | Some extra permissions during the "assignments" phase |
-| `admin`    | The superuser role with all permissions               |
-
-### Keycloak
-
-A Keycloak container is running as service `keycloak`.
-It manages the authentication and the roles of the Hasura users using JWT tokens.
-
-#### Endpoints
-
-In development mode, Keycloak can be reached at http://localhost:8081.
-
-In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
-
-| Path          | Reverse proxy path                  |
-|---------------|-------------------------------------|
-| `/js/`        | https://example.com/auth/js/        |
-| `/realms/`    | https://example.com/auth/realms/    |
-| `/resources/` | https://example.com/auth/resources/ |
-
-In particular, the path `/admin/` is not exposed for security reason.
-You can access this endpoint using SSH Tunnel: if you connect with `ssh -L  8081:localhost:8081` to the production
-server, then `/auth/` can be reached at http://localhost:8081/auth/admin.
-In particular, the admin console is available at http://localhost:8081/auth/admin.
-
-### Keycloak database
-
-A second PostgreSQL container is running as service `kc-db`.
-It contains a database named `keycloak` dedicated to the Keycloak instance.
-This database is accessible on the host port `5433`.
-
-### Nginx (production only)
-
-In production, a custom Nginx container is running as service `web`.
-It is used as a reverse proxy, and serves the web client for the app.
 
 ## Contact
 
