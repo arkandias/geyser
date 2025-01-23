@@ -58,4 +58,4 @@ services:
       keycloak:
         condition: service_healthy
     environment:
-      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8081/realms/geyser/protocol/openid-connect/certs"}
+      - HASURA_GRAPHQL_JWT_SECRET={"jwk_url":"http://keycloak:8080/realms/geyser/protocol/openid-connect/certs"}

@@ -1,7 +1,21 @@
 services:
+  hasura:
+    restart: always
+    networks:
+      - frontend
+  
+  keycloak:
+    networks:
+      - frontend
+  
   nginx:
     build: ./nginx
-    restart: always
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
     healthcheck:
       test: service nginx status || exit 1
       interval: 10s
@@ -10,7 +24,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      - CLIENT_VERSION=2.0
+      - CLIENT_VERSION=v0.1
       - SERVER_HOST
     ports:
       - "80:80"

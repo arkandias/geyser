@@ -1045,8 +1045,7 @@ handle_reset() {
     compose down --volumes --remove-orphans
 
     info "Cleaning logs..."
-    mv "${GEYSER_HOME}/geyser.log" "${GEYSER_HOME}/geyser.log.bak"
-    rm -f "${GEYSER_HOME}/geyser.log"
+    mv "${LOG_FILE}" "${LOG_FILE}.bak"
 
     success "Reset completed successfully"
 }
@@ -1469,23 +1468,71 @@ main() {
 
     # Execute command
     case "$1" in
-    init) handle_init "$@" ;;
-    start) handle_start "$@" ;;
-    stop) handle_stop "$@" ;;
-    restart) handle_restart "$@" ;;
-    update) handle_update "$@" ;;
-    reset) handle_reset "$@" ;;
-    backup) handle_backup "$@" ;;
-    restore) handle_restore "$@" ;;
-    realms-export) handle_realms_export "$@" ;;
-    realms-import) handle_realms_import "$@" ;;
-    compose) compose "$@" ;;
-    hasura) hasura "$@" ;;
-    kc) kc "$@" ;;
-    kcadm) kcadm "$@" ;;
-    completion) install_completion ;;
-    "") return ;;
-    *) error "Unknown command '$1' (see 'geyser --help')" ;;
+    init)
+        shift
+        handle_init "$@"
+        ;;
+    start)
+        shift
+        handle_start "$@"
+        ;;
+    stop)
+        shift
+        handle_stop "$@"
+        ;;
+    restart)
+        shift
+        handle_restart "$@"
+        ;;
+    update)
+        shift
+        handle_update "$@"
+        ;;
+    reset)
+        shift
+        handle_reset "$@"
+        ;;
+    backup)
+        shift
+        handle_backup "$@"
+        ;;
+    restore)
+        shift
+        handle_restore "$@"
+        ;;
+    realms-export)
+        shift
+        handle_realms_export "$@"
+        ;;
+    realms-import)
+        shift
+        handle_realms_import "$@"
+        ;;
+    compose)
+        shift
+        compose "$@"
+        ;;
+    hasura)
+        shift
+        hasura "$@"
+        ;;
+    kc)
+        shift
+        kc "$@"
+        ;;
+    kcadm)
+        shift
+        kcadm "$@"
+        ;;
+    completion)
+        install_completion
+        ;;
+    "")
+        return
+        ;;
+    *)
+        error "Unknown command '$1' (see 'geyser --help')"
+        ;;
     esac
 }
 

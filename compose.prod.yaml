@@ -8,8 +8,6 @@ services:
     environment:
       - HASURA_GRAPHQL_CORS_DOMAIN=https://${SERVER_HOST}
       - HASURA_GRAPHQL_ENABLE_CONSOLE=false
-    networks:
-      - frontend
   
   kc-db:
     restart: always
@@ -33,18 +31,6 @@ services:
 
   nginx:
     restart: always
-    depends_on:
-      keycloak:
-        condition: service_healthy
-      hasura:
-        condition: service_healthy
-    healthcheck:
-      test: service nginx status || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
     environment:
       - CLIENT_VERSION=2.0
       - SERVER_HOST
@@ -53,6 +39,3 @@ services:
     volumes: !override
       - ./certs:/etc/nginx/certs:ro
       - ./nginx/templates/https:/etc/nginx/templates:ro
-
-networks:
-  frontend:

@@ -2,7 +2,7 @@ FROM node:20 as builder
 
 WORKDIR /app
 
-ARG CLIENT_VERSION
+ARG CLIENT_VERSION=v0.1
 ARG SERVER_HOST
 ARG LEGAL_NOTICE
 
@@ -13,7 +13,7 @@ ENV VITE_BUILD_VERSION=${CLIENT_VERSION}
 ENV VITE_GRAPHQL_URL=${SERVER_HOST}/graphql
 ENV VITE_KEYCLOAK_URL=${SERVER_HOST}/auth
 
-RUN git clone --depth 1 --branch ${CLIENT_VERSION} https://github.com/arkandias/geyser-frontend.git .
+RUN git clone --depth 1 --branch ${CLIENT_VERSION} https://github.com/arkandias/geyser-client.git .
 RUN corepack enable && corepack prepare pnpm@latest --activate
 RUN pnpm install
 RUN pnpm run build
