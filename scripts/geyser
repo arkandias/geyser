@@ -26,7 +26,6 @@ Core Commands:
   init              Initialize a fresh Geyser installation
   start             Start Geyser services
   stop              Stop Geyser services
-  restart           Restart Geyser services
   update            Update Geyser services
   reset             Reset Geyser to a clean state
 
@@ -99,19 +98,6 @@ Stop Geyser services
 Usage: geyser stop
 
 Stop services and remove containers.
-
-Options:
-  -h, --help        Show this help message
-EOF
-}
-
-show_restart_help() {
-    cat <<EOF
-Restart Geyser services
-
-Usage: geyser restart
-
-Perform a full stop and start of services.
 
 Options:
   -h, --help        Show this help message
@@ -962,28 +948,6 @@ handle_stop() {
     success "All services stopped successfully"
 }
 
-handle_restart() {
-    info "Restarting services..."
-
-    # Parse options
-    while [[ "$#" -gt 0 ]]; do
-        case "$1" in
-        -h | --help)
-            show_restart_help
-            exit 0
-            ;;
-        *)
-            error "Unknown parameter '$1' (see 'geyser restart --help')"
-            ;;
-        esac
-    done
-
-    compose down
-    compose up -d
-
-    success "All services restarted successfully"
-}
-
 handle_update() {
     info "Starting update..."
 
@@ -1047,12 +1011,14 @@ handle_reset() {
         return
     fi
 
-    info "Stopping services and cleaning up..."
+    info "Stopping services..."
     compose down --volumes --rmi all --remove-orphans
-    docker system prune -f
 
-    info "Cleaning logs..."
-    mv "${LOG_FILE}" "${LOG_FILE}.bak"
+    info "Removing logs..."
+    rm "${LOG_FILE}"
+
+    info "Cleaning up..."
+    docker system prune -f
 
     success "Reset completed successfully"
 }
@@ -1486,10 +1452,6 @@ main() {
     stop)
         shift
         handle_stop "$@"
-        ;;
-    restart)
-        shift
-        handle_restart "$@"
         ;;
     update)
         shift

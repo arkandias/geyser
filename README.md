@@ -259,7 +259,6 @@ Core Commands:
   init              Initialize a fresh Geyser installation
   start             Start Geyser services
   stop              Stop Geyser services
-  restart           Restart Geyser services
   update            Update Geyser services
   reset             Reset Geyser to a clean state
 
