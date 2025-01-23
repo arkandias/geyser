@@ -2,6 +2,9 @@
 
 # shellcheck disable=SC2120
 _geyser() {
+    local state
+    local -a commands options
+
     if [[ " ${words[*]} " == *" compose "* ]]; then
         _geyser_compose
     elif [[ " ${words[*]} " == *" hasura "* ]]; then
@@ -11,7 +14,52 @@ _geyser() {
     elif [[ " ${words[*]} " == *" kcadm "* ]]; then
         _geyser_kcadm
     else
-        pass
+        # shellcheck disable=SC2034
+        commands=(
+            'init:Initialize a fresh Geyser installation'
+            'start:Start all Geyser services'
+            'stop:Stop all Geyser services'
+            'restart:Restart all Geyser services'
+            'update:Update all Geyser services'
+            'reset:Reset Geyser to a clean state'
+            'backup:Create a backup of PostgreSQL databases'
+            'restore:Restore databases from a previous backup'
+            'realms-export:Export Keycloak realms configuration'
+            'realms-import:Import Keycloak realms configuration'
+            'compose:Run Docker Compose'
+            'hasura:Run Hasura CLI'
+            'kc:Run Keycloak CLI'
+            'kcadm:Run Keycloak Admin CLI'
+            'autocomplete:Install autocomplete for zsh'
+        )
+
+        options=(
+            '(-h --help)'{-h,--help}'[Show help message]'
+            '(-v --version)'{-v,--version}'[Show version information]'
+            '--dev[Use development configuration]'
+            '--prod[Use production configuration]'
+            '--auth[Enable Keycloak authentication service in development]'
+            '--web[Enable Nginx reverse proxy frontend in development]'
+            '--log-level[Set logging level]:level:(DEBUG INFO WARN ERROR)'
+            '--configure[Configure Geyser settings]'
+        )
+
+        _arguments -C \
+            "${options[@]}" \
+            ': :->command' \
+            '*:: :->argument'
+
+        case "${state}" in
+                command)
+            if (( ${words[(I)--help]} + ${words[(I)-h]} )); then
+                        return 0 
+                    fi 
+                    _describe 'command' commands
+                    ;;
+                argument)
+                    return 0
+                    ;;
+            esac
     fi
 }
 
@@ -77,6 +125,11 @@ _geyser_compose() {
 
 # shellcheck disable=SC2120
 _geyser_hasura() {
+    if [[ -z "${GEYSER_HOME}" ]]; then
+        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        return 1
+    fi
+
     # Parse options before hasura and store words after
     for ((i = 2; i <= $#words; i++)); do
         case "${words[i]}" in

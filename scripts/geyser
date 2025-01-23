@@ -24,17 +24,17 @@ Usage: geyser [OPTIONS] COMMAND
 
 Core Commands:
   init              Initialize a fresh Geyser installation
-  start             Start all Geyser services
-  stop              Stop all Geyser services
-  restart           Restart all Geyser services
-  update            Update all Geyser services
+  start             Start Geyser services
+  stop              Stop Geyser services
+  restart           Restart Geyser services
+  update            Update Geyser services
   reset             Reset Geyser to a clean state
 
 Data Operations:
   backup            Create a backup of PostgreSQL databases
   restore           Restore databases from a previous backup
-  realms-export     Export Keycloak realms configuration
-  realms-import     Import Keycloak realms configuration
+  realms-export     Export Keycloak realms
+  realms-import     Import Keycloak realms
 
 Service Management:
   compose           Run Docker Compose
@@ -42,8 +42,8 @@ Service Management:
   kc                Run Keycloak CLI
   kcadm             Run Keycloak Admin CLI
 
-Tools
-  completion        Install autocomplete for zsh (using oh-my-zsh)
+Tools:
+  autocomplete      Install autocomplete for zsh (using oh-my-zsh)
 
 Global Options:
   -h, --help        Show this help message
@@ -65,8 +65,11 @@ Initialize a fresh Geyser installation
 
 Usage: geyser init
 
-Creates required data volumes, initializes databases, starts all services and
+Creates required data volumes, initializes databases, starts services and
 applies initial configuration.
+
+Options:
+  -h, --help    Show this help message
 
 Note: Use 'geyser reset' first if you need to start fresh.
 EOF
@@ -74,12 +77,15 @@ EOF
 
 show_start_help() {
     cat <<EOF
-Start all Geyser services
+Start Geyser services
 
 Usage: geyser start
 
 Start PostgreSQL databases, Keycloak authentication, Hasura GraphQL engine, and
 Nginx web server (in production mode).
+
+Options:
+  -h, --help    Show this help message
 
 Note: Run 'geyser init' first if this is a fresh installation.
 EOF
@@ -87,32 +93,41 @@ EOF
 
 show_stop_help() {
     cat <<EOF
-Stop all Geyser services
+Stop Geyser services
 
 Usage: geyser stop
 
-Stop all services and remove containers.
+Stop services and remove containers.
+
+Options:
+  -h, --help    Show this help message
 EOF
 }
 
 show_restart_help() {
     cat <<EOF
-Restart all Geyser services
+Restart Geyser services
 
 Usage: geyser restart
 
-Perform a full stop and start of all services.
+Perform a full stop and start of services.
+
+Options:
+  -h, --help    Show this help message
 EOF
 }
 
 show_update_help() {
     cat <<EOF
-Update all Geyser services
+Update Geyser services
 
 Usage: geyser update
 
 Pull latest images, rebuild local images, restart services with new images, and
 clean up old images.
+
+Options:
+  -h, --help    Show this help message
 
 Note: Services will be stopped during update.
 EOF
@@ -124,10 +139,13 @@ Reset Geyser to a clean state
 
 Usage: geyser reset
 
-Stop all services, remove containers, delete volumes, remove images, and clean
+Stop services, remove containers, delete volumes, remove images, and clean
 up logs.
 
-Warning: This will delete all data. Make backups first.
+Options:
+  -h, --help    Show this help message
+
+Warning: This will delete data. Make backups first.
 EOF
 }
 
@@ -138,6 +156,10 @@ Create backup of PostgreSQL databases
 Usage: geyser backup
 
 Dump Keycloak and Geyser databases. Backups are stored in postgres/backups.
+
+Options:
+  -h, --help    Show this help message
+  --name        Set the name of the backup to create
 EOF
 }
 
@@ -149,6 +171,10 @@ Usage: geyser restore
 
 List available backups and restore selected backup to databases.
 
+Options:
+  -h, --help    Show this help message
+  --name        Set the name of the backup to restore
+
 Note: Services will be stopped during restore.
 EOF
 }
@@ -159,6 +185,10 @@ Export Keycloak realms configuration
 
 Usage: geyser realms-export
 
+Options:
+  -h, --help    Show this help message
+  --name        Set the name of the export
+
 Note: Services must be stopped before export.
 EOF
 }
@@ -168,6 +198,24 @@ show_realms_import_help() {
 Import Keycloak realms configuration
 
 Usage: geyser realms-import
+
+Options:
+  -h, --help    Show this help message
+  --name        Set the name of the import
+
+Note: Services must be stopped before import.
+EOF
+}
+
+show_realms_import_help() {
+    cat <<EOF
+Import Keycloak realms configuration
+
+Usage: geyser realms-import
+
+Options:
+  -h, --help    Show this help message
+  --name        Set the name of the import
 
 Note: Services must be stopped before import.
 EOF
@@ -227,7 +275,8 @@ debug() { log "DEBUG" "$1"; }
 # Directory Setup
 #------------------------------------------------------------------------------
 
-: "${GEYSER_HOME:-"$(cd "$(dirname "$0")"/.. &>/dev/null && pwd)"}"
+SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+: "${GEYSER_HOME:-"$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 
 readonly GEYSER_HOME
 readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
@@ -250,12 +299,12 @@ INPUT=           # Temporary user input buffer
 # Command Line Options Flags
 #------------------------------------------------------------------------------
 
-OPT_DEV="false"       # --dev flag for development mode
-OPT_PROD="false"      # --prod flag for production mode
-OPT_AUTH="false"      # --auth flag to enable authentication
-OPT_WEB="false"       # --web flag to enable reverse proxy
-OPT_LOG_LEVEL=        # --log-level flag value
-OPT_CONFIGURE="false" # --configure flag to set up environment
+OPT_DEV=false       # --dev flag for development mode
+OPT_PROD=false      # --prod flag for production mode
+OPT_AUTH=false      # --auth flag to enable authentication
+OPT_WEB=false       # --web flag to enable reverse proxy
+OPT_LOG_LEVEL=      # --log-level flag value
+OPT_CONFIGURE=false # --configure flag to set up environment
 
 #------------------------------------------------------------------------------
 # Dependencies
@@ -417,17 +466,32 @@ Use options --dev/--prod or set MODE environment variable."
     # Set USE_AUTH
     if [[ "${OPT_AUTH}" == "true" && "${USE_AUTH}" != "true" ]]; then
         USE_AUTH="true"
-        debug "Bypass authentication setting overridden with --bypass-auth option"
+        debug "Authentication setting overridden with --auth option"
     fi
     if [[ "${USE_AUTH}" != "true" && "${USE_AUTH}" != "false" ]]; then
-        error "Invalid use authentication setting '${USE_AUTH}' (must be 'true' or 'false').
+        error "Invalid authentication setting '${USE_AUTH}' (must be 'true' or 'false').
 Use option --auth or set USE_AUTH environment variable."
     fi
     if [[ "${MODE}" == "production" && "${USE_AUTH}" == "false" ]]; then
-        warn "Authentication is required in production mode (ignored)"
+        warn "Authentication is required in production mode (authentication setting ignored)"
         USE_AUTH="false"
     fi
-    debug "Use authentication set to '${USE_AUTH}'"
+    debug "Authentication set to '${USE_AUTH}'"
+
+    # Set USE_WEB
+    if [[ "${OPT_WEB}" == "true" && "${USE_WEB}" != "true" ]]; then
+        USE_WEB="true"
+        debug "Web setting overridden with --web option"
+    fi
+    if [[ "${USE_WEB}" != "true" && "${USE_WEB}" != "false" ]]; then
+        error "Invalid web setting '${USE_WEB}' (must be 'true' or 'false').
+Use option --web or set USE_WEB environment variable."
+    fi
+    if [[ "${MODE}" == "production" && "${USE_WEB}" == "false" ]]; then
+        warn "Web is required in production mode (web setting ignored)"
+        USE_WEB="false"
+    fi
+    debug "Web set to '${USE_WEB}'"
 
     # Set LOG_LEVEL
     if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
@@ -442,11 +506,11 @@ Use option --log-level or set LOG_LEVEL environment variable."
 
 show_configuration() {
     info "************ CONFIGURATION ************"
-    info "Mode: ${MODE}"
-    info "Log level: ${LOG_LEVEL}"
-    if [[ "${MODE}" == "development" ]]; then
-        info "Bypass authentication: ${USE_AUTH}"
-    fi
+    info "GEYSER_HOME: ${GEYSER_HOME}"
+    info "MODE: ${MODE}"
+    info "USE_AUTH: ${USE_AUTH}"
+    info "USE_WEB: ${USE_WEB}"
+    info "LOG_LEVEL: ${LOG_LEVEL}"
     info "***************************************"
 }
 
@@ -476,38 +540,54 @@ EOF
 }
 
 #------------------------------------------------------------------------------
-# Shell Completion Setup
+# Shell Autocomplete Setup
 #------------------------------------------------------------------------------
 
 install_autocomplete() {
-    info "You need Oh My Zsh to use autocomplete"
     prompt "Oh My Zsh installation directory [${HOME}/.oh-my-zsh]:"
-    local omz_completions_dir="${INPUT}/completions"
-    local completions_dir="${GEYSER_HOME}/scripts/completions"
+    local omz_completions="${INPUT:-"${HOME}/.oh-my-zsh"}/completions"
+    local geyser_completions="${GEYSER_HOME}/scripts/completions"
 
     info "Installing autocomplete..."
-    if [[ ! -d "${omz_completions_dir}" ]]; then
-        if ! confirm "Oh My Zsh completions directory not found. Create it in ${omz_completions_dir}?" "y"; then
+    if [[ ! -d "${omz_completions}" ]]; then
+        if ! confirm "Oh My Zsh completions directory not found.
+Create it in ${omz_completions}?" "y"; then
             info "Installation cancelled"
         fi
-        mkdir -p "${omz_completions_dir}"
+        mkdir -p "${omz_completions}"
     fi
 
-    cp "${completions_dir}/_geyser" "${omz_completions_dir}/" || {
-        warn "Failed to install Geyser completions script"
+    cp "${geyser_completions}/_geyser" "${omz_completions}/" 2>/dev/null || {
+        warn "Failed to install Geyser completion script"
     }
-    cp "${completions_dir}/_kc" "${omz_completions_dir}/" || {
-        warn "Failed to install Keycloak CLI completions script"
+    cp "${geyser_completions}/_kc" "${omz_completions}/" 2>/dev/null || {
+        warn "Failed to install Keycloak CLI completion script"
     }
-    hasura completion zsh --file="${omz_completions_dir}/_hasura" || {
-        warn "Failed to install Hasura CLI completions script"
+    hasura completion zsh --file="${omz_completions}/_hasura" &>/dev/null || {
+        warn "Failed to install Hasura CLI completion script"
     }
-    docker completion zsh >"${omz_completions_dir}/_docker" || {
-        warn "Failed to install Docker completions script"
+    docker completion zsh >"${omz_completions}/_docker" 2>/dev/null || {
+        warn "Failed to install Docker completion script"
     }
 
+    if confirm "Add GEYSER_HOME to your .zshrc (required for advanced autocomplete)?" "y"; then
+        # Remove any existing GEYSER_HOME line
+        sed_i '/^export GEYSER_HOME=/d' "${HOME}/.zshrc"
+        # Add the new GEYSER_HOME line at the end of .zshrc
+        echo "export GEYSER_HOME=${GEYSER_HOME}" >>"${HOME}/.zshrc"
+    fi
+
+    if confirm "Add this script to your PATH via ~/.local/bin?" "y"; then
+        if [[ ! "${PATH}" =~ (^|:)"${HOME}/.local/bin"(:|$) ]]; then
+            # shellcheck disable=SC2016
+            echo 'export PATH="$HOME/.local/bin:$PATH"' >>"${HOME}/.zshrc"
+        fi
+        mkdir -p "${HOME}/.local/bin"
+        ln -sf "${GEYSER_HOME}/scripts/geyser" "${HOME}/.local/bin/geyser"
+    fi
+
     success "Autocomplete installed successfully"
-    info "Please restart your shell to enable completion"
+    info "Please restart zsh or run 'omz reload' to enable autocomplete"
 }
 
 ###############################################################################
@@ -571,6 +651,15 @@ select_backup() {
     done
 }
 
+sed_i() {
+    # macOS requires '' after -i, Linux doesn't
+    if [[ "$(uname)" == "Darwin" ]]; then
+        sed -i '' "$@"
+    else
+        sed -i "$@"
+    fi
+}
+
 ###############################################################################
 # 5. SERVICE MANAGEMENT FUNCTIONS
 ###############################################################################
@@ -622,7 +711,8 @@ kcadm() {
             error "No additional arguments allowed with 'kcadm --login'"
         fi
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
-            --server http://localhost:8081 --realm master --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
+            --server http://localhost:8081 --realm master \
+            --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
     else
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
     fi
@@ -669,6 +759,19 @@ wait_until_healthy() {
 handle_init() {
     info "Starting initialization..."
 
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_reset_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser reset --help')"
+            ;;
+        esac
+    done
+
     # Check if data volumes already exist
     local volume_exists="false"
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
@@ -702,14 +805,27 @@ handle_init() {
     wait_until_healthy hasura
     hasura metadata apply
 
-    info "Stopping all services..."
+    info "Stopping services..."
     compose down
 
     success "Initialization completed successfully"
 }
 
 handle_start() {
-    info "Starting all services..."
+    info "Starting services..."
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_start_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser start --help')"
+            ;;
+        esac
+    done
 
     if ! docker volume inspect geyser_data >/dev/null 2>&1 ||
         ! docker volume inspect geyser_kc-data >/dev/null 2>&1; then
@@ -726,7 +842,20 @@ handle_start() {
 }
 
 handle_stop() {
-    info "Stopping all services..."
+    info "Stopping services..."
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_stop_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser stop --help')"
+            ;;
+        esac
+    done
 
     compose down
 
@@ -734,7 +863,20 @@ handle_stop() {
 }
 
 handle_restart() {
-    info "Restarting all services..."
+    info "Restarting services..."
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_restart_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser restart --help')"
+            ;;
+        esac
+    done
 
     compose down
     compose up -d
@@ -745,13 +887,26 @@ handle_restart() {
 handle_update() {
     info "Starting update..."
 
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_update_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser update --help')"
+            ;;
+        esac
+    done
+
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for update"
         if ! confirm "Stop them now?"; then
             info "Update cancelled: stop services first with 'geyser stop'"
             return
         fi
-        info "Stopping all services..."
+        info "Stopping services..."
         compose down
     fi
 
@@ -759,7 +914,7 @@ handle_update() {
     compose pull
     compose build --pull --no-cache
 
-    info "Starting all services with updated images..."
+    info "Starting services with updated images..."
     compose up -d
 
     info "Cleaning up old images..."
@@ -771,6 +926,19 @@ handle_update() {
 handle_reset() {
     info "Starting reset..."
 
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_reset_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser reset --help')"
+            ;;
+        esac
+    done
+
     warn "This will completely reset your Geyser installation"
     warn "You should backup Geyser first with 'geyser backup' and 'geyser realms-export'"
     warn "Note: backup files will be preserved"
@@ -779,10 +947,11 @@ handle_reset() {
         return
     fi
 
-    info "Stopping all services and cleaning up..."
+    info "Stopping services and cleaning up..."
     compose down --volumes --remove-orphans
 
     info "Cleaning logs..."
+    mv "${GEYSER_HOME}/geyser.log" "${GEYSER_HOME}/geyser.log.bak"
     rm -f "${GEYSER_HOME}/geyser.log"
 
     success "Reset completed successfully"
@@ -790,24 +959,51 @@ handle_reset() {
 
 handle_backup() {
     local backup
-    backup=$(date +%Y-%m-%d-%H-%M-%S)
 
-    while true; do
-        prompt "Enter a backup name [${backup}]:"
-
-        if [[ -z "${INPUT}" ]]; then
-            return
-        fi
-
-        if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
-            backup="${INPUT}"
-            return
-        fi
-
-        warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_backup_help
+            exit 0
+            ;;
+        --name)
+            if [[ -z "$2" ]]; then
+                error "Missing parameter for option --name (see 'geyser backup --help')"
+            fi
+            debug "Backup name set to ${backup} with option --name"
+            backup="$2"
+            shift 2
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser backup --help')"
+            ;;
+        esac
     done
 
+    # Prompt backup name
+    if [[ -z "${backup}" ]]; then
+        backup=$(date +%Y-%m-%d-%H-%M-%S)
+        while true; do
+            prompt "Enter a backup name [${backup}]:"
+
+            if [[ -z "${INPUT}" ]]; then
+                return
+            fi
+
+            if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
+                backup="${INPUT}"
+                return
+            fi
+
+            warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+        done
+    fi
+
     local backup_path="${DB_BACKUP_DIR}/${backup}"
+    if [[ -d "${backup_path}" ]]; then
+        error "Backup ${backup_path} already exists"
+    fi
     mkdir -p "${backup_path}"
 
     info "Backing up databases in ${backup_path}:"
@@ -822,18 +1018,49 @@ handle_backup() {
 }
 
 handle_restore() {
+    local backup
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_restore_help
+            exit 0
+            ;;
+        --name)
+            if [[ -z "$2" ]]; then
+                error "Missing parameter for option --name (see 'geyser restore --help')"
+            fi
+            debug "Backup name set to ${backup} with option --name"
+            backup="$2"
+            shift 2
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser restore --help')"
+            ;;
+        esac
+    done
+
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for restore"
         if ! confirm "Stop them now?"; then
             info "Restore cancelled: stop services first with 'geyser stop'"
             return
         fi
-        info "Stopping all services..."
+        info "Stopping services..."
         compose down
     fi
 
-    select_backup "${DB_BACKUP_DIR}" "Select a backup to restore"
-    local backup_path="${DB_BACKUP_DIR}/${SELECTED_BACKUP}"
+    # Select backup name
+    if [[ -z "${backup}" ]]; then
+        select_backup "${DB_BACKUP_DIR}" "Select a backup to restore"
+        backup="${SELECTED_BACKUP}"
+    fi
+
+    local backup_path="${DB_BACKUP_DIR}/${backup}"
+    if [[ ! -d "${backup_path}" ]]; then
+        error "Backup ${backup_path} does not exist"
+    fi
 
     info "Starting databases..."
     compose up -d kc-db db
@@ -857,42 +1084,69 @@ handle_restore() {
         warn "No backups found for Geyser database in ${backup}"
     fi
 
-    info "Stopping all services..."
+    info "Stopping services..."
     compose down
 
     success "Restore completed successfully"
 }
 
 handle_realms_export() {
+    local backup
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_realms_export_help
+            exit 0
+            ;;
+        --name)
+            if [[ -z "$2" ]]; then
+                error "Missing parameter for option --name (see 'geyser realms-export --help')"
+            fi
+            debug "Export name set to ${backup} with option --name"
+            backup="$2"
+            shift 2
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser realms-export --help')"
+            ;;
+        esac
+    done
+
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for realms export"
         if ! confirm "Stop them now?"; then
             info "Realms export cancelled: stop services first with 'geyser stop'"
             return
         fi
-        info "Stopping all services..."
+        info "Stopping services..."
         compose down
     fi
 
-    local backup
-    backup=$(date +%Y-%m-%d-%H-%M-%S)
+    # Prompt backup name
+    if [[ -z "${backup}" ]]; then
+        backup=$(date +%Y-%m-%d-%H-%M-%S)
+        while true; do
+            prompt "Enter a backup name [${backup}]:"
 
-    while true; do
-        prompt "Enter an export name [${backup}]:"
+            if [[ -z "${INPUT}" ]]; then
+                return
+            fi
 
-        if [[ -z "${INPUT}" ]]; then
-            return
-        fi
+            if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
+                backup="${INPUT}"
+                return
+            fi
 
-        if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
-            backup="${INPUT}"
-            return
-        fi
-
-        warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
-    done
+            warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+        done
+    fi
 
     local backup_path="${KC_BACKUP_DIR}/${backup}"
+    if [[ -d "${backup_path}" ]]; then
+        error "Backup ${backup_path} already exists"
+    fi
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms in ${backup_path}..."
@@ -902,18 +1156,49 @@ handle_realms_export() {
 }
 
 handle_realms_import() {
+    local backup
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_realms_import_help
+            exit 0
+            ;;
+        --name)
+            if [[ -z "$2" ]]; then
+                error "Missing parameter for option --name (see 'geyser import-realms --help')"
+            fi
+            debug "Backup name set to ${backup} with option --name"
+            backup="$2"
+            shift 2
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser import-realms --help')"
+            ;;
+        esac
+    done
+
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for realms import"
         if ! confirm "Stop them now?"; then
             info "Realms import cancelled: stop services first with 'geyser stop'"
             return
         fi
-        info "Stopping all services..."
+        info "Stopping services..."
         compose down
     fi
 
-    select_backup "${KC_BACKUP_DIR}" "Select an export to import"
+    # Select backup name
+    if [[ -z "${backup}" ]]; then
+        select_backup "${KC_BACKUP_DIR}" "Select an export to import"
+        backup="${SELECTED_BACKUP}"
+    fi
+
     local backup_path="${KC_BACKUP_DIR}/${SELECTED_BACKUP}"
+    if [[ ! -d "${backup_path}" ]]; then
+        error "Export ${backup_path} does not exist"
+    fi
 
     info "Importing Keycloak realms..."
     kc_run import --dir "/opt/keycloak/data/backups/${backup}"
@@ -1067,10 +1352,6 @@ main() {
             OPT_CONFIGURE="true"
             shift
             ;;
-        --autocomplete)
-            install_autocomplete
-            exit 0
-            ;;
         --)
             break
             ;;
@@ -1094,92 +1375,23 @@ main() {
 
     # Execute command
     case "$1" in
-    init)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_init_help
-            exit 0
-        }
-        handle_init
-        ;;
-    start)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_start_help
-            exit 0
-        }
-        handle_start
-        ;;
-    stop)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_stop_help
-            exit 0
-        }
-        handle_stop
-        ;;
-    restart)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_restart_help
-            exit 0
-        }
-        handle_restart
-        ;;
-    update)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_update_help
-            exit 0
-        }
-        handle_update
-        ;;
-    reset)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_reset_help
-            exit 0
-        }
-        handle_reset
-        ;;
-    backup)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_backup_help
-            exit 0
-        }
-        handle_backup
-        ;;
-    restore)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_restore_help
-            exit 0
-        }
-        handle_restore
-        ;;
-    realms-export)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_realms_export_help
-            exit 0
-        }
-        handle_realms_export "$@"
-        ;;
-    realms-import)
-        shift
-        [[ "$1" == "--help" || "$1" == "-h" ]] && {
-            show_realms_import_help
-            exit 0
-        }
-        handle_realms_import "$@"
-        ;;
-    "")
-        return
-        ;;
-    *)
-        error "Unknown command '$1' (see 'geyser --help')"
-        ;;
+    init) handle_init "$@" ;;
+    start) handle_start "$@" ;;
+    stop) handle_stop "$@" ;;
+    restart) handle_restart "$@" ;;
+    update) handle_update "$@" ;;
+    reset) handle_reset "$@" ;;
+    backup) handle_backup "$@" ;;
+    restore) handle_restore "$@" ;;
+    realms-export) handle_realms_export "$@" ;;
+    realms-import) handle_realms_import "$@" ;;
+    compose) compose "$@" ;;
+    hasura) hasura "$@" ;;
+    kc) kc "$@" ;;
+    kcadm) kcadm "$@" ;;
+    autocomplete) install_autocomplete ;;
+    "") return ;;
+    *) error "Unknown command '$1' (see 'geyser --help')" ;;
     esac
 }
 
