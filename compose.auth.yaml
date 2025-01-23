@@ -4,11 +4,7 @@ services:
     restart: unless-stopped
     healthcheck:
       test: pg_isready -U postgres || exit 1
-      interval: 10s
-      timeout: 10s
-      retries: 3
       start_period: 30s
-      start_interval: 1s
     environment:
       - POSTGRES_DB=keycloak
       - POSTGRES_USER=postgres
@@ -31,19 +27,21 @@ services:
         condition: service_healthy
     healthcheck:
       test: /usr/local/bin/healthcheck
-      interval: 10s
-      timeout: 10s
-      retries: 3
       start_period: 30s
-      start_interval: 1s
     environment:
+      - KC_PROXY_HEADERS=xforwarded
+      - KC_HOSTNAME_DEBUG=true
+      - KC_HOSTNAME_STRICT=false
       - KEYCLOAK_ADMIN=admin
       - KEYCLOAK_ADMIN_PASSWORD
+      - KC_HTTP_ENABLED=true
+      - KC_HOSTNAME=http://localhost/auth
+      - KC_HOSTNAME_ADMIN=http://localhost:8081
+      - FRONTEND_URL=http://localhost/auth  # TODO: required without web?
       - KC_DB_URL=jdbc:postgresql://kc-db:5432/keycloak
       - KC_DB_USERNAME=postgres
       - KC_DB_PASSWORD=$POSTGRES_KC_PASSWORD
       - KC_DB_SCHEMA=public
-      - FRONTEND_URL=http://${SERVER_HOST}  # TODO: required without web?
     ports:
       - "8081:8080"
     networks:

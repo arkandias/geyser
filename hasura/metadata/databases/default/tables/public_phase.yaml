@@ -5,7 +5,6 @@ select_permissions:
   - role: assigner
     permission:
       columns:
-        - description
         - current
         - value
       filter: { }
@@ -13,7 +12,6 @@ select_permissions:
   - role: teacher
     permission:
       columns:
-        - description
         - current
         - value
       filter: { }

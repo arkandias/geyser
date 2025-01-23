@@ -46,7 +46,7 @@ curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 # Install jq (Optional, needed for Keycloak sync)
 sudo apt install jq
 
-# Oh My Zsh (for zsh users)
+# Install Oh My Zsh (for zsh users)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
@@ -69,7 +69,7 @@ cd geyser
 cp .env.example .env
 ```
 
-#### Initialize the App
+#### App Initialization
 
 ```bash
 ./scripts/geyser init
@@ -85,13 +85,13 @@ cp .env.example .env
 
 #### Access Services
 
+- App: [http://localhost](http://localhost)
+- Keycloak Admin: [http://localhost:8081](http://localhost:8081)
+- Hasura Console: [http://localhost:9695](http://localhost:9695)
+
 ```bash
 ./scripts/geyser hasura console
 ```
-
-- Hasura Console: [http://localhost:8080](http://localhost:8080)
-- Keycloak Admin: [http://localhost:8081](http://localhost:8081)
-- App: [http://localhost:80](http://localhost:80)
 
 #### Basic operations
 
@@ -139,15 +139,15 @@ The following environment variables are required.
 
 | Environment variable          | Default value        | Explanation                                                                                                   |
 |-------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------|
+| `MODE`                        | `development`        | Application deployment context (`development`/`production`)                                                   |
+| `NO_AUTH`                     | `false`              | Disable Keycloak authentication service (`true`/`false`, for development only)                                |
+| `NO_WEB`                      | `false`              | Disable Nginx reverse proxy frontend (`true`/`false`, for development only)                                   |
+| `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
+| `SERVER_HOST`                 | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
 | `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**         | Admin secret for Hasura GraphQL Engine                                                                        |
 | `POSTGRES_KC_PASSWORD`        | Required to use auth | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                              |
 | `KEYCLOAK_ADMIN_PASSWORD`     | Required to use auth | Password for the initial admin user `admin` in the Keycloak container                                         |
-| `SERVER_HOST`                 | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
-| `MODE`                        | `development`        | Application deployment context (`development`/`production`)                                                   |
-| `USE_AUTH`                    | `false`              | Enable/disable Keycloak authentication service (`true`/`false`, for development only)                         |
-| `USE_WEB`                     | `false`              | Enable/disable Nginx reverse proxy frontend (`true`/`false`, for development only)                            |
-| `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
 
 ### Environment Files
 

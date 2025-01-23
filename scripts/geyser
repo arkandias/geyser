@@ -53,6 +53,7 @@ Options:
   --no-auth         Disable Keycloak authentication service in development
   --no-web          Disable Nginx reverse proxy frontend in development
   --log-level       Logging verbosity threshold (DEBUG|INFO|WARN|ERROR)
+  --show-config     Show the configuration after loading the environment
   --configure       Configure Geyser settings
 
 Run 'geyser COMMAND --help' for more information on a command.
@@ -355,12 +356,13 @@ LOG_LEVEL_NUM=2    # Numeric log level identifier
 # Command Line Options Flags
 #------------------------------------------------------------------------------
 
-OPT_DEV="false"       # --dev
-OPT_PROD="false"      # --prod
-OPT_NO_AUTH="false"   # --no-auth
-OPT_NO_WEB="false"    # --no-web
-OPT_LOG_LEVEL=        # --log-level
-OPT_CONFIGURE="false" # --configure
+OPT_DEV="false"         # --dev
+OPT_PROD="false"        # --prod
+OPT_NO_AUTH="false"     # --no-auth
+OPT_NO_WEB="false"      # --no-web
+OPT_LOG_LEVEL=          # --log-level
+OPT_SHOW_CONFIG="false" # --show-config
+OPT_CONFIGURE="false"   # --configure
 
 #------------------------------------------------------------------------------
 # Dependencies
@@ -803,19 +805,10 @@ kcadm() {
 
 wait_until_healthy() {
     local service="$1"
-    local timeout="${2:-300}" # 5 minutes default timeout
-    local start_time
-    start_time="$(date +%s)"
+    local health
 
     info "Waiting for service ${service} to become healthy..."
     while true; do
-        local current_time
-        current_time=$(date +%s)
-        if ((current_time - start_time > timeout)); then
-            error "Service ${service} health check timeout"
-        fi
-
-        local health
         health=$(compose ps "${service}" --format '{{.Health}}')
 
         case "${health}" in
@@ -913,11 +906,19 @@ handle_start() {
         esac
     done
 
-    if ! docker volume inspect geyser_data >/dev/null 2>&1 ||
-        ! docker volume inspect geyser_kc-data >/dev/null 2>&1; then
-        warn "Missing data volumes. You should initialize Geyser first with 'geyser init'"
+    # Check if data volumes exist
+    local volume_exists="true"
+    if ! docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
+        warn "Geyser data volume not found. You should initialize Geyser first with 'geyser init'"
+        volume_exists="false"
+    fi
+    if ! docker volume ls --format '{{.Name}}' | grep -q '^geyser_kc-data$'; then
+        warn "Keycloak data volume not found. You should initialize Geyser first with 'geyser init'"
+        volume_exists="false"
+    fi
+    if [[ "${volume_exists}" == "false" ]]; then
         if ! confirm "Start anyway?"; then
-            info "Initialization cancelled: initialize Geyser first with 'geyser init'"
+            info "Startup cancelled: init Geyser first with 'geyser init'"
             return
         fi
     fi
@@ -1298,9 +1299,9 @@ You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (mac
     debug "Keycloak groups:\n${kc_groups}"
     kc_teachers_gid=$(echo "${kc_groups}" | jq -r '.[] | select(.name=="Teachers") | .id')
     if [[ -z "${kc_teachers_gid}" ]]; then
-        error "Group 'Teachers' does not exist in Keycloak"
+        error "Keycloak 'Teachers' group does not exist"
     fi
-    debug "Keycloak 'Teachers' Group ID: ${kc_teachers_gid}"
+    debug "Keycloak 'Teachers' group id: ${kc_teachers_gid}"
     kc_teachers=$(kcadm get groups/"${kc_teachers_gid}"/members -r geyser --limit -1 | jq -r '[.[] | .id]')
     debug "Keycloak teachers:\n${kc_teachers}"
 
@@ -1349,7 +1350,7 @@ You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (mac
         fi
 
         if ! echo "${kc_teachers}" | jq -e --arg id "${kc_user_id}" 'contains([$id])' >/dev/null; then
-            info "Adding user '${uid}' to group 'Teachers'..."
+            info "Adding user '${uid}' to group 'teachers'..."
             kcadm update users/"${kc_user_id}"/groups/"${kc_teachers_gid}" -r geyser -s realm=geyser -s userId="${kc_user_id}"
         fi
     done < <(echo "${active_teachers}" | jq -c '.[]')
@@ -1414,6 +1415,10 @@ main() {
             OPT_NO_WEB="true"
             shift
             ;;
+        --show-config)
+            OPT_SHOW_CONFIG="true"
+            shift
+            ;;
         --configure)
             OPT_CONFIGURE="true"
             shift
@@ -1437,7 +1442,9 @@ main() {
     else
         load_configuration
     fi
-    show_configuration
+    if [[ "${OPT_SHOW_CONFIG}" == "true" ]]; then
+        show_configuration
+    fi
 
     # Execute command
     case "$1" in

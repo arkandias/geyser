@@ -101,14 +101,14 @@ _geyser_compose() {
     fi
 
     # Parse options before compose and store words after
-    local opt_dev=false opt_prod=false opt_auth=false opt_web=false
+    local opt_dev=false opt_prod=false opt_no_auth=false opt_no_web=false
     for ((i = 2; i <= $#words; i++)); do
         case "${words[i]}" in
         compose) break ;;
         --dev) opt_dev=true ;;
         --prod) opt_prod=true ;;
-        --auth) opt_auth=true ;;
-        --web) opt_web=true ;;
+        --no-auth) opt_no_auth=true ;;
+        --no-web) opt_no_web=true ;;
         --*) continue ;;
         *) return 1 ;;
         esac
@@ -117,8 +117,8 @@ _geyser_compose() {
 
     # Load configuration from .env files
     local MODE=development
-    local USE_AUTH=false
-    local USE_WEB=false
+    local NO_AUTH=false
+    local NO_WEB=false
 
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
@@ -131,16 +131,19 @@ _geyser_compose() {
     # shellcheck disable=SC1090
     . "${GEYSER_HOME}/.env.${MODE}.local" || true
 
-    if [[ "${MODE}" == "development" ]]; then
-        [[ "${opt_auth}" == "true" ]] && USE_AUTH="true"
-        [[ "${opt_web}" == "true" ]] && USE_WEB="true"
-    fi
+    [[ "${opt_no_auth}" == "true" ]] && NO_AUTH="true"
+    [[ "${MODE}" == "production" ]] && NO_AUTH="false"
+
+    # Set NO_WEB
+    [[ "${opt_no_web}" == "true" ]] && NO_WEB="true"
+    [[ "${MODE}" == "production" ]] && NO_WEB="false"
+    [[ "${NO_AUTH}" == "true" ]] && NO_WEB="true"
 
     local -a compose_files=(-f "${GEYSER_HOME}"/compose.yaml)
-    if [[ "${MODE}" == "production" || "${USE_AUTH}" == "true" ]]; then
+    if [[ "${NO_AUTH}" == "false" ]]; then
         compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
     fi
-    if [[ "${MODE}" == "production" || "${USE_WEB}" == "true" ]]; then
+    if [[ "${NO_WEB}" == "false" ]]; then
         compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
     fi
     if [[ "${MODE}" == "production" ]]; then
