@@ -31,12 +31,12 @@ _geyser() {
         'restore:Restore databases from a previous backup'
         'realms-export:Export Keycloak realms configuration'
         'realms-import:Import Keycloak realms configuration'
-        'compose:Run Docker Compose'
-        'hasura:Run Hasura CLI'
-        'kc:Run Keycloak CLI'
-        'kcadm:Run Keycloak Admin CLI'
-        'completion:Install completion for zsh'
         'sync-keycloak:Synchronize Keycloak users with active teachers'
+        'compose:Run Docker Compose with loaded configuration'
+        'hasura:Run Hasura CLI with loaded configuration'
+        'kc:Run Keycloak CLI in container'
+        'kcadm:Run Keycloak Admin CLI in container'
+        'completion:Install completion for zsh'
     )
 
     local state
@@ -59,10 +59,25 @@ _geyser() {
         ;;
     args)
         case "${words[1]}" in
-        backup | restore | realms-export | realms-import)
+        backup)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the backup]:name'
+                '--name[Name for the backup]:name'
+            ;;
+        restore)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Name of the backup to restore]:name'
+            ;;
+        realms-export)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]:name' \
+                '--name[Name for the export]'
+            ;;
+        realms-import)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Name of the export to import]:name'
             ;;
         kc)
             _arguments '--restart-with[Restart container and run given command]:command'
