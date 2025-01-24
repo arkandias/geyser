@@ -1,4 +1,4 @@
-db/backups
 keycloak/backups
+postgres/backups
 .DS_Store
 README.md

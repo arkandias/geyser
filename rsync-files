@@ -1,8 +1,9 @@
 certs
-db
 hasura
 keycloak
+logs
 nginx
+postgres
 scripts
 .env
 .env.local
@@ -13,5 +14,5 @@ scripts
 compose.auth.yaml
 compose.kc.yaml
 compose.prod.yaml
+compose.web.yaml
 compose.yaml
-geyser
