@@ -16,13 +16,6 @@
     "client": {
       "hasura": [
         {
-          "name": "commissaire",
-          "description": "",
-          "composite": false,
-          "clientRole": true,
-          "attributes": {}
-        },
-        {
           "name": "admin",
           "description": "",
           "composite": false,
@@ -30,7 +23,14 @@
           "attributes": {}
         },
         {
-          "name": "intervenant",
+          "name": "assigner",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        },
+        {
+          "name": "teacher",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -41,8 +41,8 @@
   },
   "groups": [
     {
-      "name": "Administrateurs",
-      "path": "/Administrateurs",
+      "name": "Admin",
+      "path": "/Admin",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
@@ -53,26 +53,26 @@
       }
     },
     {
-      "name": "Commissaires",
-      "path": "/Commissaires",
+      "name": "Assigners",
+      "path": "/Assigners",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
         "hasura": [
-          "commissaire"
+          "assigner"
         ]
       }
     },
     {
-      "name": "Intervenants",
-      "path": "/Intervenants",
+      "name": "Teachers",
+      "path": "/Teachers",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
         "hasura": [
-          "intervenant"
+          "teacher"
         ]
       }
     }
@@ -123,7 +123,7 @@
           "consentRequired": false,
           "config": {
             "introspection.token.claim": "true",
-            "claim.value": "intervenant",
+            "claim.value": "teacher",
             "userinfo.token.claim": "true",
             "id.token.claim": "true",
             "lightweight.claim": "false",
