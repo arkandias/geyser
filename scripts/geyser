@@ -370,7 +370,7 @@ OPT_CONFIGURE="false"   # --configure
 
 check_dependencies() {
     debug "Checking dependencies..."
-    command -v docker >/dev/null 2>&1 || error "Docker is not installed"
+    command -v docker &>/dev/null || error "Docker is not installed"
     local docker_version
     docker_version=$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)
     if [[ -z "${docker_version}" ]]; then
@@ -378,8 +378,8 @@ check_dependencies() {
     elif [[ "${docker_version}" -lt 25 ]]; then
         error "Docker Engine version 25.0 or higher is required (current: ${docker_version})"
     fi
-    docker compose version >/dev/null 2>&1 || error "Docker Compose V2 is required"
-    command -v hasura >/dev/null 2>&1 || error "Hasura CLI is not installed.
+    docker compose version &>/dev/null || error "Docker Compose V2 is required"
+    command -v hasura &>/dev/null || error "Hasura CLI is not installed.
 You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
 }
 
@@ -1276,7 +1276,7 @@ handle_realms_import() {
 handle_sync_keycloak() {
     info "Starting Keycloak synchronization..."
 
-    command -v jq >/dev/null 2>&1 || error "jq is not installed.
+    command -v jq &>/dev/null || error "jq is not installed.
 You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
 
     info "Fetching active teachers from Geyser database..."

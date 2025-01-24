@@ -65,7 +65,11 @@ curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/instal
 #### Initial Configuration
 
 ```bash
-cd geyser
+cd ~/.geyser/master
+
+# Or for a specific version
+cd ~/.geyser/${GEYSER_VERSION}
+
 cp .env.example .env
 ```
 

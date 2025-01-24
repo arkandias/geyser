@@ -61,7 +61,7 @@ if [ ! -s "${tarname}" ]; then
     exit 1
 fi
 
-# Verify tar file
+# Verify archive
 if ! tar tf "${tarname}" >/dev/null 2>&1; then
     echo "Error: Invalid or corrupted archive ${tarname}" >&2
     exit 1
@@ -96,9 +96,9 @@ mv "${extract_dir}" "${install_dir}" || {
     exit 1
 }
 
-# Remove tar file
+# Remove archive
 rm "${tarname}" || {
-    echo "Error: Failed to remove tar file ${tarname}" >&2
+    echo "Error: Failed to remove archive ${tarname}" >&2
     exit 1
 }
 
