@@ -79,6 +79,14 @@
   ],
   "clients": [
     {
+      "clientId": "account",
+      "enabled": false
+    },
+    {
+      "clientId": "account-console",
+      "enabled": false
+    },
+    {
       "clientId": "hasura",
       "name": "Hasura",
       "description": "",

@@ -425,10 +425,10 @@ configure() {
 
     if [[ "${MODE}" == "development" ]]; then
         info "Enable Keycloak authentication service?"
-        info "1) No"
-        info "2) Yes"
+        info "1) Yes"
+        info "2) No"
         while true; do
-            prompt "Your choice [No]:"
+            prompt "Your choice [Yes]:"
             case "${INPUT}" in
             1 | "")
                 NO_AUTH="false"
@@ -445,10 +445,10 @@ configure() {
         done
 
         info "Enable Nginx reverse proxy frontend?"
-        info "1) No"
-        info "2) Yes"
+        info "1) Yes"
+        info "2) No"
         while true; do
-            prompt "Your choice [No]:"
+            prompt "Your choice [Yes]:"
             case "${INPUT}" in
             1 | "")
                 NO_WEB="false"
@@ -699,13 +699,12 @@ confirm() {
 
 # Prompts user to select a backup directory and stores result in global variable SELECTED_BACKUP
 select_backup() {
-    local backup_path="$1"
-    local prompt_text="$2"
+    local backups_path="$1"
     local backups=()
     local backup
     SELECTED_BACKUP= # global
 
-    for backup in "${backup_path}"/*; do
+    for backup in "${backups_path}"/*; do
         if [[ -d "${backup}" ]]; then
             backups+=("${backup##*/}")
         fi
@@ -715,8 +714,13 @@ select_backup() {
         error "No backups found"
     fi
 
+    info "Backups found:"
+    for ((i = 1; i <= ${#backups[@]}; i++)); do
+        info "$i) ${backups[i - 1]}"
+    done
+
     while true; do
-        prompt "${prompt_text} (1-${#backups[@]}):"
+        prompt "Select a backup (1-${#backups[@]}):"
 
         if [[ ! "${INPUT}" =~ ^[0-9]+$ ]] || ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
             warn "Invalid input: enter a number between 1 and ${#backups[@]}"
@@ -724,7 +728,7 @@ select_backup() {
         fi
 
         SELECTED_BACKUP="${backups[INPUT - 1]}"
-        return
+        break
     done
 }
 
@@ -773,6 +777,7 @@ kc() {
     if [[ "$1" == "--restart-with" ]]; then
         shift
         KC_CMD="$*" compose -f compose.kc.yaml up keycloak
+        wait_until_exit keycloak
     else
         compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
     fi
@@ -799,23 +804,52 @@ wait_until_healthy() {
 
     info "Waiting for service ${service} to become healthy..."
     while true; do
-        health=$(compose ps "${service}" --format '{{.Health}}')
+        health="$(compose ps -a "${service}" --format '{{.Health}}')"
 
         case "${health}" in
         "healthy")
             info "Service ${service} is healthy"
-            return 0
+            break
             ;;
         "unhealthy")
             error "Service ${service} is unhealthy"
             ;;
-        "")
+        "exited")
             error "Service ${service} stopped unexpectedly"
+            ;;
+        "")
+            error "Cannot find service ${service}"
             ;;
         esac
 
         sleep 1
     done
+}
+
+wait_until_exit() {
+    local service="$1"
+    local state
+    local exit_code
+
+    echo "Waiting for service ${service} to exit..."
+    while true; do
+        state="$(compose ps -a "${service}" --format '{{.State}}')"
+
+        case "${state}" in
+        "exited")
+            exit_code="$(compose ps -a "${service}" --format '{{.ExitCode}}')"
+            info "Service ${service} exited with code ${exit_code}"
+            return "${exit_code}"
+            ;;
+        "")
+            error "Cannot find service ${service}"
+            ;;
+        esac
+
+        sleep 1
+    done
+
+    return "${exit_code}"
 }
 
 ###############################################################################
@@ -872,6 +906,12 @@ handle_init() {
     compose up -d hasura
     wait_until_healthy hasura
     hasura metadata apply
+
+    if [[ "${NO_WEB}" == "false" ]]; then
+        info "Initializing Nginx..."
+        compose up -d nginx
+        wait_until_healthy nginx
+    fi
 
     info "Stopping services..."
     compose down
@@ -959,7 +999,7 @@ handle_update() {
 
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for update"
-        if ! confirm "Stop them now?"; then
+        if ! confirm "Continue?"; then
             info "Update cancelled: stop services first with 'geyser stop'"
             return
         fi
@@ -1047,12 +1087,12 @@ handle_backup() {
             prompt "Enter a backup name [${backup}]:"
 
             if [[ -z "${INPUT}" ]]; then
-                return
+                break
             fi
 
             if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
                 backup="${INPUT}"
-                return
+                break
             fi
 
             warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
@@ -1102,7 +1142,7 @@ handle_restore() {
 
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for restore"
-        if ! confirm "Stop them now?"; then
+        if ! confirm "Continue?"; then
             info "Restore cancelled: stop services first with 'geyser stop'"
             return
         fi
@@ -1112,7 +1152,7 @@ handle_restore() {
 
     # Select backup name
     if [[ -z "${backup}" ]]; then
-        select_backup "${DB_BACKUP_DIR}" "Select a backup to restore"
+        select_backup "${DB_BACKUP_DIR}"
         backup="${SELECTED_BACKUP}"
     fi
 
@@ -1175,7 +1215,7 @@ handle_realms_export() {
 
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for realms export"
-        if ! confirm "Stop them now?"; then
+        if ! confirm "Continue?"; then
             info "Realms export cancelled: stop services first with 'geyser stop'"
             return
         fi
@@ -1190,12 +1230,12 @@ handle_realms_export() {
             prompt "Enter a backup name [${backup}]:"
 
             if [[ -z "${INPUT}" ]]; then
-                return
+                break
             fi
 
             if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
                 backup="${INPUT}"
-                return
+                break
             fi
 
             warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
@@ -1209,7 +1249,10 @@ handle_realms_export() {
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms in ${backup_path}..."
-    kc_run export --dir "/opt/keycloak/data/backups/${backup}"
+    kc --restart-with export --dir "/opt/keycloak/data/backups/${backup}"
+
+    info "Stopping services..."
+    compose down
 
     success "Realm export completed successfully in ${backup_path}"
 }
@@ -1240,7 +1283,7 @@ handle_realms_import() {
 
     if [[ -n $(compose ps -q) ]]; then
         warn "Running services need to be stopped for realms import"
-        if ! confirm "Stop them now?"; then
+        if ! confirm "Continue?"; then
             info "Realms import cancelled: stop services first with 'geyser stop'"
             return
         fi
@@ -1250,7 +1293,7 @@ handle_realms_import() {
 
     # Select backup name
     if [[ -z "${backup}" ]]; then
-        select_backup "${KC_BACKUP_DIR}" "Select an export to import"
+        select_backup "${KC_BACKUP_DIR}"
         backup="${SELECTED_BACKUP}"
     fi
 
@@ -1260,7 +1303,10 @@ handle_realms_import() {
     fi
 
     info "Importing Keycloak realms..."
-    kc_run import --dir "/opt/keycloak/data/backups/${backup}"
+    kc --restart-with import --dir "/opt/keycloak/data/backups/${backup}"
+
+    info "Stopping services..."
+    compose down
 
     success "Realm import completed successfully"
 }
@@ -1496,7 +1542,7 @@ main() {
         install_completion
         ;;
     "")
-        return
+        exit 0
         ;;
     *)
         error "Unknown command '$1' (see 'geyser --help')"
