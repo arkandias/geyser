@@ -5,14 +5,15 @@ services:
       - frontend
   
   keycloak:
+    environment:
+      - KC_HOSTNAME=http://${SERVER_HOST}/auth
+      - KC_HOSTNAME_ADMIN=http://localhost:8081
+      - KC_HOSTNAME_DEBUG=true
     networks:
       - frontend
   
   nginx:
-    build:
-      context: ./nginx
-      args:
-        - localhost/auth
+    build: ./nginx
     restart: unless-stopped
     depends_on:
       keycloak:
@@ -23,7 +24,6 @@ services:
       test: service nginx status || exit 1
       start_period: 30s
     environment:
-      - CLIENT_VERSION=v0.1
       - SERVER_HOST
     ports:
       - "80:80"

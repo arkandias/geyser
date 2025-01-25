@@ -14,12 +14,13 @@ services:
   keycloak:
     restart: always
     environment:
+      - HASURA_CLIENT_ROOT_URL=https://${SERVER_HOST}
       - KC_HTTP_ENABLED=true
       - KC_HOSTNAME=https://${SERVER_HOST}/auth
       - KC_HOSTNAME_ADMIN=http://localhost:8081
+      - KC_HOSTNAME_DEBUG=false
       - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${SERVER_HOST}/fullchain.cer
       - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${SERVER_HOST}/private.key
-      - FRONTEND_URL=https://${SERVER_HOST}
     ports:
       - "8443:8443"
     networks:

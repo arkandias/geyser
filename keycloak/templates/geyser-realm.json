@@ -82,7 +82,7 @@
       "clientId": "hasura",
       "name": "Hasura",
       "description": "",
-      "rootUrl": "${FRONTEND_URL}",
+      "rootUrl": "${HASURA_CLIENT_ROOT_URL}",
       "adminUrl": "/",
       "baseUrl": "/",
       "surrogateAuthRequired": false,

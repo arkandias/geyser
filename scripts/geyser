@@ -869,9 +869,11 @@ handle_init() {
     compose pull
     compose build --pull --no-cache
 
-    info "Initializing Keycloak..."
-    compose up -d keycloak
-    wait_until_healthy keycloak
+    if [[ "${NO_AUTH}" == "false" ]]; then
+        info "Initializing Keycloak..."
+        compose up -d keycloak
+        wait_until_healthy keycloak
+    fi
 
     info "Initializing Geyser database..."
     compose up -d
