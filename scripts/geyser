@@ -800,12 +800,21 @@ kcadm() {
 
 wait_until_healthy() {
     local service="$1"
+    local timeout="${2:-300}"
+    local start_time
+    local elapsed_time
     local health
 
     info "Waiting for service ${service} to become healthy..."
-    while true; do
-        health="$(compose ps -a "${service}" --format '{{.Health}}')"
+    start_time=$(date +%s)
 
+    while true; do
+        elapsed_time=$(($(date +%s) - start_time))
+        if [[ "${elapsed_time}" -ge "${timeout}" ]]; then
+            error "Timeout reached (${timeout}s) while waiting for service ${service} to become healthy"
+        fi
+
+        health="$(compose ps -a "${service}" --format '{{.Health}}')"
         case "${health}" in
         "healthy")
             info "Service ${service} is healthy"
@@ -828,13 +837,22 @@ wait_until_healthy() {
 
 wait_until_exit() {
     local service="$1"
+    local timeout="${2:-300}"
+    local start_time
+    local elapsed_time
     local state
     local exit_code
 
-    echo "Waiting for service ${service} to exit..."
-    while true; do
-        state="$(compose ps -a "${service}" --format '{{.State}}')"
+    echo "Waiting for service ${service} to exit (timeout: ${timeout}s)..."
+    start_time=$(date +%s)
 
+    while true; do
+        elapsed_time=$(($(date +%s) - start_time))
+        if [[ "${elapsed_time}" -ge "${timeout}" ]]; then
+            error "Timeout reached (${timeout}s) while waiting for service ${service} to exit"
+        fi
+
+        state="$(compose ps -a "${service}" --format '{{.State}}')"
         case "${state}" in
         "exited")
             exit_code="$(compose ps -a "${service}" --format '{{.ExitCode}}')"
@@ -848,8 +866,6 @@ wait_until_exit() {
 
         sleep 1
     done
-
-    return "${exit_code}"
 }
 
 ###############################################################################
