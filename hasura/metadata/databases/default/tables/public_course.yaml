@@ -53,7 +53,7 @@ computed_fields:
         name: total_hours_effective
         schema: public
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - year
@@ -88,7 +88,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir tous les courses.
+    comment: En phase de assignments, les commissioners peuvent voir tous les courses.
   - role: teacher
     permission:
       columns:

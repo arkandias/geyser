@@ -10,7 +10,7 @@ array_relationships:
           name: course
           schema: public
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - value
@@ -28,7 +28,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir tous les types d'course.
+    comment: En phase de assignments, les commissioners peuvent voir tous les types d'course.
   - role: teacher
     permission:
       columns:

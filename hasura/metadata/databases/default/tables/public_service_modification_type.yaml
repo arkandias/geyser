@@ -10,7 +10,7 @@ array_relationships:
           name: service_modification
           schema: public
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - description
@@ -27,7 +27,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir tous les types de modification de service.
+    comment: En phase de assignments, les commissioners peuvent voir tous les types de modification de service.
   - role: teacher
     permission:
       columns:

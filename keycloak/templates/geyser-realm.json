@@ -23,7 +23,7 @@
           "attributes": {}
         },
         {
-          "name": "assigner",
+          "name": "commissioner",
           "description": "",
           "composite": false,
           "clientRole": true,
@@ -53,14 +53,14 @@
       }
     },
     {
-      "name": "Assigners",
-      "path": "/Assigners",
+      "name": "Commissioners",
+      "path": "/Commissioners",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
         "hasura": [
-          "assigner"
+          "commissioner"
         ]
       }
     },

@@ -2,13 +2,13 @@ table:
   name: phase
   schema: public
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - current
         - value
       filter: { }
-    comment: Les assigners peuvent voir toutes les phases.
+    comment: Les commissioners peuvent voir toutes les phases.
   - role: teacher
     permission:
       columns:

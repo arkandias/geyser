@@ -9,7 +9,7 @@ object_relationships:
     using:
       foreign_key_constraint_on: service_id
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - seniority
@@ -28,7 +28,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir toutes les priorités.
+    comment: En phase de assignments, les commissioners peuvent voir toutes les priorités.
   - role: teacher
     permission:
       columns:

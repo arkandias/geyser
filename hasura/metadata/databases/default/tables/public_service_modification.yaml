@@ -36,7 +36,7 @@ insert_permissions:
         - type
     comment: En phase de requests, les teachers peuvent créer des modifications de service pour l'année en cours.
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - id
@@ -55,7 +55,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les assigners peuvent voir toutes les modifications de service.
+    comment: En phase de assignments, les commissioners peuvent voir toutes les modifications de service.
   - role: teacher
     permission:
       columns:

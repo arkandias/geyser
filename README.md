@@ -200,16 +200,35 @@ Hasura permissions are handled by giving users some of the following roles.
 
 In development mode, you can run `scripts/hasura console` to access the console at http://localhost:9695.
 
-| Role       | Explanations                                          |
-|------------|-------------------------------------------------------|
-| `teacher`  | The base user role with restricted permissions        |
-| `assigner` | Some extra permissions during the "assignments" phase |
-| `admin`    | The superuser role with all permissions               |
+| Role           | Explanations                                          |
+|----------------|-------------------------------------------------------|
+| `teacher`      | The base user role with restricted permissions        |
+| `commissioner` | Some extra permissions during the "assignments" phase |
+| `admin`        | The superuser role with all permissions               |
 
 ### Keycloak
 
 A Keycloak container is running as service `keycloak`.
 It manages the authentication and the roles of the Hasura users using JWT tokens.
+
+[//]: # (TODO)
+Explain:
+
+- Master/Geyser
+- Server host --> set at initialization, explain how to change it, command line?
+- Email (lost password)
+- Realm configuration:
+  ```
+  "eventsEnabled": true,
+  "eventsExpiration": 2592000,
+  "internationalizationEnabled": true,
+  "supportedLocales": [
+    "fr"
+  ],
+  "defaultLocale": "fr",
+  "bruteForceProtected": true,
+  "permanentLockout": true,
+  ```
 
 #### Endpoints
 

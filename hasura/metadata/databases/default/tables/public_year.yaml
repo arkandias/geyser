@@ -17,7 +17,7 @@ array_relationships:
           name: service
           schema: public
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - current
@@ -34,7 +34,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir toutes les années.
+    comment: En phase de assignments, les commissioners peuvent voir toutes les années.
   - role: teacher
     permission:
       columns:

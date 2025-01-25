@@ -4,25 +4,22 @@
 
 CREATE TABLE IF NOT EXISTS phase
 (
-    value   text PRIMARY KEY,
-    current boolean UNIQUE, -- TRUE or NULL
-    CHECK (current)         -- current is TRUE or NULL
+    value       text PRIMARY KEY,
+    current     boolean UNIQUE, -- TRUE or NULL
+    description text,
+    CHECK (current)             -- current is TRUE or NULL
 );
 
-INSERT INTO phase(value, current)
-VALUES ('requests', NULL),
-       ('assignments', NULL),
-       ('results', NULL),
-       ('shutdown', NULL);
-
 COMMENT ON TABLE phase IS 'System phases controlling the course assignment workflow';
-COMMENT ON COLUMN phase.value IS 'Phase identifier (requests, assignments, results, shutdown)';
+COMMENT ON COLUMN phase.value IS 'Phase identifier';
 COMMENT ON COLUMN phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
+COMMENT ON COLUMN phase.description IS 'Summary of activities and permissions during this phase';
 
 CREATE TABLE IF NOT EXISTS year
 (
     value   integer PRIMARY KEY,
     current boolean UNIQUE,                    -- TRUE or NULL
+    comment text,
     visible boolean NOT NULL DEFAULT TRUE,
     CHECK (current),                           -- current is TRUE or NULL
     CHECK (current IS NULL OR visible IS TRUE) -- current year is visible
@@ -31,6 +28,7 @@ CREATE TABLE IF NOT EXISTS year
 COMMENT ON TABLE year IS 'Academic year definitions with current year designation and visibility settings';
 COMMENT ON COLUMN year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
 COMMENT ON COLUMN year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
+COMMENT ON COLUMN year.comment IS 'Additional information about this academic year';
 COMMENT ON COLUMN year.visible IS 'Controls visibility of the year in the user interface and queries';
 
 
@@ -116,6 +114,31 @@ COMMENT ON COLUMN service_modification.id IS 'Unique modification identifier';
 COMMENT ON COLUMN service_modification.service_id IS 'Reference to affected service record';
 COMMENT ON COLUMN service_modification.type IS 'Type of service modification being applied';
 COMMENT ON COLUMN service_modification.hours IS 'Hour adjustment amount (negative values increase required hours)';
+
+CREATE TABLE IF NOT EXISTS role_type
+(
+    value       text PRIMARY KEY,
+    description text
+);
+
+COMMENT ON TABLE role_type IS 'System roles for privileged access';
+COMMENT ON COLUMN role_type.value IS 'Role identifier';
+COMMENT ON COLUMN role_type.description IS 'Description of role privileges and responsibilities';
+
+CREATE TABLE IF NOT EXISTS role
+(
+    id      serial PRIMARY KEY,
+    uid     text PRIMARY KEY REFERENCES teacher,
+    type    text REFERENCES role_type,
+    comment text,
+    UNIQUE (uid, type)
+);
+
+COMMENT ON TABLE role IS 'Teacher role assignments for system privileges';
+COMMENT ON COLUMN role.id IS 'Unique role assignment identifier';
+COMMENT ON COLUMN role.uid IS 'Teacher identifier with role access';
+COMMENT ON COLUMN role.type IS 'Type of privileged role';
+COMMENT ON COLUMN role.comment IS 'Additional information about this privilege assignment';
 
 
 --
@@ -356,16 +379,13 @@ COMMENT ON COLUMN coordination.comment IS 'Additional coordination details';
 
 CREATE TABLE IF NOT EXISTS request_type
 (
-    value text PRIMARY KEY
+    value       text PRIMARY KEY,
+    description text
 );
 
-INSERT INTO request_type(value)
-VALUES ('assignment'),
-       ('primary'),
-       ('secondary');
-
 COMMENT ON TABLE request_type IS 'Types of teaching assignment requests in workflow';
-COMMENT ON COLUMN request_type.value IS 'Request type identifier (primary, secondary, assignment)';
+COMMENT ON COLUMN request_type.value IS 'Request type identifier';
+COMMENT ON COLUMN request_type.description IS 'Detailed description of the request type and its purpose';
 
 CREATE TABLE IF NOT EXISTS request
 (

@@ -47,7 +47,7 @@ insert_permissions:
         - uid
     comment: Lorsque Geyser est ouvert, les teachers peuvent créer leur propre profil.
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - active
@@ -69,7 +69,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les assigners peuvent voir tous les teachers.
+    comment: En phase de assignments, les commissioners peuvent voir tous les teachers.
   - role: teacher
     permission:
       columns:

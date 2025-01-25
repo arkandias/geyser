@@ -23,7 +23,7 @@ computed_fields:
         name: is_priority
         schema: public
 insert_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       check:
         _and:
@@ -48,7 +48,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-    comment: En phase de assignments, les assigners peuvent créer des assignments pour tous les teachers et pour tous les courses de l'année en cours.
+    comment: En phase de assignments, les commissioners peuvent créer des assignments pour tous les teachers et pour tous les courses de l'année en cours.
   - role: teacher
     permission:
       check:
@@ -108,7 +108,7 @@ insert_permissions:
         - type
     comment: 'En phase de requests, les teachers peuvent faire des requests principales ou secondaires pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) des courses pour lesquels ils ont une request/assignment ou une priorité.'
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - course_id
@@ -131,7 +131,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les assigners peuvent voir toutes les requests.
+    comment: En phase de assignments, les commissioners peuvent voir toutes les requests.
   - role: teacher
     permission:
       columns:
@@ -216,7 +216,7 @@ select_permissions:
       allow_aggregations: true
     comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les requests des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/assignment ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les requests pour cet course. Les teachers ne peuvent voir les assignments pour les courses de l''année en cours qu''en phase de consultation.'
 update_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - hours
@@ -239,7 +239,7 @@ update_permissions:
           - type:
               _eq: assignment
       check: null
-    comment: En phase de assignments, les assigners peuvent modifier toutes les assignments pour des courses de l'année en cours.
+    comment: En phase de assignments, les commissioners peuvent modifier toutes les assignments pour des courses de l'année en cours.
   - role: teacher
     permission:
       columns:
@@ -297,7 +297,7 @@ update_permissions:
       check: null
     comment: En phase de requests, les teachers peuvent modifier leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
 delete_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       filter:
         _and:
@@ -317,7 +317,7 @@ delete_permissions:
                   _eq: true
           - type:
               _eq: assignment
-    comment: En phase de assignments, les assigners peuvent supprimer toutes les assignments pour des courses de l'année en cours.
+    comment: En phase de assignments, les commissioners peuvent supprimer toutes les assignments pour des courses de l'année en cours.
   - role: teacher
     permission:
       filter:

@@ -57,7 +57,7 @@ insert_permissions:
         - uid
     comment: ""
 select_permissions:
-  - role: assigner
+  - role: commissioner
     permission:
       columns:
         - year
@@ -77,7 +77,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les assigners peuvent voir tous les services.
+    comment: En phase de assignments, les commissioners peuvent voir tous les services.
   - role: teacher
     permission:
       columns:
