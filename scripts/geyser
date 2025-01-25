@@ -533,26 +533,18 @@ Use options --dev/--prod or set MODE environment variable."
     fi
     debug "MODE set to '${MODE}'"
 
-    # Load mode-specific env files
-    touch "${GEYSER_HOME}/.env.${MODE}"
-    touch "${GEYSER_HOME}/.env.${MODE}.local"
-    # shellcheck disable=SC1090
-    . "${GEYSER_HOME}/.env.${MODE}"
-    # shellcheck disable=SC1090
-    . "${GEYSER_HOME}/.env.${MODE}.local"
-
     # Set NO_AUTH
     if [[ "${OPT_NO_AUTH}" == "true" && "${NO_AUTH}" != "true" ]]; then
         NO_AUTH="true"
         debug "NO_AUTH overridden with --no-auth option"
     fi
-    if [[ "${NO_AUTH}" != "true" && "${NO_AUTH}" != "false" ]]; then
-        error "Invalid NO_AUTH value '${NO_AUTH}' (must be 'true' or 'false').
-Use option --no-auth or set NO_AUTH environment variable."
-    fi
     if [[ "${MODE}" == "production" && "${NO_AUTH}" == "true" ]]; then
         warn "Authentication is required in production mode (NO_AUTH ignored)"
         NO_AUTH="false"
+    fi
+    if [[ "${NO_AUTH}" != "true" && "${NO_AUTH}" != "false" ]]; then
+        error "Invalid NO_AUTH value '${NO_AUTH}' (must be 'true' or 'false').
+Use option --no-auth or set NO_AUTH environment variable."
     fi
     debug "NO_AUTH set to '${NO_AUTH}'"
 
@@ -561,10 +553,6 @@ Use option --no-auth or set NO_AUTH environment variable."
         NO_WEB="true"
         debug "NO_WEB overridden with --no-web option"
     fi
-    if [[ "${NO_WEB}" != "true" && "${NO_WEB}" != "false" ]]; then
-        error "Invalid NO_WEB value '${NO_WEB}' (must be 'true' or 'false').
-Use option --no-web or set NO_WEB environment variable."
-    fi
     if [[ "${MODE}" == "production" && "${NO_WEB}" == "true" ]]; then
         warn "Web is required in production mode (NO_WEB ignored)"
         NO_WEB="false"
@@ -572,6 +560,10 @@ Use option --no-web or set NO_WEB environment variable."
     if [[ "${NO_AUTH}" == "true" && "${NO_WEB}" == "false" ]]; then
         warn "Cannot run web with no authentication (NO_WEB set to 'true')"
         NO_WEB="true"
+    fi
+    if [[ "${NO_WEB}" != "true" && "${NO_WEB}" != "false" ]]; then
+        error "Invalid NO_WEB value '${NO_WEB}' (must be 'true' or 'false').
+Use option --no-web or set NO_WEB environment variable."
     fi
     debug "NO_WEB set to '${NO_WEB}'"
 
@@ -754,8 +746,6 @@ compose() {
     env_files=(
         "--env-file" "${GEYSER_HOME}/.env"
         "--env-file" "${GEYSER_HOME}/.env.local"
-        "--env-file" "${GEYSER_HOME}/.env.${MODE}"
-        "--env-file" "${GEYSER_HOME}/.env.${MODE}.local"
     )
     compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"

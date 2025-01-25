@@ -123,14 +123,11 @@ _geyser_compose() {
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
 
+    # Set MODE
     [[ "${opt_dev}" == "true" ]] && MODE="development"
     [[ "${opt_prod}" == "true" ]] && MODE="production"
 
-    # shellcheck disable=SC1090
-    . "${GEYSER_HOME}/.env.${MODE}" || true
-    # shellcheck disable=SC1090
-    . "${GEYSER_HOME}/.env.${MODE}.local" || true
-
+    # Set NO_AUTH
     [[ "${opt_no_auth}" == "true" ]] && NO_AUTH="true"
     [[ "${MODE}" == "production" ]] && NO_AUTH="false"
 

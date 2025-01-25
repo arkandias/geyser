@@ -157,9 +157,8 @@ The following environment variables are required.
 
 Environment variables can be stored in the following env files:
 
-- `.env`/`.env.local` (base configuration and local override)
-- `.env.development`/`.env.development.local` (development mode configuration)
-- `.env.production`/`.env.production.local` (production mode configuration)
+- `.env` (base configuration)
+- `.env.local` (local override)
 
 **Note:** `.local` files are meant to store secrets, passwords, and other sensitive credentials that should not be
 shared.

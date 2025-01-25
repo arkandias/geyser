@@ -7,10 +7,6 @@ postgres
 scripts
 .env
 .env.local
-.env.development
-.env.development.local
-.env.production
-.env.production.local
 compose.auth.yaml
 compose.kc.yaml
 compose.prod.yaml
