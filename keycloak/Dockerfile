@@ -18,7 +18,6 @@ COPY --from=builder /opt/keycloak/ /opt/keycloak/
 # Add healthcheck (needs disabling management interface)
 COPY healthcheck /usr/local/bin/healthcheck
 
-ENV KC_LEGACY_OBSERVABILITY_INTERFACE=true
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 ENV KC_DB=postgres

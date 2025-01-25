@@ -3,7 +3,7 @@ services:
     image: postgres:16
     restart: unless-stopped
     healthcheck:
-      test: pg_isready -U postgres || exit 1
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       start_period: 30s
     environment:
       - POSTGRES_DB=keycloak
@@ -26,7 +26,7 @@ services:
       kc-db:
         condition: service_healthy
     healthcheck:
-      test: /usr/local/bin/healthcheck
+      test: [ "CMD", "/usr/local/bin/healthcheck" ]
       start_period: 1m30s
     environment:
       - HASURA_CLIENT_ROOT_URL=http://$SERVER_HOST

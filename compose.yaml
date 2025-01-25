@@ -4,7 +4,7 @@ services:
     image: postgres:16
     restart: unless-stopped
     healthcheck:
-      test: pg_isready -U postgres || exit 1
+      test: [ "CMD", "pg_isready", "-U", "postgres" ]
       start_period: 30s
     environment:
       - POSTGRES_DB=geyser
@@ -28,7 +28,7 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: curl -fsS http://localhost:8080/healthz || exit 1
+      test: [ "CMD", "curl", "-f", "-s", "-S", "http://localhost:8080/healthz" ]
       start_period: 30s
     environment:
       - HASURA_GRAPHQL_ADMIN_SECRET
