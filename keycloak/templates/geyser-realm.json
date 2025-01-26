@@ -53,8 +53,8 @@
       }
     },
     {
-      "name": "Commissioners",
-      "path": "/Commissioners",
+      "name": "Commission",
+      "path": "/Commission",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
@@ -65,8 +65,8 @@
       }
     },
     {
-      "name": "Teachers",
-      "path": "/Teachers",
+      "name": "Teacher",
+      "path": "/Teacher",
       "subGroups": [],
       "attributes": {},
       "realmRoles": [],
