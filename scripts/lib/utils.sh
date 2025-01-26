@@ -224,3 +224,18 @@ sed_i() {
         sed -i "$@"
     fi
 }
+
+#------------------------------------------------------------------------------
+# rsync
+#------------------------------------------------------------------------------
+
+rsync() {
+    command -v rsync &>/dev/null || error "rsync is not installed.
+You can install it with 'sudo apt install rsync' (Ubuntu) or 'brew install rsync' (macOS)"
+
+    command rsync -rlv --delete \
+        --files-from="${GEYSER_HOME}"/rsync-files \
+        --exclude-from="${GEYSER_HOME}"/rsync-exclude \
+        "${GEYSER_HOME}/" \
+        "$@"
+}
