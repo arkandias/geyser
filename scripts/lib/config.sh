@@ -35,6 +35,8 @@ load_configuration() {
     if [[ "${NO_WEB}" == "false" ]]; then
         debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
     fi
+
+    _validate_env
 }
 
 _validate_mode() {
@@ -79,4 +81,24 @@ _validate_web() {
         ;;
     esac
     debug "Configuration: NO_WEB=${NO_WEB}"
+}
+
+_validate_env() {
+    local required_vars=(
+        POSTGRES_PASSWORD
+        HASURA_GRAPHQL_ADMIN_SECRET
+    )
+
+    if [[ "${NO_AUTH}" == "false" ]]; then
+        required_vars+=(
+            POSTGRES_KC_PASSWORD
+            KC_BOOTSTRAP_ADMIN_PASSWORD
+        )
+    fi
+
+    for var in "${required_vars[@]}"; do
+        if [[ -z "${!var}" ]]; then
+            error "Missing required environment variable ${var}"
+        fi
+    done
 }

@@ -45,7 +45,7 @@ required_vars=(
 )
 for var in "${required_vars[@]}"; do
     if [[ -z "${!var}" ]]; then
-        error "Required environment variable ${var} is not set"
+        error "Missing required environment variable ${var}"
     fi
 done
 
