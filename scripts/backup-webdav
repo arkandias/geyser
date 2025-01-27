@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # This script dumps the Geyser database and uploads it to a WebDAV server.
 # It is intended to be scheduled via crontab for regular execution.
 #

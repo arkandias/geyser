@@ -1,11 +1,5 @@
-#!/bin/bash
-
 ###############################################################################
-# ENVIRONMENT AND DEPENDENCIES
-#
-# Handles:
-# - Dependencies check
-# - Environment loading and validation
+# CONFIGURATION MANAGEMENT
 ###############################################################################
 
 check_dependencies() {
@@ -26,7 +20,7 @@ You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/st
 }
 
 load_configuration() {
-    debug "Loading environment..."
+    debug "Loading configuration..."
     debug "Configuration: GEYSER_HOME=${GEYSER_HOME}"
 
     # Create required directories

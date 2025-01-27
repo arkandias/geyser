@@ -1,13 +1,5 @@
-#!/bin/bash
-
 ###############################################################################
-# LOGGING
-#
-# Provides logging functionality with:
-# - Multiple log levels (DEBUG, INFO, WARN, ERROR)
-# - Color-coded console output
-# - Timestamp support
-# - File logging
+# LOGGING SYSTEM
 ###############################################################################
 
 # Constants for log levels

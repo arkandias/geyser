@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # shellcheck disable=SC2034
 
 #######################################
@@ -23,28 +23,28 @@ Geyser Administration Script v${VERSION}
 Usage: geyser [OPTIONS] COMMAND
 
 Core Commands:
-  init              Initialize a fresh Geyser installation
+  init              Initialize Geyser installation
   start             Start Geyser services
   stop              Stop Geyser services
   update            Update Geyser services
-  reset             Reset Geyser to a clean state
+  reset             Clear all Geyser data
 
-Data Operations:
-  backup            Create a backup of PostgreSQL databases
-  restore           Restore databases from a previous backup
+Data Management:
+  backup            Create PostgreSQL backup
+  restore           Restore from backup
   realms-export     Export Keycloak realms
   realms-import     Import Keycloak realms
-  sync-keycloak     Synchronize Keycloak users with active teachers
-  rsync             Synchronize local Geyser directory to a remote server 
+  sync-keycloak     Synchronize Keycloak with app data
 
-Service Management:
-  compose           Run Docker Compose with loaded configuration
-  hasura            Run Hasura CLI with loaded configuration
-  kc                Run Keycloak CLI in container
-  kcadm             Run Keycloak Admin CLI in container
+Development Tools:
+  compose           Docker Compose wrapper
+  hasura            Hasura CLI wrapper
+  kc                Keycloak CLI access
+  kcadm             Keycloak Admin CLI access
+  rsync             Configured rsync wrapper 
 
-Tools:
-  completion        Install completion for zsh (with oh-my-zsh)
+Setup:
+  install-completion    Install zsh completion (with oh-my-zsh)
 
 Options:
   -h, --help        Show this help message
@@ -82,6 +82,7 @@ LOG_LEVEL="INFO"   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
 source "${SCRIPT_DIR}/lib/config.sh"
 source "${SCRIPT_DIR}/lib/logging.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
+source "${SCRIPT_DIR}/lib/devtools.sh"
 
 # Source all command handlers
 for cmd in "${SCRIPT_DIR}/lib/commands"/*.sh; do
@@ -172,8 +173,8 @@ main() {
             ;;
         esac
         ;;
-    completion)
-        install_completion
+    install-completion)
+        handle_install_completion
         ;;
     "")
         exit 0
