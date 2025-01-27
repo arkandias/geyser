@@ -20,7 +20,7 @@ services:
       - ./postgres/backups:/backups
 
   keycloak:
-    build: ./keycloak
+    image: quay.io/keycloak/keycloak:26.1
     restart: unless-stopped
     depends_on:
       kc-db:

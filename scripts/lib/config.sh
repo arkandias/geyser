@@ -37,7 +37,6 @@ load_configuration() {
     _validate_mode
     _validate_auth
     _validate_web
-    _validate_logging
 
     if [[ "${NO_WEB}" == "false" ]]; then
         debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
@@ -86,11 +85,4 @@ _validate_web() {
         ;;
     esac
     debug "Configuration: NO_WEB=${NO_WEB}"
-}
-
-_validate_logging() {
-    # shellcheck disable=SC2034
-    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
-        error "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, or ERROR)"
-    debug "Configuration: LOG_LEVEL=${LOG_LEVEL}"
 }

@@ -3,6 +3,8 @@ services:
     restart: always
 
   keycloak:
+    image: !reset null
+    build: keycloak
     restart: always
     environment:
       KC_HTTP_ENABLED: "true"

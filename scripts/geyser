@@ -61,7 +61,7 @@ EOF
 readonly VERSION="1.0.0"
 
 # Directory Setup
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 : "${GEYSER_HOME:-"$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 readonly GEYSER_HOME
 readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
@@ -95,6 +95,8 @@ done
 ###############################################################################
 
 main() {
+    setup_logging
+
     debug "Entering main loop with args: $*"
 
     # If no arguments provided, show help

@@ -46,7 +46,7 @@ Create it in ${omz_completions}?" "y"; then
         warn "Failed to install Docker completion script"
     }
 
-    if confirm "Add GEYSER_HOME to your .zshrc (required for advanced completion)?" "y"; then
+    if confirm "Add GEYSER_HOME to your .zshrc (required for some wrappers completion)?" "y"; then
         # Remove any existing GEYSER_HOME line
         sed_i '/^export GEYSER_HOME=/d' "${HOME}/.zshrc"
         # Add the new GEYSER_HOME line at the end of .zshrc

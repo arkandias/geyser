@@ -14,7 +14,7 @@ services:
       - frontend
   
   nginx:
-    build: ./nginx
+    build: nginx
     restart: unless-stopped
     depends_on:
       keycloak:

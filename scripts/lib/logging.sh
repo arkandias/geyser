@@ -15,8 +15,15 @@ declare -r COLOR_YELLOW='\033[33m'
 declare -r COLOR_BLUE='\033[34m'
 declare -r COLOR_RESET='\033[0m'
 
-# Ensure log directory exists
-mkdir -p "${LOG_DIR}"
+setup_logging() {
+    # Ensure log directory exists
+    mkdir -p "${LOG_DIR}"
+
+    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" || {
+        echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, or ERROR)" >&2
+        exit 1
+    }
+}
 
 log_level() {
     case "$1" in
@@ -25,7 +32,7 @@ log_level() {
     INFO | SUCCESS) echo "${LOG_LEVEL_INFO}" ;;
     DEBUG) echo "${LOG_LEVEL_DEBUG}" ;;
     *)
-        echo "Invalid log level '$1' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR')" >&2
+        echo "Invalid log level value '$1' (must be DEBUG, INFO, WARN, or ERROR)" >&2
         exit 1
         ;;
     esac
