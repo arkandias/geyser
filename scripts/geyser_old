@@ -35,7 +35,7 @@ Data Operations:
   realms-export     Export Keycloak realms
   realms-import     Import Keycloak realms
   sync-keycloak     Synchronize Keycloak users with active teachers
-  rsync             Sync local Geyser directory to remote server 
+  rsync             Synchronize local Geyser directory to remote server 
 
 Service Management:
   compose           Run Docker Compose with loaded configuration
@@ -214,7 +214,7 @@ EOF
 
 show_rsync_help() {
     cat <<EOF
-Sync local Geyser directory to remote server
+Synchronize local Geyser directory to remote server
 
 Usage: geyser rsync [HOST] [ARGS...]
 
@@ -416,8 +416,11 @@ configure() {
     if [[ "${OPT_PROD}" == "true" ]]; then
         warn "Option --prod ignored for configuration"
     fi
-    if [[ "${OPT_BYPASS_AUTH}" == "true" ]]; then
-        warn "Option --bypass-auth ignored for configuration"
+    if [[ "${OPT_NO_AUTH}" == "true" ]]; then
+        warn "Option --no-auth ignored for configuration"
+    fi
+    if [[ "${OPT_NO_WEB}" == "true" ]]; then
+        warn "Option --no-web ignored for configuration"
     fi
     if [[ -n "${OPT_LOG_LEVEL}" ]]; then
         warn "Option --log-level ignored for configuration"
@@ -781,6 +784,8 @@ wait_until_healthy() {
         fi
 
         health="$(compose ps -a "${service}" --format '{{.Health}}')"
+        compose ps -a "${service}"
+        echo "${health}"
         case "${health}" in
         "healthy")
             info "Service ${service} is healthy"
@@ -792,9 +797,9 @@ wait_until_healthy() {
         "exited")
             error "Service ${service} stopped unexpectedly"
             ;;
-        "")
-            error "Cannot find service ${service}"
-            ;;
+            #        "")
+            #            error "Cannot find service ${service}"
+            #            ;;
         esac
 
         sleep 1

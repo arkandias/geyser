@@ -35,7 +35,7 @@ Data Operations:
   realms-export     Export Keycloak realms
   realms-import     Import Keycloak realms
   sync-keycloak     Synchronize Keycloak users with active teachers
-  rsync             Sync local Geyser directory to remote server 
+  rsync             Synchronize local Geyser directory to a remote server 
 
 Service Management:
   compose           Run Docker Compose with loaded configuration

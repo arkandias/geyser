@@ -147,7 +147,7 @@ The following environment variables are required.
 | `NO_AUTH`                     | `false`              | Disable Keycloak authentication service (`true`/`false`, for development only)                                |
 | `NO_WEB`                      | `false`              | Disable Nginx reverse proxy frontend (`true`/`false`, for development only)                                   |
 | `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
-| `SERVER_HOST`                 | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
+| `GEYSER_HOSTNAME`             | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
 | `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**         | Admin secret for Hasura GraphQL Engine                                                                        |
 | `POSTGRES_KC_PASSWORD`        | Required to use auth | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                              |
@@ -194,7 +194,7 @@ It is connected to the Geyser database and is used by the web client to make Gra
 The GraphQL API is available at:
 
 - http://localhost:8080/v1/graphql in development mode
-- https://example.com/graphql in production mode (assuming `SERVER_HOST=example.com`)
+- https://example.com/graphql in production mode (assuming `GEYSER_HOSTNAME=example.com`)
 
 Hasura permissions are handled by giving users some of the following roles.
 
@@ -234,7 +234,7 @@ Explain:
 
 In development mode, Keycloak can be reached at http://localhost:8081.
 
-In production mode, the following ports are exposed by the reverse proxy (assuming `SERVER_HOST=example.com`):
+In production mode, the following ports are exposed by the reverse proxy (assuming `GEYSER_HOSTNAME=example.com`):
 
 | Path          | Reverse proxy path                  |
 |---------------|-------------------------------------|

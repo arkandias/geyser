@@ -32,6 +32,14 @@ handle_init() {
         esac
     done
 
+    # Ignore options
+    if [[ "${NO_AUTH}" == "true" ]]; then
+        warn "Option NO_AUTH ignored for initialization"
+    fi
+    if [[ "${NO_WEB}" == "true" ]]; then
+        warn "Option NO_WEB ignored for initialization"
+    fi
+
     # Check if data volumes already exist
     local volume_exists="false"
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
@@ -62,7 +70,7 @@ handle_init() {
     info "Initializing Geyser database..."
     compose up -d
     wait_until_healthy db
-    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql && psql -U postgres -d geyser -f /initdb/init.sql"
+    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql && psql -U postgres -d geyser -f /initdb/core_data.sql"
     compose up -d hasura
     wait_until_healthy hasura
     hasura metadata apply

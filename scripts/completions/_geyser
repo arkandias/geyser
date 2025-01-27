@@ -39,7 +39,7 @@ _geyser() {
         'hasura:Run Hasura CLI with loaded configuration'
         'kc:Run Keycloak CLI in container'
         'kcadm:Run Keycloak Admin CLI in container'
-        'rsync:Sync local Geyser directory to remote server'
+        'rsync:Synchronize local Geyser directory to remote server'
         'completion:Install completion for zsh'
     )
 

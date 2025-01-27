@@ -1,14 +1,14 @@
 services:
   hasura:
-    restart: always
     networks:
       - frontend
   
   keycloak:
     environment:
-      - KC_HOSTNAME=http://${SERVER_HOST}/auth
+      - KC_HOSTNAME=http://${GEYSER_HOSTNAME}/auth
       - KC_HOSTNAME_ADMIN=http://localhost:8081
       - KC_HOSTNAME_DEBUG=true
+      - KC_PROXY_HEADERS=xforwarded
     networks:
       - frontend
   
@@ -24,7 +24,7 @@ services:
       test: [ "CMD", "nginx", "-t" ]
       start_period: 30s
     environment:
-      - SERVER_HOST
+      - GEYSER_HOSTNAME
     ports:
       - "80:80"
     networks:

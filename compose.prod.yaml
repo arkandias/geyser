@@ -5,7 +5,7 @@ services:
   hasura:
     restart: always
     environment:
-      - HASURA_GRAPHQL_CORS_DOMAIN=https://${SERVER_HOST}
+      - HASURA_GRAPHQL_CORS_DOMAIN=https://${GEYSER_HOSTNAME}
       - HASURA_GRAPHQL_ENABLE_CONSOLE=false
   
   kc-db:
@@ -14,13 +14,12 @@ services:
   keycloak:
     restart: always
     environment:
-      - HASURA_CLIENT_ROOT_URL=https://${SERVER_HOST}
       - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME=https://${SERVER_HOST}/auth
+      - KC_HOSTNAME=https://${GEYSER_HOSTNAME}/auth
       - KC_HOSTNAME_ADMIN=http://localhost:8081
       - KC_HOSTNAME_DEBUG=false
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${SERVER_HOST}/fullchain.cer
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${SERVER_HOST}/private.key
+      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.cer
+      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key
     ports:
       - "8443:8443"
     networks:
@@ -32,7 +31,7 @@ services:
   nginx:
     restart: always
     environment:
-      - SERVER_HOST
+      - GEYSER_HOSTNAME
     ports:
       - "443:443"
     volumes: !override
