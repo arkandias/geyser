@@ -32,14 +32,6 @@ handle_init() {
         esac
     done
 
-    # Ignore options
-    if [[ "${NO_AUTH}" == "true" ]]; then
-        warn "Option NO_AUTH ignored for initialization"
-    fi
-    if [[ "${NO_WEB}" == "true" ]]; then
-        warn "Option NO_WEB ignored for initialization"
-    fi
-
     # Check if data volumes already exist
     local volume_exists="false"
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
@@ -61,11 +53,9 @@ handle_init() {
     compose pull
     compose build --pull --no-cache
 
-    if [[ "${NO_AUTH}" == "false" ]]; then
-        info "Initializing Keycloak..."
-        compose up -d keycloak
-        wait_until_healthy keycloak
-    fi
+    info "Initializing Keycloak..."
+    compose up -d keycloak
+    wait_until_healthy keycloak
 
     info "Initializing Geyser database..."
     compose up -d
@@ -75,11 +65,9 @@ handle_init() {
     wait_until_healthy hasura
     hasura metadata apply
 
-    if [[ "${NO_WEB}" == "false" ]]; then
-        info "Initializing Nginx..."
-        compose up -d nginx
-        wait_until_healthy nginx
-    fi
+    info "Initializing Nginx..."
+    compose up -d nginx
+    wait_until_healthy nginx
 
     info "Stopping services..."
     compose down

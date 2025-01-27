@@ -6,8 +6,8 @@
 # Provides logging functionality with:
 # - Multiple log levels (DEBUG, INFO, WARN, ERROR)
 # - Color-coded console output
-# - File logging
 # - Timestamp support
+# - File logging
 ###############################################################################
 
 # Constants for log levels

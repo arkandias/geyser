@@ -51,11 +51,7 @@ Options:
   -v, --version     Show version information
   --dev             Use development configuration
   --prod            Use production configuration
-  --no-auth         Disable Keycloak authentication service in development
-  --no-web          Disable Nginx reverse proxy frontend in development
   --log-level       Logging verbosity threshold (DEBUG|INFO|WARN|ERROR)
-  --show-config     Show the configuration after loading the environment
-  --configure       Configure Geyser settings
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -78,25 +74,19 @@ readonly LOG_FILE="${LOG_DIR}/geyser.log"
 
 # Environment Variables
 MODE="development" # Application deployment context (development/production)
-NO_AUTH="false"    # Disable Keycloak authentication service in development
-NO_WEB="false"     # Disable Nginx reverse proxy frontend in development
 LOG_LEVEL="INFO"   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
 LOG_LEVEL_NUM=2    # Numeric log level identifier
 
 # Command Line Options Flags
-OPT_DEV="false"         # --dev
-OPT_PROD="false"        # --prod
-OPT_NO_AUTH="false"     # --no-auth
-OPT_NO_WEB="false"      # --no-web
-OPT_LOG_LEVEL=          # --log-level
-OPT_SHOW_CONFIG="false" # --show-config
-OPT_CONFIGURE="false"   # --configure
+OPT_DEV="false"  # --dev
+OPT_PROD="false" # --prod
+OPT_LOG_LEVEL=   # --log-level
 
 ###############################################################################
 # LIBRARIES
 ###############################################################################
 
-source "${SCRIPT_DIR}/lib/core.sh"
+source "${SCRIPT_DIR}/lib/config.sh"
 source "${SCRIPT_DIR}/lib/logging.sh"
 source "${SCRIPT_DIR}/lib/utils.sh"
 
@@ -109,5 +99,125 @@ done
 ###############################################################################
 # MAIN
 ###############################################################################
+
+main() {
+    debug "Entering main loop with args: $*"
+
+    # If no arguments provided, show help
+    if [[ "$#" -eq 0 ]]; then
+        show_help
+        exit 0
+    fi
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_help
+            exit 0
+            ;;
+        -v | --version)
+            echo "Geyser Administration Script v${VERSION}"
+            exit 0
+            ;;
+        --log-level)
+            OPT_LOG_LEVEL="$2"
+            shift 2
+            ;;
+        --dev)
+            OPT_DEV="true"
+            shift
+            ;;
+        --prod)
+            OPT_PROD="true"
+            shift
+            ;;
+        --configure)
+            OPT_CONFIGURE="true"
+            shift
+            ;;
+        --)
+            break
+            ;;
+        -*)
+            error "Unknown option '$1' (see 'geyser --help')"
+            ;;
+        *)
+            break
+            ;;
+        esac
+    done
+
+    # Configuration
+    check_dependencies
+    if [[ "${OPT_CONFIGURE}" == "true" ]]; then
+        configure
+    else
+        load_configuration
+    fi
+    show_configuration
+
+    # Execute command
+    case "$1" in
+    init)
+        shift
+        handle_init "$@"
+        ;;
+    start)
+        shift
+        handle_start "$@"
+        ;;
+    stop)
+        shift
+        handle_stop "$@"
+        ;;
+    update)
+        shift
+        handle_update "$@"
+        ;;
+    reset)
+        shift
+        handle_reset "$@"
+        ;;
+    backup)
+        shift
+        handle_backup "$@"
+        ;;
+    restore)
+        shift
+        handle_restore "$@"
+        ;;
+    realms-export)
+        shift
+        handle_realms_export "$@"
+        ;;
+    realms-import)
+        shift
+        handle_realms_import "$@"
+        ;;
+    compose | hasura | kc | kcadm | rsync)
+        cmd="$1"
+        shift
+        case "$1" in
+        -h | --help)
+            "show_${cmd}_help"
+            exit 0
+            ;;
+        *)
+            "$cmd" "$@"
+            ;;
+        esac
+        ;;
+    completion)
+        install_completion
+        ;;
+    "")
+        exit 0
+        ;;
+    *)
+        error "Unknown command '$1' (see 'geyser --help')"
+        ;;
+    esac
+}
 
 main "$@"

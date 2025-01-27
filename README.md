@@ -144,8 +144,6 @@ The following environment variables are required.
 | Environment variable          | Default value        | Explanation                                                                                                   |
 |-------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------|
 | `MODE`                        | `development`        | Application deployment context (`development`/`production`)                                                   |
-| `NO_AUTH`                     | `false`              | Disable Keycloak authentication service (`true`/`false`, for development only)                                |
-| `NO_WEB`                      | `false`              | Disable Nginx reverse proxy frontend (`true`/`false`, for development only)                                   |
 | `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
 | `GEYSER_HOSTNAME`             | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
 | `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |

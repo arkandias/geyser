@@ -4,9 +4,9 @@
 # UTILITIES
 #
 # Generic utility functions for:
-# - User interaction (prompt, confirm)
+# - User interaction
 # - Backup selection
-# - Service management (compose wrappers, healthcheck)
+# - Service management
 # - Text manipulation
 ###############################################################################
 
@@ -94,12 +94,6 @@ compose() {
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
 
-    if [[ "${NO_AUTH}" == "false" ]]; then
-        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
-    fi
-    if [[ "${NO_WEB}" == "false" ]]; then
-        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
-    fi
     if [[ "${MODE}" == "production" ]]; then
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
     fi
@@ -169,7 +163,7 @@ wait_until_healthy() {
             error "Service ${service} stopped unexpectedly"
             ;;
         "")
-            error "Cannot find service ${service}"
+            error "Service ${service} not found"
             ;;
         esac
 
@@ -203,7 +197,7 @@ wait_until_exit() {
             return "${exit_code}"
             ;;
         "")
-            error "Cannot find service ${service}"
+            error "Service ${service} not found"
             ;;
         esac
 

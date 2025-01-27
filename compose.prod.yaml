@@ -1,25 +1,16 @@
 services:
-  db:
-    restart: always
-
-  hasura:
-    restart: always
-    environment:
-      - HASURA_GRAPHQL_CORS_DOMAIN=https://${GEYSER_HOSTNAME}
-      - HASURA_GRAPHQL_ENABLE_CONSOLE=false
-  
   kc-db:
     restart: always
 
   keycloak:
     restart: always
     environment:
-      - KC_HTTP_ENABLED=true
-      - KC_HOSTNAME=https://${GEYSER_HOSTNAME}/auth
-      - KC_HOSTNAME_ADMIN=http://localhost:8081
-      - KC_HOSTNAME_DEBUG=false
-      - KC_HTTPS_CERTIFICATE_FILE=/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.cer
-      - KC_HTTPS_CERTIFICATE_KEY_FILE=/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME: "https://${GEYSER_HOSTNAME}/auth"
+      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_DEBUG: "false"
+      KC_HTTPS_CERTIFICATE_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.cer"
+      KC_HTTPS_CERTIFICATE_KEY_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key"
     ports:
       - "8443:8443"
     networks:
@@ -27,11 +18,20 @@ services:
     volumes:
       - ./certs:/opt/keycloak/certs:ro
     command: start --optimized --import-realm
+  
+  db:
+    restart: always
 
+  hasura:
+    restart: always
+    environment:
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_HOSTNAME}"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+  
   nginx:
     restart: always
     environment:
-      - GEYSER_HOSTNAME
+      GEYSER_HOSTNAME: null
     ports:
       - "443:443"
     volumes: !override
