@@ -1,57 +1,5 @@
 name: geyser
 services:
-  kc-db:
-    image: postgres:16
-    restart: unless-stopped
-    healthcheck:
-      test: [ "CMD", "pg_isready", "-U", "postgres" ]
-      start_period: 30s
-    environment:
-      POSTGRES_DB: "keycloak"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "${POSTGRES_KC_PASSWORD}"
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-    ports:
-      - "5433:5432"
-    networks:
-      - backend
-    volumes:
-      - kc-data:/var/lib/postgresql/data
-      - ./postgres/backups:/backups
-
-  keycloak:
-    build: ./keycloak
-    restart: unless-stopped
-    depends_on:
-      kc-db:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "/usr/local/bin/healthcheck" ]
-      start_period: 1m30s
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
-      KC_BOOTSTRAP_ADMIN_PASSWORD: null
-      KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
-      KC_DB_USERNAME: "postgres"
-      KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
-      KC_DB_SCHEMA: "public"
-      KC_HOSTNAME: "http://${GEYSER_HOSTNAME}/auth"
-      KC_HOSTNAME_ADMIN: "http://localhost:8081"
-      KC_HOSTNAME_DEBUG: "true"
-      KC_PROXY_HEADERS: "xforwarded"
-      HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
-    ports:
-      - "8081:8080"
-      - "9000:9000"
-    networks:
-      - backend
-      - frontend
-    volumes:
-      - ./keycloak/templates:/opt/keycloak/data/import:ro
-      - ./keycloak/backups:/opt/keycloak/data/backups
-    command: start-dev --import-realm
-  
   db:
     image: postgres:16
     restart: unless-stopped
@@ -67,7 +15,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - backend
+      - data-storage
     volumes:
       - data:/var/lib/postgresql/data
       - ./postgres/init:/initdb
@@ -94,34 +42,10 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - backend
-      - frontend
-  
-  nginx:
-    build: ./nginx
-    restart: unless-stopped
-    depends_on:
-      keycloak:
-        condition: service_healthy
-      hasura:
-        condition: service_healthy
-    healthcheck:
-      test: [ "CMD", "nginx", "-t" ]
-      start_period: 30s
-    environment:
-      GEYSER_HOSTNAME: null
-    ports:
-      - "80:80"
-    networks:
-      - frontend
-    volumes:
-      - ./nginx/templates/http:/etc/nginx/templates:ro
+      - data-storage
 
 networks:
-  backend:
-  frontend:
+  data-storage:
 
 volumes:
   data:
-  kc-data:
- 

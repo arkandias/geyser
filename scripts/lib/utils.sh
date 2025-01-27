@@ -94,6 +94,12 @@ compose() {
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
 
+    if [[ "${NO_AUTH}" == "false" ]]; then
+        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
+    fi
+    if [[ "${NO_WEB}" == "false" ]]; then
+        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
+    fi
     if [[ "${MODE}" == "production" ]]; then
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
     fi

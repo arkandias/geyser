@@ -49,9 +49,6 @@ Tools:
 Options:
   -h, --help        Show this help message
   -v, --version     Show version information
-  --dev             Use development configuration
-  --prod            Use production configuration
-  --log-level       Logging verbosity threshold (DEBUG|INFO|WARN|ERROR)
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -74,13 +71,9 @@ readonly LOG_FILE="${LOG_DIR}/geyser.log"
 
 # Environment Variables
 MODE="development" # Application deployment context (development/production)
+NO_AUTH="false"    # Disable Keycloak authentication service (development mode only)
+NO_WEB="false"     # Disable Nginx reverse proxy frontend (development mode only)
 LOG_LEVEL="INFO"   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
-LOG_LEVEL_NUM=2    # Numeric log level identifier
-
-# Command Line Options Flags
-OPT_DEV="false"  # --dev
-OPT_PROD="false" # --prod
-OPT_LOG_LEVEL=   # --log-level
 
 ###############################################################################
 # LIBRARIES
@@ -120,42 +113,13 @@ main() {
             echo "Geyser Administration Script v${VERSION}"
             exit 0
             ;;
-        --log-level)
-            OPT_LOG_LEVEL="$2"
-            shift 2
-            ;;
-        --dev)
-            OPT_DEV="true"
-            shift
-            ;;
-        --prod)
-            OPT_PROD="true"
-            shift
-            ;;
-        --configure)
-            OPT_CONFIGURE="true"
-            shift
-            ;;
-        --)
-            break
-            ;;
-        -*)
-            error "Unknown option '$1' (see 'geyser --help')"
-            ;;
         *)
             break
             ;;
         esac
     done
 
-    # Configuration
-    check_dependencies
-    if [[ "${OPT_CONFIGURE}" == "true" ]]; then
-        configure
-    else
-        load_configuration
-    fi
-    show_configuration
+    load_configuration
 
     # Execute command
     case "$1" in

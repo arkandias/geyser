@@ -48,12 +48,6 @@ _geyser() {
     _arguments -s -S -C \
         '(-h --help)'{-h,--help}'[Show help message]' \
         '(-v --version)'{-v,--version}'[Show version information]' \
-        '--dev[Use development configuration]' \
-        '--prod[Use production configuration]' \
-        '--auth[Enable Keycloak authentication service in development]' \
-        '--web[Enable Nginx reverse proxy frontend in development]' \
-        '--log-level[Set logging level]:level:(DEBUG INFO WARN ERROR)' \
-        '--configure[Configure Geyser settings]' \
         '1: :->cmds' \
         '*:: :->args'
 
@@ -105,27 +99,36 @@ _geyser_compose() {
     fi
 
     # Parse options before compose and store words after
-    local opt_dev=false opt_prod=false
     for ((i = 2; i <= $#words; i++)); do
         case "${words[i]}" in
         compose) break ;;
-        --dev) opt_dev=true ;;
-        --prod) opt_prod=true ;;
         --*) continue ;;
         *) return 1 ;;
         esac
     done
     words_after_compose=("${words[@]:$((i))}")
 
-    # Set MODE
+    # Configuration
     local MODE=development
+    local NO_AUTH=false
+    local NO_WEB=false
+
+    # Load .env files
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
-    [[ "${opt_dev}" == "true" ]] && MODE="development"
-    [[ "${opt_prod}" == "true" ]] && MODE="production"
 
-    # Get Compose files
+    # Resolving incompatibilities
+    [[ "${MODE}" == "production" ]] && NO_AUTH="false"
+    [[ "${MODE}" == "production" ]] && NO_WEB="false"
+    [[ "${NO_AUTH}" == "true" ]] && NO_WEB="true"
+
     local -a compose_files=(-f "${GEYSER_HOME}"/compose.yaml)
+    if [[ "${NO_AUTH}" == "false" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
+    fi
+    if [[ "${NO_WEB}" == "false" ]]; then
+        compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
+    fi
     if [[ "${MODE}" == "production" ]]; then
         compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
     fi

@@ -25,18 +25,9 @@ check_dependencies() {
 You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
 }
 
-show_configuration() {
-    debug "************ CONFIGURATION ************"
-    debug "GEYSER_HOME: ${GEYSER_HOME}"
-    debug "GEYSER_HOSTNAME: ${GEYSER_HOSTNAME}"
-    debug "MODE: ${MODE}"
-    debug "LOG_LEVEL: ${LOG_LEVEL}"
-    debug "***************************************"
-}
-
 load_configuration() {
     debug "Loading environment..."
-    debug "Root directory: ${GEYSER_HOME}"
+    debug "Configuration: GEYSER_HOME=${GEYSER_HOME}"
 
     # Create required directories
     mkdir -p "${DB_BACKUP_DIR}"
@@ -48,37 +39,64 @@ load_configuration() {
     . "${GEYSER_HOME}/.env"
     . "${GEYSER_HOME}/.env.local"
 
+    # Configure global variables
     _validate_mode
+    _validate_auth
+    _validate_web
     _validate_logging
+
+    if [[ "${NO_WEB}" == "false" ]]; then
+        debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
+    fi
 }
 
 _validate_mode() {
-    if [[ "${OPT_DEV}" == "true" && "${OPT_PROD}" == "true" ]]; then
-        error "Invalid options: --dev and --prod cannot be used together"
-    fi
-    if [[ "${OPT_DEV}" == "true" && "${MODE}" != "development" ]]; then
-        MODE="development"
-        debug "MODE overridden with --dev option"
-    fi
-    if [[ "${OPT_PROD}" == "true" && "${MODE}" != "production" ]]; then
-        MODE="production"
-        debug "MODE overridden with --prod option"
-    fi
     if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid MODE value '${MODE}' (must be 'development' or 'production').
-Use options --dev/--prod or set MODE environment variable."
+        error "Invalid value: MODE=${MODE} (must be development or production)"
     fi
-    debug "MODE set to '${MODE}'"
+    debug "Configuration: MODE=${MODE}"
+}
+
+_validate_auth() {
+    case "${NO_AUTH}" in
+    "true")
+        if [[ "${MODE}" == "production" ]]; then
+            warn "Authentication is required in production mode (switching to NO_AUTH=false)"
+            NO_AUTH="false"
+        fi
+        ;;
+    "false") ;;
+    *)
+        error "Invalid value: NO_AUTH=${NO_AUTH} (must be true or false)"
+        ;;
+    esac
+    debug "Configuration: NO_AUTH=${NO_AUTH}"
+}
+
+_validate_web() {
+    case "${NO_WEB}" in
+    "true")
+        if [[ "${MODE}" == "production" ]]; then
+            warn "Web is required in production mode (switching to NO_WEB=false)"
+            NO_WEB="false"
+        fi
+        ;;
+    "false")
+        if [[ "${NO_AUTH}" == "true" ]]; then
+            warn "Cannot run web without authentication (switching to NO_WEB=true)"
+            NO_WEB="true"
+        fi
+        ;;
+    *)
+        error "Invalid value: NO_WEB=${NO_WEB} (must be 'true' or 'false')"
+        ;;
+    esac
+    debug "Configuration: NO_WEB=${NO_WEB}"
 }
 
 _validate_logging() {
-    if [[ -n "${OPT_LOG_LEVEL}" && "${OPT_LOG_LEVEL}" != "${LOG_LEVEL}" ]]; then
-        LOG_LEVEL="${OPT_LOG_LEVEL}"
-        debug "LOG_LEVEL overridden with --log-level option"
-    fi
     # shellcheck disable=SC2034
     LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" ||
-        error "Invalid log level '${LOG_LEVEL}' (must be 'DEBUG', 'INFO', 'WARN', or 'ERROR').
-Use option --log-level or set LOG_LEVEL environment variable."
-    debug "LOG_LEVEL set to '${LOG_LEVEL}'"
+        error "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, or ERROR)"
+    debug "Configuration: LOG_LEVEL=${LOG_LEVEL}"
 }

@@ -2,9 +2,6 @@
 
 ###############################################################################
 # STOP COMMAND
-#
-# Stops all running Geyser services by shutting down containers
-# and cleaning up associated resources created by docker compose.
 ###############################################################################
 
 show_stop_help() {

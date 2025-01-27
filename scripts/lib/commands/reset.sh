@@ -2,10 +2,6 @@
 
 ###############################################################################
 # RESET COMMAND
-#
-# Performs complete cleanup of Geyser installation, returning it to initial state.
-# This powerful command removes all containers, volumes, images, and logs while
-# preserving backup files. Use with caution as it deletes all application data.
 ###############################################################################
 
 show_reset_help() {

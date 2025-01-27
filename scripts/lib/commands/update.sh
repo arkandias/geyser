@@ -2,10 +2,6 @@
 
 ###############################################################################
 # UPDATE COMMAND
-#
-# Updates Geyser to the latest version by refreshing all Docker services.
-# This involves stopping running services, pulling latest container images,
-# rebuilding with fresh dependencies, and restarting everything clean.
 ###############################################################################
 
 show_update_help() {

@@ -23,6 +23,9 @@ declare -r COLOR_YELLOW='\033[33m'
 declare -r COLOR_BLUE='\033[34m'
 declare -r COLOR_RESET='\033[0m'
 
+# Ensure log directory exists
+mkdir -p "${LOG_DIR}"
+
 log_level() {
     case "$1" in
     ERROR) echo "${LOG_LEVEL_ERROR}" ;;
@@ -53,8 +56,6 @@ log() {
         esac
     fi
 
-    # Ensure log directory exists and append to log file
-    mkdir -p "${LOG_DIR}"
     echo "${log_entry}" >>"${LOG_FILE}"
 }
 

@@ -1,7 +1,0 @@
-services:
-  hasura:
-    depends_on: !override
-      db:
-        condition: service_healthy
-    environment:
-      HASURA_GRAPHQL_JWT_SECRET: !reset null
