@@ -77,7 +77,7 @@ _validate_web() {
         fi
         ;;
     *)
-        error "Invalid value: NO_WEB=${NO_WEB} (must be 'true' or 'false')"
+        error "Invalid value: NO_WEB=${NO_WEB} (must be true or false)"
         ;;
     esac
     debug "Configuration: NO_WEB=${NO_WEB}"
@@ -85,6 +85,11 @@ _validate_web() {
 
 _validate_env() {
     local required_vars=(
+        GEYSER_HOSTNAME
+        MODE
+        NO_AUTH
+        NO_WEB
+        LOG_LEVEL
         POSTGRES_PASSWORD
         HASURA_GRAPHQL_ADMIN_SECRET
     )

@@ -29,24 +29,24 @@
 
 ### Pre-Installation Setup
 
-#### Docker Setup
+#### Install Dependencies
 
 ```bash
-# Install Docker Engine
+# Docker Engine
 curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER  # Log out and back in after this 
+sudo usermod -aG docker $USER  # Log out and back in after this
+
+# Hasura CLI
+curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 ```
 
-#### Required Tools
+#### Install Optional Tools
 
 ```bash
-# Install Hasura CLI
-curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-
-# Install jq (Optional, needed for Keycloak sync)
+# jq (needed for Keycloak sync)
 sudo apt install jq
 
-# Install Oh My Zsh (for zsh users)
+# Oh My Zsh (needed for completion -- for zsh users only)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
@@ -87,28 +87,19 @@ cp .env.example .env
 ./scripts/geyser start
 ```
 
-#### Access Services
+The web client will be served at: [http://localhost](http://localhost)
 
-- App: [http://localhost](http://localhost)
-- Keycloak Admin: [http://localhost:8081](http://localhost:8081)
-- Hasura Console: [http://localhost:9695](http://localhost:9695)
+#### Hasura Console
 
 ```bash
 ./scripts/geyser hasura console
 ```
 
-#### Basic operations
+Hasura Console will be served at: [http://localhost:9695](http://localhost:9695)
 
-```bash
-# Stop all services
-./scripts/geyser stop
+#### Keycloak Admin Console
 
-# Create a backup
-./scripts/geyser backup
-
-# View logs
-./scripts/geyser --log-level DEBUG start
-```
+Keycloak Admin will be served at: [http://localhost:8081](http://localhost:8081)
 
 ### Dependencies
 
@@ -143,9 +134,11 @@ The following environment variables are required.
 
 | Environment variable          | Default value        | Explanation                                                                                                   |
 |-------------------------------|----------------------|---------------------------------------------------------------------------------------------------------------|
+| `GEYSER_HOSTNAME`             | `localhost`          | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
 | `MODE`                        | `development`        | Application deployment context (`development`/`production`)                                                   |
+| `NO_AUTH`                     | `false`              | Use the app without Keycloak authentication (development mode only)                                           |
+| `NO_WEB`                      | `false`              | Use the app without Nginx reverse proxy (development mode only)                                               |
 | `LOG_LEVEL`                   | `INFO`               | Logging verbosity threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                                   |
-| `GEYSER_HOSTNAME`             | Required to use web  | Hostname and, optionally, port number at which the app will be served (e.g., `localhost:5173`, `example.com`) |
 | `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**         | Admin secret for Hasura GraphQL Engine                                                                        |
 | `POSTGRES_KC_PASSWORD`        | Required to use auth | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                              |

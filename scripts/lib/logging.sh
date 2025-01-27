@@ -23,6 +23,9 @@ setup_logging() {
         echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, or ERROR)" >&2
         exit 1
     }
+    readonly LOG_LEVEL_NUM
+
+    readonly LOG_FILE="${LOG_DIR}/geyser.log"
 }
 
 log_level() {
@@ -43,7 +46,7 @@ log() {
     local message="$2"
     local timestamp
     timestamp=$(date +'%Y-%m-%d %H:%M:%S')
-    local log_entry="[${timestamp}] [${level}] ${message}"
+    local log_entry="[${timestamp}] [Geyser] [${level}] ${message}"
 
     if [[ "$(log_level "${level}")" -ge "${LOG_LEVEL_NUM}" ]]; then
         case "${level}" in
