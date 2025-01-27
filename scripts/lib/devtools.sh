@@ -4,23 +4,21 @@
 
 # Runs Docker Compose with environment files and conditional service configurations
 compose() {
-    local env_files=(
-        "--env-file" "${GEYSER_HOME}/.env"
-        "--env-file" "${GEYSER_HOME}/.env.local"
-    )
-    local compose_files=(
+    local env_files=() compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
 
-    if [[ "${NO_AUTH}" == "false" ]]; then
+    [[ -f "${GEYSER_HOME}/.env" ]] &&
+        env_files+=("--env-file" "${GEYSER_HOME}/.env")
+    [[ -f "${GEYSER_HOME}/.env.local" ]] &&
+        env_files+=("--env-file" "${GEYSER_HOME}/.env.local")
+
+    [[ "${NO_AUTH}" == "false" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
-    fi
-    if [[ "${NO_WEB}" == "false" ]]; then
+    [[ "${NO_WEB}" == "false" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
-    fi
-    if [[ "${MODE}" == "production" ]]; then
+    [[ "${MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
-    fi
 
     docker compose "${env_files[@]}" "${compose_files[@]}" "$@"
 }

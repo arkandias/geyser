@@ -27,12 +27,6 @@ load_configuration() {
     mkdir -p "${DB_BACKUP_DIR}"
     mkdir -p "${KC_BACKUP_DIR}"
 
-    # Load env files
-    touch "${GEYSER_HOME}/.env"
-    touch "${GEYSER_HOME}/.env.local"
-    . "${GEYSER_HOME}/.env"
-    . "${GEYSER_HOME}/.env.local"
-
     # Configure global variables
     _validate_mode
     _validate_auth

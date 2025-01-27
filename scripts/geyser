@@ -75,6 +75,10 @@ NO_AUTH="false"    # Disable Keycloak authentication service (development mode o
 NO_WEB="false"     # Disable Nginx reverse proxy frontend (development mode only)
 LOG_LEVEL="INFO"   # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
 
+# Load env files
+[[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
+[[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
+
 ###############################################################################
 # LIBRARIES
 ###############################################################################

@@ -113,7 +113,7 @@ _geyser_compose() {
     local NO_AUTH=false
     local NO_WEB=false
 
-    # Load .env files
+    # Load env files
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
 
@@ -123,15 +123,12 @@ _geyser_compose() {
     [[ "${NO_AUTH}" == "true" ]] && NO_WEB="true"
 
     local -a compose_files=(-f "${GEYSER_HOME}"/compose.yaml)
-    if [[ "${NO_AUTH}" == "false" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.auth.yaml)
-    fi
-    if [[ "${NO_WEB}" == "false" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.web.yaml)
-    fi
-    if [[ "${MODE}" == "production" ]]; then
-        compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
-    fi
+    [[ "${NO_AUTH}" == "false" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
+    [[ "${NO_WEB}" == "false" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
+    [[ "${MODE}" == "production" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
 
     words=("docker" "compose" "${compose_files[@]}" "${words_after_compose[@]}")
     ((CURRENT = CURRENT + 2 - i + 2 * ${#compose_files[@]}))
