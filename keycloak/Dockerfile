@@ -18,7 +18,4 @@ ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 ENV KC_DB=postgres
 
-# Add healthcheck
-COPY healthcheck /usr/local/bin/healthcheck
-
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

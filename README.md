@@ -149,7 +149,7 @@ The following environment variables are required.
 | `POSTGRES_PASSWORD`           | **Required**         | Password for the PostgreSQL role `postgres` in the Geyser database (superuser)                                |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**         | Admin secret for Hasura GraphQL Engine                                                                        |
 | `POSTGRES_KC_PASSWORD`        | Required to use auth | Password for the PostgreSQL role `postgres` in the Keycloak database (superuser)                              |
-| `KEYCLOAK_ADMIN_PASSWORD`     | Required to use auth | Password for the initial admin user `admin` in the Keycloak container                                         |
+| `KC_BOOTSTRAP_ADMIN_PASSWORD` | Required to use auth | Password for the initial admin user `admin` in the Keycloak container                                         |
 
 ### Environment Files
 

@@ -26,11 +26,14 @@ services:
       kc-db:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "/usr/local/bin/healthcheck" ]
-      start_period: 1m30s
+      test: [ "CMD", "/opt/healthcheck/healthcheck.sh" ]
+      start_period: 1m
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
       KC_BOOTSTRAP_ADMIN_PASSWORD: null
+      KC_HEALTH_ENABLED: "true"
+      KC_METRICS_ENABLED: "true"
+      KC_DB: "postgres"
       KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
@@ -47,6 +50,7 @@ services:
       - auth-storage
       - auth-internal
     volumes:
+      - ./keycloak/healthcheck:/opt/healthcheck:ro
       - ./keycloak/templates:/opt/keycloak/data/import:ro
       - ./keycloak/backups:/opt/keycloak/data/backups
     command: start-dev --import-realm

@@ -166,6 +166,10 @@ main() {
         shift
         handle_realms_import "$@"
         ;;
+    sync-keycloak)
+        shift
+        handle_sync_keycloak "$@"
+        ;;
     compose | hasura | kc | kcadm | rsync)
         cmd="$1"
         shift

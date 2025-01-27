@@ -48,10 +48,11 @@ kcadm() {
             error "No additional arguments allowed with 'kcadm --login'"
         fi
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
-            --server http://localhost:8081 --realm master \
-            --user admin --password "${KEYCLOAK_ADMIN_PASSWORD}"
+            --server http://localhost:8080 --realm master \
+            --user admin --password "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
     else
-        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@"
+        compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
+            2> >(sed '/./!{1d;}' >&2) # remove blank line on stderr
     fi
 }
 

@@ -5,4 +5,4 @@ ENV GEYSER_HOSTNAME=localhost
 
 RUN curl -L https://github.com/arkandias/geyser-client/releases/download/${CLIENT_VERSION}/dist.tar.gz | tar xz --strip-components=1 -C /usr/share/nginx/html
 
-COPY legal-notice.html /usr/share/nginx/html/
+COPY public/* /usr/share/nginx/html/

@@ -128,8 +128,8 @@ COMMENT ON COLUMN role_type.description IS 'Description of role privileges and r
 CREATE TABLE IF NOT EXISTS role
 (
     id      serial PRIMARY KEY,
-    uid     text PRIMARY KEY REFERENCES teacher,
-    type    text REFERENCES role_type,
+    uid     text NOT NULL REFERENCES teacher,
+    type    text NOT NULL REFERENCES role_type,
     comment text,
     UNIQUE (uid, type)
 );
