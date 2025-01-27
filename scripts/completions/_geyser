@@ -117,16 +117,14 @@ _geyser_compose() {
     done
     words_after_compose=("${words[@]:$((i))}")
 
-    # Load configuration from .env files
+    # Set MODE
     local MODE=development
-
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
-
-    # Set MODE
     [[ "${opt_dev}" == "true" ]] && MODE="development"
     [[ "${opt_prod}" == "true" ]] && MODE="production"
 
+    # Get Compose files
     local -a compose_files=(-f "${GEYSER_HOME}"/compose.yaml)
     if [[ "${MODE}" == "production" ]]; then
         compose_files+=(-f "${GEYSER_HOME}"/compose.prod.yaml)
