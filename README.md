@@ -180,7 +180,7 @@ Variables in `.env.local` take precedence over those in `.env`.
 | `NO_WEB`                      | `false`       | Disable Nginx proxy (development only)                                                    |
 | `POSTGRES_PASSWORD`           | **Required**  | Password for the main database privileged role                                            |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret                                                                       |
-| `POSTGRES_KC_PASSWORD`        | __Required*__ | Password for the Keycloak database privileged role                                        |
+| `POSTGRES_KC_PASSWORD`        | __Required*__ | Password for Keycloak database privileged role                                            |
 | `KC_BOOTSTRAP_ADMIN_PASSWORD` | __Required*__ | Keycloak initial admin password                                                           |
 
 (*) Unless `NO_AUTH=true`
@@ -234,7 +234,7 @@ Variables in `.env.local` take precedence over those in `.env`.
     - `master`: for Keycloak administration
     - `geyser`: for application users
         - Contains `hasura` client
-        - Issues JWTs used to authenticate requests to Hasura's API
+        - Issues JWTs used to authenticate requests to Hasura API
 - Host ports:
     - `8081` (HTTP)
     - `8443` (HTTPS)
