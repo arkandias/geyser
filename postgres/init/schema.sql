@@ -2,7 +2,7 @@
 -- General tables
 --
 
-CREATE TABLE IF NOT EXISTS phase
+CREATE TABLE phase
 (
     value       text PRIMARY KEY,
     current     boolean UNIQUE, -- TRUE or NULL
@@ -15,7 +15,7 @@ COMMENT ON COLUMN phase.value IS 'Phase identifier';
 COMMENT ON COLUMN phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
 COMMENT ON COLUMN phase.description IS 'Summary of activities and permissions during this phase';
 
-CREATE TABLE IF NOT EXISTS year
+CREATE TABLE year
 (
     value   integer PRIMARY KEY,
     current boolean UNIQUE,                    -- TRUE or NULL
@@ -36,7 +36,7 @@ COMMENT ON COLUMN year.visible IS 'Controls visibility of the year in the user i
 -- Teacher-related tables
 --
 
-CREATE TABLE IF NOT EXISTS position
+CREATE TABLE position
 (
     value              text PRIMARY KEY,
     label              text NOT NULL,
@@ -50,7 +50,7 @@ COMMENT ON COLUMN position.label IS 'Human-readable position name for display pu
 COMMENT ON COLUMN position.base_service_hours IS 'Default annual teaching hours required for this position, can be overridden per teacher';
 COMMENT ON COLUMN position.description IS 'Optional description of the position';
 
-CREATE TABLE IF NOT EXISTS teacher
+CREATE TABLE teacher
 (
     uid                text PRIMARY KEY,
     firstname          text    NOT NULL,
@@ -72,7 +72,7 @@ COMMENT ON COLUMN teacher.base_service_hours IS 'Individual override for annual 
 COMMENT ON COLUMN teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN teacher.active IS 'Controls system access and automatic service creation for upcoming years';
 
-CREATE TABLE IF NOT EXISTS service
+CREATE TABLE service
 (
     id      serial PRIMARY KEY,
     year    integer NOT NULL REFERENCES year ON UPDATE CASCADE,
@@ -89,7 +89,7 @@ COMMENT ON COLUMN service.uid IS 'Teacher identifier linking to teacher table';
 COMMENT ON COLUMN service.hours IS 'Required teaching hours for the year before modifications';
 COMMENT ON COLUMN service.message IS 'Optional message from teacher to course assignment committee';
 
-CREATE TABLE IF NOT EXISTS service_modification_type
+CREATE TABLE service_modification_type
 (
     value       text PRIMARY KEY,
     label       text NOT NULL,
@@ -101,7 +101,7 @@ COMMENT ON COLUMN service_modification_type.value IS 'Modification type identifi
 COMMENT ON COLUMN service_modification_type.label IS 'Human-readable name for the modification type';
 COMMENT ON COLUMN service_modification_type.description IS 'Detailed explanation of the modification type and its application';
 
-CREATE TABLE IF NOT EXISTS service_modification
+CREATE TABLE service_modification
 (
     id         serial PRIMARY KEY,
     service_id integer NOT NULL REFERENCES service ON UPDATE CASCADE,
@@ -115,7 +115,7 @@ COMMENT ON COLUMN service_modification.service_id IS 'Reference to affected serv
 COMMENT ON COLUMN service_modification.type IS 'Type of service modification being applied';
 COMMENT ON COLUMN service_modification.hours IS 'Hour adjustment amount (negative values increase required hours)';
 
-CREATE TABLE IF NOT EXISTS role_type
+CREATE TABLE role_type
 (
     value       text PRIMARY KEY,
     description text
@@ -125,7 +125,7 @@ COMMENT ON TABLE role_type IS 'System roles for privileged access';
 COMMENT ON COLUMN role_type.value IS 'Role identifier';
 COMMENT ON COLUMN role_type.description IS 'Description of role privileges and responsibilities';
 
-CREATE TABLE IF NOT EXISTS role
+CREATE TABLE role
 (
     id      serial PRIMARY KEY,
     uid     text NOT NULL REFERENCES teacher,
@@ -145,7 +145,7 @@ COMMENT ON COLUMN role.comment IS 'Additional information about this privilege a
 -- Course-related tables
 --
 
-CREATE TABLE IF NOT EXISTS degree
+CREATE TABLE degree
 (
     id         serial PRIMARY KEY,
     name       text    NOT NULL UNIQUE,
@@ -159,7 +159,7 @@ COMMENT ON COLUMN degree.name IS 'Full degree name, unique (e.g., Bachelor of Sc
 COMMENT ON COLUMN degree.name_short IS 'Abbreviated degree name (e.g., BSc)';
 COMMENT ON COLUMN degree.visible IS 'Controls degree visibility in the user interface and queries';
 
-CREATE TABLE IF NOT EXISTS program
+CREATE TABLE program
 (
     id         serial PRIMARY KEY,
     degree_id  integer NOT NULL REFERENCES degree ON UPDATE CASCADE,
@@ -176,7 +176,7 @@ COMMENT ON COLUMN program.name IS 'Full program name, unique within its degree (
 COMMENT ON COLUMN program.name_short IS 'Abbreviated program name';
 COMMENT ON COLUMN program.visible IS 'Controls program visibility in the user interface and queries';
 
-CREATE TABLE IF NOT EXISTS track
+CREATE TABLE track
 (
     id         serial PRIMARY KEY,
     program_id integer NOT NULL REFERENCES program ON UPDATE CASCADE,
@@ -193,7 +193,7 @@ COMMENT ON COLUMN track.name IS 'Full track name, unique within its program (e.g
 COMMENT ON COLUMN track.name_short IS 'Abbreviated track name';
 COMMENT ON COLUMN track.visible IS 'Controls track visibility in the user interface and queries';
 
-CREATE TABLE IF NOT EXISTS course_type
+CREATE TABLE course_type
 (
     value       text PRIMARY KEY,
     label       text NOT NULL,
@@ -207,7 +207,7 @@ COMMENT ON COLUMN course_type.label IS 'Human-readable type name for display';
 COMMENT ON COLUMN course_type.coefficient IS 'Workload multiplier for service hour calculations';
 COMMENT ON COLUMN course_type.description IS 'Detailed description of the course type and its characteristics';
 
-CREATE TABLE IF NOT EXISTS course
+CREATE TABLE course
 (
     id               serial PRIMARY KEY,
     year             integer NOT NULL REFERENCES year ON UPDATE CASCADE,
@@ -252,13 +252,13 @@ COMMENT ON COLUMN course.description IS 'Detailed course description and objecti
 COMMENT ON COLUMN course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN course.visible IS 'Controls course visibility in the user interface and queries';
 
-CREATE OR REPLACE FUNCTION total_hours_effective(course_row course) RETURNS real AS
+CREATE FUNCTION total_hours_effective(course_row course) RETURNS real AS
 $$
 SELECT course_row.hours_effective * course_row.groups_effective;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective';
 
-CREATE OR REPLACE FUNCTION check_parent_year() RETURNS trigger AS
+CREATE FUNCTION check_parent_year() RETURNS trigger AS
 $$
 DECLARE
     parent_year integer;
@@ -281,13 +281,13 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 COMMENT ON FUNCTION check_parent_year() IS 'Ensures that the parent course''s year is less than the course''s year';
 
-CREATE OR REPLACE TRIGGER check_parent_year
+CREATE TRIGGER check_parent_year
     BEFORE INSERT OR UPDATE OF parent_id, year
     ON course
     FOR EACH ROW
 EXECUTE FUNCTION check_parent_year();
 
-CREATE OR REPLACE FUNCTION check_children_year() RETURNS trigger AS
+CREATE FUNCTION check_children_year() RETURNS trigger AS
 $$
 DECLARE
     child_id   integer;
@@ -311,13 +311,13 @@ END;
 $$ LANGUAGE plpgsql STABLE;
 COMMENT ON FUNCTION check_children_year() IS 'Ensures that child courses'' years are greater than the course''s year';
 
-CREATE OR REPLACE TRIGGER check_children_year
+CREATE TRIGGER check_children_year
     BEFORE UPDATE OF year
     ON course
     FOR EACH ROW
 EXECUTE FUNCTION check_children_year();
 
-CREATE OR REPLACE FUNCTION check_track_program() RETURNS trigger AS
+CREATE FUNCTION check_track_program() RETURNS trigger AS
 $$
 DECLARE
     track_program_id integer;
@@ -352,7 +352,7 @@ CREATE TRIGGER check_track_program_on_track_update
     FOR EACH ROW
 EXECUTE FUNCTION check_track_program();
 
-CREATE TABLE IF NOT EXISTS coordination
+CREATE TABLE coordination
 (
     id         serial PRIMARY KEY,
     uid        text NOT NULL REFERENCES teacher ON UPDATE CASCADE,
@@ -377,7 +377,7 @@ COMMENT ON COLUMN coordination.comment IS 'Additional coordination details';
 -- Request-related tables
 --
 
-CREATE TABLE IF NOT EXISTS request_type
+CREATE TABLE request_type
 (
     value       text PRIMARY KEY,
     description text
@@ -387,7 +387,7 @@ COMMENT ON TABLE request_type IS 'Types of teaching assignment requests in workf
 COMMENT ON COLUMN request_type.value IS 'Request type identifier';
 COMMENT ON COLUMN request_type.description IS 'Detailed description of the request type and its purpose';
 
-CREATE TABLE IF NOT EXISTS request
+CREATE TABLE request
 (
     id         serial PRIMARY KEY,
     service_id integer NOT NULL REFERENCES service ON UPDATE CASCADE,
@@ -404,7 +404,7 @@ COMMENT ON COLUMN request.course_id IS 'Requested or assigned course';
 COMMENT ON COLUMN request.type IS 'Type of request (primary choice, backup, or final assignment)';
 COMMENT ON COLUMN request.hours IS 'Requested or assigned teaching hours';
 
-CREATE OR REPLACE FUNCTION hours_weighted(request_row request) RETURNS real AS
+CREATE FUNCTION hours_weighted(request_row request) RETURNS real AS
 $$
 SELECT r.hours * ct.coefficient
 FROM request r
@@ -414,7 +414,7 @@ WHERE r.id = request_row.id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
 
-CREATE TABLE IF NOT EXISTS priority
+CREATE TABLE priority
 (
     id          serial PRIMARY KEY,
     service_id  integer NOT NULL REFERENCES service ON UPDATE CASCADE,
@@ -431,7 +431,7 @@ COMMENT ON COLUMN priority.course_id IS 'Course for which priority is tracked';
 COMMENT ON COLUMN priority.seniority IS 'Consecutive years teaching this course before current year';
 COMMENT ON COLUMN priority.is_priority IS 'Current priority status based on seniority and course rules';
 
-CREATE OR REPLACE FUNCTION is_priority(request_row request) RETURNS boolean AS
+CREATE FUNCTION is_priority(request_row request) RETURNS boolean AS
 $$
 SELECT is_priority
 FROM priority
@@ -440,7 +440,7 @@ WHERE service_id = request_row.service_id
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION is_priority(request) IS 'Determines if a request is prioritized based on teaching history and course priority rules';
 
-CREATE OR REPLACE FUNCTION check_service_course_year() RETURNS trigger AS
+CREATE FUNCTION check_service_course_year() RETURNS trigger AS
 $$
 DECLARE
     service_year integer;
@@ -477,7 +477,7 @@ EXECUTE FUNCTION check_service_course_year();
 -- Functions
 --
 
-CREATE OR REPLACE FUNCTION compute_seniorities(p_service_id integer) RETURNS setof priority AS
+CREATE FUNCTION compute_seniorities(p_service_id integer) RETURNS setof priority AS
 $$
 WITH service_info AS (SELECT year, uid
                       FROM service
@@ -496,7 +496,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION compute_seniorities(integer) IS 'Inserts priorities or updates seniority column for a given service based on previous course assignments';
 
-CREATE OR REPLACE FUNCTION compute_priorities(p_service_id integer) RETURNS setof priority AS
+CREATE FUNCTION compute_priorities(p_service_id integer) RETURNS setof priority AS
 $$
 UPDATE priority p
 SET is_priority = (p.seniority > 0 AND (c.priority_rule > p.seniority OR c.priority_rule = 0))
@@ -508,7 +508,7 @@ RETURNING p.*;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION compute_priorities(integer) IS 'Updates is_priority column for a given service based on seniority and course priority rules';
 
-CREATE OR REPLACE FUNCTION compute_service_priorities() RETURNS trigger AS
+CREATE FUNCTION compute_service_priorities() RETURNS trigger AS
 $$
 BEGIN
     PERFORM compute_seniorities(new);
@@ -524,7 +524,7 @@ CREATE TRIGGER compute_service_priorities
     FOR EACH ROW
 EXECUTE FUNCTION compute_service_priorities();
 
-CREATE OR REPLACE FUNCTION create_service(p_year integer, p_uid text) RETURNS service AS
+CREATE FUNCTION create_service(p_year integer, p_uid text) RETURNS service AS
 $$
 INSERT INTO service (year, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
@@ -536,7 +536,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
-CREATE OR REPLACE FUNCTION create_services(p_year integer) RETURNS setof service AS
+CREATE FUNCTION create_services(p_year integer) RETURNS setof service AS
 $$
 INSERT INTO service (year, uid, hours)
 SELECT p_year, t.uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
@@ -553,7 +553,7 @@ COMMENT ON FUNCTION create_services(integer) IS 'Creates service entries for all
 -- Timestamps
 --
 
-CREATE OR REPLACE FUNCTION set_timestamp() RETURNS trigger AS
+CREATE FUNCTION set_timestamp() RETURNS trigger AS
 $$
 BEGIN
     new.updated_at = now();
@@ -562,17 +562,17 @@ END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION set_timestamp() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
 
-CREATE OR REPLACE FUNCTION add_timestamp_columns(target_table text) RETURNS void AS
+CREATE FUNCTION add_timestamp_columns(target_table text) RETURNS void AS
 $$
 BEGIN
     EXECUTE format('
         ALTER TABLE %I 
-        ADD COLUMN IF NOT EXISTS created_at timestamptz NOT NULL DEFAULT current_timestamp,
-        ADD COLUMN IF NOT EXISTS updated_at timestamptz NOT NULL DEFAULT current_timestamp
+        ADD COLUMN created_at timestamptz NOT NULL DEFAULT current_timestamp,
+        ADD COLUMN updated_at timestamptz NOT NULL DEFAULT current_timestamp
     ', target_table);
 
     EXECUTE format('
-        CREATE OR REPLACE TRIGGER set_timestamp
+        CREATE TRIGGER set_timestamp
         BEFORE UPDATE ON %I
         FOR EACH ROW
         EXECUTE FUNCTION set_timestamp()
@@ -583,7 +583,7 @@ END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION add_timestamp_columns(text) IS 'Adds created_at and updated_at timestamp columns to the specified table, along with an automatic update trigger for updated_at';
 
-CREATE OR REPLACE FUNCTION add_timestamp_columns_to_all_tables() RETURNS void AS
+CREATE FUNCTION add_timestamp_columns_to_all_tables() RETURNS void AS
 $$
 DECLARE
     table_name text;
