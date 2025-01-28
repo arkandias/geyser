@@ -2,6 +2,16 @@
 -- General tables
 --
 
+CREATE TABLE app_settings
+(
+    key   text PRIMARY KEY,
+    value text
+);
+
+COMMENT ON TABLE app_settings IS 'Application-wide configuration settings';
+COMMENT ON COLUMN app_settings.key IS 'Setting identifier';
+COMMENT ON COLUMN app_settings.value IS 'Setting value stored as text';
+
 CREATE TABLE phase
 (
     value       text PRIMARY KEY,
