@@ -262,9 +262,9 @@ it manually, either from the admin console, or by running the following commands
 # Login
 geyser kcadm --login
 # Retrieve hasura client id
-client_id="$(geyser kcadm get clients -r geyser -q clientId=hasura  | jq -r '.[].id')"
+client_id="$(geyser -s kcadm get clients -r geyser -q clientId=hasura  | jq -r '.[].id')"
 # Update client root URL
-geyser kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIENT_ROOT_URL>
+geyser -s kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIENT_ROOT_URL>
 ```
 
 ### Frontend

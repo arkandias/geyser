@@ -48,6 +48,7 @@ _geyser() {
     _arguments -s -S -C \
         '(-h --help)'{-h,--help}'[Show help message]' \
         '(-v --version)'{-v,--version}'[Show version information]' \
+        '(-s --silent)'{-s,--silent}'[Disable log messages]' \
         '1: :->cmds' \
         '*:: :->args'
 

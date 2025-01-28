@@ -49,6 +49,7 @@ Setup:
 Options:
   -h, --help        Show this help message
   -v, --version     Show version information
+  -s, --silent      Disable log messages
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -68,6 +69,11 @@ readonly GEYSER_HOME
 readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
 readonly KC_BACKUP_DIR="${GEYSER_HOME}/keycloak/backups"
 readonly LOG_DIR="${GEYSER_HOME}/logs"
+
+# Create required directories
+mkdir -p "${DB_BACKUP_DIR}"
+mkdir -p "${KC_BACKUP_DIR}"
+mkdir -p "${LOG_DIR}"
 
 # Environment Variables
 GEYSER_HOSTNAME="localhost" # Hostname where Geyser services will be accessible
@@ -100,10 +106,6 @@ done
 ###############################################################################
 
 main() {
-    setup_logging
-
-    debug "Entering main loop with args: $*"
-
     # If no arguments provided, show help
     if [[ "$#" -eq 0 ]]; then
         show_help
@@ -121,13 +123,18 @@ main() {
             echo "Geyser Administration Script v${VERSION}"
             exit 0
             ;;
+        -s | --silent)
+            LOG_LEVEL="SILENT"
+            shift
+            ;;
         *)
             break
             ;;
         esac
     done
 
-    load_configuration
+    setup_logging
+    validate_configuration
 
     # Execute command
     case "$1" in

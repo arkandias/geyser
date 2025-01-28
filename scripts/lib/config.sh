@@ -19,23 +19,13 @@ check_dependencies() {
 You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
 }
 
-load_configuration() {
-    debug "Loading configuration..."
+validate_configuration() {
+    debug "Validating configuration..."
     debug "Configuration: GEYSER_HOME=${GEYSER_HOME}"
-
-    # Create required directories
-    mkdir -p "${DB_BACKUP_DIR}"
-    mkdir -p "${KC_BACKUP_DIR}"
-
-    # Configure global variables
+    debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
     _validate_mode
     _validate_auth
     _validate_web
-
-    if [[ "${NO_WEB}" == "false" ]]; then
-        debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
-    fi
-
     _validate_env
 }
 
