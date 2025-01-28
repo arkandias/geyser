@@ -95,9 +95,9 @@ geyser start
 
 Available services:
 
-- Web Client: http://localhost
-- Keycloak Admin: http://localhost:8081
-- Hasura Console: `geyser hasura console`
+- Web client: http://localhost
+- Keycloak admin: http://localhost:8081
+- Hasura console: `geyser hasura console`
 
 ## Configuration
 
@@ -109,7 +109,7 @@ Geyser consists of the following main components:
     - Single Page Application (SPA)
     - Nginx routing all external access
 - Backend:
-    - PostgreSQL database for application data
+    - PostgreSQL instance storing application data
     - Hasura providing a GraphQL API
 - Authentication:
     - Keycloak handling user authentication
@@ -148,13 +148,13 @@ Activated by setting `MODE=production`. Enforces the following security measures
         - `private.key`: Private key
 - Secure container configuration:
     - Optimized Keycloak image
-    - Keycloak in production mode
+    - Keycloak running in production mode
     - Feature flags disabled
 - Restricted access:
     - CORS policy enabled for Hasura
-    - Hasura Console disabled
-    - Keycloak Hostname debug interface disabled
-    - Admin interfaces protected
+    - Hasura console disabled
+    - Keycloak hostname debug interface disabled
+    - Admin interfaces non exposed by reverse proxy
 
 ### Environment Variables
 
@@ -178,10 +178,10 @@ Variables in `.env.local` take precedence over those in `.env`.
 | `LOG_LEVEL`                   | `INFO`        | Logging threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`/`SILENT`)                                |
 | `NO_AUTH`                     | `false`       | Disable authentication (development only)                                                 |
 | `NO_WEB`                      | `false`       | Disable Nginx proxy (development only)                                                    |
-| `POSTGRES_PASSWORD`           | **Required**  | Main database superuser password                                                          |
+| `POSTGRES_PASSWORD`           | **Required**  | Password for the main database privileged role                                            |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret                                                                       |
-| `POSTGRES_KC_PASSWORD`        | __Required*__ | Keycloak database superuser password                                                      |
-| `KC_BOOTSTRAP_ADMIN_PASSWORD` | __Required*__ | Keycloak admin password                                                                   |
+| `POSTGRES_KC_PASSWORD`        | __Required*__ | Password for the Keycloak database privileged role                                        |
+| `KC_BOOTSTRAP_ADMIN_PASSWORD` | __Required*__ | Keycloak initial admin password                                                           |
 
 (*) Unless `NO_AUTH=true`
 
@@ -193,13 +193,16 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 #### PostgreSQL Database (db)
 
-- Geyser core database
+- Main database
 - Database name: `geyser`
 - Contains two schemas:
     - `public`: Application data
     - `hdb_catalog`: Hasura metadata
 - Host port: `5432`
 - Persistent volume: `data`
+- Access:
+    - Role: `postgres`
+    - Password: set in `POSTGRES_PASSWORD`
 
 #### Hasura GraphQL Engine (hasura)
 
@@ -220,6 +223,9 @@ Variables in `.env.local` take precedence over those in `.env`.
 - Database name: `keycloak`
 - Host port: `5433`
 - Persistent volume: `kc-data`
+- Access:
+    - Role: `postgres`
+    - Password: set in `POSTGRES_KC_PASSWORD`
 
 #### Keycloak Server (keycloak)
 
