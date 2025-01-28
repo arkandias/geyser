@@ -5,13 +5,12 @@ services:
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
     networks:
-      - frontend
+      - public
 
   hasura:
     networks:
-      - frontend
+      - public
   
   nginx:
     build: nginx
@@ -29,10 +28,10 @@ services:
     ports:
       - "80:80"
     networks:
-      - frontend
+      - public
     volumes:
       - ./nginx/templates/http:/etc/nginx/templates:ro
 
 networks:
-  frontend:
+  public:
  

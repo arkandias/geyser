@@ -111,11 +111,10 @@ ln -sf "${install_dir}/scripts/geyser" "${HOME}/.local/bin/geyser" || {
     echo "Error: Failed to create symlink to geyser in ~/.local/bin" >&2
     exit 1
 }
+echo "Added symlink to geyser in ~/.local/bin"
+echo "Make sure to add this directory to your PATH by adding the following line to your shell config file (e.g., ~/.bashrc or ~/.zshrc):"
+echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
 
 # Installation success messages
-echo "Added symlink to geyser in ~/.local/bin"
-echo "Make sure to add this directory to your PATH by adding the following line to your shell config file (e.g., ~/.bashrc, ~/.zshrc):"
-echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
-echo
 echo "Geyser installed successfully"
 echo "Navigate to the installation directory with 'cd ${install_dir}'"

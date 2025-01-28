@@ -7,6 +7,7 @@ declare -r LOG_LEVEL_DEBUG=1
 declare -r LOG_LEVEL_INFO=2
 declare -r LOG_LEVEL_WARN=3
 declare -r LOG_LEVEL_ERROR=4
+declare -r LOG_LEVEL_SILENT=4
 
 # ANSI color codes
 declare -r COLOR_RED='\033[31m'
@@ -20,7 +21,7 @@ setup_logging() {
     mkdir -p "${LOG_DIR}"
 
     LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" || {
-        echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, or ERROR)" >&2
+        echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, ERROR, or SILENT)" >&2
         exit 1
     }
     readonly LOG_LEVEL_NUM
@@ -30,14 +31,12 @@ setup_logging() {
 
 log_level() {
     case "$1" in
+    SILENT) echo "${LOG_LEVEL_SILENT}" ;;
     ERROR) echo "${LOG_LEVEL_ERROR}" ;;
     WARN) echo "${LOG_LEVEL_WARN}" ;;
     INFO | SUCCESS) echo "${LOG_LEVEL_INFO}" ;;
     DEBUG) echo "${LOG_LEVEL_DEBUG}" ;;
-    *)
-        echo "Invalid log level value '$1' (must be DEBUG, INFO, WARN, or ERROR)" >&2
-        exit 1
-        ;;
+    *) exit 1 ;;
     esac
 }
 

@@ -8,6 +8,5 @@
 /postgres/backups/
 !/postgres/backups/README.md
 .DS_Store
-.env
 *.local
 *.bak

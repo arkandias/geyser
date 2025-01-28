@@ -62,7 +62,7 @@ readonly VERSION="1.0.0"
 
 # Directory Setup
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
-: "${GEYSER_HOME:-"$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
+GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"
 readonly SCRIPT_DIR
 readonly GEYSER_HOME
 readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"

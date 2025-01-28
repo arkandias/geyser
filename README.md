@@ -28,20 +28,20 @@ or custom configurations, see the [Configuration](#configuration) section.
 
 #### Install Docker
 
-```bash
+```shell
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER  # Log out and back in after this
 ```
 
 #### Install Hasura CLI
 
-```bash
+```shell
 curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 ```
 
 #### Optional: Install additional tools
 
-```bash
+```shell
 # jq (needed for Keycloak sync)
 sudo apt install jq
 
@@ -53,37 +53,67 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 #### Download and Install
 
-```shell
-# Using curl
-curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
+- For the latest version (Geyser will be installed in `~/.geyser/master`):
 
-# Or specify a version
-curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | env GEYSER_VERSION=2.0 sh
+```shell
+curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
 ```
 
-#### Initial Setup
+- For a specific version (Geyser will be installed in `~/.geyser/${GEYSER_VERSION}`):
 
-```bash
-cd ~/.geyser/master     # Or cd ~/.geyser/${GEYSER_VERSION}
-cp .env.example .env    # Base development configuration
-./scripts/geyser init   # Initialize Geyser
+```shell
+export GEYSER_VERSION="1.2.3"
+curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
+```
+
+#### Post-installation
+
+If you get a "command not found" error when running `geyser` after installation, add `~/.local/bin` to your
+PATH by running the following command (for permanent configuration, add this command to your shell configuration file,
+e.g., `~/.bashrc` or `~/.zshrc`):
+
+```shell
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Alternatively, you can use `~/.geyser/master/scripts/geyser` (or `~/.geyser/${GEYSER_VERSION}/scripts/geyser`) instead
+of `geyser` in all the instructions below.
+
+#### Initialization
+
+```shell
+geyser init
 ```
 
 ### Start Geyser
 
 #### Start services
 
-```bash
-./scripts/geyser start
+```shell
+geyser start
 ```
 
 #### Access services
 
 - Web Client: http://localhost
 - Keycloak Admin: http://localhost:8081
-- Hasura Console: `./scripts/geyser hasura console`
+- Hasura Console: `geyser hasura console`
 
 ## Configuration
+
+### Architecture Overview
+
+Geyser consists of the following main components:
+
+- Frontend:
+    - Single Page Application (SPA)
+    - Nginx routing all external access
+- Backend:
+    - PostgreSQL database for application data
+    - Hasura providing a GraphQL API
+- Authentication:
+    - Keycloak handling user authentication
+    - Dedicated PostgreSQL database for Keycloak data
 
 ### Deployment Modes
 
@@ -91,31 +121,40 @@ Geyser supports two deployment modes controlled by the `MODE` environment variab
 
 #### Development Mode
 
-The default mode, optimized for local development with additional debugging features:
+The default mode, optimized for local development:
 
-- Hot reloading enabled
-- Development-specific containers (e.g., Keycloak in development mode)
-- Access to admin interfaces (Hasura Console, Keycloak Admin)
-- Optional components through feature flags:
+- Simplified configuration:
+    - No SSL/TLS certificates required
+    - No CORS restrictions on Hasura
+- Development features:
+    - Hasura Console enabled
+    - Keycloak in development mode with hostname debugging
 
-    - `NO_AUTH=true`: Disables Keycloak authentication, useful for rapid UI development
-    - `NO_WEB=true`: Disables Nginx reverse proxy, allowing direct service access
+Optional feature flags:
+
+- `NO_WEB=true`: Disable Nginx reverse proxy
+    - Allows direct access to services
+- `NO_AUTH=true`: Disable Keycloak authentication
+    - Useful for rapid UI development
+    - Automatically implies `NO_WEB=true`
 
 #### Production Mode
 
-Activated by setting `MODE=production`, applies production-grade configurations:
+Activated by setting `MODE=production`. Enforces the following security measures:
 
-- SSL/TLS encryption required
-    - Certificates must be placed in `nginx/certs/` directory
-    - See [here](nginx/certs/README.md) for details
-- Optimized container settings
-- Restricted admin interface access
-- All components required (feature flags disabled)
-- Enhanced security measures:
-
+- SSL/TLS encryption required:
+    - Place certificates in `nginx/certs/${GEYSER_HOSTNAME}/`:
+        - `fullchain.cer`: SSL certificate chain
+        - `private.key`: Private key
+- Secure container configuration:
+    - Optimized Keycloak image
     - Keycloak in production mode
+    - Feature flags disabled
+- Restricted access:
+    - CORS policy enabled for Hasura
     - Hasura Console disabled
-    - Strict CORS policies
+    - Keycloak Hostname debug interface disabled
+    - Admin interfaces protected
 
 ### Environment Variables
 
@@ -123,8 +162,10 @@ Activated by setting `MODE=production`, applies production-grade configurations:
 
 Geyser uses two environment files:
 
-- `.env`: Base configuration file
-- `.env.local`: Contains sensitive information (passwords, secrets, etc.)
+- `.env`: Base configuration file with default values
+- `.env.local`: Local overrides (not version-controlled)
+    - For sensitive information (passwords, secrets)
+    - For environment-specific settings (hostnames, ports)
 
 Variables in `.env.local` take precedence over those in `.env`.
 
@@ -134,19 +175,114 @@ Variables in `.env.local` take precedence over those in `.env`.
 |-------------------------------|---------------|-------------------------------------------------------------------------------------------|
 | `GEYSER_HOSTNAME`             | `localhost`   | Hostname (and optionally port number) where Geyser is served (e.g., `geyser.example.com`) |
 | `MODE`                        | `development` | Deployment mode (`development`/`production`)                                              |
+| `LOG_LEVEL`                   | `INFO`        | Logging threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`/`SILENT`)                                |
 | `NO_AUTH`                     | `false`       | Disable authentication (development only)                                                 |
 | `NO_WEB`                      | `false`       | Disable Nginx proxy (development only)                                                    |
-| `LOG_LEVEL`                   | `INFO`        | Logging threshold (`DEBUG`/`INFO`/`WARN`/`ERROR`)                                         |
 | `POSTGRES_PASSWORD`           | **Required**  | Main database superuser password                                                          |
-| `POSTGRES_KC_PASSWORD`        | Required*     | Keycloak database superuser password                                                      |
 | `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret                                                                       |
-| `KC_BOOTSTRAP_ADMIN_PASSWORD` | Required*     | Keycloak admin password                                                                   |
+| `POSTGRES_KC_PASSWORD`        | __Required*__ | Keycloak database superuser password                                                      |
+| `KC_BOOTSTRAP_ADMIN_PASSWORD` | __Required*__ | Keycloak admin password                                                                   |
 
 (*) Unless `NO_AUTH=true`
 
-### Customize the client image
+[//]: # (TODO: ### Customize the client)
 
-[...]
+## Detailed Architecture
+
+### Backend
+
+#### PostgreSQL Database (db)
+
+- Geyser core database
+- Database name: `geyser`
+- Contains two schemas:
+    - `public`: Application data
+    - `hdb_catalog`: Hasura metadata
+- Host port: `5432`
+- Persistent volume: `data`
+
+#### Hasura GraphQL Engine (hasura)
+
+- Provides GraphQL API for database access
+- API Authentication:
+    - Clients: using Keycloak JWTs (disabled if `NO_AUTH=true`)
+    - Admin: using Hasura admin secret set in `HASURA_GRAPHQL_ADMIN_SECRET` (localhost only &ndash; external access
+      blocked by Nginx)
+- Host port: `8080`
+- Public endpoint (through Nginx): `/graphql`
+- Console (development mode only): run `geyser hasura console` (served at http://localhost:9695 by default)
+
+### Authentication
+
+#### Keycloak Database (kc-db)
+
+- Dedicated database for Keycloak data
+- Database name: `keycloak`
+- Host port: `5433`
+- Persistent volume: `kc-data`
+
+#### Keycloak Server
+
+- Identity and access management
+- Contains two realms:
+    - `master`: for Keycloak administration
+    - `geyser`: for application users
+        - Contains `hasura` client
+        - Issues JWTs used to authenticate requests to Hasura's API
+- Host ports:
+    - `8081` (HTTP)
+    - `8443` (HTTPS)
+    - `9000` (management interface)
+- Public endpoints (through Nginx):
+    - `/auth/realms/`: OpenID Connect endpoints
+    - `/auth/resources/`: Static assets
+- Admin console: http://localhost:8081/admin
+    - User: `admin`
+    - Password: set in `KC_BOOTSTRAP_ADMIN_PASSWORD`
+- Management interface:
+    - Metrics: http://localhost:9000/metrics
+    - Health: http://localhost:9000/health
+- Customizable features (configurable in admin console):
+    - Identity providers (SAML, LDAP, Social)
+    - Email settings
+    - Security policies
+    - ...
+- User synchronization with application data: run `geyser sync-keycloak`
+
+**Important note:** On the first start, the realm `geyser` will be imported from `keycloak/templates/geyser-realm.json`.
+The root URL of the client `hasura` will be set as:
+
+- `http://${GEYSER_HOSTNAME}` in development mode
+- `https://${GEYSER_HOSTNAME}` in production mode
+
+If you later want to change this URL (e.g., when switching from development mode to production mode), you'll need to set
+it manually, either from the admin console, or by running the following commands:
+
+```shell
+# Login
+geyser kcadm --login
+# Retrieve hasura client id
+client_id="$(geyser kcadm get clients -r geyser -q clientId=hasura  | jq -r '.[].id')"
+# Update client root URL
+geyser kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIENT_ROOT_URL>
+```
+
+### Frontend
+
+#### Nginx Reverse Proxy
+
+- Single entry point for all client traffic
+- Routes:
+    - `/auth/*` → Keycloak
+    - `/graphql` → Hasura API (with WebSocket support)
+    - `/` → SPA static files
+- Production mode:
+    - SSL/TLS termination
+    - Certificate path: `nginx/certs/${GEYSER_HOSTNAME}/`
+    - HTTP → HTTPS redirection
+- Host ports:
+    - Development: `80`
+    - Production: `80` (redirect), `443` (SSL)
 
 ## Architecture
 
@@ -247,17 +383,17 @@ With Nginx reverse proxy (assuming `GEYSER_HOSTNAME=example.com`):
 
 ### Network Layout
 
-#### Frontend Network (frontend)
+#### Frontend Network (public)
 
 - Nginx
 - Public service endpoints
 
-#### Auth Internal Network (auth-internal)
+#### Auth Internal Network (auth-api)
 
 - Keycloak
 - Hasura (for JWT verification)
 
-#### Data Storage Networks (data-storage, auth-storage)
+#### Data Storage Networks (app-db, auth-db)
 
 - Main database network
 - Keycloak database network
@@ -269,7 +405,7 @@ With Nginx reverse proxy (assuming `GEYSER_HOSTNAME=example.com`):
 [//]: # (TODO)
 
 ```shell
-./scripts/geyser completion
+geyser completion
 ```
 
 ### Automatic Backups
@@ -295,10 +431,9 @@ Example crontab configurations:
 #   0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
 ```
 
-## Contact
+## Contributing
 
-For any questions, comments, suggestions for improvements, or to report any errors or possible bugs, please contact
-Julien Hauseux <[julien.hauseux@univ-lille.fr](mailto:julien.hauseux@univ-lille.fr)>.
+Bug reports, feature requests, and pull requests are welcome on GitHub.
 
 ## License
 

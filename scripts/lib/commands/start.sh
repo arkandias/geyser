@@ -13,8 +13,6 @@ Nginx web server (in production mode).
 
 Options:
   -h, --help        Show this help message
-  --no-auth         Disable Keycloak authentication service (development mode only)
-  --no-web          Disable Nginx reverse proxy frontend (development mode only)
 
 Note: Run 'geyser init' first if this is a fresh installation.
 EOF
