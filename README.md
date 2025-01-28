@@ -24,22 +24,22 @@ or custom configurations, see the [Configuration](#configuration) section.
 - jq (for Keycloak synchronization)
 - Oh My Zsh (for shell completion)
 
-### Installation Steps
+#### Install Dependencies
 
-#### Install Docker
+Install Docker with Docker Compose:
 
 ```shell
 curl -fsSL https://get.docker.com | sh
 sudo usermod -aG docker $USER  # Log out and back in after this
 ```
 
-#### Install Hasura CLI
+Install Hasura CLI:
 
 ```shell
 curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 ```
 
-#### Optional: Install additional tools
+Optional tools:
 
 ```shell
 # jq (needed for Keycloak sync)
@@ -49,51 +49,51 @@ sudo apt install jq
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
-### Install Geyser
+### Installation
 
-#### Download and Install
-
-- For the latest version (Geyser will be installed in `~/.geyser/master`):
+Download and install the latest version (in `~/.geyser/master`):
 
 ```shell
 curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
 ```
 
-- For a specific version (Geyser will be installed in `~/.geyser/${GEYSER_VERSION}`):
+Or for a specific version (in `~/.geyser/${GEYSER_VERSION}`):
 
 ```shell
 export GEYSER_VERSION="1.2.3"
 curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
 ```
 
-#### Post-installation
+### Setup
 
-If you get a "command not found" error when running `geyser` after installation, add `~/.local/bin` to your
-PATH by running the following command (for permanent configuration, add this command to your shell configuration file,
-e.g., `~/.bashrc` or `~/.zshrc`):
-
-```shell
-export PATH="$HOME/.local/bin:$PATH"
-```
-
-Alternatively, you can use `~/.geyser/master/scripts/geyser` (or `~/.geyser/${GEYSER_VERSION}/scripts/geyser`) instead
-of `geyser` in all the instructions below.
-
-#### Initialization
+Initialize Geyser:
 
 ```shell
 geyser init
 ```
 
-### Start Geyser
+If you get a "command not found" error, you need to add the Geyser binary to your PATH:
 
-#### Start services
+```shell
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make it permanent.
+
+Alternatively, you can use the full path to the script:
+
+- Latest version: `~/.geyser/master/scripts/geyser`
+- Specific version: `~/.geyser/${GEYSER_VERSION}/scripts/geyser`
+
+### First start
+
+Start all services:
 
 ```shell
 geyser start
 ```
 
-#### Access services
+Available services:
 
 - Web Client: http://localhost
 - Keycloak Admin: http://localhost:8081
@@ -221,7 +221,7 @@ Variables in `.env.local` take precedence over those in `.env`.
 - Host port: `5433`
 - Persistent volume: `kc-data`
 
-#### Keycloak Server
+#### Keycloak Server (keycloak)
 
 - Identity and access management
 - Contains two realms:
@@ -269,140 +269,93 @@ geyser -s kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIEN
 
 ### Frontend
 
-#### Nginx Reverse Proxy
+#### Nginx Reverse Proxy (nginx)
 
 - Single entry point for all client traffic
 - Routes:
-    - `/auth/*` → Keycloak
-    - `/graphql` → Hasura API (with WebSocket support)
-    - `/` → SPA static files
+    - `/auth/realms/`: to Keycloak OpenID Connect endpoints
+    - `/auth/resources/`: to Keycloak assets
+    - `/graphql`: to Hasura API (with WebSocket support)
+    - `/`: to Geyser web client (SPA)
+- Host configuration:
+    - Configured via `GEYSER_HOSTNAME` environment variable
+    - Used for both hostname resolution and certificate directory
+    - Examples:
+        - Development: `localhost`
+        - Production: `geyser.example.com`
 - Production mode:
-    - SSL/TLS termination
-    - Certificate path: `nginx/certs/${GEYSER_HOSTNAME}/`
-    - HTTP → HTTPS redirection
-- Host ports:
-    - Development: `80`
-    - Production: `80` (redirect), `443` (SSL)
-
-## Architecture
-
-Geyser is built on a modern containerized stack with the following components:
-
-### Core Services
-
-#### PostgreSQL (db)
-
-- Primary data store for application data
-- Version: 16
-- Database name: `geyser`
-    - `public` schema: Application data
-    - `hdb_catalog` schema: Hasura metadata
-- Host port: `5432`
-- Persistent volume: `data`
-
-#### Hasura GraphQL Engine (hasura)
-
-- GraphQL API layer
-- JWT authentication via Keycloak integration
-- Database schema and metadata management
-
-### Authentication Layer
-
-#### Keycloak Database (kc-db)
-
-- Dedicated PostgreSQL instance (version 16)
-- Database name: `keycloak`
-- Host port: `5433`
-- Persistent volume: `kc-data`
-
-#### Keycloak Server (keycloak)
-
-- Identity and access management
-- JWT token provider for Hasura
-- Admin interface for user management
-
-#### Realms
-
-- **Master realm**: Administrative realm for Keycloak itself
-- **Geyser realm**: Application-specific realm containing:
-    - Hasura client configuration
-    - User management
-    - Role definitions
-
-#### Configuration
-
-- Initialization:
-    - Realms imported on startup
-    - `HASURA_CLIENT_ROOT_URL` set during import
-    - Must be manually updated in admin console if `GEYSER_HOSTNAME` changes
-
-#### Customizable Features
-
-Available through admin console:
-
-- Password recovery email settings
-- Events logging and expiration
-- Internationalization (default: French)
-- Brute-force protection
-- Account lockout policies
-- Identity providers:
-    - SAML federations (e.g., RENATER for French higher education)
-    - Enterprise directory services (LDAP/Active Directory)
-    - Social login providers (Google, Facebook, etc.)
-
-### Frontend Proxy
-
-#### Nginx (nginx)
-
-- Production mode features:
-    - SSL/TLS termination
-    - HTTP → HTTPS redirection
-    - Admin secret stripping for Hasura
-- Proxying features:
-    - WebSocket support for GraphQL subscriptions
-    - `X-Forwarded-*` headers for proper client info
-    - Path-based prefix handling
-
-#### Endpoints
-
-With `NO_WEB=true`, services are directly accessible:
-
-- Hasura Console: http://localhost:8080
-- Keycloak Admin: http://localhost:8081
-- SPA: http://localhost
-
-With Nginx reverse proxy (assuming `GEYSER_HOSTNAME=example.com`):
-
-| Service  | Public URL                          | Internal Route           |
-|----------|-------------------------------------|--------------------------|
-| Keycloak | https://example.com/auth/js/        | keycloak:8443/js/        |
-|          | https://example.com/auth/realms/    | keycloak:8443/realms/    |
-|          | https://example.com/auth/resources/ | keycloak:8443/resources/ |
-| Hasura   | https://example.com/graphql         | hasura:8080/v1/graphql   |
-| SPA      | https://example.com/                | /usr/share/nginx/html    |
+    - SSL/TLS encryption with certificates in `nginx/certs/${GEYSER_HOSTNAME}/`:
+        ```
+        nginx/certs/
+        └── geyser.example.com/
+            ├── fullchain.cer   # Certificate chain
+            └── private.key     # Private key
+        ```
+    - Admin secret header stripped from GraphQL requests
+    - HTTP → HTTPS redirect (port 80 → 443)
 
 ### Network Layout
 
-#### Frontend Network (public)
+The application is divided into four isolated networks:
 
-- Nginx
-- Public service endpoints
+- `app-db`: Database access
+    - PostgreSQL database
+    - Hasura GraphQL Engine
 
-#### Auth Internal Network (auth-api)
+- `auth-db`: Authentication storage
+    - Keycloak database
+    - Keycloak server
 
-- Keycloak
-- Hasura (for JWT verification)
+- `auth-api`: Internal authentication
+    - Keycloak server
+    - Hasura GraphQL Engine (for JWT authentication)
 
-#### Data Storage Networks (app-db, auth-db)
-
-- Main database network
-- Keycloak database network
+- `public`: External access
+    - Nginx reverse proxy
+    - Keycloak server (for authentication endpoints)
+    - Hasura GraphQL Engine (for API access)
 
 ## Administration
 
-### Shell completion
+### Administration Script
 
-[//]: # (TODO)
+The `geyser` script provides a comprehensive set of commands to manage your installation:
+
+#### Core Commands
+
+- `init`: Initialize Geyser installation
+- `start`: Start Geyser services
+- `stop`: Stop Geyser services
+- `update`: Update Geyser services
+- `reset`: Clear all Geyser data
+
+#### Data Management
+
+- `backup`: Create PostgreSQL backup
+- `restore`: Restore from backup
+- `realms-export`: Export Keycloak realms
+- `realms-import`: Import Keycloak realms
+- `sync-keycloak`: Synchronize Keycloak with app data
+
+#### Development Tools
+
+- `compose`: Docker Compose wrapper
+- `hasura`: Hasura CLI wrapper
+- `kc`: Keycloak CLI access
+- `kcadm`: Keycloak Admin CLI access
+- `rsync`: Configured rsync wrapper
+
+#### Options
+
+- `-h, --help`: Show help message
+- `-v, --version`: Show version information
+- `-s, --silent`: Disable log messages
+
+Run `geyser COMMAND --help` for more information on a command.
+
+### Shell Completion
+
+For Oh My Zsh users, shell completion can be installed with:
 
 ```shell
 geyser completion
@@ -410,25 +363,25 @@ geyser completion
 
 ### Automatic Backups
 
-A script is provided to automatically create a backup of Geyser and upload it to a WebDAV server (like Nextcloud).
-The script can be scheduled via crontab for regular backups.
+The script `scripts/backup-webdav` is provided to automatically create a backup of Geyser and upload it to a WebDAV
+server (like Nextcloud). It can be scheduled via crontab for regular backups.
 
-Required environment variables:
+Configuration:
 
-- `WEBDAV_URL`: Base URL of the WebDAV server
-- `WEBDAV_USER`: WebDAV username
-- `WEBDAV_PASS`: WebDAV password
+- Required environment variables:
+    - `WEBDAV_URL`: Base URL of the WebDAV server
+    - `WEBDAV_USER`: WebDAV username
+    - `WEBDAV_PASS`: WebDAV password
+- Can be set in `.env`, `.env.local`, or environment
 
-These variables can be set in `.env`, `.env.local`, or directly in the environment.
-
-Example crontab configurations:
+Example crontab entries:
 
 ```
-#   # Hourly backups in June and July
-#   0 * * 6,7 * /path/to/scripts/backup-webdav
-#
-#   # Daily at 3:00 AM every month except June and July
-#   0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
+# Hourly backups in June and July
+0 * * 6,7 * /path/to/scripts/backup-webdav
+
+# Daily at 3:00 AM other months
+0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
 ```
 
 ## Contributing

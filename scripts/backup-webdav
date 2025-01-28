@@ -19,7 +19,16 @@
 #   # Daily at 3:00 AM every month except June and July
 #   0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
 
+# Exit the script immediately if any command fails
 set -e
+
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
+GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"
+readonly SCRIPT_DIR
+readonly GEYSER_HOME
+
+source "${GEYSER_HOME}"/.env
+source "${GEYSER_HOME}"/.env.local
 
 error() {
     echo "Error: $1" >&2
@@ -29,14 +38,6 @@ error() {
 warn() {
     echo "Warning: $1" >&2
 }
-
-SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &>/dev/null && pwd)"
-: "${GEYSER_HOME:-"$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
-
-readonly GEYSER_HOME
-
-source "${GEYSER_HOME}"/.env
-source "${GEYSER_HOME}"/.env.local
 
 required_vars=(
     "WEBDAV_URL"
@@ -58,8 +59,8 @@ readonly remote_backup_dir="${REMOTE_BACKUPS_DIR}/${timestamp}"
 echo "Local backup directory: ${local_backup_dir}"
 echo "Remote backup directory: ${remote_backup_dir}"
 
-echo "Backing up Geyser..."
-"${GEYSER_HOME}/geyser" backup --name="${timestamp}" || error "Backup failed"
+# Backup Geyser
+"${SCRIPT_DIR}/geyser" backup --name="${timestamp}"
 
 shopt -s nullglob
 for file in "${local_backup_dir}"/*.dump; do
