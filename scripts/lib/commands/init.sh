@@ -50,7 +50,8 @@ handle_init() {
 
     info "Initializing Geyser database..."
     wait_until_healthy db
-    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql && psql -U postgres -d geyser -f /initdb/core_data.sql"
+    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql"
+    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/core_data.sql"
 
     info "Applying Hasura metadata..."
     wait_until_healthy hasura
