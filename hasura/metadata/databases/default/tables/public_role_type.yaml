@@ -1,28 +1,26 @@
 table:
-  name: position
+  name: role_type
   schema: public
 array_relationships:
-  - name: teachers
+  - name: roles
     using:
       foreign_key_constraint_on:
-        column: position
+        column: type
         table:
-          name: teacher
+          name: role
           schema: public
 select_permissions:
   - role: commissioner
     permission:
       columns:
-        - base_service_hours
         - description
-        - label
         - value
       filter: {}
+    comment: ""
   - role: teacher
     permission:
       columns:
-        - base_service_hours
         - description
-        - label
         - value
       filter: {}
+    comment: ""

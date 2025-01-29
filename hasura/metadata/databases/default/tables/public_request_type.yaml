@@ -13,6 +13,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - description
         - value
       filter:
         _exists:
@@ -29,6 +30,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - description
         - value
       filter:
         _exists:

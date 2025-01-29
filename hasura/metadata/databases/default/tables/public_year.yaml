@@ -20,6 +20,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - comment
         - current
         - value
         - visible
@@ -38,6 +39,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - comment
         - current
         - value
         - visible

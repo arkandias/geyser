@@ -1,3 +1,4 @@
+- "!include public_app_settings.yaml"
 - "!include public_coordination.yaml"
 - "!include public_course.yaml"
 - "!include public_course_type.yaml"
@@ -8,6 +9,8 @@
 - "!include public_program.yaml"
 - "!include public_request.yaml"
 - "!include public_request_type.yaml"
+- "!include public_role.yaml"
+- "!include public_role_type.yaml"
 - "!include public_service.yaml"
 - "!include public_service_modification.yaml"
 - "!include public_service_modification_type.yaml"
