@@ -182,11 +182,11 @@ _sync_group() {
     kc_members_to_remove="$(
         jq --argjson members "${updated_members_list}" 'map(select(.username | IN($members[]) | not))' <<<"${kc_members}"
     )"
-    mapfile -t kc_members_to_remove_array < <(jq -r '.[] | "\(.id)\u001f\(.username)"' <<<"${kc_members_to_remove}")
+    mapfile -t kc_members_to_remove_array < <(echo "${kc_members_to_remove}" | jq -c '.[]')
     for kc_member in "${kc_members_to_remove_array[@]}"; do
         local kc_member_id kc_member_name
-        kc_member_id="${kc_member%%$'\u001f'*}"
-        kc_member_name="${kc_member#*$'\u001f'}"
+        kc_member_id="$(echo "${kc_member}" | jq -r '.id')"
+        kc_member_name="$(echo "${kc_member}" | jq -r '.username')"
         info "Removing user ${kc_member_name} from group ${kc_group_name}..."
         kcadm delete "users/${kc_member_id}/groups/${kc_group_id}" -r geyser || {
             warn "Failed to remove user ${kc_member_name} from group ${kc_group_name}"
@@ -200,11 +200,11 @@ _sync_group() {
     kc_users_to_add="$(
         jq --argjson members "${updated_members_list}" 'map(select(.username | IN($members[])))' <<<"${kc_non_members}"
     )"
-    mapfile -t kc_users_to_add_array < <(jq -r '.[] | "\(.id)\u001f\(.username)"' <<<"${kc_users_to_add}")
+    mapfile -t kc_users_to_add_array < <(echo "${kc_users_to_add}" | jq -c '.[]')
     for kc_user in "${kc_users_to_add_array[@]}"; do
         local kc_user_id kc_user_name
-        kc_user_id="${kc_user%%$'\u001f'*}"
-        kc_user_name="${kc_user#*$'\u001f'}"
+        kc_user_id="$(echo "${kc_user}" | jq -r '.id')"
+        kc_user_name="$(echo "${kc_user}" | jq -r '.username')"
         info "Adding user ${kc_user_name} to group ${kc_group_name}..."
         kcadm update "users/${kc_user_id}/groups/${kc_group_id}" -r geyser || {
             warn "Failed to add user ${kc_user_name} to group ${kc_group_name}"
@@ -223,11 +223,11 @@ _disable_inactive_teachers() {
     kc_users_to_disable="$(
         jq --argjson active "${active_teachers}" 'map(select(.username | IN($active[].uid) | not))' <<<"${kc_enabled_users}"
     )"
-    mapfile -t kc_users_to_disable_array < <(jq -r '.[] | "\(.id)\u001f\(.username)"' <<<"${kc_users_to_disable}")
+    mapfile -t kc_users_to_disable_array < <(echo "${kc_users_to_disable}" | jq -c '.[]')
     for kc_user in "${kc_users_to_disable_array[@]}"; do
         local kc_user_id kc_user_name
-        kc_user_id="${kc_user%%$'\u001f'*}"
-        kc_user_name="${kc_user#*$'\u001f'}"
+        kc_user_id="$(echo "${kc_user}" | jq -r '.id')"
+        kc_user_name="$(echo "${kc_user}" | jq -r '.username')"
         info "Disabling user ${kc_user_name}..."
         kcadm update "users/${kc_user_id}" -r geyser -s enabled=false || {
             warn "Failed to disable user '${kc_user_name}'"
