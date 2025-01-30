@@ -84,7 +84,8 @@
         "/*"
       ],
       "webOrigins": [
-        "+"
+        "+",
+        "http://localhost:5173"
       ],
       "notBefore": 0,
       "bearerOnly": false,

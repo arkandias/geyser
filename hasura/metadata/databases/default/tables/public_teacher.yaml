@@ -102,7 +102,6 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-      limit: 1
     comment: Lorsque Geyser est ouvert, les teachers peuvent voir les teachers visibles.
 update_permissions:
   - role: teacher
