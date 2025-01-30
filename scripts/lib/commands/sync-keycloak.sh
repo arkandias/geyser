@@ -4,12 +4,14 @@
 
 show_sync_keycloak_help() {
     cat <<EOF
-Synchronize Keycloak users with active teachers
+Synchronize Keycloak users and groups with application data
 
 Usage: geyser sync-keycloak
-
-Create or update Keycloak users based on active teachers in Geyser database.
-Disable Keycloak users not corresponding to active teachers.
+  
+Update Keycloak users and groups based on Geyser main database:
+- Create or update users corresponding to active teachers
+- Disable other users
+- Update group memberships (Teacher, Commission, Admin) based on roles
 
 Options:
   -h, --help        Show this help message

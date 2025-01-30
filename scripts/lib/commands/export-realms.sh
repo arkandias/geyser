@@ -4,19 +4,21 @@
 
 show_realms_export_help() {
     cat <<EOF
-Export Keycloak realms configuration
+Export Keycloak configuration
 
 Usage: geyser realms-export
 
+Export Keycloak realms and users in a subdirectory of keycloak/backups.
+
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the export
+  --name            Set the name of the export (prompt for name if not set)
 
 Note: Services must be stopped before export.
 EOF
 }
 
-handle_realms_export() {
+handle_export_realms() {
     local backup backup_path
 
     # Parse options
@@ -82,6 +84,6 @@ handle_realms_export() {
     info "Stopping services..."
     compose down
 
-    success "Realms export completed successfully in ${backup_path}.
+    success "Realms exported successfully in ${backup_path}
 Restart Geyser with 'geyser start'"
 }

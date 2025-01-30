@@ -24,17 +24,17 @@ _geyser() {
 
     # shellcheck disable=SC2034
     local -a commands=(
-        'init:Initialize Geyser installation'
+        'init:Initialize a fresh Geyser installation'
         'start:Start Geyser services'
         'stop:Stop Geyser services'
         'restart:Restart Geyser services'
         'update:Update Geyser services'
-        'reset:Clear all Geyser data'
-        'backup:Create PostgreSQL backup'
-        'restore:Restore from backup'
-        'realms-export:Export Keycloak realms'
-        'realms-import:Import Keycloak realms'
-        'sync-keycloak:Synchronize Keycloak with app data'
+        'reset:Reset Geyser to a fresh installation'
+        'backup:Create a backup of Geyser main database'
+        'restore:Restore Geyser main database from a backup'
+        'export-realms:Export Keycloak realms and users'
+        'import-realms:Import Keycloak realms and users'
+        'sync-keycloak:Synchronize Keycloak users and groups with app data'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
@@ -61,25 +61,25 @@ _geyser() {
         backup)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Name for the backup]:name'
+                '--name[Set the name of the backup]:name'
             ;;
         restore)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Name of the backup to restore]:name'
+                '--name[Set the name of the backup]:name'
             ;;
-        realms-export)
+        export-realms)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]:name' \
-                '--name[Name for the export]'
+                '--name[Set the name of the export]'
             ;;
-        realms-import)
+        import-realms)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Name of the export to import]:name'
+                '--name[Set the name of the export]:name'
             ;;
         kc)
-            _arguments '--restart-with[Restart container and run given command]:command'
+            _arguments '--restart-with[Restart container and run command]:command'
             ;;
         kcadm)
             _arguments '--login[Start an authenticated session]'

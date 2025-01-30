@@ -8,13 +8,13 @@ Initialize a fresh Geyser installation
 
 Usage: geyser init
 
-Creates required data volumes, initializes databases, starts services and
-applies initial configuration.
+Pull and build Docker images, start services, initialize the main database,
+apply Hasura metadata, stop services, and clean up.
 
 Options:
   -h, --help        Show this help message
 
-Note: Use 'geyser reset' first if you need to start fresh.
+Note: Run 'geyser reset' first if you need to start fresh.
 EOF
 }
 
@@ -63,5 +63,6 @@ handle_init() {
     info "Cleaning up..."
     docker system prune -f
 
-    success "Initialization completed successfully. Start Geyser with 'geyser start'"
+    success "Initialization completed successfully
+Start Geyser with 'geyser start'"
 }

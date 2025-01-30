@@ -4,12 +4,13 @@
 
 show_completion_help() {
     cat <<EOF
-Install shell completion
+Install zsh completion (using oh-my-zsh)
 
 Usage: geyser completion
 
-Install completion scripts for bash or zsh (using oh-my-zsh).
-Updates PATH and GEYSER_HOME environment variables if needed.
+- Add zsh completion scripts for geyser, docker, hasura, and keycloak into the
+dedicated Oh My Zsh directory ($ZSH/completions).
+- Set GEYSER_HOME environment variable in .zshrc.
 
 Options:
   -h, --help        Show this help message
@@ -46,20 +47,11 @@ Create it in ${omz_completions}?" "y"; then
         warn "Failed to install Docker completion script"
     }
 
-    if confirm "Add GEYSER_HOME to your .zshrc (required for docker compose, hasura, and rsync wrappers completion)?" "y"; then
+    if confirm "Add GEYSER_HOME to your .zshrc (required for wrappers completion)?" "y"; then
         # Remove any existing GEYSER_HOME line
         sed_i '/^export GEYSER_HOME=/d' "${HOME}/.zshrc"
         # Add the new GEYSER_HOME line at the end of .zshrc
         echo "export GEYSER_HOME=${GEYSER_HOME}" >>"${HOME}/.zshrc"
-    fi
-
-    if confirm "Add this script to your PATH via ~/.local/bin?" "y"; then
-        if [[ ! "${PATH}" =~ (^|:)"${HOME}/.local/bin"(:|$) ]]; then
-            # shellcheck disable=SC2016
-            echo 'export PATH="$HOME/.local/bin:$PATH"' >>"${HOME}/.zshrc"
-        fi
-        mkdir -p "${HOME}/.local/bin"
-        ln -sf "${GEYSER_HOME}/scripts/geyser" "${HOME}/.local/bin/geyser"
     fi
 
     success "Completion installed successfully"

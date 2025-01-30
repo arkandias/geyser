@@ -8,8 +8,8 @@ Start Geyser services
 
 Usage: geyser start
 
-Start PostgreSQL databases, Keycloak authentication, Hasura GraphQL engine, and
-Nginx web server (in production mode).
+Start PostgreSQL databases, Hasura GraphQL engine, Keycloak authentication
+(unless NO_AUTH=true), and Nginx web server (unless NO_WEB=true).
 
 Options:
   -h, --help        Show this help message

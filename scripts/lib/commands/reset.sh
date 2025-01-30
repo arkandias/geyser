@@ -4,7 +4,7 @@
 
 show_reset_help() {
     cat <<EOF
-Reset Geyser to a clean state
+Reset Geyser to a fresh installation
 
 Usage: geyser reset
 
@@ -14,7 +14,8 @@ up logs.
 Options:
   -h, --help        Show this help message
 
-Warning: This will delete data. Make backups first.
+Warning: This will delete all data. Run 'geyser backup' first to backup the
+application data, and 'geyser export-realms' to export Keycloak configuration.
 EOF
 }
 
@@ -46,8 +47,6 @@ handle_reset() {
     info "Removing logs..."
     rm -rf "${LOG_DIR:?}"/*
 
-    info "Cleaning up..."
-    docker system prune -f
-
-    success "Reset completed successfully. Initialize Geyser with 'geyser init'"
+    success "Reset completed successfully
+Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser restore'"
 }

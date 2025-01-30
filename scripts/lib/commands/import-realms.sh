@@ -4,19 +4,21 @@
 
 show_realms_import_help() {
     cat <<EOF
-Import Keycloak realms configuration
+Import Keycloak configuration
 
 Usage: geyser realms-import
 
+Import Keycloak realms and users from the list of previous exports.
+
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the import
+  --name            Set the name of the export (prompt for name if not set)
 
 Note: Services must be stopped before import.
 EOF
 }
 
-handle_realms_import() {
+handle_import_realms() {
     local backup backup_path
 
     # Parse options
@@ -68,6 +70,6 @@ handle_realms_import() {
     info "Stopping services..."
     compose down
 
-    success "Realms import completed successfully.
+    success "Realms imported successfully
 Restart Geyser with 'geyser start'"
 }

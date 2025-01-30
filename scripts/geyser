@@ -23,18 +23,18 @@ Geyser Administration Script v${VERSION}
 Usage: geyser [OPTIONS] COMMAND
 
 Core Commands:
-  init              Initialize Geyser installation
+  init              Initialize a fresh Geyser installation
   start             Start Geyser services
   stop              Stop Geyser services
   update            Update Geyser services
-  reset             Clear all Geyser data
+  reset             Reset Geyser to a fresh installation
 
 Data Management:
-  backup            Create PostgreSQL backup
-  restore           Restore from backup
-  realms-export     Export Keycloak realms
-  realms-import     Import Keycloak realms
-  sync-keycloak     Synchronize Keycloak with app data
+  backup            Create a backup of Geyser main database
+  restore           Restore Geyser main database from a backup
+  export-realms     Export Keycloak realms and users
+  import-realms     Import Keycloak realms and users
+  sync-keycloak     Synchronize Keycloak users and groups with app data
 
 Development Tools:
   compose           Docker Compose wrapper
@@ -44,7 +44,7 @@ Development Tools:
   rsync             Configured rsync wrapper 
 
 Setup:
-  install-completion    Install zsh completion (with oh-my-zsh)
+  install-completion    Install zsh completion (using oh-my-zsh)
 
 Options:
   -h, --help        Show this help message
@@ -166,13 +166,13 @@ main() {
         shift
         handle_restore "$@"
         ;;
-    realms-export)
+    export-realms)
         shift
-        handle_realms_export "$@"
+        handle_export_realms "$@"
         ;;
-    realms-import)
+    import-realms)
         shift
-        handle_realms_import "$@"
+        handle_import_realms "$@"
         ;;
     sync-keycloak)
         shift

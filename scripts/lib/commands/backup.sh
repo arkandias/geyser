@@ -4,15 +4,15 @@
 
 show_backup_help() {
     cat <<EOF
-Create backup of PostgreSQL databases
+Create a backup of Geyser main database
 
 Usage: geyser backup
 
-Dump Keycloak and Geyser databases. Backups are stored in postgres/backups.
+Dump Geyser main database into a subdirectory of postgres/backups.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup to create
+  --name            Set the name of the backup (prompt for name if not set)
 EOF
 }
 
@@ -45,16 +45,13 @@ handle_backup() {
         backup=$(date +%Y-%m-%d-%H-%M-%S)
         while true; do
             prompt "Enter a backup name [${backup}]:"
-
             if [[ -z "${INPUT}" ]]; then
                 break
             fi
-
             if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
                 backup="${INPUT}"
                 break
             fi
-
             warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
@@ -66,13 +63,9 @@ handle_backup() {
     fi
     mkdir -p "${backup_path}"
 
-    info "Backing up databases in ${backup_path}:"
-    info "→ Backing up Keycloak database..."
-    compose exec -T kc-db bash -c \
-        "pg_dump -U postgres -d keycloak -Fc > /backups/${backup}/keycloak.dump"
-    info "→ Backing up Geyser database..."
+    info "Creating a backup in ${backup_path}..."
     compose exec -T db bash -c \
         "pg_dump -U postgres -d geyser -Fc > /backups/${backup}/geyser.dump"
 
-    success "Backup completed successfully in ${backup_path}"
+    success "Backup created successfully in ${backup_path}"
 }

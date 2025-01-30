@@ -219,7 +219,7 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 #### Keycloak Database (kc-db)
 
-- Dedicated database for Keycloak data
+- Dedicated database for Keycloak
 - Database name: `keycloak`
 - Host port: `5433`
 - Persistent volume: `kc-data`
@@ -329,19 +329,19 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 
 #### Core Commands
 
-- `init`: Initialize Geyser installation
+- `init`: Initialize a fresh Geyser installation
 - `start`: Start Geyser services
 - `stop`: Stop Geyser services
 - `update`: Update Geyser services
-- `reset`: Clear all Geyser data
+- `reset`: Reset Geyser to a fresh installation
 
 #### Data Management
 
-- `backup`: Create PostgreSQL backup
-- `restore`: Restore from backup
-- `realms-export`: Export Keycloak realms
-- `realms-import`: Import Keycloak realms
-- `sync-keycloak`: Synchronize Keycloak with app data
+- `backup`: Create a backup of Geyser main database
+- `restore`: Restore Geyser main database from a backup
+- `export-realms`: Export Keycloak realms and users
+- `import-realms`: Import Keycloak realms and users
+- `sync-keycloak`: Synchronize Keycloak users and groups with app data
 
 #### Development Tools
 
@@ -364,7 +364,7 @@ Run `geyser COMMAND --help` for more information on a command.
 For Oh My Zsh users, shell completion can be installed with:
 
 ```shell
-geyser completion
+geyser install-completion
 ```
 
 ### Automatic Backups

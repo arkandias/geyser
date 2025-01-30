@@ -4,15 +4,15 @@
 
 show_restore_help() {
     cat <<EOF
-Restore databases from a previous backup
+Restore Geyser main database from a previous backup
 
 Usage: geyser restore
 
-List available backups and restore selected backup to databases.
+Restore a backup from the list of previous backups.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup to restore
+  --name            Set the name of the backup (prompt for name if not set)
 
 Note: Services will be stopped during restore.
 EOF
@@ -64,31 +64,21 @@ handle_restore() {
         error "Backup ${backup_path} does not exist"
     fi
 
-    info "Starting databases..."
-    compose up -d kc-db db
+    info "Starting database..."
+    compose up -d db
 
-    info "Restoring databases:"
-    info "→ Restoring Keycloak database..."
-    if [[ -f "${backup_path}/keycloak.dump" ]]; then
-        wait_until_healthy kc-db
-        compose exec -T kc-db bash -c \
-            "pg_restore -U postgres -d keycloak --clean --if-exists -v /backups/${SELECTED_BACKUP}/keycloak.dump"
-    else
-        warn "No backups found for Keycloak database in ${backup}"
-    fi
-
-    info "→ Restoring Geyser database..."
+    info "Restoring database..."
     if [[ -f "${backup_path}/geyser.dump" ]]; then
         wait_until_healthy db
         compose exec -T db bash -c \
             "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}/geyser.dump"
     else
-        warn "No backups found for Geyser database in ${backup}"
+        warn "No backups found in ${backup}"
     fi
 
     info "Stopping services..."
     compose down
 
-    success "Restore completed successfully.
+    success "Backup restored successfully
 Restart Geyser with 'geyser start'"
 }
