@@ -111,7 +111,7 @@ ALTER TABLE type_demande
 ALTER TABLE type_enseignement
     RENAME TO course_type;
 
-ALTER TABLE type_modification
+ALTER TABLE type_modification_service
     RENAME TO service_modification_type;
 
 ALTER TABLE service

@@ -82,5 +82,6 @@ handle_realms_export() {
     info "Stopping services..."
     compose down
 
-    success "Realms export completed successfully in ${backup_path}"
+    success "Realms export completed successfully in ${backup_path}.
+Restart Geyser with 'geyser start'"
 }

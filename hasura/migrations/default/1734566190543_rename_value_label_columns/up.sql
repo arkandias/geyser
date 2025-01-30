@@ -4,7 +4,7 @@ ALTER TABLE fonction
 BEGIN;
 
 ALTER TABLE modification_service
-    DROP CONSTRAINT modification_service_type_fkey;
+    DROP CONSTRAINT modification_service_type_fk;
 
 ALTER TABLE type_modification
     ADD COLUMN key text;

@@ -49,5 +49,5 @@ handle_reset() {
     info "Cleaning up..."
     docker system prune -f
 
-    success "Reset completed successfully"
+    success "Reset completed successfully. Initialize Geyser with 'geyser init'"
 }

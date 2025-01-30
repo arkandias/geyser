@@ -89,5 +89,6 @@ handle_restore() {
     info "Stopping services..."
     compose down
 
-    success "Restore completed successfully"
+    success "Restore completed successfully.
+Restart Geyser with 'geyser start'"
 }

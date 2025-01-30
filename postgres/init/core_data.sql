@@ -1,5 +1,5 @@
 -- Phases
-INSERT INTO phase(value, current, description)
+INSERT INTO public.phase(value, current, description)
 VALUES ('requests', NULL,
         'Teachers submit their teaching preferences by making primary and secondary course requests, while also confirming their required teaching hours and any service modifications.'),
        ('assignments', NULL,
@@ -9,22 +9,22 @@ VALUES ('requests', NULL,
        ('shutdown', TRUE,
         'System is temporarily closed, typically between academic years or during maintenance periods.');
 
--- Roles
-INSERT INTO role_type(value, description)
-VALUES ('admin', 'Full system administration access with ability to manage users, roles, and system configuration'),
-       ('commissioner',
-        'Member of the course assignment committee with ability to make course assignments during the assignments phase');
-
 -- Request types
-INSERT INTO request_type(value, description)
+INSERT INTO public.request_type(value, description)
 VALUES ('assignment', 'Final course assignment made by the committee during the assignments phase'),
        ('primary', 'Teacher''s preferred course choices submitted during the requests phase'),
        ('secondary', 'Teacher''s backup course choices submitted during the requests phase');
 
+-- Role types
+INSERT INTO public.role_type(value, description)
+VALUES ('admin', 'Full system administration access with ability to manage users, roles, and system configuration'),
+       ('commissioner',
+        'Member of the course assignment committee with ability to make course assignments during the assignments phase');
+
 -- Default admin teacher
-INSERT INTO teacher(uid, firstname, lastname, alias)
+INSERT INTO public.teacher(uid, firstname, lastname, alias)
 VALUES ('admin', '', '', 'Admin');
 
-INSERT INTO role(uid, type, comment)
+INSERT INTO public.role(uid, type, comment)
 VALUES ('admin', 'admin', 'Default admin user'),
        ('admin', 'commissioner', 'Default admin user');

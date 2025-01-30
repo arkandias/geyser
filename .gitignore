@@ -7,6 +7,8 @@
 !/nginx/certs/README.md
 /postgres/backups/
 !/postgres/backups/README.md
+/postgres/migration/*
+!/postgres/migration/migrate.sh
 .DS_Store
 *.local
 *.bak

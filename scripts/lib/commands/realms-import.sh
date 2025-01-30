@@ -68,5 +68,6 @@ handle_realms_import() {
     info "Stopping services..."
     compose down
 
-    success "Realms import completed successfully"
+    success "Realms import completed successfully.
+Restart Geyser with 'geyser start'"
 }
