@@ -100,7 +100,7 @@ _geyser_compose() {
     fi
 
     # Parse options before compose and store words after
-    for ((i = 2; i <= $#words; i++)); do
+    for ((i = 2; i <= ${#words}; i++)); do
         case "${words[i]}" in
         compose) break ;;
         --*) continue ;;
@@ -145,7 +145,7 @@ _geyser_hasura() {
     fi
 
     # Parse options before hasura and store words after
-    for ((i = 2; i <= $#words; i++)); do
+    for ((i = 2; i <= ${#words}; i++)); do
         case "${words[i]}" in
         hasura) break ;;
         --*) continue ;;
@@ -163,7 +163,7 @@ _geyser_hasura() {
 # shellcheck disable=SC2120
 _geyser_kc() {
     # Parse options before kc and store words after
-    for ((i = 2; i <= $#words; i++)); do
+    for ((i = 2; i <= ${#words}; i++)); do
         case "${words[i]}" in
         kc) break ;;
         --*) continue ;;
@@ -185,7 +185,7 @@ _geyser_kc() {
 # shellcheck disable=SC2120
 _geyser_kcadm() {
     # Parse options before kcadm and store words after
-    for ((i = 2; i <= $#words; i++)); do
+    for ((i = 2; i <= ${#words}; i++)); do
         case "${words[i]}" in
         kcadm) break ;;
         --*) continue ;;
@@ -212,7 +212,7 @@ _geyser_rsync() {
     fi
 
     # Parse options before rsync and store words after
-    for ((i = 2; i <= $#words; i++)); do
+    for ((i = 2; i <= ${#words}; i++)); do
         case "${words[i]}" in
         rsync) break ;;
         --*) continue ;;

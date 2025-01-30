@@ -16,6 +16,12 @@ declare -r COLOR_YELLOW='\033[33m'
 declare -r COLOR_BLUE='\033[34m'
 declare -r COLOR_RESET='\033[0m'
 
+# Log rotation settings (can be overridden before setup_logging)
+declare -r DEFAULT_LOG_MAX_SIZE=$((10 * 1024 * 1024)) # 10MB
+declare -r DEFAULT_LOG_BACKUP_COUNT=5
+LOG_MAX_SIZE=${LOG_MAX_SIZE:-${DEFAULT_LOG_MAX_SIZE}}
+LOG_BACKUP_COUNT=${LOG_BACKUP_COUNT:-${DEFAULT_LOG_BACKUP_COUNT}}
+
 setup_logging() {
     LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" || {
         echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, ERROR, or SILENT)" >&2
@@ -23,6 +29,31 @@ setup_logging() {
     }
     readonly LOG_LEVEL_NUM
     readonly LOG_FILE="${LOG_DIR}/geyser.log"
+}
+
+rotate_logs() {
+    local log_file="$1"
+
+    # Check if log file exists and exceeds max size
+    if [[ -f "${log_file}" ]] && [[ "$(stat -f%z "${log_file}" 2>/dev/null || stat -c%s "${log_file}")" -gt "${LOG_MAX_SIZE}" ]]; then
+        # Remove oldest backup if we're at max backups
+        if [[ -f "${log_file}.${LOG_BACKUP_COUNT}" ]]; then
+            rm "${log_file}.${LOG_BACKUP_COUNT}"
+        fi
+
+        # Rotate existing backups
+        for ((i = LOG_BACKUP_COUNT - 1; i >= 1; i--)); do
+            if [[ -f "${log_file}.${i}" ]]; then
+                mv "${log_file}.${i}" "${log_file}.$((i + 1))"
+            fi
+        done
+
+        # Rotate current log file
+        mv "${log_file}" "${log_file}.1"
+
+        # Create new empty log file
+        touch "${log_file}"
+    fi
 }
 
 log_level() {
@@ -53,6 +84,8 @@ log() {
         esac
     fi
 
+    # Check and rotate logs if necessary
+    rotate_logs "${LOG_FILE}"
     echo "${log_entry}" >>"${LOG_FILE}"
 }
 

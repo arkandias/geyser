@@ -55,7 +55,7 @@ select_backup() {
 
     info "Backups found:"
     for ((i = 1; i <= ${#backups[@]}; i++)); do
-        info "$i) ${backups[i - 1]}"
+        info "${i}) ${backups[i - 1]}"
     done
 
     while true; do

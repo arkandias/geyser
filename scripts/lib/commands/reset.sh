@@ -44,7 +44,7 @@ handle_reset() {
     compose down --volumes --rmi all --remove-orphans
 
     info "Removing logs..."
-    rm -rf "${LOG_FILE:?}"/*
+    rm -rf "${LOG_DIR:?}"/*
 
     info "Cleaning up..."
     docker system prune -f
