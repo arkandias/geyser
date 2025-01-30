@@ -253,7 +253,7 @@ Variables in `.env.local` take precedence over those in `.env`.
     - Email settings
     - Security policies
     - ...
-- User synchronization with application data: run `geyser sync-keycloak`
+- Users and groups synchronization with app data: run `geyser sync-keycloak`
 
 **Important note:** On the first start, the realm `geyser` will be imported from `keycloak/templates/geyser-realm.json`.
 The root URL of the client `hasura` will be set as:

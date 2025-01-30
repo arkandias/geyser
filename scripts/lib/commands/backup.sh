@@ -74,6 +74,5 @@ handle_backup() {
     compose exec -T db bash -c \
         "pg_dump -U postgres -d geyser -Fc > /backups/${backup}/geyser.dump"
 
-    success "Backup completed successfully in ${backup_path}.
-Restart Geyser with 'geyser start'"
+    success "Backup completed successfully in ${backup_path}"
 }
