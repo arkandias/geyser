@@ -3,11 +3,8 @@ services:
     restart: always
 
   keycloak:
-    image: !reset null
-    build: keycloak
     restart: always
     environment:
-      KC_HTTP_ENABLED: "true"
       KC_HOSTNAME: "https://${GEYSER_HOSTNAME}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "false"

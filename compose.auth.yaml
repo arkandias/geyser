@@ -24,7 +24,7 @@ services:
       - ./postgres/backups:/backups
 
   keycloak:
-    image: quay.io/keycloak/keycloak:26.1
+    build: keycloak
     restart: unless-stopped
     depends_on:
       kc-db:
@@ -39,13 +39,11 @@ services:
     environment:
       KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
       KC_BOOTSTRAP_ADMIN_PASSWORD: null
-      KC_HEALTH_ENABLED: "true"
-      KC_METRICS_ENABLED: "true"
-      KC_DB: "postgres"
       KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
+      KC_HTTP_ENABLED: "true"
       HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
     ports:
       - "8081:8080"
@@ -57,7 +55,7 @@ services:
       - ./keycloak/healthcheck:/opt/healthcheck:ro
       - ./keycloak/templates:/opt/keycloak/data/import:ro
       - ./keycloak/backups:/opt/keycloak/data/backups
-    command: start-dev --import-realm
+    command: start --optimized --import-realm
 
   hasura:
     depends_on:
