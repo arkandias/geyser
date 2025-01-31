@@ -52,6 +52,5 @@ handle_update() {
     info "Cleaning up..."
     docker system prune -f
 
-    success "Update completed successfully
-Restart Geyser with 'geyser start'"
+    success "Update completed successfully. Restart Geyser with 'geyser start'"
 }

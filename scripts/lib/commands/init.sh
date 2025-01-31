@@ -63,6 +63,5 @@ handle_init() {
     info "Cleaning up..."
     docker system prune -f
 
-    success "Initialization completed successfully
-Start Geyser with 'geyser start'"
+    success "Initialization completed successfully. Start Geyser with 'geyser start'"
 }

@@ -4,7 +4,7 @@
 
 show_realms_import_help() {
     cat <<EOF
-Import Keycloak configuration
+Import Keycloak realms and users
 
 Usage: geyser realms-import
 

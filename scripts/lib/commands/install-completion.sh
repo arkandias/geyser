@@ -10,7 +10,8 @@ Usage: geyser completion
 
 - Add zsh completion scripts for geyser, docker, hasura, and keycloak into the
 dedicated Oh My Zsh directory ($ZSH/completions).
-- Set GEYSER_HOME environment variable in .zshrc.
+- Set GEYSER_HOME environment variable in .zshrc (this is required for docker 
+wrapper completion).
 
 Options:
   -h, --help        Show this help message
@@ -55,5 +56,5 @@ Create it in ${omz_completions}?" "y"; then
     fi
 
     success "Completion installed successfully"
-    info "Please restart zsh or run 'omz reload' to enable completion"
+    info "Restart zsh or run 'omz reload' to enable completion"
 }

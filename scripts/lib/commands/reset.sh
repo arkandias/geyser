@@ -14,8 +14,9 @@ up logs.
 Options:
   -h, --help        Show this help message
 
-Warning: This will delete all data. Run 'geyser backup' first to backup the
-application data, and 'geyser export-realms' to export Keycloak configuration.
+Warning: This will delete all data. You should first run:
+- 'geyser backup' to save the application data, and
+- 'geyser export-realms' to save Keycloak configuration.
 EOF
 }
 

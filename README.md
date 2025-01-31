@@ -23,6 +23,7 @@ or custom configurations, see the [Configuration](#configuration) section.
 
 - jq (for Keycloak synchronization)
 - Oh My Zsh (for shell completion)
+- rsync
 
 #### Install Dependencies
 
@@ -42,10 +43,10 @@ curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
 Optional tools:
 
 ```shell
-# jq (needed for Keycloak sync)
+# jq (required for Keycloak synchronization)
 sudo apt install jq
 
-# Oh My Zsh (needed for completion - for zsh users only)
+# Oh My Zsh (required for zsh completion)
 sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
 ```
 
@@ -361,7 +362,7 @@ Run `geyser COMMAND --help` for more information on a command.
 
 ### Shell Completion
 
-For Oh My Zsh users, shell completion can be installed with:
+For zsh users, shell completion can be installed with:
 
 ```shell
 geyser install-completion

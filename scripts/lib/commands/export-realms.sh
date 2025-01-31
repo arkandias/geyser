@@ -4,7 +4,7 @@
 
 show_realms_export_help() {
     cat <<EOF
-Export Keycloak configuration
+Export Keycloak realms and users
 
 Usage: geyser realms-export
 

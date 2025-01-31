@@ -181,15 +181,7 @@ main() {
     compose | hasura | kc | kcadm | rsync)
         cmd="$1"
         shift
-        case "$1" in
-        -h | --help)
-            "show_${cmd}_help"
-            exit 0
-            ;;
-        *)
-            "$cmd" "$@"
-            ;;
-        esac
+        "${cmd}" "$@"
         ;;
     install-completion)
         handle_install_completion
