@@ -144,7 +144,7 @@ Optional feature flags:
 Activated by setting `MODE=production`. Enforces the following security measures:
 
 - SSL/TLS encryption required:
-    - Place certificates in `nginx/certs/${GEYSER_HOSTNAME}/`:
+    - Place certificates in `certs/${GEYSER_HOSTNAME}/`:
         - `fullchain.cer`: SSL certificate chain
         - `private.key`: Private key
 - Secure container configuration:
@@ -291,9 +291,9 @@ geyser -s kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIEN
         - Development: `localhost`
         - Production: `geyser.example.com`
 - Production mode:
-    - SSL/TLS encryption with certificates in `nginx/certs/${GEYSER_HOSTNAME}/`:
+    - SSL/TLS encryption with certificates in `certs/${GEYSER_HOSTNAME}/`:
         ```
-        nginx/certs/
+        certs/
         └── geyser.example.com/
             ├── fullchain.cer   # Certificate chain
             └── private.key     # Private key

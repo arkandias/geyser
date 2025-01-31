@@ -3,8 +3,8 @@
 !/keycloak/backups/README.md
 /logs/*
 !/logs/README.md
-/nginx/certs/*
-!/nginx/certs/README.md
+/certs/*
+!/certs/README.md
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/*
