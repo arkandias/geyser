@@ -2,15 +2,17 @@
 -- General tables
 --
 
-CREATE TABLE public.app_settings
+CREATE TABLE public.app_setting
 (
     key   text PRIMARY KEY,
+    label text,
     value text
 );
 
-COMMENT ON TABLE app_settings IS 'Custom application configuration settings';
-COMMENT ON COLUMN public.app_settings.key IS 'Setting identifier';
-COMMENT ON COLUMN public.app_settings.value IS 'Setting value stored as text';
+COMMENT ON TABLE app_setting IS 'Custom application configuration settings';
+COMMENT ON COLUMN public.app_setting.key IS 'Setting identifier';
+COMMENT ON COLUMN public.app_setting.key IS 'Human-readable setting name for display purposes';
+COMMENT ON COLUMN public.app_setting.value IS 'Setting value stored as text';
 
 CREATE TABLE public.phase
 (

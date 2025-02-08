@@ -8,3 +8,26 @@ object_relationships:
   - name: teacher
     using:
       foreign_key_constraint_on: uid
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - comment
+        - id
+        - type
+        - uid
+      filter:
+        uid:
+          _eq: X-Hasura-User-Id
+    comment: ""
+  - role: teacher
+    permission:
+      columns:
+        - comment
+        - id
+        - type
+        - uid
+      filter:
+        uid:
+          _eq: X-Hasura-User-Id
+    comment: ""

@@ -27,32 +27,6 @@ array_relationships:
         table:
           name: service
           schema: public
-insert_permissions:
-  - role: teacher
-    permission:
-      check:
-        _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
-                _and:
-                  - value:
-                      _neq: shutdown
-                  - current:
-                      _eq: true
-          - uid:
-              _eq: X-Hasura-User-Id
-          - lastname:
-              _eq: X-Hasura-Last-Name
-          - firstname:
-              _eq: X-Hasura-First-Name
-      columns:
-        - lastname
-        - firstname
-        - uid
-    comment: Lorsque Geyser est ouvert, les teachers peuvent créer leur propre profil.
 select_permissions:
   - role: commissioner
     permission:
@@ -89,44 +63,20 @@ select_permissions:
         - uid
         - alias
       filter:
-        _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
-                _and:
-                  - value:
-                      _neq: shutdown
-                  - current:
-                      _eq: true
-          - visible:
-              _eq: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir les teachers visibles.
-update_permissions:
-  - role: teacher
-    permission:
-      columns:
-        - lastname
-        - firstname
-        - uid
-      filter:
-        _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
-                _and:
-                  - value:
-                      _neq: shutdown
-                  - current:
-                      _eq: true
+        _or:
           - uid:
               _eq: X-Hasura-User-Id
-          - lastname:
-              _eq: X-Hasura-Last-Name
-          - firstname:
-              _eq: X-Hasura-First-Name
-      check: null
-    comment: Lorsque Geyser est ouvert, les teachers peuvent mettre à jour leur propre profil.
+          - _and:
+              - _exists:
+                  _table:
+                    name: phase
+                    schema: public
+                  _where:
+                    _and:
+                      - value:
+                          _neq: shutdown
+                      - current:
+                          _eq: true
+              - visible:
+                  _eq: true
+    comment: Lorsque Geyser est ouvert, les teachers peuvent voir les teachers visibles.

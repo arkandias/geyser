@@ -68,7 +68,7 @@ apply_migration() {
 }
 
 if ! pg_isready -h localhost -p 5420 -d geyser &>/dev/null; then
-    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 geyser'" >&2
+    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 <legacy-server>'" >&2
     exit 1
 fi
 

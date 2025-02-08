@@ -1,5 +1,5 @@
 table:
-  name: app_settings
+  name: app_setting
   schema: public
 select_permissions:
   - role: commissioner
@@ -7,7 +7,7 @@ select_permissions:
       columns:
         - key
         - value
-      filter: {}
+      filter: { }
       limit: 1
     comment: ""
   - role: teacher
@@ -15,6 +15,6 @@ select_permissions:
       columns:
         - key
         - value
-      filter: {}
+      filter: { }
       limit: 1
     comment: ""
