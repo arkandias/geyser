@@ -51,20 +51,20 @@ insert_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       columns:
-        - year
         - hours
         - message
         - uid
+        - year
     comment: ""
 select_permissions:
   - role: commissioner
     permission:
       columns:
-        - year
         - hours
         - id
         - message
         - uid
+        - year
       filter:
         _exists:
           _table:
@@ -77,15 +77,15 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les commissioners peuvent voir tous les services.
+    comment: "Can view all services during assignments phase only"
   - role: teacher
     permission:
       columns:
-        - year
         - hours
         - id
         - message
         - uid
+        - year
       filter:
         _and:
           - _exists:
@@ -104,7 +104,7 @@ select_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir leurs services pour toutes les années visibles.
+    comment: "Can view their own services for visible years when application is not in shutdown phase"
 update_permissions:
   - role: teacher
     permission:
@@ -129,3 +129,4 @@ update_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       check: null
+    comment: "During requests phase, can update hours and message for their own service for current year"

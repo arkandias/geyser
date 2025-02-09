@@ -6,15 +6,17 @@ select_permissions:
     permission:
       columns:
         - key
+        - label
         - value
       filter: { }
       limit: 1
-    comment: ""
+    comment: "Can view any app setting (restricted to 1 row per query)"
   - role: teacher
     permission:
       columns:
         - key
+        - label
         - value
       filter: { }
       limit: 1
-    comment: ""
+    comment: "Can view any app setting (restricted to 1 row per query)"

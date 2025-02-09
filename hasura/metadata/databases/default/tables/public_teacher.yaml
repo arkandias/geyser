@@ -33,10 +33,10 @@ select_permissions:
       columns:
         - active
         - alias
-        - position
         - base_service_hours
-        - lastname
         - firstname
+        - lastname
+        - position
         - uid
         - visible
       filter:
@@ -50,18 +50,18 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les commissioners peuvent voir tous les teachers.
+    comment: "Can view all teachers during assignments phase only"
   - role: teacher
     permission:
       columns:
-        - position
-        - visible
         - active
-        - lastname
-        - firstname
-        - base_service_hours
-        - uid
         - alias
+        - base_service_hours
+        - firstname
+        - lastname
+        - position
+        - uid
+        - visible
       filter:
         _or:
           - uid:
@@ -79,4 +79,4 @@ select_permissions:
                           _eq: true
               - visible:
                   _eq: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir les teachers visibles.
+    comment: "Can view themselves and visible teachers when application is not in shutdown phase"

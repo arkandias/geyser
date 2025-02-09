@@ -17,9 +17,17 @@ select_permissions:
         - type
         - uid
       filter:
-        uid:
-          _eq: X-Hasura-User-Id
-    comment: ""
+        _exists:
+          _table:
+            name: phase
+            schema: public
+          _where:
+            _and:
+              - value:
+                  _eq: assignments
+              - current:
+                  _eq: true
+    comment: "Can view all roles during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -30,4 +38,4 @@ select_permissions:
       filter:
         uid:
           _eq: X-Hasura-User-Id
-    comment: ""
+    comment: "Can view their own role"

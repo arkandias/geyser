@@ -25,7 +25,7 @@ array_relationships:
         table:
           name: coordination
           schema: public
-  - name: enfants
+  - name: children
     using:
       foreign_key_constraint_on:
         column: parent_id
@@ -88,7 +88,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les commissioners peuvent voir tous les courses.
+    comment: "Can view all courses during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -161,7 +161,7 @@ select_permissions:
                   service:
                     uid:
                       _eq: X-Hasura-User-Id
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir : 1) les courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) les courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) les courses pour lesquels ils ont une request/assignment ou une priorité.'
+    comment: "When application is not in shutdown phase, can view courses that are either: visible with visible year/degree/program/track, under their coordination, or linked to their requests/priorities"
 update_permissions:
   - role: teacher
     permission:
@@ -192,4 +192,4 @@ update_permissions:
                     uid:
                       _eq: X-Hasura-User-Id
       check: null
-    comment: Lorsque Geyser est ouvert, les teachers coordinators d'un course, de sa program ou de son track peuvent mettre à jour sa description.
+    comment: "When application is not in shutdown phase, can update course description for courses under their coordination"

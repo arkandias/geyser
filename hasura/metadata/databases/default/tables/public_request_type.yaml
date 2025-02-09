@@ -26,7 +26,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les commissioners peuvent voir tous les types de request.
+    comment: "Can view all request types during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -43,4 +43,4 @@ select_permissions:
                   _neq: shutdown
               - current:
                   _eq: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir tous les types de request.
+    comment: "Can view all request types when application is not in shutdown phase"

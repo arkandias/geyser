@@ -48,7 +48,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-    comment: En phase de assignments, les commissioners peuvent créer des assignments pour tous les teachers et pour tous les courses de l'année en cours.
+    comment: "During assignments phase, can create assignments for current year courses"
   - role: teacher
     permission:
       check:
@@ -66,6 +66,10 @@ insert_permissions:
           - service:
               uid:
                 _eq: X-Hasura-User-Id
+          - course:
+              yearByYear:
+                current:
+                  _eq: true
           - course:
               _or:
                 - _and:
@@ -106,7 +110,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-    comment: 'En phase de requests, les teachers peuvent faire des requests principales ou secondaires pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses dont ils sont coordinators (directement ou via le track ou la program) ; 3) des courses pour lesquels ils ont une request/assignment ou une priorité.'
+    comment: "During requests phase, can create primary and secondary requests for their own service on current year courses that are either: (1) under their coordination, (2) visible with visible year/degree/program/track, or (3) linked to their requests/priorities"
 select_permissions:
   - role: commissioner
     permission:
@@ -131,7 +135,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les commissioners peuvent voir toutes les requests.
+    comment: "Can view all requests during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -214,7 +218,7 @@ select_permissions:
               - type:
                   _neq: assignment
       allow_aggregations: true
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les requests des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/assignment ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les requests pour cet course. Les teachers ne peuvent voir les assignments pour les courses de l''année en cours qu''en phase de consultation.'
+    comment: "When application is not in shutdown phase, can view requests that are either: (1) for courses under their coordination, or (2) visible teachers' requests for courses that are either visible with visible year/degree/program/track or linked to their requests/priorities. Can only view current year assignments during results phase"
 update_permissions:
   - role: commissioner
     permission:
@@ -239,7 +243,7 @@ update_permissions:
           - type:
               _eq: assignment
       check: null
-    comment: En phase de assignments, les commissioners peuvent modifier toutes les assignments pour des courses de l'année en cours.
+    comment: "During assignments phase, can update hours for assignments for current year courses"
   - role: teacher
     permission:
       columns:
@@ -295,7 +299,7 @@ update_permissions:
           - type:
               _neq: assignment
       check: null
-    comment: En phase de requests, les teachers peuvent modifier leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
+    comment: "During requests phase, can update hours for their own primary and secondary requests for courses for which they can create requests"
 delete_permissions:
   - role: commissioner
     permission:
@@ -317,7 +321,7 @@ delete_permissions:
                   _eq: true
           - type:
               _eq: assignment
-    comment: En phase de assignments, les commissioners peuvent supprimer toutes les assignments pour des courses de l'année en cours.
+    comment: "During assignments phase, can delete assignments for current year courses"
   - role: teacher
     permission:
       filter:
@@ -370,4 +374,4 @@ delete_permissions:
                         _eq: X-Hasura-User-Id
           - type:
               _neq: assignment
-    comment: En phase de requests, les teachers peuvent supprimer leurs requests principales ou secondaires pour tous les courses pour lesquels ils peuvent faire des requests.
+    comment: "During requests phase, can delete their own primary and secondary requests for courses for which they can create requests"

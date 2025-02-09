@@ -34,7 +34,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-    comment: En phase de requests, les teachers peuvent créer des modifications de service pour l'année en cours.
+    comment: "During requests phase, can create service modifications for their own service for current year"
 select_permissions:
   - role: commissioner
     permission:
@@ -55,7 +55,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: En phase de assignments, les commissioners peuvent voir toutes les modifications de service.
+    comment: "Can view all service modifications during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -83,7 +83,7 @@ select_permissions:
               uid:
                 _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir leurs modifications de service pour toutes les années visibles.
+    comment: "When application is not in shutdown phase, can view their own service modifications for visible years"
 update_permissions:
   - role: teacher
     permission:
@@ -110,7 +110,7 @@ update_permissions:
               uid:
                 _eq: X-Hasura-User-Id
       check: null
-    comment: En phase de requests, les teachers peuvent modifier le namebre d'hours et le type de leurs modifications de service pour l'année en cours.
+    comment: "During requests phase, can update hours and type for their own service modifications for current year"
 delete_permissions:
   - role: teacher
     permission:
@@ -133,4 +133,4 @@ delete_permissions:
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-    comment: En phase de requests, les teachers peuvent supprimer leurs modifications de service pour l'année en cours.
+    comment: "During requests phase, can delete their own service modifications for current year"

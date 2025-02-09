@@ -35,8 +35,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-      allow_aggregations: true
-    comment: En phase de assignments, les commissioners peuvent voir toutes les responsabilités.
+    comment: "Can view all coordination assignments during assignments phase only"
   - role: teacher
     permission:
       columns:
@@ -71,5 +70,4 @@ select_permissions:
               - program:
                   visible:
                     _eq: true
-      allow_aggregations: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir toutes les responsabilités dont l'teacher et la program, le track ou l'course correspondant sont visibles.
+    comment: "Can view visible coordination assignments when application is not in shutdown phase"

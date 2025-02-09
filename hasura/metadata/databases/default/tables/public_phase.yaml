@@ -6,13 +6,15 @@ select_permissions:
     permission:
       columns:
         - current
+        - description
         - value
-      filter: {}
-    comment: Les commissioners peuvent voir toutes les phases.
+      filter: { }
+    comment: "Can view all phases and their status"
   - role: teacher
     permission:
       columns:
         - current
+        - description
         - value
-      filter: {}
-    comment: Les teachers peuvent voir toutes les phases.
+      filter: { }
+    comment: "Can view all phases and their status"

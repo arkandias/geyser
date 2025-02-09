@@ -25,9 +25,9 @@ select_permissions:
     permission:
       columns:
         - id
-        - program_id
         - name
         - name_short
+        - program_id
         - visible
       filter:
         _exists:
@@ -40,14 +40,14 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les commissioners peuvent voir tous les track.
+    comment: "Can view all tracks during assignments phase only"
   - role: teacher
     permission:
       columns:
         - id
-        - program_id
         - name
         - name_short
+        - program_id
         - visible
       filter:
         _and:
@@ -63,4 +63,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: Lorsque Geyser est ouvert, les teachers peuvent voir tous les track visibles.
+    comment: "Can view visible tracks when application is not in shutdown phase"

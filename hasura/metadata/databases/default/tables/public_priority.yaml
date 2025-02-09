@@ -12,10 +12,10 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - seniority
         - course_id
         - id
         - is_priority
+        - seniority
         - service_id
       filter:
         _exists:
@@ -28,14 +28,14 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: En phase de assignments, les commissioners peuvent voir toutes les priorités.
+    comment: "Can view all priorities during assignments phase only"
   - role: teacher
     permission:
       columns:
-        - seniority
         - course_id
         - id
         - is_priority
+        - seniority
         - service_id
       filter:
         _and:
@@ -94,4 +94,4 @@ select_permissions:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-    comment: 'Lorsque Geyser est ouvert, les teachers peuvent voir les priorités des teachers visibles pour : 1) des courses visibles dont l''année, le degree, la program et (éventuellement) le track sont tous visibles ; 2) des courses pour lesquels ils ont une request/assignment ou une priorité. Les teachers coordinators d''un course (directement ou via le track ou la program) peuvent voir toutes les priorités pour cet course.'
+    comment: "When application is not in shutdown phase, can view priorities that are either: (1) for courses under their coordination, or (2) for visible teachers' courses that are either visible with visible year/degree/program/track or linked to their requests/priorities"
