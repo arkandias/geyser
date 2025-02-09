@@ -44,13 +44,13 @@ kc() {
 # Runs Keycloak admin CLI with authentication and container execution
 kcadm() {
     if [[ "$1" == "--login" ]]; then
-        shift
-        if [[ "$#" -ne 0 ]]; then
-            error "No additional arguments allowed with 'kcadm --login'"
-        fi
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
             --server http://localhost:8080 --realm master \
             --user admin --password "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
+        shift
+        if [[ "$#" -ne 0 ]]; then
+            kcadm "$@"
+        fi
     else
         compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
             2> >(sed '/./!{1d;}' >&2) # remove blank line on stderr

@@ -186,8 +186,6 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 (*) Unless `NO_AUTH=true`
 
-[//]: # (TODO: ### Customize the client)
-
 ## Detailed Architecture
 
 ### Backend
