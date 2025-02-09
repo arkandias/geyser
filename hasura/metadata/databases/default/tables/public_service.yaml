@@ -55,7 +55,7 @@ insert_permissions:
         - message
         - uid
         - year
-    comment: ""
+    comment: "During requests phase, can create their own service for the current year"
 select_permissions:
   - role: commissioner
     permission:
@@ -77,7 +77,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: "Can view all services during assignments phase only"
+    comment: "Can view all services [during assignments phase only]"
   - role: teacher
     permission:
       columns:
@@ -104,7 +104,7 @@ select_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: "Can view their own services for visible years when application is not in shutdown phase"
+    comment: "Can view their own services for visible years [except during shutdown phase]"
 update_permissions:
   - role: teacher
     permission:
@@ -129,4 +129,4 @@ update_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       check: null
-    comment: "During requests phase, can update hours and message for their own service for current year"
+    comment: "During requests phase, can update their own service hours and message for the current year"

@@ -15,32 +15,12 @@ select_permissions:
       columns:
         - description
         - value
-      filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            _and:
-              - value:
-                  _eq: assignments
-              - current:
-                  _eq: true
-    comment: "Can view all request types during assignments phase only"
+      filter: { }
+    comment: "Can view all request types"
   - role: teacher
     permission:
       columns:
         - description
         - value
-      filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            _and:
-              - value:
-                  _neq: shutdown
-              - current:
-                  _eq: true
-    comment: "Can view all request types when application is not in shutdown phase"
+      filter: { }
+    comment: "Can view all request types"

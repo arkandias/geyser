@@ -15,18 +15,8 @@ select_permissions:
       columns:
         - description
         - value
-      filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            _and:
-              - value:
-                  _eq: assignments
-              - current:
-                  _eq: true
-    comment: "Can view all role types during assignments phase only"
+      filter: { }
+    comment: "Can view all role types"
   - role: teacher
     permission:
       columns:

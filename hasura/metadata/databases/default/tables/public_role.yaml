@@ -27,7 +27,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all roles during assignments phase only"
+    comment: "Can view all roles [during assignments phase only]"
   - role: teacher
     permission:
       columns:
