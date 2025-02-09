@@ -35,7 +35,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all coordination assignments during assignments phase only"
+    comment: "Can view all coordination roles [during assignments phase only]"
   - role: teacher
     permission:
       columns:
@@ -70,4 +70,4 @@ select_permissions:
               - program:
                   visible:
                     _eq: true
-    comment: "Can view visible coordination assignments when application is not in shutdown phase"
+    comment: "Can view visible coordination roles [except during shutdown phase]"

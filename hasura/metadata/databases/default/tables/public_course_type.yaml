@@ -13,10 +13,10 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - value
-        - label
         - coefficient
         - description
+        - label
+        - value
       filter:
         _exists:
           _table:
@@ -28,14 +28,14 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all course types during assignments phase only"
+    comment: "Can view all course types [during assignments phase only]"
   - role: teacher
     permission:
       columns:
-        - value
-        - label
         - coefficient
         - description
+        - label
+        - value
       filter:
         _exists:
           _table:
@@ -47,4 +47,4 @@ select_permissions:
                   _neq: shutdown
               - current:
                   _eq: true
-    comment: "Can view all course types when application is not in shutdown phase"
+    comment: "Can view all course types [except during shutdown phase]"

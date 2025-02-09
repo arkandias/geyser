@@ -9,8 +9,10 @@ select_permissions:
         - label
         - value
       filter: { }
-      limit: 1
-    comment: "Can view any app setting (restricted to 1 row per query)"
+      query_root_fields:
+        - select_by_pk
+      subscription_root_fields: [ ]
+    comment: "Can view any app setting (selection by primary key only)"
   - role: teacher
     permission:
       columns:
@@ -18,5 +20,7 @@ select_permissions:
         - label
         - value
       filter: { }
-      limit: 1
-    comment: "Can view any app setting (restricted to 1 row per query)"
+      query_root_fields:
+        - select_by_pk
+      subscription_root_fields: [ ]
+    comment: "Can view any app setting (selection by primary key only)"

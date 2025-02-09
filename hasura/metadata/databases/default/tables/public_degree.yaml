@@ -28,7 +28,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all degrees during assignments phase only"
+    comment: "Can view all degrees [during assignments phase only]"
   - role: teacher
     permission:
       columns:
@@ -50,4 +50,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: "Can view visible degrees when application is not in shutdown phase"
+    comment: "Can view visible degrees [except during shutdown phase]"

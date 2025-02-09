@@ -18,19 +18,19 @@ object_relationships:
     using:
       foreign_key_constraint_on: year
 array_relationships:
-  - name: coordinations
-    using:
-      foreign_key_constraint_on:
-        column: course_id
-        table:
-          name: coordination
-          schema: public
   - name: children
     using:
       foreign_key_constraint_on:
         column: parent_id
         table:
           name: course
+          schema: public
+  - name: coordinations
+    using:
+      foreign_key_constraint_on:
+        column: course_id
+        table:
+          name: coordination
           schema: public
   - name: priorities
     using:
@@ -56,7 +56,6 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - year
         - cycle_year
         - description
         - groups
@@ -66,15 +65,16 @@ select_permissions:
         - hours_adjusted
         - hours_effective
         - id
-        - program_id
         - name
         - name_short
-        - track_id
+        - program_id
         - parent_id
         - priority_rule
         - semester
+        - track_id
         - type
         - visible
+        - year
       computed_fields:
         - totalHoursEffective
       filter:
@@ -88,11 +88,10 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all courses during assignments phase only"
+    comment: "Can view all courses [during assignments phase only]"
   - role: teacher
     permission:
       columns:
-        - year
         - cycle_year
         - description
         - groups
@@ -102,15 +101,16 @@ select_permissions:
         - hours_adjusted
         - hours_effective
         - id
-        - program_id
         - name
         - name_short
-        - track_id
+        - program_id
         - parent_id
         - priority_rule
         - semester
+        - track_id
         - type
         - visible
+        - year
       computed_fields:
         - totalHoursEffective
       filter:
@@ -127,21 +127,21 @@ select_permissions:
                       _eq: true
           - _or:
               - _and:
+                  - visible:
+                      _eq: true
                   - yearByYear:
                       visible:
                         _eq: true
                   - program:
                       _and:
+                        - visible:
+                            _eq: true
                         - degree:
                             visible:
                               _eq: true
-                        - visible:
-                            _eq: true
                   - track:
                       visible:
                         _eq: true
-                  - visible:
-                      _eq: true
               - coordinations:
                   uid:
                     _eq: X-Hasura-User-Id
@@ -161,7 +161,7 @@ select_permissions:
                   service:
                     uid:
                       _eq: X-Hasura-User-Id
-    comment: "When application is not in shutdown phase, can view courses that are either: visible with visible year/degree/program/track, under their coordination, or linked to their requests/priorities"
+    comment: "Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities"
 update_permissions:
   - role: teacher
     permission:
@@ -192,4 +192,4 @@ update_permissions:
                     uid:
                       _eq: X-Hasura-User-Id
       check: null
-    comment: "When application is not in shutdown phase, can update course description for courses under their coordination"
+    comment: "Can update course description of courses that they coordinate (directly or via program/track) [except during shutdown phase]"

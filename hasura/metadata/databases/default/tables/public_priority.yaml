@@ -28,7 +28,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all priorities during assignments phase only"
+    comment: "Can view all priorities [during assignments phase only]"
   - role: teacher
     permission:
       columns:
@@ -50,6 +50,9 @@ select_permissions:
                   - current:
                       _eq: true
           - _or:
+              - service:
+                  uid:
+                    _eq: X-Hasura-User-Id
               - course:
                   _or:
                     - coordinations:
@@ -71,21 +74,21 @@ select_permissions:
                   - course:
                       _or:
                         - _and:
+                            - visible:
+                                _eq: true
                             - yearByYear:
                                 visible:
                                   _eq: true
                             - program:
                                 _and:
+                                  - visible:
+                                      _eq: true
                                   - degree:
                                       visible:
                                         _eq: true
-                                  - visible:
-                                      _eq: true
                             - track:
                                 visible:
                                   _eq: true
-                            - visible:
-                                _eq: true
                         - requests:
                             service:
                               uid:
@@ -94,4 +97,4 @@ select_permissions:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-    comment: "When application is not in shutdown phase, can view priorities that are either: (1) for courses under their coordination, or (2) for visible teachers' courses that are either visible with visible year/degree/program/track or linked to their requests/priorities"
+    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"
