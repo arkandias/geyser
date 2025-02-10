@@ -10,7 +10,7 @@ MIGRATIONS_DIR="migrations"
 INIT_FILES=(
     ../init/schema.sql
     ../init/core_data.sql
-    ../init/import_columns.sql
+    ./lpp.sql
 )
 
 pg_start() {

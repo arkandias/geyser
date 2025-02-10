@@ -7,8 +7,9 @@
 !/certs/README.md
 /postgres/backups/
 !/postgres/backups/README.md
-/postgres/migration/*
-!/postgres/migration/migrate.sh
+/postgres/migration/dumps/
+/postgres/migration/migrations/
+/postgres/migration/summaries/
 .DS_Store
 *.local
 *.bak
