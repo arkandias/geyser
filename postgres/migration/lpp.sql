@@ -59,3 +59,15 @@ VALUES ('legal-notice2', '<p>
   mathématiques, que vos droits «&nbsp;Informatique et Libertés&nbsp;» ne sont
   pas respectés, vous pouvez adresser une réclamation à la CNIL.
 </p>', 'Mentions légales');
+
+INSERT INTO public.position(value, label, base_service_hours, description)
+VALUES ('MCF', 'Maître de conférences', 192, NULL),
+       ('PR', 'Professeur des universités', 192, NULL),
+       ('CR', 'Chargé de recherche', 0, NULL),
+       ('DR', 'Directeur de recherche', 0, NULL),
+       ('PRAG', 'Professeur agrégé', 384, NULL),
+       ('ATER', 'ATER', 192, NULL),
+       ('demi-ATER', 'Demi-ATER', 96, NULL),
+       ('doctorant', 'Doctorant', 64, NULL),
+       ('postdoc', 'Post-doctorant', 0, NULL),
+       ('administratif', 'Administratif', 0, NULL);
