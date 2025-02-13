@@ -9,10 +9,7 @@ select_permissions:
         - label
         - value
       filter: { }
-      query_root_fields:
-        - select_by_pk
-      subscription_root_fields: [ ]
-    comment: "Can view any app setting (selection by primary key only)"
+    comment: "Can view all app setting"
   - role: teacher
     permission:
       columns:
@@ -20,7 +17,4 @@ select_permissions:
         - label
         - value
       filter: { }
-      query_root_fields:
-        - select_by_pk
-      subscription_root_fields: [ ]
-    comment: "Can view any app setting (selection by primary key only)"
+    comment: "Can view all app setting"
