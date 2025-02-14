@@ -6,7 +6,6 @@ select_permissions:
     permission:
       columns:
         - key
-        - label
         - value
       filter: { }
     comment: "Can view all UI texts"
@@ -14,7 +13,6 @@ select_permissions:
     permission:
       columns:
         - key
-        - label
         - value
       filter: { }
     comment: "Can view all UI texts"

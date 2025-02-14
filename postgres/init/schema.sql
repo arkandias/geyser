@@ -5,13 +5,11 @@
 CREATE TABLE public.ui_text
 (
     key   text PRIMARY KEY,
-    label text,
-    value text
+    value text NOT NULL
 );
 
 COMMENT ON TABLE ui_text IS 'Custom texts for the UI';
 COMMENT ON COLUMN public.ui_text.key IS 'Text identifier';
-COMMENT ON COLUMN public.ui_text.label IS 'Human-readable name for display purposes';
 COMMENT ON COLUMN public.ui_text.value IS 'Text content';
 
 CREATE TABLE public.phase
