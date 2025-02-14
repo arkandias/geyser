@@ -2,36 +2,33 @@
 -- General tables
 --
 
-CREATE TABLE public.app_setting
+CREATE TABLE public.ui_text
 (
     key   text PRIMARY KEY,
     label text,
     value text
 );
 
-COMMENT ON TABLE app_setting IS 'Custom application configuration settings';
-COMMENT ON COLUMN public.app_setting.key IS 'Setting identifier';
-COMMENT ON COLUMN public.app_setting.key IS 'Human-readable setting name for display purposes';
-COMMENT ON COLUMN public.app_setting.value IS 'Setting value stored as text';
+COMMENT ON TABLE ui_text IS 'Custom texts for the UI';
+COMMENT ON COLUMN public.ui_text.key IS 'Text identifier';
+COMMENT ON COLUMN public.ui_text.label IS 'Human-readable name for display purposes';
+COMMENT ON COLUMN public.ui_text.value IS 'Text content';
 
 CREATE TABLE public.phase
 (
-    value       text PRIMARY KEY,
-    current     boolean UNIQUE, -- TRUE or NULL
-    description text,
-    CHECK (current)             -- current is TRUE or NULL
+    value   text PRIMARY KEY,
+    current boolean UNIQUE, -- TRUE or NULL
+    CHECK (current)         -- current is TRUE or NULL
 );
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
 COMMENT ON COLUMN public.phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
-COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
 CREATE TABLE public.year
 (
     value   integer PRIMARY KEY,
     current boolean UNIQUE,                    -- TRUE or NULL
-    comment text,
     visible boolean NOT NULL DEFAULT TRUE,
     CHECK (current),                           -- current is TRUE or NULL
     CHECK (current IS NULL OR visible IS TRUE) -- current year is visible
@@ -40,7 +37,6 @@ CREATE TABLE public.year
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
 COMMENT ON COLUMN public.year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
-COMMENT ON COLUMN public.year.comment IS 'Additional information about this academic year';
 COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
 
 

@@ -9,7 +9,7 @@ ALTER TABLE public.program
 ALTER TABLE public.track
     ADD COLUMN nom_import text;
 
-INSERT INTO public.app_setting(key, value, label)
+INSERT INTO public.ui_text(key, value, label)
 VALUES ('legal-notice2', '<p>
   Dans le cadre de la gestion des services prévisionnels des intervenants en
   mathématiques à l''Université de Lille, le département de mathématiques

@@ -1,4 +1,3 @@
-- "!include public_app_setting.yaml"
 - "!include public_coordination.yaml"
 - "!include public_course.yaml"
 - "!include public_course_type.yaml"
@@ -16,4 +15,5 @@
 - "!include public_service_modification_type.yaml"
 - "!include public_teacher.yaml"
 - "!include public_track.yaml"
+- "!include public_ui_text.yaml"
 - "!include public_year.yaml"

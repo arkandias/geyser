@@ -1,5 +1,5 @@
 table:
-  name: app_setting
+  name: ui_text
   schema: public
 select_permissions:
   - role: commissioner
@@ -9,7 +9,7 @@ select_permissions:
         - label
         - value
       filter: { }
-    comment: "Can view all app setting"
+    comment: "Can view all UI texts"
   - role: teacher
     permission:
       columns:
@@ -17,4 +17,4 @@ select_permissions:
         - label
         - value
       filter: { }
-    comment: "Can view all app setting"
+    comment: "Can view all UI texts"
