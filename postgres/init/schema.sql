@@ -45,14 +45,14 @@ COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the
 CREATE TABLE public.position
 (
     value              text PRIMARY KEY,
-    label              text NOT NULL,
+    label              text NOT NULL UNIQUE,
     description        text,
     base_service_hours real
 );
 
 COMMENT ON TABLE public.position IS 'Teaching positions with associated service hour requirements';
 COMMENT ON COLUMN public.position.value IS 'Position identifier (e.g., professor, lecturer)';
-COMMENT ON COLUMN public.position.label IS 'Human-readable position name for display purposes';
+COMMENT ON COLUMN public.position.label IS 'Human-readable position name for display purposes, unique';
 COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours required for this position, can be overridden per teacher';
 COMMENT ON COLUMN public.position.description IS 'Optional description of the position';
 
@@ -98,13 +98,13 @@ COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to co
 CREATE TABLE public.service_modification_type
 (
     value       text PRIMARY KEY,
-    label       text NOT NULL,
+    label       text NOT NULL UNIQUE,
     description text
 );
 
 COMMENT ON TABLE public.service_modification_type IS 'Categories of service hour modifications';
 COMMENT ON COLUMN public.service_modification_type.value IS 'Modification type identifier';
-COMMENT ON COLUMN public.service_modification_type.label IS 'Human-readable name for the modification type';
+COMMENT ON COLUMN public.service_modification_type.label IS 'Human-readable name for the modification type, unique';
 COMMENT ON COLUMN public.service_modification_type.description IS 'Detailed explanation of the modification type and its application';
 
 CREATE TABLE public.service_modification
@@ -202,14 +202,14 @@ COMMENT ON COLUMN public.track.visible IS 'Controls track visibility in the user
 CREATE TABLE public.course_type
 (
     value       text PRIMARY KEY,
-    label       text NOT NULL,
+    label       text NOT NULL UNIQUE,
     coefficient real NOT NULL DEFAULT 1,
     description text
 );
 
 COMMENT ON TABLE public.course_type IS 'Types of course delivery with associated workload coefficients';
 COMMENT ON COLUMN public.course_type.value IS 'Course type identifier (e.g., lecture, tutorial)';
-COMMENT ON COLUMN public.course_type.label IS 'Human-readable type name for display';
+COMMENT ON COLUMN public.course_type.label IS 'Human-readable type name for display, unique';
 COMMENT ON COLUMN public.course_type.coefficient IS 'Workload multiplier for service hour calculations';
 COMMENT ON COLUMN public.course_type.description IS 'Detailed description of the course type and its characteristics';
 
