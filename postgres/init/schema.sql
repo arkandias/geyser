@@ -46,8 +46,8 @@ CREATE TABLE public.position
 (
     value              text PRIMARY KEY,
     label              text NOT NULL,
-    base_service_hours real,
-    description        text
+    description        text,
+    base_service_hours real
 );
 
 COMMENT ON TABLE public.position IS 'Teaching positions with associated service hour requirements';

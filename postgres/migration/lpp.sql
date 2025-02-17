@@ -61,13 +61,13 @@ VALUES ('legal-notice2', '<p>
 </p>', 'Mentions légales');
 
 INSERT INTO public.position(value, label, base_service_hours, description)
-VALUES ('MCF', 'Maître de conférences', 192, NULL),
-       ('PR', 'Professeur des universités', 192, NULL),
-       ('CR', 'Chargé de recherche', 0, NULL),
-       ('DR', 'Directeur de recherche', 0, NULL),
-       ('PRAG', 'Professeur agrégé', 384, NULL),
-       ('ATER', 'ATER', 192, NULL),
-       ('demi-ATER', 'Demi-ATER', 96, NULL),
+VALUES ('mcf', 'Maître de conférences', 192, NULL),
+       ('pr', 'Professeur des universités', 192, NULL),
+       ('cr', 'Chargé de recherche', 0, NULL),
+       ('dr', 'Directeur de recherche', 0, NULL),
+       ('prag', 'Professeur agrégé', 384, NULL),
+       ('ater', 'ATER', 192, NULL),
+       ('demi_ater', 'Demi-ATER', 96, NULL),
        ('doctorant', 'Doctorant', 64, NULL),
        ('postdoc', 'Post-doctorant', 0, NULL),
        ('administratif', 'Administratif', 0, NULL);
