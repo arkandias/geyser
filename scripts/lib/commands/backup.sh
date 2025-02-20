@@ -52,7 +52,8 @@ handle_backup() {
                 backup="${INPUT}"
                 break
             fi
-            warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup name using only letters, \
+numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
@@ -62,9 +63,15 @@ handle_backup() {
         error "Backup ${backup_path} already exists"
     fi
 
+    # Check if db is healthy and start it otherwise
+    if [[ "$(compose ps -a "${service}" --format '{{.Health}}' 2>/dev/null)" != "healthy" ]]; then
+        compose up -d db
+        wait_until_healthy db
+    fi
+
     info "Backing up database..."
     compose exec -T db bash -c \
-        "pg_dump -U postgres -d geyser -Fc > /backups/${backup}.dump"
+        "pg_dump -U postgres -d geyser -Fc >/backups/${backup}.dump"
 
     success "Backup created successfully in ${backup_path}"
 }

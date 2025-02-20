@@ -267,9 +267,9 @@ it manually, either from the admin console, or by running the following commands
 # Login
 geyser kcadm --login
 # Retrieve hasura client id
-client_id="$(geyser -s kcadm get clients -r geyser -q clientId=hasura  | jq -r '.[].id')"
+client_id="$(geyser -q kcadm get clients -r geyser -q clientId=hasura  | jq -r '.[].id')"
 # Update client root URL
-geyser -s kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIENT_ROOT_URL>
+geyser -q kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIENT_ROOT_URL>
 ```
 
 ### Frontend
@@ -354,7 +354,8 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 
 - `-h, --help`: Show help message
 - `-v, --version`: Show version information
-- `-s, --silent`: Disable log messages
+- `-s, --status`: Show current status
+- `-q, --quiet`: Disable log messages
 
 Run `geyser COMMAND --help` for more information on a command.
 

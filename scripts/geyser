@@ -49,7 +49,8 @@ Setup:
 Options:
   -h, --help        Show this help message
   -v, --version     Show version information
-  -s, --silent      Disable log messages
+  -s, --status      Show current status
+  -q, --quiet       Disable log messages
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -123,7 +124,12 @@ main() {
             echo "Geyser Administration Script v${VERSION}"
             exit 0
             ;;
-        -s | --silent)
+        -s | --status)
+            echo "Checking status..."
+            compose ps -a --format '{{.Service}}: {{.Status}}'
+            exit 0
+            ;;
+        -q | --quiet)
             LOG_LEVEL="SILENT"
             shift
             ;;

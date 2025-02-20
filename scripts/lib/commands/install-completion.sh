@@ -20,7 +20,8 @@ EOF
 
 handle_install_completion() {
     [[ -n "${ZSH}" ]] || error "Oh My Zsh is not installed.
-You can install it with 'sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"'"
+You can install it with \
+'sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"'"
 
     prompt "oh-my-zsh directory [${ZSH}]:"
     local omz_completions="${INPUT:-"${ZSH}/completions"}"
