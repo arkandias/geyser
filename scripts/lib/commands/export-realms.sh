@@ -32,8 +32,8 @@ handle_export_realms() {
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser realms-export --help')"
             fi
-            debug "Export name set to ${backup} with option --name"
             backup="$2"
+            debug "Export name set to ${backup} with option --name"
             shift 2
             ;;
         *)

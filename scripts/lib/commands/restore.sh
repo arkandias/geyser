@@ -19,7 +19,7 @@ EOF
 }
 
 handle_restore() {
-    local backup backup_path
+    local backup backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -32,8 +32,8 @@ handle_restore() {
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser restore --help')"
             fi
-            debug "Backup name set to ${backup} with option --name"
             backup="$2"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -52,29 +52,24 @@ handle_restore() {
         compose down
     fi
 
-    # Select backup name
+    # Select backup
     if [[ -z "${backup}" ]]; then
-        select_backup "${DB_BACKUP_DIR}"
-        backup="${SELECTED_BACKUP}"
-    fi
-
-    # Check backup directory
-    backup_path="${DB_BACKUP_DIR}/${backup}"
-    if [[ ! -d "${backup_path}" ]]; then
-        error "Backup ${backup_path} does not exist"
+        backups=()
+        for backup in "${DB_BACKUP_DIR}"/*.dump; do
+            if [[ -f "${backup}" ]]; then
+                backups+=("${backup##*/}")
+            fi
+        done
+        select_backup "${backups[@]}"
     fi
 
     info "Starting database..."
     compose up -d db
 
     info "Restoring database..."
-    if [[ -f "${backup_path}/geyser.dump" ]]; then
-        wait_until_healthy db
-        compose exec -T db bash -c \
-            "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}/geyser.dump"
-    else
-        warn "No backups found in ${backup}"
-    fi
+    wait_until_healthy db
+    compose exec -T db bash -c \
+        "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}"
 
     info "Stopping services..."
     compose down

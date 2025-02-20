@@ -38,16 +38,8 @@ confirm() {
 
 # Prompts user to select a backup directory and stores result in SELECTED_BACKUP
 select_backup() {
-    local backups_path="$1"
-    local backups=()
-    local backup
+    local backups=("$@")
     SELECTED_BACKUP= # global
-
-    for backup in "${backups_path}"/*; do
-        if [[ -d "${backup}" ]]; then
-            backups+=("${backup##*/}")
-        fi
-    done
 
     if ((${#backups[@]} == 0)); then
         error "No backups found"

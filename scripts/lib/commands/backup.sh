@@ -30,8 +30,8 @@ handle_backup() {
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser backup --help')"
             fi
-            debug "Backup name set to ${backup} with option --name"
             backup="$2"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)

@@ -19,7 +19,7 @@ EOF
 }
 
 handle_import_realms() {
-    local backup backup_path
+    local backup backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -32,8 +32,8 @@ handle_import_realms() {
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser import-realms --help')"
             fi
-            debug "Backup name set to ${backup} with option --name"
             backup="$2"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -52,20 +52,19 @@ handle_import_realms() {
         compose down
     fi
 
-    # Select backup name
+    # Select backup
     if [[ -z "${backup}" ]]; then
-        select_backup "${KC_BACKUP_DIR}"
-        backup="${SELECTED_BACKUP}"
-    fi
-
-    # Check backup directory
-    backup_path="${KC_BACKUP_DIR}/${SELECTED_BACKUP}"
-    if [[ ! -d "${backup_path}" ]]; then
-        error "Export ${backup_path} does not exist"
+        backups=()
+        for backup in "${KC_BACKUP_DIR}"/*; do
+            if [[ -d "${backup}" ]]; then
+                backups+=("${backup##*/}")
+            fi
+        done
+        select_backup "${backups[@]}"
     fi
 
     info "Importing Keycloak realms..."
-    kc --restart-with import --dir "/opt/keycloak/data/backups/${backup}"
+    kc --restart-with import --dir "/opt/keycloak/data/backups/${SELECTED_BACKUP}"
 
     info "Stopping services..."
     compose down
