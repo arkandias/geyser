@@ -10,7 +10,7 @@ ALTER TABLE public.track
     ADD COLUMN nom_import text;
 
 INSERT INTO public.ui_text(key, value)
-VALUES ('legal-notice', '<p>
+VALUES ('legal_notice', '<p>
   Dans le cadre de la gestion des services prévisionnels des intervenants en
   mathématiques à l''Université de Lille, le département de mathématiques
   collecte et traite vos données personnelles sur la base de votre consentement.
