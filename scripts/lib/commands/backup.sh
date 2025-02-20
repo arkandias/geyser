@@ -56,16 +56,15 @@ handle_backup() {
         done
     fi
 
-    # Create backup directory
-    backup_path="${DB_BACKUP_DIR}/${backup}"
-    if [[ -d "${backup_path}" ]]; then
+    # Check backup does not already exist
+    backup_path="${DB_BACKUP_DIR}/${backup}.dump"
+    if [[ -e "${backup_path}" ]]; then
         error "Backup ${backup_path} already exists"
     fi
-    mkdir -p "${backup_path}"
 
-    info "Creating a backup in ${backup_path}..."
+    info "Backing up database..."
     compose exec -T db bash -c \
-        "pg_dump -U postgres -d geyser -Fc > /backups/${backup}/geyser.dump"
+        "pg_dump -U postgres -d geyser -Fc > /backups/${backup}.dump"
 
     success "Backup created successfully in ${backup_path}"
 }

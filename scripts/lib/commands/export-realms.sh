@@ -73,7 +73,7 @@ handle_export_realms() {
 
     # Create backup directory
     backup_path="${KC_BACKUP_DIR}/${backup}"
-    if [[ -d "${backup_path}" ]]; then
+    if [[ -e "${backup_path}" ]]; then
         error "Backup ${backup_path} already exists"
     fi
     mkdir -p "${backup_path}"
