@@ -9,8 +9,8 @@ ALTER TABLE public.program
 ALTER TABLE public.track
     ADD COLUMN nom_import text;
 
-INSERT INTO public.ui_text(key, value, label)
-VALUES ('legal-notice2', '<p>
+INSERT INTO public.ui_text(key, value)
+VALUES ('legal-notice', '<p>
   Dans le cadre de la gestion des services prévisionnels des intervenants en
   mathématiques à l''Université de Lille, le département de mathématiques
   collecte et traite vos données personnelles sur la base de votre consentement.
@@ -58,7 +58,7 @@ VALUES ('legal-notice2', '<p>
   Si vous estimez, après avoir contacté le directeur du département de
   mathématiques, que vos droits «&nbsp;Informatique et Libertés&nbsp;» ne sont
   pas respectés, vous pouvez adresser une réclamation à la CNIL.
-</p>', 'Mentions légales');
+</p>');
 
 INSERT INTO public.position(value, label, base_service_hours, description)
 VALUES ('mcf', 'Maître de conférences', 192, NULL),

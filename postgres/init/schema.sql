@@ -16,18 +16,21 @@ CREATE TABLE public.phase
 (
     value   text PRIMARY KEY,
     current boolean UNIQUE, -- TRUE or NULL
+    description text,
     CHECK (current)         -- current is TRUE or NULL
 );
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
 COMMENT ON COLUMN public.phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
+COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
 CREATE TABLE public.year
 (
     value   integer PRIMARY KEY,
     current boolean UNIQUE,                    -- TRUE or NULL
     visible boolean NOT NULL DEFAULT TRUE,
+    comment text,
     CHECK (current),                           -- current is TRUE or NULL
     CHECK (current IS NULL OR visible IS TRUE) -- current year is visible
 );
@@ -36,6 +39,7 @@ COMMENT ON TABLE public.year IS 'Academic year definitions with current year des
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
 COMMENT ON COLUMN public.year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
 COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
+COMMENT ON COLUMN public.year.comment IS 'Additional information about this academic year';
 
 
 --
@@ -129,7 +133,7 @@ CREATE TABLE public.role_type
 
 COMMENT ON TABLE public.role_type IS 'System roles for privileged access';
 COMMENT ON COLUMN public.role_type.value IS 'Role identifier';
-COMMENT ON COLUMN public.role_type.description IS 'Description of role privileges and responsibilities';
+COMMENT ON COLUMN public.role_type.description IS 'Description of the role privileges and responsibilities';
 
 CREATE TABLE public.role
 (
@@ -211,7 +215,7 @@ COMMENT ON TABLE public.course_type IS 'Types of course delivery with associated
 COMMENT ON COLUMN public.course_type.value IS 'Course type identifier (e.g., lecture, tutorial)';
 COMMENT ON COLUMN public.course_type.label IS 'Human-readable type name for display, unique';
 COMMENT ON COLUMN public.course_type.coefficient IS 'Workload multiplier for service hour calculations';
-COMMENT ON COLUMN public.course_type.description IS 'Detailed description of the course type and its characteristics';
+COMMENT ON COLUMN public.course_type.description IS 'Description of the course type and its characteristics';
 
 CREATE TABLE public.course
 (
@@ -254,7 +258,7 @@ COMMENT ON COLUMN public.course.hours_effective IS 'Actual teaching hours used, 
 COMMENT ON COLUMN public.course.groups IS 'Standard number of student groups';
 COMMENT ON COLUMN public.course.groups_adjusted IS 'Modified number of groups if different from standard';
 COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups used, defaulting to standard if no adjustment';
-COMMENT ON COLUMN public.course.description IS 'Detailed course description and objectives';
+COMMENT ON COLUMN public.course.description IS 'Course description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the user interface and queries';
 
@@ -391,7 +395,7 @@ CREATE TABLE public.request_type
 
 COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
 COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
-COMMENT ON COLUMN public.request_type.description IS 'Detailed description of the request type and its purpose';
+COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
 
 CREATE TABLE public.request
 (

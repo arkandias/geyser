@@ -2,16 +2,24 @@
 
 set -e
 
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 CONTAINER_NAME="pg_tmp"
-LEGACY_DUMP="dumps/legacy.sql"
-MIGRATED_DUMP="dumps/migrated.sql"
-INIT_DUMP="dumps/init.dump"
-MIGRATIONS_DIR="migrations"
+
+DUMPS_DIR="${SCRIPT_DIR}/dumps"
+MIGRATIONS_DIR="${SCRIPT_DIR}/migrations"
+SUMMARIES_DIR="${SCRIPT_DIR}/summaries"
+LEGACY_DUMP="${DUMPS_DIR}/legacy.sql"
+MIGRATED_DUMP="${DUMPS_DIR}/migrated.sql"
+INIT_DUMP="${DUMPS_DIR}/init.dump"
 INIT_FILES=(
-    ../init/schema.sql
-    ../init/core_data.sql
-    ./lpp.sql
+    "${SCRIPT_DIR}/../init/schema.sql"
+    "${SCRIPT_DIR}/../init/core_data.sql"
+    "${SCRIPT_DIR}/lpp.sql"
 )
+
+mkdir -p "${DUMPS_DIR}"
+mkdir -p "${MIGRATIONS_DIR}"
+mkdir -p "${SUMMARIES_DIR}"
 
 pg_start() {
     # Cleaning up any existing container
@@ -68,7 +76,7 @@ apply_migration() {
 }
 
 if ! pg_isready -h localhost -p 5420 -d geyser &>/dev/null; then
-    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 <legacy-server>'" >&2
+    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 geyser'" >&2
     exit 1
 fi
 
@@ -84,14 +92,14 @@ pg_start
 echo "Importing legacy data..."
 psql_file "${LEGACY_DUMP}" >/dev/null
 
-summary >summaries/before_migration.txt
+summary >"${SUMMARIES_DIR}/before_migration.txt"
 
 echo "Applying migrations..."
 for migration in "${MIGRATIONS_DIR}"/*/up.sql; do
     apply_migration "${migration}"
 done
 
-summary >summaries/after_migration.txt
+summary >"${SUMMARIES_DIR}/after_migration.txt"
 
 echo "Dumping migrated data..."
 docker exec -i "${CONTAINER_NAME}" pg_dump -U postgres -d geyser \
@@ -131,7 +139,7 @@ REFERENCES public.course(id) \
 ON UPDATE CASCADE\
 " >/dev/null
 
-summary >summaries/final.txt
+summary >"${SUMMARIES_DIR}/final.txt"
 
 echo "Dumping new database..."
 docker exec -i "${CONTAINER_NAME}" pg_dump -U postgres -d geyser -Fc >"${INIT_DUMP}"
