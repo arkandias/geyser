@@ -2,9 +2,9 @@ table:
   name: teacher
   schema: public
 object_relationships:
-  - name: positionByPosition
+  - name: position
     using:
-      foreign_key_constraint_on: position
+      foreign_key_constraint_on: position_id
 array_relationships:
   - name: coordinations
     using:
@@ -36,7 +36,7 @@ select_permissions:
         - base_service_hours
         - firstname
         - lastname
-        - position
+        - position_id
         - uid
         - visible
       filter:
@@ -59,7 +59,7 @@ select_permissions:
         - base_service_hours
         - firstname
         - lastname
-        - position
+        - position_id
         - uid
         - visible
       filter:

@@ -5,7 +5,7 @@ array_relationships:
   - name: courses
     using:
       foreign_key_constraint_on:
-        column: type
+        column: type_id
         table:
           name: course
           schema: public
@@ -15,8 +15,8 @@ select_permissions:
       columns:
         - coefficient
         - description
+        - id
         - label
-        - value
       filter:
         _exists:
           _table:
@@ -34,8 +34,8 @@ select_permissions:
       columns:
         - coefficient
         - description
+        - id
         - label
-        - value
       filter:
         _exists:
           _table:

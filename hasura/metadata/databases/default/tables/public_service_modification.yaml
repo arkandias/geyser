@@ -5,9 +5,9 @@ object_relationships:
   - name: service
     using:
       foreign_key_constraint_on: service_id
-  - name: typeByType
+  - name: type
     using:
-      foreign_key_constraint_on: type
+      foreign_key_constraint_on: type_id
 insert_permissions:
   - role: teacher
     permission:
@@ -33,7 +33,7 @@ insert_permissions:
       columns:
         - hours
         - service_id
-        - type
+        - type_id
     comment: "During requests phase, can create service modifications for their own service for the current year"
 select_permissions:
   - role: commissioner
@@ -42,7 +42,7 @@ select_permissions:
         - id
         - hours
         - service_id
-        - type
+        - type_id
       filter:
         _exists:
           _table:
@@ -62,7 +62,7 @@ select_permissions:
         - id
         - hours
         - service_id
-        - type
+        - type_id
       filter:
         _and:
           - _exists:
@@ -89,7 +89,7 @@ update_permissions:
     permission:
       columns:
         - hours
-        - type
+        - type_id
       filter:
         _and:
           - _exists:

@@ -20,11 +20,3 @@ INSERT INTO public.role_type(value, description)
 VALUES ('admin', 'Full system administration access with ability to manage users, roles, and system configuration'),
        ('commissioner',
         'Member of the course assignment committee with ability to make course assignments during the assignments phase');
-
--- Default admin teacher
-INSERT INTO public.teacher(uid, firstname, lastname, alias)
-VALUES ('admin', '', '', 'Admin');
-
-INSERT INTO public.role(uid, type, comment)
-VALUES ('admin', 'admin', 'Default admin user'),
-       ('admin', 'commissioner', 'Default admin user');

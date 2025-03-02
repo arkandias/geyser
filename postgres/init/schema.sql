@@ -14,10 +14,10 @@ COMMENT ON COLUMN public.ui_text.value IS 'Text content';
 
 CREATE TABLE public.phase
 (
-    value   text PRIMARY KEY,
-    current boolean UNIQUE, -- TRUE or NULL
+    value       text PRIMARY KEY,
+    current     boolean UNIQUE, -- TRUE or NULL
     description text,
-    CHECK (current)         -- current is TRUE or NULL
+    CHECK (current)             -- current is TRUE or NULL
 );
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
@@ -48,14 +48,14 @@ COMMENT ON COLUMN public.year.comment IS 'Additional information about this acad
 
 CREATE TABLE public.position
 (
-    value              text PRIMARY KEY,
+    id                 serial PRIMARY KEY,
     label              text NOT NULL UNIQUE,
     description        text,
     base_service_hours real
 );
 
 COMMENT ON TABLE public.position IS 'Teaching positions with associated service hour requirements';
-COMMENT ON COLUMN public.position.value IS 'Position identifier (e.g., professor, lecturer)';
+COMMENT ON COLUMN public.position.id IS 'Unique position identifier';
 COMMENT ON COLUMN public.position.label IS 'Human-readable position name for display purposes, unique';
 COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours required for this position, can be overridden per teacher';
 COMMENT ON COLUMN public.position.description IS 'Optional description of the position';
@@ -66,7 +66,7 @@ CREATE TABLE public.teacher
     firstname          text    NOT NULL,
     lastname           text    NOT NULL,
     alias              text,
-    position           text REFERENCES public.position ON UPDATE CASCADE,
+    position_id        integer REFERENCES public.position ON UPDATE CASCADE,
     base_service_hours real,
     visible            boolean NOT NULL DEFAULT TRUE,
     active             boolean NOT NULL DEFAULT TRUE
@@ -77,7 +77,7 @@ COMMENT ON COLUMN public.teacher.uid IS 'Teacher''s email address (primary key).
 COMMENT ON COLUMN public.teacher.firstname IS 'Teacher''s first name';
 COMMENT ON COLUMN public.teacher.lastname IS 'Teacher''s last name';
 COMMENT ON COLUMN public.teacher.alias IS 'Optional display name, used instead of first/last name when set';
-COMMENT ON COLUMN public.teacher.position IS 'Reference to teacher''s position, determines default service hours';
+COMMENT ON COLUMN public.teacher.position_id IS 'Reference to teacher''s position, determines default service hours';
 COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for annual teaching hours, takes precedence over position''s base hours';
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
@@ -101,28 +101,28 @@ COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to co
 
 CREATE TABLE public.service_modification_type
 (
-    value       text PRIMARY KEY,
+    id          serial PRIMARY KEY,
     label       text NOT NULL UNIQUE,
     description text
 );
 
 COMMENT ON TABLE public.service_modification_type IS 'Categories of service hour modifications';
-COMMENT ON COLUMN public.service_modification_type.value IS 'Modification type identifier';
-COMMENT ON COLUMN public.service_modification_type.label IS 'Human-readable name for the modification type, unique';
+COMMENT ON COLUMN public.service_modification_type.id IS 'Unique modification type identifier';
+COMMENT ON COLUMN public.service_modification_type.label IS 'Human-readable type name for display purposes, unique';
 COMMENT ON COLUMN public.service_modification_type.description IS 'Detailed explanation of the modification type and its application';
 
 CREATE TABLE public.service_modification
 (
     id         serial PRIMARY KEY,
     service_id integer NOT NULL REFERENCES public.service ON UPDATE CASCADE,
-    type       text    NOT NULL REFERENCES public.service_modification_type ON UPDATE CASCADE,
+    type_id    integer NOT NULL REFERENCES public.service_modification_type ON UPDATE CASCADE,
     hours      real    NOT NULL
 );
 
 COMMENT ON TABLE public.service_modification IS 'Individual modifications to base teaching service hours';
 COMMENT ON COLUMN public.service_modification.id IS 'Unique modification identifier';
 COMMENT ON COLUMN public.service_modification.service_id IS 'Reference to affected service record';
-COMMENT ON COLUMN public.service_modification.type IS 'Type of service modification being applied';
+COMMENT ON COLUMN public.service_modification.type_id IS 'Reference to service modification type';
 COMMENT ON COLUMN public.service_modification.hours IS 'Hour adjustment amount (negative values increase required hours)';
 
 CREATE TABLE public.role_type
@@ -205,15 +205,15 @@ COMMENT ON COLUMN public.track.visible IS 'Controls track visibility in the user
 
 CREATE TABLE public.course_type
 (
-    value       text PRIMARY KEY,
+    id          serial PRIMARY KEY,
     label       text NOT NULL UNIQUE,
     coefficient real NOT NULL DEFAULT 1,
     description text
 );
 
 COMMENT ON TABLE public.course_type IS 'Types of course delivery with associated workload coefficients';
-COMMENT ON COLUMN public.course_type.value IS 'Course type identifier (e.g., lecture, tutorial)';
-COMMENT ON COLUMN public.course_type.label IS 'Human-readable type name for display, unique';
+COMMENT ON COLUMN public.course_type.id IS 'Unique course type identifier';
+COMMENT ON COLUMN public.course_type.label IS 'Human-readable type name for display purposes, unique';
 COMMENT ON COLUMN public.course_type.coefficient IS 'Workload multiplier for service hour calculations';
 COMMENT ON COLUMN public.course_type.description IS 'Description of the course type and its characteristics';
 
@@ -226,7 +226,7 @@ CREATE TABLE public.course
     parent_id        integer REFERENCES public.course ON UPDATE CASCADE,
     name             text    NOT NULL,
     name_short       text,
-    type             text    NOT NULL REFERENCES public.course_type ON UPDATE CASCADE,
+    type_id          integer NOT NULL REFERENCES public.course_type ON UPDATE CASCADE,
     semester         integer NOT NULL CHECK (1 <= semester AND semester <= 6),
     cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
     hours            real    NOT NULL CHECK (hours >= 0),
@@ -238,7 +238,7 @@ CREATE TABLE public.course
     description      text,
     priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
     visible          boolean NOT NULL DEFAULT TRUE,
-    UNIQUE (year, program_id, track_id, name, semester, type)
+    UNIQUE (year, program_id, track_id, name, semester, type_id)
 );
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
@@ -249,7 +249,7 @@ COMMENT ON COLUMN public.course.track_id IS 'Optional track specialization for t
 COMMENT ON COLUMN public.course.parent_id IS 'Reference to previous year''s version of this course';
 COMMENT ON COLUMN public.course.name IS 'Full course name';
 COMMENT ON COLUMN public.course.name_short IS 'Abbreviated course name';
-COMMENT ON COLUMN public.course.type IS 'Course delivery type affecting workload calculation';
+COMMENT ON COLUMN public.course.type_id IS 'Reference to course delivery type affecting workload calculation';
 COMMENT ON COLUMN public.course.semester IS 'Academic semester (1-6)';
 COMMENT ON COLUMN public.course.cycle_year IS 'Computed study year (1-3) based on semester';
 COMMENT ON COLUMN public.course.hours IS 'Standard teaching hours per group';
@@ -419,7 +419,7 @@ $$
 SELECT r.hours * ct.coefficient
 FROM public.request r
          JOIN public.course c ON r.course_id = c.id
-         JOIN public.course_type ct ON c.type = ct.value
+         JOIN public.course_type ct ON c.type_id = ct.id
 WHERE r.id = request_row.id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
@@ -539,7 +539,7 @@ $$
 INSERT INTO public.service (year, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
-         JOIN public.position p ON t.position = p.value
+         JOIN public.position p ON t.position_id = p.id
 WHERE t.uid = p_uid
 ON CONFLICT DO NOTHING
 RETURNING *;
@@ -551,7 +551,7 @@ $$
 INSERT INTO public.service (year, uid, hours)
 SELECT p_year, t.uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
-         JOIN public.position p ON t.position = p.value
+         JOIN public.position p ON t.position_id = p.id
 WHERE t.active IS TRUE
 ON CONFLICT DO NOTHING
 RETURNING *;

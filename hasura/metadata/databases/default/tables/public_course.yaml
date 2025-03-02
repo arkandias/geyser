@@ -11,9 +11,9 @@ object_relationships:
   - name: track
     using:
       foreign_key_constraint_on: track_id
-  - name: typeByType
+  - name: type
     using:
-      foreign_key_constraint_on: type
+      foreign_key_constraint_on: type_id
   - name: yearByYear
     using:
       foreign_key_constraint_on: year
@@ -72,7 +72,7 @@ select_permissions:
         - priority_rule
         - semester
         - track_id
-        - type
+        - type_id
         - visible
         - year
       computed_fields:
@@ -108,7 +108,7 @@ select_permissions:
         - priority_rule
         - semester
         - track_id
-        - type
+        - type_id
         - visible
         - year
       computed_fields:

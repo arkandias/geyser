@@ -60,14 +60,13 @@ VALUES ('legal_notice', '<p>
   pas respectés, vous pouvez adresser une réclamation à la CNIL.
 </p>');
 
-INSERT INTO public.position(value, label, base_service_hours, description)
-VALUES ('mcf', 'Maître de conférences', 192, NULL),
-       ('pr', 'Professeur des universités', 192, NULL),
-       ('cr', 'Chargé de recherche', 0, NULL),
-       ('dr', 'Directeur de recherche', 0, NULL),
-       ('prag', 'Professeur agrégé', 384, NULL),
-       ('ater', 'ATER', 192, NULL),
-       ('demi_ater', 'Demi-ATER', 96, NULL),
-       ('doctorant', 'Doctorant', 64, NULL),
-       ('postdoc', 'Post-doctorant', 0, NULL),
-       ('administratif', 'Administratif', 0, NULL);
+INSERT INTO public.position(label, base_service_hours, description)
+VALUES ('Maître de conférences', 192, NULL),
+       ('Professeur des universités', 192, NULL),
+       ('Chargé de recherche', 0, NULL),
+       ('Directeur de recherche', 0, NULL),
+       ('Professeur agrégé', 384, NULL),
+       ('ATER', 192, NULL),
+       ('Demi-ATER', 96, NULL),
+       ('Doctorant', 64, NULL),
+       ('Post-doctorant', 0, NULL);

@@ -75,17 +75,17 @@ apply_migration() {
     psql_file "${migration_file}" >/dev/null
 }
 
-if ! pg_isready -h localhost -p 5420 -d geyser &>/dev/null; then
-    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 geyser'" >&2
-    exit 1
-fi
-
-echo "Dumping legacy database..."
-PGPASSWORD=postgres_pwd pg_dump -h localhost -p 5420 -U postgres -d geyser -n ec \
-    --no-owner --no-privileges --no-comments -f "${LEGACY_DUMP}"
-
-echo "Renaming schema 'ec' to 'public'..."
-sed -i '' 's/schema ec/schema public/g; s/ec\./public./g' "${LEGACY_DUMP}"
+#if ! pg_isready -h localhost -p 5420 -d geyser &>/dev/null; then
+#    echo "Cannot connect to legacy database on port 5420. Run 'ssh -L 5420:localhost:5432 geyser'" >&2
+#    exit 1
+#fi
+#
+#echo "Dumping legacy database..."
+#PGPASSWORD=postgres_pwd pg_dump -h localhost -p 5420 -U postgres -d geyser -n ec \
+#    --no-owner --no-privileges --no-comments -f "${LEGACY_DUMP}"
+#
+#echo "Renaming schema 'ec' to 'public'..."
+#sed -i '' 's/schema ec/schema public/g; s/ec\./public./g' "${LEGACY_DUMP}"
 
 pg_start
 
