@@ -44,5 +44,5 @@ handle_start() {
     info "Starting services..."
     compose up -d
 
-    success "All services started successfully"
+    success "All services started successfully. Stop Geyser with 'geyser stop'"
 }
