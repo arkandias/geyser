@@ -42,16 +42,6 @@ handle_restore() {
         esac
     done
 
-    if [[ -n $(compose ps -q) ]]; then
-        warn "Running services need to be stopped for restore"
-        if ! confirm "Continue?"; then
-            info "Restore cancelled: stop services first with 'geyser stop'"
-            return
-        fi
-        info "Stopping services..."
-        compose down
-    fi
-
     # Select backup
     if [[ -z "${backup}" ]]; then
         backups=()
@@ -61,6 +51,16 @@ handle_restore() {
             fi
         done
         select_backup "${backups[@]}"
+    fi
+
+    if [[ -n $(compose ps -q) ]]; then
+        warn "Running services need to be stopped for restore"
+        if ! confirm "Continue?"; then
+            info "Restore cancelled: stop services first with 'geyser stop'"
+            return
+        fi
+        info "Stopping services..."
+        compose down
     fi
 
     info "Starting database..."
