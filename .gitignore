@@ -8,7 +8,6 @@
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/dumps/
-/postgres/migration/migrations/
 /postgres/migration/summaries/
 .DS_Store
 *.local

@@ -66,6 +66,7 @@ CREATE TABLE public.teacher
     firstname          text    NOT NULL,
     lastname           text    NOT NULL,
     alias              text,
+    displayname        text GENERATED ALWAYS AS (coalesce(alias, firstname || ' ' || lastname)) STORED,
     position_id        integer REFERENCES public.position ON UPDATE CASCADE,
     base_service_hours real,
     visible            boolean NOT NULL DEFAULT TRUE,
@@ -77,6 +78,7 @@ COMMENT ON COLUMN public.teacher.uid IS 'Teacher''s email address (primary key).
 COMMENT ON COLUMN public.teacher.firstname IS 'Teacher''s first name';
 COMMENT ON COLUMN public.teacher.lastname IS 'Teacher''s last name';
 COMMENT ON COLUMN public.teacher.alias IS 'Optional display name, used instead of first/last name when set';
+COMMENT ON COLUMN public.track.name_display IS 'Preferred display name, using alias when available, otherwise full name';
 COMMENT ON COLUMN public.teacher.position_id IS 'Reference to teacher''s position, determines default service hours';
 COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for annual teaching hours, takes precedence over position''s base hours';
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
@@ -157,25 +159,28 @@ COMMENT ON COLUMN public.role.comment IS 'Additional information about this priv
 
 CREATE TABLE public.degree
 (
-    id         serial PRIMARY KEY,
-    name       text    NOT NULL UNIQUE,
-    name_short text,
-    visible    boolean NOT NULL DEFAULT TRUE
+    id           serial PRIMARY KEY,
+    name         text    NOT NULL UNIQUE,
+    name_short   text,
+    name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
+    visible      boolean NOT NULL DEFAULT TRUE
 );
 
 COMMENT ON TABLE public.degree IS 'Academic degrees offered by the institution';
 COMMENT ON COLUMN public.degree.id IS 'Unique degree identifier';
 COMMENT ON COLUMN public.degree.name IS 'Full degree name, unique (e.g., Bachelor of Science)';
 COMMENT ON COLUMN public.degree.name_short IS 'Abbreviated degree name (e.g., BSc)';
+COMMENT ON COLUMN public.degree.name_display IS 'Preferred display name, using abbreviated name when available, otherwise full name';
 COMMENT ON COLUMN public.degree.visible IS 'Controls degree visibility in the user interface and queries';
 
 CREATE TABLE public.program
 (
-    id         serial PRIMARY KEY,
-    degree_id  integer NOT NULL REFERENCES public.degree ON UPDATE CASCADE,
-    name       text    NOT NULL,
-    name_short text,
-    visible    boolean NOT NULL DEFAULT TRUE,
+    id           serial PRIMARY KEY,
+    degree_id    integer NOT NULL REFERENCES public.degree ON UPDATE CASCADE,
+    name         text    NOT NULL,
+    name_short   text,
+    name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
+    visible      boolean NOT NULL DEFAULT TRUE,
     UNIQUE (degree_id, name)
 );
 
@@ -184,15 +189,17 @@ COMMENT ON COLUMN public.program.id IS 'Unique program identifier';
 COMMENT ON COLUMN public.program.degree_id IS 'Parent degree for this program';
 COMMENT ON COLUMN public.program.name IS 'Full program name, unique within its degree (e.g., Mathematics)';
 COMMENT ON COLUMN public.program.name_short IS 'Abbreviated program name';
+COMMENT ON COLUMN public.program.name_display IS 'Preferred display name, using abbreviated name when available, otherwise full name';
 COMMENT ON COLUMN public.program.visible IS 'Controls program visibility in the user interface and queries';
 
 CREATE TABLE public.track
 (
-    id         serial PRIMARY KEY,
-    program_id integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
-    name       text    NOT NULL,
-    name_short text,
-    visible    boolean NOT NULL DEFAULT TRUE,
+    id           serial PRIMARY KEY,
+    program_id   integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
+    name         text    NOT NULL,
+    name_short   text,
+    name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
+    visible      boolean NOT NULL DEFAULT TRUE,
     UNIQUE (program_id, name)
 );
 
@@ -201,6 +208,7 @@ COMMENT ON COLUMN public.track.id IS 'Unique track identifier';
 COMMENT ON COLUMN public.track.program_id IS 'Parent program for this track';
 COMMENT ON COLUMN public.track.name IS 'Full track name, unique within its program (e.g., Pure Mathematics, Applied Mathematics, Statistics, etc.)';
 COMMENT ON COLUMN public.track.name_short IS 'Abbreviated track name';
+COMMENT ON COLUMN public.track.name_display IS 'Preferred display name, using abbreviated name when available, otherwise full name';
 COMMENT ON COLUMN public.track.visible IS 'Controls track visibility in the user interface and queries';
 
 CREATE TABLE public.course_type
@@ -226,14 +234,15 @@ CREATE TABLE public.course
     parent_id        integer REFERENCES public.course ON UPDATE CASCADE,
     name             text    NOT NULL,
     name_short       text,
+    name_display     text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
     type_id          integer NOT NULL REFERENCES public.course_type ON UPDATE CASCADE,
     semester         integer NOT NULL CHECK (1 <= semester AND semester <= 6),
     cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
     hours            real    NOT NULL CHECK (hours >= 0),
-    hours_adjusted   real CHECK (0 <= hours_adjusted AND hours_adjusted < hours),
+    hours_adjusted   real,
     hours_effective  integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
     groups           integer NOT NULL CHECK (groups >= 0),
-    groups_adjusted  integer CHECK (0 <= groups_adjusted AND groups_adjusted < groups),
+    groups_adjusted  integer,
     groups_effective integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
     description      text,
     priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
@@ -249,6 +258,7 @@ COMMENT ON COLUMN public.course.track_id IS 'Optional track specialization for t
 COMMENT ON COLUMN public.course.parent_id IS 'Reference to previous year''s version of this course';
 COMMENT ON COLUMN public.course.name IS 'Full course name';
 COMMENT ON COLUMN public.course.name_short IS 'Abbreviated course name';
+COMMENT ON COLUMN public.course.name_display IS 'Preferred display name, using abbreviated name when available, otherwise full name';
 COMMENT ON COLUMN public.course.type_id IS 'Reference to course delivery type affecting workload calculation';
 COMMENT ON COLUMN public.course.semester IS 'Academic semester (1-6)';
 COMMENT ON COLUMN public.course.cycle_year IS 'Computed study year (1-3) based on semester';
