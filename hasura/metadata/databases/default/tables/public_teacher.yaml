@@ -55,10 +55,8 @@ select_permissions:
     permission:
       columns:
         - active
-        - alias
         - base_service_hours
-        - firstname
-        - lastname
+        - displayname
         - position_id
         - uid
         - visible
