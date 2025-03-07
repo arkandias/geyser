@@ -66,6 +66,7 @@ select_permissions:
         - hours_effective
         - id
         - name
+        - name_display
         - name_short
         - program_id
         - parent_id
@@ -102,6 +103,7 @@ select_permissions:
         - hours_effective
         - id
         - name
+        - name_display
         - name_short
         - program_id
         - parent_id

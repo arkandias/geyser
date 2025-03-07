@@ -26,6 +26,7 @@ select_permissions:
       columns:
         - id
         - name
+        - name_display
         - name_short
         - program_id
         - visible
@@ -46,6 +47,7 @@ select_permissions:
       columns:
         - id
         - name
+        - name_display
         - name_short
         - program_id
         - visible

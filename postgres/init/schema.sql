@@ -78,7 +78,7 @@ COMMENT ON COLUMN public.teacher.uid IS 'Teacher''s email address (primary key).
 COMMENT ON COLUMN public.teacher.firstname IS 'Teacher''s first name';
 COMMENT ON COLUMN public.teacher.lastname IS 'Teacher''s last name';
 COMMENT ON COLUMN public.teacher.alias IS 'Optional display name, used instead of first/last name when set';
-COMMENT ON COLUMN public.track.name_display IS 'Preferred display name, using alias when available, otherwise full name';
+COMMENT ON COLUMN public.teacher.displayname IS 'Preferred display name, using alias when available, otherwise full name';
 COMMENT ON COLUMN public.teacher.position_id IS 'Reference to teacher''s position, determines default service hours';
 COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for annual teaching hours, takes precedence over position''s base hours';
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
