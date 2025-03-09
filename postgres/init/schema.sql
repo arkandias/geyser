@@ -366,11 +366,23 @@ CREATE TRIGGER check_track_program
     FOR EACH ROW
 EXECUTE FUNCTION public.check_track_program();
 
-CREATE TRIGGER check_track_program_on_track_update
-    BEFORE UPDATE OF program_id
+CREATE FUNCTION public.update_course_program_on_track_update() RETURNS trigger AS
+$$
+BEGIN
+    UPDATE public.course
+    SET program_id = new.program_id
+    WHERE track_id = new.id;
+
+    RETURN new;
+END;
+$$ LANGUAGE plpgsql;
+COMMENT ON FUNCTION public.update_course_program_on_track_update() IS 'Updates the program_id of all courses when their associated track''s program changes';
+
+CREATE TRIGGER update_course_program_on_track_update
+    AFTER UPDATE OF program_id
     ON public.track
     FOR EACH ROW
-EXECUTE FUNCTION public.check_track_program();
+EXECUTE FUNCTION public.update_course_program_on_track_update();
 
 CREATE TABLE public.coordination
 (
