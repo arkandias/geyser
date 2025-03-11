@@ -126,7 +126,10 @@ main() {
             ;;
         -s | --status)
             echo "Checking status..."
-            compose ps -a --format '{{.Service}}: {{.Status}}'
+            compose ps -a --format '{{.Service}}: {{.Status}}' 2>/dev/null || {
+                echo >&2 "Failed to check Geyser status. Is Docker daemon running?"
+                exit 1
+            }
             exit 0
             ;;
         -q | --quiet)
@@ -140,6 +143,7 @@ main() {
     done
 
     setup_logging
+    check_dependencies
     validate_configuration
 
     # Execute command
