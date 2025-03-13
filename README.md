@@ -320,6 +320,10 @@ The application is divided into four isolated networks:
     - Keycloak server (for authentication endpoints)
     - Hasura GraphQL Engine (for API access)
 
+## Main database schema
+
+[<img src="db_er_diagram.svg" alt="ER Diagram Thumbnail" width="500"/>](db_er_diagram.svg)
+
 ## Administration
 
 ### Administration Script
