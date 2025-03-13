@@ -1,0 +1,6 @@
+function:
+  name: create_year_services
+  schema: public
+configuration:
+  custom_root_fields: {}
+  exposed_as: mutation

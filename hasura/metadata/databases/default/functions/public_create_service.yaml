@@ -1,0 +1,6 @@
+function:
+  name: create_service
+  schema: public
+configuration:
+  custom_root_fields: {}
+  exposed_as: mutation

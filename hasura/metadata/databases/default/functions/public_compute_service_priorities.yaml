@@ -1,0 +1,6 @@
+function:
+  name: compute_service_priorities
+  schema: public
+configuration:
+  custom_root_fields: {}
+  exposed_as: mutation
