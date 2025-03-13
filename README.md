@@ -322,11 +322,7 @@ The application is divided into four isolated networks:
 
 ## Main database schema
 
-[<img src="er_diagram.svg" alt="ER Diagram Thumbnail" width="500"/>](er_diagram.svg)
-
-[<img src="er_diagram.png" alt="ER Diagram Thumbnail" width="500"/>](er_diagram.png)
-
-[<img src="er_diagram.jpeg" alt="ER Diagram Thumbnail" width="500"/>](er_diagram.jpeg)
+[<img src="db_er_diagram.svg" alt="ER Diagram Thumbnail" width="1000"/>](db_er_diagram.svg)
 
 ## Administration
 
