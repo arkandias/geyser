@@ -25,21 +25,21 @@ COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
 COMMENT ON COLUMN public.phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
 COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
-CREATE FUNCTION public.enforce_current_phase_exclusivity() RETURNS trigger AS
+CREATE FUNCTION public.clear_current_phase_flag() RETURNS trigger AS
 $$
 BEGIN
     UPDATE public.phase SET current = NULL WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION enforce_current_phase_exclusivity() IS 'Ensures only one phase is marked as current';
+COMMENT ON FUNCTION clear_current_phase_flag() IS 'Trigger function that clears the current phase flag before a phase is set as current';
 
-CREATE TRIGGER enforce_current_phase_exclusivity
+CREATE TRIGGER clear_current_phase_flag
     BEFORE UPDATE
     ON public.phase
     FOR EACH ROW
     WHEN (new.current = TRUE)
-EXECUTE FUNCTION enforce_current_phase_exclusivity();
+EXECUTE FUNCTION clear_current_phase_flag();
 
 CREATE TABLE public.year
 (
@@ -56,21 +56,21 @@ COMMENT ON COLUMN public.year.current IS 'Current academic year flag (TRUE or NU
 COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
 COMMENT ON COLUMN public.year.comment IS 'Additional information about this academic year';
 
-CREATE FUNCTION public.enforce_current_year_exclusivity() RETURNS trigger AS
+CREATE FUNCTION public.clear_current_year_flag() RETURNS trigger AS
 $$
 BEGIN
     UPDATE public.year SET current = NULL WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION enforce_current_year_exclusivity() IS 'Ensures only one year is marked as current';
+COMMENT ON FUNCTION clear_current_year_flag() IS 'Trigger function that clears the current year flag before a year is set as current';
 
-CREATE TRIGGER enforce_current_year_exclusivity
+CREATE TRIGGER clear_current_year_flag
     BEFORE UPDATE
     ON public.year
     FOR EACH ROW
     WHEN (new.current = TRUE)
-EXECUTE FUNCTION enforce_current_year_exclusivity();
+EXECUTE FUNCTION clear_current_year_flag();
 
 
 --
@@ -301,9 +301,9 @@ COMMENT ON COLUMN public.course.description IS 'Course description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the user interface and queries';
 
-CREATE FUNCTION public.total_hours_effective(c course) RETURNS real AS
+CREATE FUNCTION public.total_hours_effective(course_row course) RETURNS real AS
 $$
-SELECT c.hours_effective * c.groups_effective;
+SELECT course_row.hours_effective * course_row.groups_effective;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective';
 
@@ -328,7 +328,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql STABLE;
-COMMENT ON FUNCTION public.check_track_program() IS 'Ensures that a course''s track belongs to the course''s program';
+COMMENT ON FUNCTION public.check_track_program() IS 'Trigger function that ensures that the course''s track belongs to the course''s program';
 
 CREATE TRIGGER check_track_program
     BEFORE INSERT OR UPDATE OF program_id, track_id
@@ -336,7 +336,7 @@ CREATE TRIGGER check_track_program
     FOR EACH ROW
 EXECUTE FUNCTION public.check_track_program();
 
-CREATE FUNCTION public.update_course_program_on_track_update() RETURNS trigger AS
+CREATE FUNCTION public.update_track_program() RETURNS trigger AS
 $$
 BEGIN
     UPDATE public.course
@@ -346,13 +346,13 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.update_course_program_on_track_update() IS 'Updates the program_id of all courses when their associated track''s program changes';
+COMMENT ON FUNCTION public.update_track_program() IS 'Trigger function that updates the program of all courses of a given track after the track''s program has changed';
 
-CREATE TRIGGER update_course_program_on_track_update
+CREATE TRIGGER update_track_program
     AFTER UPDATE OF program_id
     ON public.track
     FOR EACH ROW
-EXECUTE FUNCTION public.update_course_program_on_track_update();
+EXECUTE FUNCTION public.update_track_program();
 
 CREATE TABLE public.coordination
 (
@@ -406,12 +406,12 @@ COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
 COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';
 COMMENT ON COLUMN public.request.hours IS 'Requested or assigned teaching hours';
 
-CREATE FUNCTION public.hours_weighted(r request) RETURNS real AS
+CREATE FUNCTION public.hours_weighted(request_row request) RETURNS real AS
 $$
-SELECT r.hours * ct.coefficient
+SELECT request_row.hours * ct.coefficient
 FROM public.course c
          JOIN public.course_type ct ON ct.id = c.type_id
-WHERE c.id = r.course_id;
+WHERE c.id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
 
@@ -441,7 +441,7 @@ FROM public.priority
 WHERE service_id = r.service_id
   AND course_id = r.course_id;
 $$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION public.is_priority(request) IS 'Determines if a request is prioritized based on teaching history and course priority rules';
+COMMENT ON FUNCTION public.is_priority(request) IS 'Determines the priority status of a request based on teaching history and course priority rules';
 
 CREATE FUNCTION public.check_service_course_year() RETURNS trigger AS
 $$
@@ -461,15 +461,15 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.check_service_course_year() IS 'Ensures that service and course years match for requests and priorities';
+COMMENT ON FUNCTION public.check_service_course_year() IS 'Trigger function that ensures that service''s year is equal to the course''s year for requests and priorities';
 
-CREATE TRIGGER check_request_service
+CREATE TRIGGER check_service_course_year
     BEFORE INSERT OR UPDATE OF service_id, course_id
     ON public.request
     FOR EACH ROW
 EXECUTE FUNCTION public.check_service_course_year();
 
-CREATE TRIGGER check_priority_service
+CREATE TRIGGER check_service_course_year
     BEFORE INSERT OR UPDATE OF service_id, course_id
     ON public.priority
     FOR EACH ROW
@@ -480,29 +480,29 @@ EXECUTE FUNCTION public.check_service_course_year();
 -- Functions
 --
 
-CREATE FUNCTION public.compute_service_priorities(s service) RETURNS setof priority AS
+CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
 $$
 DELETE
 FROM public.priority
-WHERE service_id = s.id
+WHERE service_id = service_row.id
   AND computed IS TRUE;
 
 INSERT INTO public.priority (service_id, course_id, seniority)
-SELECT s.id, c.id, coalesce(prev_p.seniority, 0) + 1
-FROM public.service prev_s
-         JOIN public.request prev_r ON prev_r.service_id = prev_s.id AND prev_r.type = 'assignment'
-         LEFT JOIN public.priority prev_p
-                   ON prev_p.service_id = prev_r.service_id AND prev_p.course_id = prev_r.course_id
-         JOIN public.course prev_c ON prev_c.id = prev_r.course_id
-         JOIN public.course c
-              ON c.year = prev_c.year + 1
-                  AND c.program_id = prev_c.program_id
-                  AND c.track_id = prev_c.track_id
-                  AND c.name = prev_c.name
-                  AND c.semester = prev_c.semester
-                  AND c.type_id = prev_c.type_id
-WHERE prev_s.year = s.year - 1
-  AND prev_s.uid = s.uid
+SELECT service_row.id, child.id, coalesce(p.seniority, 0) + 1
+FROM public.service s
+         JOIN public.request r ON r.service_id = s.id AND r.type = 'assignment'
+         LEFT JOIN public.priority p
+                   ON p.service_id = r.service_id AND p.course_id = r.course_id
+         JOIN public.course c ON c.id = r.course_id
+         JOIN public.course child
+              ON child.year = c.year + 1
+                  AND child.program_id = c.program_id
+                  AND child.track_id = c.track_id
+                  AND child.name = c.name
+                  AND child.semester = c.semester
+                  AND child.type_id = c.type_id
+WHERE s.year = service_row.year - 1
+  AND s.uid = service_row.uid
 ON CONFLICT (service_id, course_id)
     DO UPDATE SET seniority = excluded.seniority
 WHERE priority.computed IS TRUE;
@@ -510,12 +510,12 @@ WHERE priority.computed IS TRUE;
 UPDATE public.priority p
 SET is_priority = (p.seniority > 0 AND (coalesce(c.priority_rule, 0) > p.seniority OR c.priority_rule = 0))
 FROM public.course c
-WHERE p.service_id = s.id
+WHERE p.service_id = service_row.id
   AND p.course_id = c.id;
 
 SELECT *
 FROM public.priority
-WHERE service_id = s.id
+WHERE service_id = service_row.id
   AND computed IS TRUE;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.compute_service_priorities(service) IS 'Computes courses seniority and priority status for a given service based on previous year''s course assignments';
@@ -527,7 +527,7 @@ BEGIN
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.compute_service_priorities_trigger() IS 'Trigger function that computes seniority and priority status for newly inserted services';
+COMMENT ON FUNCTION public.compute_service_priorities_trigger() IS 'Trigger function that computes courses seniority and priority status for newly inserted services';
 
 CREATE TRIGGER compute_service_priorities
     AFTER INSERT
@@ -535,25 +535,33 @@ CREATE TRIGGER compute_service_priorities
     FOR EACH ROW
 EXECUTE FUNCTION public.compute_service_priorities_trigger();
 
-CREATE FUNCTION public.compute_year_priorities(year_param integer) RETURNS setof priority AS
+CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof priority AS
 $$
 SELECT p.*
 FROM public.service s
          CROSS JOIN LATERAL public.compute_service_priorities(s) p
-WHERE s.year = year_param;
+WHERE s.year = p_year;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniority and priority status for all services in a given year';
 
-CREATE FUNCTION public.create_service(p_year integer, p_uid text) RETURNS service AS
+CREATE FUNCTION public.create_service(p_year integer, p_uid text, p_ignore_conflict boolean DEFAULT FALSE) RETURNS service AS
 $$
-INSERT INTO public.service (year, uid, hours)
-SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
-FROM public.teacher t
-         JOIN public.position p ON p.id = t.position_id
-WHERE t.uid = p_uid
-ON CONFLICT DO NOTHING
-RETURNING *;
-$$ LANGUAGE sql;
+BEGIN
+    INSERT INTO public.service (year, uid, hours)
+    SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
+    FROM public.teacher t
+             JOIN public.position p ON p.id = t.position_id
+    WHERE t.uid = p_uid
+    RETURNING *;
+EXCEPTION
+    WHEN unique_violation THEN
+        IF p_ignore_conflict THEN
+            RETURN (SELECT * FROM public.service WHERE year = p_year AND uid = p_uid);
+        ELSE
+            RAISE;
+        END IF;
+END;
+$$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
 CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
@@ -586,16 +594,15 @@ BEGIN
         ALTER TABLE public.%I 
         ADD COLUMN created_at timestamptz NOT NULL DEFAULT current_timestamp,
         ADD COLUMN updated_at timestamptz NOT NULL DEFAULT current_timestamp;
+
         COMMENT ON COLUMN public.%I.created_at IS ''Timestamp when the record was created'';
         COMMENT ON COLUMN public.%I.updated_at IS ''Timestamp when the record was last updated, automatically managed by trigger'';
-    ', target_table, target_table, target_table);
 
-    EXECUTE format('
         CREATE TRIGGER set_timestamp
         BEFORE UPDATE ON public.%I
         FOR EACH ROW
         EXECUTE FUNCTION public.set_timestamp()
-    ', target_table);
+    ', target_table, target_table, target_table, target_table);
 
     RAISE NOTICE 'Added timestamp columns and trigger to table: %', target_table;
 END;
