@@ -22,4 +22,4 @@ FROM public.request r
 WHERE r.type = 'assignment'
 ON CONFLICT (service_id, course_id)
     DO UPDATE SET computed = TRUE
-WHERE seniority = excluded.seniority;
+WHERE priority.seniority = excluded.seniority;

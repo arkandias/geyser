@@ -12,6 +12,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - computed
         - course_id
         - id
         - is_priority
@@ -32,6 +33,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - computed
         - course_id
         - id
         - is_priority
