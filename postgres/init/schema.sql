@@ -480,6 +480,52 @@ EXECUTE FUNCTION public.check_service_course_year();
 -- Functions
 --
 
+CREATE FUNCTION public.create_service(p_year integer, p_uid text) RETURNS setof service AS
+$$
+INSERT INTO public.service (year, uid, hours)
+SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
+FROM public.teacher t
+         LEFT JOIN public.position p ON p.id = t.position_id
+WHERE t.uid = p_uid
+ON CONFLICT (year, uid) DO NOTHING
+RETURNING *;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
+
+CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
+$$
+SELECT s.*
+FROM public.teacher t
+         CROSS JOIN LATERAL public.create_service(p_year, t.uid) s
+WHERE t.active IS TRUE;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
+
+CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof course AS
+$$
+INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
+                           groups, groups_adjusted, description, priority_rule, visible)
+SELECT p_year - 1,
+       c.program_id,
+       c.track_id,
+       c.name,
+       c.name_short,
+       c.semester,
+       c.type_id,
+       c.hours,
+       c.hours_adjusted,
+       c.groups,
+       c.groups_adjusted,
+       c.description,
+       c.priority_rule,
+       c.visible
+FROM public.course c
+WHERE c.year = p_year - 1
+ON CONFLICT DO NOTHING
+RETURNING *;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
+
 CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
 $$
 DELETE
@@ -543,35 +589,6 @@ FROM public.service s
 WHERE s.year = p_year;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniority and priority status for all services in a given year';
-
-CREATE FUNCTION public.create_service(p_year integer, p_uid text, p_ignore_conflict boolean DEFAULT FALSE) RETURNS service AS
-$$
-BEGIN
-    INSERT INTO public.service (year, uid, hours)
-    SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
-    FROM public.teacher t
-             JOIN public.position p ON p.id = t.position_id
-    WHERE t.uid = p_uid
-    RETURNING *;
-EXCEPTION
-    WHEN unique_violation THEN
-        IF p_ignore_conflict THEN
-            RETURN (SELECT * FROM public.service WHERE year = p_year AND uid = p_uid);
-        ELSE
-            RAISE;
-        END IF;
-END;
-$$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
-
-CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
-$$
-SELECT s.*
-FROM public.teacher t
-         CROSS JOIN LATERAL public.create_service(p_year, t.uid) s
-WHERE t.active IS TRUE;
-$$ LANGUAGE sql;
-COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
 
 --

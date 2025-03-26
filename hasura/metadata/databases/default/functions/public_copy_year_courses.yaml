@@ -1,0 +1,6 @@
+function:
+  name: copy_year_courses
+  schema: public
+configuration:
+  custom_root_fields: {}
+  exposed_as: mutation
