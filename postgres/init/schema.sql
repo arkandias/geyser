@@ -277,7 +277,7 @@ CREATE TABLE public.course
     description      text,
     priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
     visible          boolean NOT NULL DEFAULT TRUE,
-    UNIQUE (year, program_id, track_id, name, semester, type_id)
+    UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id)
 );
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
@@ -505,7 +505,7 @@ CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof course AS
 $$
 INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
                            groups, groups_adjusted, description, priority_rule, visible)
-SELECT p_year - 1,
+SELECT p_year,
        c.program_id,
        c.track_id,
        c.name,
@@ -526,15 +526,15 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
-CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
+CREATE OR REPLACE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
 $$
 DELETE
 FROM public.priority
 WHERE service_id = service_row.id
   AND computed IS TRUE;
 
-INSERT INTO public.priority (service_id, course_id, seniority)
-SELECT service_row.id, child.id, coalesce(p.seniority, 0) + 1
+INSERT INTO public.priority (service_id, course_id, seniority, computed)
+SELECT service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
 FROM public.service s
          JOIN public.request r ON r.service_id = s.id AND r.type = 'assignment'
          LEFT JOIN public.priority p
