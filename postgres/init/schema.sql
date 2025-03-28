@@ -526,7 +526,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
-CREATE OR REPLACE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
+CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
 $$
 DELETE
 FROM public.priority
