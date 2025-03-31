@@ -15,12 +15,12 @@ select_permissions:
       columns:
         - description
         - value
-      filter: { }
-    comment: "Can view all role types"
+      filter: {}
+    comment: Can view all role types
   - role: teacher
     permission:
       columns:
         - description
         - value
-      filter: { }
-    comment: "Can view all role types"
+      filter: {}
+    comment: Can view all role types

@@ -4,10 +4,17 @@ table:
 object_relationships:
   - name: course
     using:
-      foreign_key_constraint_on: course_id
+      foreign_key_constraint_on:
+        - course_id
+        - year
   - name: service
     using:
-      foreign_key_constraint_on: service_id
+      foreign_key_constraint_on:
+        - service_id
+        - year
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
 select_permissions:
   - role: commissioner
     permission:
@@ -29,7 +36,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all priorities [during assignments phase only]"
+    comment: Can view all priorities [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -99,4 +106,4 @@ select_permissions:
                             service:
                               uid:
                                 _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"
+    comment: 'Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities'

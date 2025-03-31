@@ -7,12 +7,12 @@ select_permissions:
       columns:
         - key
         - value
-      filter: { }
-    comment: "Can view all UI texts"
+      filter: {}
+    comment: Can view all UI texts
   - role: teacher
     permission:
       columns:
         - key
         - value
-      filter: { }
-    comment: "Can view all UI texts"
+      filter: {}
+    comment: Can view all UI texts

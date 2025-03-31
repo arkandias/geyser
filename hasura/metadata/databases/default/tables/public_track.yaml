@@ -16,7 +16,9 @@ array_relationships:
   - name: courses
     using:
       foreign_key_constraint_on:
-        column: track_id
+        columns:
+          - track_id
+          - program_id
         table:
           name: course
           schema: public
@@ -41,7 +43,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all tracks [during assignments phase only]"
+    comment: Can view all tracks [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -65,4 +67,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: "Can view visible tracks [except during shutdown phase]"
+    comment: Can view visible tracks [except during shutdown phase]

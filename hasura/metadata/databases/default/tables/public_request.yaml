@@ -4,13 +4,20 @@ table:
 object_relationships:
   - name: course
     using:
-      foreign_key_constraint_on: course_id
+      foreign_key_constraint_on:
+        - course_id
+        - year
   - name: service
     using:
-      foreign_key_constraint_on: service_id
+      foreign_key_constraint_on:
+        - service_id
+        - year
   - name: typeByType
     using:
       foreign_key_constraint_on: type
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
 computed_fields:
   - name: hoursWeighted
     definition:
@@ -48,7 +55,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-    comment: "Can create assignments for current year courses [during assignments phase only]"
+    comment: Can create assignments for current year courses [during assignments phase only]
   - role: teacher
     permission:
       check:
@@ -139,7 +146,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: "Can view all requests [during assignments phase only]"
+    comment: Can view all requests [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -229,7 +236,7 @@ select_permissions:
               - type:
                   _neq: assignment
       allow_aggregations: true
-    comment: "Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase"
+    comment: 'Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase'
 update_permissions:
   - role: commissioner
     permission:
@@ -254,7 +261,7 @@ update_permissions:
           - type:
               _eq: assignment
       check: null
-    comment: "During assignments phase, can update assignments hours for current year courses"
+    comment: During assignments phase, can update assignments hours for current year courses
   - role: teacher
     permission:
       columns:
@@ -318,7 +325,7 @@ update_permissions:
                       uid:
                         _eq: X-Hasura-User-Id
       check: null
-    comment: "During requests phase, can update their own primary and secondary requests hours for courses for which they can create requests"
+    comment: During requests phase, can update their own primary and secondary requests hours for courses for which they can create requests
 delete_permissions:
   - role: commissioner
     permission:
@@ -340,7 +347,7 @@ delete_permissions:
                   _eq: true
           - type:
               _eq: assignment
-    comment: "During assignments phase, can delete assignments for current year courses"
+    comment: During assignments phase, can delete assignments for current year courses
   - role: teacher
     permission:
       filter:
@@ -401,4 +408,4 @@ delete_permissions:
                     service:
                       uid:
                         _eq: X-Hasura-User-Id
-    comment: "During requests phase, can delete their own primary and secondary requests for courses for which they can create requests"
+    comment: During requests phase, can delete their own primary and secondary requests for courses for which they can create requests

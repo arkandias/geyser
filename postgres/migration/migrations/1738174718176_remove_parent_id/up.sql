@@ -1,8 +1,13 @@
+DROP TRIGGER check_enfant_annee ON public.course;
+DROP TRIGGER check_parent_annee ON public.course;
+
 ALTER TABLE public.course
     DROP COLUMN parent_id;
 
 ALTER TABLE public.priority
     ADD COLUMN computed boolean NOT NULL DEFAULT FALSE;
+
+DROP TRIGGER check_priorite_service ON public.priority;
 
 INSERT INTO public.priority (service_id, course_id, seniority, computed)
 SELECT s2.id, c2.id, coalesce(p.seniority + 1, 1), TRUE

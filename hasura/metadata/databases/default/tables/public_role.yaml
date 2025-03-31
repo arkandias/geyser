@@ -27,7 +27,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all roles [during assignments phase only]"
+    comment: Can view all roles [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -38,4 +38,4 @@ select_permissions:
       filter:
         uid:
           _eq: X-Hasura-User-Id
-    comment: "Can view their own role"
+    comment: Can view their own role

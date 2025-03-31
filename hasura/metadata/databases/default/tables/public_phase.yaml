@@ -8,13 +8,13 @@ select_permissions:
         - current
         - description
         - value
-      filter: { }
-    comment: "Can view all phases and their status"
+      filter: {}
+    comment: Can view all phases and their status
   - role: teacher
     permission:
       columns:
         - current
         - description
         - value
-      filter: { }
-    comment: "Can view all phases and their status"
+      filter: {}
+    comment: Can view all phases and their status

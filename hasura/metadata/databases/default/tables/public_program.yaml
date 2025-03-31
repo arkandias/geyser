@@ -48,7 +48,7 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-    comment: "Can view all programs [during assignments phase only]"
+    comment: Can view all programs [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -72,4 +72,4 @@ select_permissions:
                       _eq: true
           - visible:
               _eq: true
-    comment: "Can view visible programs [except during shutdown phase]"
+    comment: Can view visible programs [except during shutdown phase]

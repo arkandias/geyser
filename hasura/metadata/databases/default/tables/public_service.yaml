@@ -19,14 +19,18 @@ array_relationships:
   - name: priorities
     using:
       foreign_key_constraint_on:
-        column: service_id
+        columns:
+          - service_id
+          - year
         table:
           name: priority
           schema: public
   - name: requests
     using:
       foreign_key_constraint_on:
-        column: service_id
+        columns:
+          - service_id
+          - year
         table:
           name: request
           schema: public
@@ -51,7 +55,7 @@ select_permissions:
               - current:
                   _eq: true
       allow_aggregations: true
-    comment: "Can view all services [during assignments phase only]"
+    comment: Can view all services [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -82,7 +86,7 @@ select_permissions:
                   visible:
                     _eq: true
       allow_aggregations: true
-    comment: "Can view their own services for visible years [except during shutdown phase]"
+    comment: Can view their own services for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
     permission:
@@ -107,4 +111,4 @@ update_permissions:
           - uid:
               _eq: X-Hasura-User-Id
       check: null
-    comment: "During requests phase, can update their own service hours and message for the current year"
+    comment: During requests phase, can update their own service hours and message for the current year

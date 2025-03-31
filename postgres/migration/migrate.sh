@@ -122,22 +122,8 @@ for init_file in "${INIT_FILES[@]}"; do
     psql_file "${init_file}" >/dev/null
 done
 
-echo "Removing foreign key constraint from public.course.parent_id..."
-psql_cmd "\
-ALTER TABLE public.course \
-DROP CONSTRAINT course_parent_id_fkey\
-" >/dev/null
-
 echo "Importing migrated data..."
 psql_file "${MIGRATED_DUMP}" >/dev/null
-
-echo "Restoring foreign key constraint from public.course.parent_id..."
-psql_cmd "\
-ALTER TABLE public.course \
-ADD CONSTRAINT course_parent_id_fkey FOREIGN KEY (parent_id) \
-REFERENCES public.course(id) \
-ON UPDATE CASCADE\
-" >/dev/null
 
 summary >"${SUMMARIES_DIR}/final.txt"
 

@@ -54,7 +54,6 @@ COMMENT ON TABLE public.year IS 'Academic year definitions with current year des
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
 COMMENT ON COLUMN public.year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
 COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
-COMMENT ON COLUMN public.year.comment IS 'Additional information about this academic year';
 
 CREATE FUNCTION public.clear_current_year_flag() RETURNS trigger AS
 $$
@@ -123,7 +122,8 @@ CREATE TABLE public.service
     hours   real    NOT NULL,
     message text,
     UNIQUE (year, uid),
-    UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
+    -- referenced in requests and priorities to ensure data consistency
+    UNIQUE (id, year)
 );
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
@@ -233,7 +233,8 @@ CREATE TABLE public.track
     name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
     visible      boolean NOT NULL DEFAULT TRUE,
     UNIQUE (program_id, name),
-    UNIQUE (id, program_id) -- referenced in courses to ensure data consistency
+    -- referenced in courses to ensure data consistency
+    UNIQUE (id, program_id)
 );
 
 COMMENT ON TABLE public.track IS 'Specialization tracks within academic programs';
@@ -280,7 +281,9 @@ CREATE TABLE public.course
     description      text,
     priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
     visible          boolean NOT NULL DEFAULT TRUE,
-    UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id)
+    UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id),
+    -- referenced in requests and priorities to ensure data consistency
+    UNIQUE (id, year)
 );
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
@@ -516,7 +519,7 @@ WHERE c.year = p_year - 1
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
+COMMENT ON FUNCTION public.copy_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
 CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof priority AS
 $$
