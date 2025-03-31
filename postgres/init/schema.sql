@@ -35,7 +35,7 @@ $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION clear_current_phase_flag() IS 'Trigger function that clears the current phase flag before a phase is set as current';
 
 CREATE TRIGGER clear_current_phase_flag
-    BEFORE UPDATE
+    BEFORE UPDATE OF current
     ON public.phase
     FOR EACH ROW
     WHEN (new.current = TRUE)
@@ -66,7 +66,7 @@ $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION clear_current_year_flag() IS 'Trigger function that clears the current year flag before a year is set as current';
 
 CREATE TRIGGER clear_current_year_flag
-    BEFORE UPDATE
+    BEFORE UPDATE OF current
     ON public.year
     FOR EACH ROW
     WHEN (new.current = TRUE)
@@ -122,7 +122,8 @@ CREATE TABLE public.service
     uid     text    NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
     hours   real    NOT NULL,
     message text,
-    UNIQUE (year, uid)
+    UNIQUE (year, uid),
+    UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
 );
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
@@ -231,7 +232,8 @@ CREATE TABLE public.track
     name_short   text,
     name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
     visible      boolean NOT NULL DEFAULT TRUE,
-    UNIQUE (program_id, name)
+    UNIQUE (program_id, name),
+    UNIQUE (id, program_id) -- referenced in courses to ensure data consistency
 );
 
 COMMENT ON TABLE public.track IS 'Specialization tracks within academic programs';
@@ -261,7 +263,8 @@ CREATE TABLE public.course
     id               serial PRIMARY KEY,
     year             integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     program_id       integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
-    track_id         integer REFERENCES public.track ON UPDATE CASCADE,
+    track_id         integer,
+    FOREIGN KEY (track_id, program_id) REFERENCES public.track (id, program_id) ON UPDATE CASCADE,
     name             text    NOT NULL,
     name_short       text,
     name_display     text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
@@ -301,58 +304,12 @@ COMMENT ON COLUMN public.course.description IS 'Course description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the user interface and queries';
 
+-- Computed field
 CREATE FUNCTION public.total_hours_effective(course_row course) RETURNS real AS
 $$
 SELECT course_row.hours_effective * course_row.groups_effective;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective';
-
-CREATE FUNCTION public.check_track_program() RETURNS trigger AS
-$$
-DECLARE
-    track_program_id integer;
-BEGIN
-    IF new.track_id IS NOT NULL THEN
-        SELECT program_id
-        INTO track_program_id
-        FROM public.track
-        WHERE id = new.track_id;
-
-        IF track_program_id != new.program_id THEN
-            RAISE EXCEPTION 'The track program must match the course program '
-                '(program id: %, track id: %, track program id: %)',
-                new.program_id, new.track_id, track_program_id;
-        END IF;
-
-    END IF;
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql STABLE;
-COMMENT ON FUNCTION public.check_track_program() IS 'Trigger function that ensures that the course''s track belongs to the course''s program';
-
-CREATE TRIGGER check_track_program
-    BEFORE INSERT OR UPDATE OF program_id, track_id
-    ON public.course
-    FOR EACH ROW
-EXECUTE FUNCTION public.check_track_program();
-
-CREATE FUNCTION public.update_track_program() RETURNS trigger AS
-$$
-BEGIN
-    UPDATE public.course
-    SET program_id = new.program_id
-    WHERE track_id = new.id;
-
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.update_track_program() IS 'Trigger function that updates the program of all courses of a given track after the track''s program has changed';
-
-CREATE TRIGGER update_track_program
-    AFTER UPDATE OF program_id
-    ON public.track
-    FOR EACH ROW
-EXECUTE FUNCTION public.update_track_program();
 
 CREATE TABLE public.coordination
 (
@@ -376,50 +333,17 @@ COMMENT ON COLUMN public.coordination.comment IS 'Additional coordination detail
 
 
 --
--- Request-related tables
+-- Service/Course-related tables
 --
-
-CREATE TABLE public.request_type
-(
-    value       text PRIMARY KEY,
-    description text
-);
-
-COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
-COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
-COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
-
-CREATE TABLE public.request
-(
-    id         serial PRIMARY KEY,
-    service_id integer NOT NULL REFERENCES public.service ON UPDATE CASCADE,
-    course_id  integer NOT NULL REFERENCES public.course ON UPDATE CASCADE,
-    type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
-    hours      real    NOT NULL CHECK (hours > 0),
-    UNIQUE (service_id, course_id, type)
-);
-
-COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
-COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
-COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
-COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
-COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';
-COMMENT ON COLUMN public.request.hours IS 'Requested or assigned teaching hours';
-
-CREATE FUNCTION public.hours_weighted(request_row request) RETURNS real AS
-$$
-SELECT request_row.hours * ct.coefficient
-FROM public.course c
-         JOIN public.course_type ct ON ct.id = c.type_id
-WHERE c.id = request_row.course_id;
-$$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION public.hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
 
 CREATE TABLE public.priority
 (
     id          serial PRIMARY KEY,
-    service_id  integer NOT NULL REFERENCES public.service ON UPDATE CASCADE,
-    course_id   integer NOT NULL REFERENCES public.course ON UPDATE CASCADE,
+    year        integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    service_id  integer NOT NULL,
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    course_id   integer NOT NULL,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     seniority   integer CHECK (seniority >= 0),
     computed    boolean NOT NULL DEFAULT FALSE,
     is_priority boolean,
@@ -434,46 +358,55 @@ COMMENT ON COLUMN public.priority.seniority IS 'Consecutive years teaching this 
 COMMENT ON COLUMN public.priority.computed IS 'Flag indicating whether the seniority value was automatically computed rather than manually assigned';
 COMMENT ON COLUMN public.priority.is_priority IS 'Current priority status based on seniority and course rules';
 
-CREATE FUNCTION public.is_priority(r request) RETURNS boolean AS
+CREATE TABLE public.request_type
+(
+    value       text PRIMARY KEY,
+    description text
+);
+
+COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
+COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
+COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
+
+CREATE TABLE public.request
+(
+    id         serial PRIMARY KEY,
+    year       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    service_id integer NOT NULL,
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    course_id  integer NOT NULL,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
+    type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
+    hours      real    NOT NULL CHECK (hours > 0),
+    UNIQUE (service_id, course_id, type)
+);
+
+COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
+COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
+COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
+COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
+COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';
+COMMENT ON COLUMN public.request.hours IS 'Requested or assigned teaching hours';
+
+-- Computed field
+CREATE FUNCTION public.hours_weighted(request_row request) RETURNS real AS
+$$
+SELECT request_row.hours * ct.coefficient
+FROM public.course c
+         JOIN public.course_type ct ON ct.id = c.type_id
+WHERE c.id = request_row.course_id;
+$$ LANGUAGE sql STABLE;
+COMMENT ON FUNCTION public.hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
+
+-- Computed field
+CREATE FUNCTION public.is_priority(request_row request) RETURNS boolean AS
 $$
 SELECT is_priority
 FROM public.priority
-WHERE service_id = r.service_id
-  AND course_id = r.course_id;
+WHERE service_id = request_row.service_id
+  AND course_id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.is_priority(request) IS 'Determines the priority status of a request based on teaching history and course priority rules';
-
-CREATE FUNCTION public.check_service_course_year() RETURNS trigger AS
-$$
-DECLARE
-    service_year integer;
-    course_year  integer;
-BEGIN
-    SELECT year INTO service_year FROM public.service WHERE id = new.service_id;
-    SELECT year INTO course_year FROM public.course WHERE id = new.course_id;
-
-    IF service_year != course_year THEN
-        RAISE EXCEPTION 'Service year must match course year '
-            '(service year: %, course year: %)',
-            service_year, course_year;
-    END IF;
-
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.check_service_course_year() IS 'Trigger function that ensures that service''s year is equal to the course''s year for requests and priorities';
-
-CREATE TRIGGER check_service_course_year
-    BEFORE INSERT OR UPDATE OF service_id, course_id
-    ON public.request
-    FOR EACH ROW
-EXECUTE FUNCTION public.check_service_course_year();
-
-CREATE TRIGGER check_service_course_year
-    BEFORE INSERT OR UPDATE OF service_id, course_id
-    ON public.priority
-    FOR EACH ROW
-EXECUTE FUNCTION public.check_service_course_year();
 
 
 --
@@ -491,40 +424,6 @@ ON CONFLICT (year, uid) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
-
-CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
-$$
-SELECT s.*
-FROM public.teacher t
-         CROSS JOIN LATERAL public.create_service(p_year, t.uid) s
-WHERE t.active IS TRUE;
-$$ LANGUAGE sql;
-COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
-
-CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof course AS
-$$
-INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
-                           groups, groups_adjusted, description, priority_rule, visible)
-SELECT p_year,
-       c.program_id,
-       c.track_id,
-       c.name,
-       c.name_short,
-       c.semester,
-       c.type_id,
-       c.hours,
-       c.hours_adjusted,
-       c.groups,
-       c.groups_adjusted,
-       c.description,
-       c.priority_rule,
-       c.visible
-FROM public.course c
-WHERE c.year = p_year - 1
-ON CONFLICT DO NOTHING
-RETURNING *;
-$$ LANGUAGE sql;
-COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
 CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
 $$
@@ -566,6 +465,8 @@ WHERE service_id = service_row.id
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.compute_service_priorities(service) IS 'Computes courses seniority and priority status for a given service based on previous year''s course assignments';
 
+-- Compute Priorities Trigger
+
 CREATE FUNCTION public.compute_service_priorities_trigger() RETURNS trigger AS
 $$
 BEGIN
@@ -580,6 +481,42 @@ CREATE TRIGGER compute_service_priorities
     ON public.service
     FOR EACH ROW
 EXECUTE FUNCTION public.compute_service_priorities_trigger();
+
+-- Year Management
+
+CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
+$$
+SELECT s.*
+FROM public.teacher t
+         CROSS JOIN LATERAL public.create_service(p_year, t.uid) s
+WHERE t.active IS TRUE;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
+
+CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof course AS
+$$
+INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
+                           groups, groups_adjusted, description, priority_rule, visible)
+SELECT p_year,
+       c.program_id,
+       c.track_id,
+       c.name,
+       c.name_short,
+       c.semester,
+       c.type_id,
+       c.hours,
+       c.hours_adjusted,
+       c.groups,
+       c.groups_adjusted,
+       c.description,
+       c.priority_rule,
+       c.visible
+FROM public.course c
+WHERE c.year = p_year - 1
+ON CONFLICT DO NOTHING
+RETURNING *;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.clone_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
 CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof priority AS
 $$
