@@ -55,14 +55,14 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 Download and install the latest version (in `~/.geyser/master`):
 
 ```shell
-curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
+curl -fsSL https://github.com/arkandias/geyser/raw/master/scripts/install.sh | sh
 ```
 
 Or for a specific version (in `~/.geyser/${GEYSER_VERSION}`):
 
 ```shell
 export GEYSER_VERSION="1.2.3"
-curl -fsSL https://github.com/arkandias/geyser-backend/raw/master/scripts/install.sh | sh
+curl -fsSL https://github.com/arkandias/geyser/raw/master/scripts/install.sh | sh
 ```
 
 ### Setup
