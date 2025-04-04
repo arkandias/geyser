@@ -15,9 +15,9 @@ COMMENT ON COLUMN public.ui_text.value IS 'Text content';
 CREATE TABLE public.phase
 (
     value       text PRIMARY KEY,
-    current     boolean UNIQUE, -- TRUE or NULL
+    current     boolean UNIQUE,
     description text,
-    CHECK (current)             -- current is TRUE or NULL
+    CONSTRAINT chk_phase_current_true_or_null CHECK (current)
 );
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
@@ -34,7 +34,7 @@ END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION clear_current_phase_flag() IS 'Trigger function that clears the current phase flag before a phase is set as current';
 
-CREATE TRIGGER clear_current_phase_flag
+CREATE TRIGGER trg_phase_before_update_clear_current
     BEFORE UPDATE OF current
     ON public.phase
     FOR EACH ROW
@@ -44,10 +44,10 @@ EXECUTE FUNCTION clear_current_phase_flag();
 CREATE TABLE public.year
 (
     value   integer PRIMARY KEY,
-    current boolean UNIQUE,                    -- TRUE or NULL
+    current boolean UNIQUE,
     visible boolean NOT NULL DEFAULT TRUE,
-    CHECK (current),                           -- current is TRUE or NULL
-    CHECK (current IS NULL OR visible IS TRUE) -- current year is visible
+    CONSTRAINT chk_year_current_true_or_null CHECK (current),
+    CONSTRAINT chk_year_current_visible CHECK (current IS NULL OR visible IS TRUE)
 );
 
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
@@ -64,7 +64,7 @@ END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION clear_current_year_flag() IS 'Trigger function that clears the current year flag before a year is set as current';
 
-CREATE TRIGGER clear_current_year_flag
+CREATE TRIGGER trg_year_before_update_clear_current
     BEFORE UPDATE OF current
     ON public.year
     FOR EACH ROW
@@ -272,14 +272,17 @@ CREATE TABLE public.course
     semester         integer NOT NULL CHECK (1 <= semester AND semester <= 6),
     type_id          integer NOT NULL REFERENCES public.course_type ON UPDATE CASCADE,
     cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
-    hours            real    NOT NULL CHECK (hours >= 0),
+    hours            real    NOT NULL,
+    CONSTRAINT chk_course_hours_non_negative CHECK (hours >= 0),
     hours_adjusted   real,
     hours_effective  integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
-    groups           integer NOT NULL CHECK (groups >= 0),
+    groups           integer NOT NULL,
+    CONSTRAINT chk_course_groups_non_negative CHECK (groups >= 0),
     groups_adjusted  integer,
     groups_effective integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
     description      text,
-    priority_rule    integer          DEFAULT 3 CHECK (priority_rule >= 0), -- 0=: Infinity; NULL: No rule
+    priority_rule    integer, -- 0=: Infinity; NULL: No rule
+    CONSTRAINT chk_course_priority_rule_non_negative CHECK (priority_rule >= 0),
     visible          boolean NOT NULL DEFAULT TRUE,
     UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id),
     -- referenced in requests and priorities to ensure data consistency
@@ -323,7 +326,7 @@ CREATE TABLE public.coordination
     course_id  integer REFERENCES public.course ON UPDATE CASCADE,
     comment    text,
     UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
-    CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
+    CONSTRAINT chk_coordination_exclusive_type CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
 
 COMMENT ON TABLE public.coordination IS 'Academic coordination assignments at program, track, or course level';
@@ -347,7 +350,8 @@ CREATE TABLE public.priority
     FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
     course_id   integer NOT NULL,
     FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
-    seniority   integer CHECK (seniority >= 0),
+    seniority   integer,
+    CONSTRAINT chk_priority_seniority_non_negative CHECK (seniority >= 0),
     computed    boolean NOT NULL DEFAULT FALSE,
     is_priority boolean,
     UNIQUE (service_id, course_id)
@@ -381,7 +385,8 @@ CREATE TABLE public.request
     course_id  integer NOT NULL,
     FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
-    hours      real    NOT NULL CHECK (hours > 0),
+    hours      real    NOT NULL,
+    CONSTRAINT chk_request_hours_non_negative CHECK (hours > 0),
     UNIQUE (service_id, course_id, type)
 );
 
@@ -437,8 +442,8 @@ FROM public.priority
 WHERE service_id = service_row.id
   AND computed IS TRUE;
 
-INSERT INTO public.priority (service_id, course_id, seniority, computed)
-SELECT service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
+INSERT INTO public.priority (year, service_id, course_id, seniority, computed)
+SELECT service_row.year, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
 FROM public.service s
          JOIN public.request r ON r.service_id = s.id AND r.type = 'assignment'
          LEFT JOIN public.priority p
@@ -458,10 +463,11 @@ ON CONFLICT (service_id, course_id)
 WHERE priority.computed IS TRUE;
 
 UPDATE public.priority p
-SET is_priority = (p.seniority > 0 AND (coalesce(c.priority_rule, 0) > p.seniority OR c.priority_rule = 0))
+SET is_priority = (p.seniority > 0 AND (c.priority_rule > p.seniority OR c.priority_rule = 0))
 FROM public.course c
 WHERE p.service_id = service_row.id
-  AND p.course_id = c.id;
+  AND p.course_id = c.id
+  AND c.is_priority IS NOT NULL;
 
 SELECT *
 FROM public.priority
@@ -481,7 +487,7 @@ END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.compute_service_priorities_trigger() IS 'Trigger function that computes courses seniority and priority status for newly inserted services';
 
-CREATE TRIGGER compute_service_priorities
+CREATE TRIGGER trg_service_after_insert_compute_priorities
     AFTER INSERT
     ON public.service
     FOR EACH ROW
@@ -557,13 +563,13 @@ BEGIN
         COMMENT ON COLUMN public.%I.created_at IS ''Timestamp when the record was created'';
         COMMENT ON COLUMN public.%I.updated_at IS ''Timestamp when the record was last updated, automatically managed by trigger'';
 
-        CREATE TRIGGER set_timestamp
+        CREATE TRIGGER trg_%I_before_update_set_timestamp
         BEFORE UPDATE ON public.%I
         FOR EACH ROW
         EXECUTE FUNCTION public.set_timestamp()
-    ', target_table, target_table, target_table, target_table);
+    ', target_table, target_table, target_table, target_table, target_table);
 
-    RAISE NOTICE 'Added timestamp columns and trigger to table: %', target_table;
+    RAISE NOTICE 'Added created_at and updated_at columns to table public.%I', target_table;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.add_timestamp_columns(text) IS 'Adds created_at and updated_at timestamp columns to the specified table, along with an automatic update trigger for updated_at';
