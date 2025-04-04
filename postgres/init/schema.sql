@@ -355,6 +355,7 @@ CREATE TABLE public.priority
 
 COMMENT ON TABLE public.priority IS 'Teacher course assignment history and priority status';
 COMMENT ON COLUMN public.priority.id IS 'Unique priority record identifier';
+COMMENT ON COLUMN public.priority.year IS 'Year of the priority (must match service''s and course''s year)';
 COMMENT ON COLUMN public.priority.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.priority.course_id IS 'Course for which priority is tracked';
 COMMENT ON COLUMN public.priority.seniority IS 'Consecutive years teaching this course before current year';
@@ -386,6 +387,7 @@ CREATE TABLE public.request
 
 COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
 COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
+COMMENT ON COLUMN public.request.year IS 'Year of the request (must match service''s and course''s year)';
 COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
 COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';
