@@ -52,7 +52,7 @@ You should reset Geyser first with 'geyser reset'"
     info "Initializing Geyser database..."
     wait_until_healthy db
     compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql"
-    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/core_data.sql"
+    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/seed.sql"
 
     info "Applying Hasura metadata..."
     wait_until_healthy hasura

@@ -13,7 +13,7 @@ MIGRATED_DUMP="${DUMPS_DIR}/migrated.sql"
 INIT_DUMP="${DUMPS_DIR}/init.dump"
 INIT_FILES=(
     "${SCRIPT_DIR}/../init/schema.sql"
-    "${SCRIPT_DIR}/../init/core_data.sql"
+    "${SCRIPT_DIR}/../init/seed.sql"
     "${SCRIPT_DIR}/lpp.sql"
 )
 
