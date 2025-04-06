@@ -21,9 +21,9 @@ services:
       hasura:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD", "nginx", "-t" ]
+      test: "curl -fsS http://localhost/health || exit 1"
       interval: 30s
-      timeout: 3s
+      timeout: 30s
       retries: 3
       start_period: 30s
       start_interval: 1s
@@ -38,4 +38,3 @@ services:
 
 networks:
   public:
- 

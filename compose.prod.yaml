@@ -8,7 +8,7 @@ services:
       KC_HOSTNAME: "https://${GEYSER_HOSTNAME}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "false"
-      KC_HTTPS_CERTIFICATE_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.cer"
+      KC_HTTPS_CERTIFICATE_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.crt"
       KC_HTTPS_CERTIFICATE_KEY_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key"
     ports:
       - "8443:8443"
