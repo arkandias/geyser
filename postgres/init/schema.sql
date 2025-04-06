@@ -78,7 +78,7 @@ EXECUTE FUNCTION clear_current_year_flag();
 
 CREATE TABLE public.position
 (
-    id                 serial PRIMARY KEY,
+    id                 integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label              text NOT NULL UNIQUE,
     description        text,
     base_service_hours real
@@ -116,7 +116,7 @@ COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic
 
 CREATE TABLE public.service
 (
-    id      serial PRIMARY KEY,
+    id      integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     year    integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     uid     text    NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
     hours   real    NOT NULL,
@@ -134,7 +134,7 @@ COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to co
 
 CREATE TABLE public.service_modification_type
 (
-    id          serial PRIMARY KEY,
+    id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label       text NOT NULL UNIQUE,
     description text
 );
@@ -146,7 +146,7 @@ COMMENT ON COLUMN public.service_modification_type.description IS 'Detailed expl
 
 CREATE TABLE public.service_modification
 (
-    id         serial PRIMARY KEY,
+    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     service_id integer NOT NULL REFERENCES public.service ON UPDATE CASCADE,
     type_id    integer NOT NULL REFERENCES public.service_modification_type ON UPDATE CASCADE,
     hours      real    NOT NULL
@@ -170,7 +170,7 @@ COMMENT ON COLUMN public.role_type.description IS 'Description of the role privi
 
 CREATE TABLE public.role
 (
-    id      serial PRIMARY KEY,
+    id      integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     uid     text NOT NULL REFERENCES public.teacher,
     type    text NOT NULL REFERENCES public.role_type,
     comment text,
@@ -190,7 +190,7 @@ COMMENT ON COLUMN public.role.comment IS 'Additional information about this priv
 
 CREATE TABLE public.degree
 (
-    id           serial PRIMARY KEY,
+    id           integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name         text    NOT NULL UNIQUE,
     name_short   text,
     name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
@@ -206,7 +206,7 @@ COMMENT ON COLUMN public.degree.visible IS 'Controls degree visibility in the us
 
 CREATE TABLE public.program
 (
-    id           serial PRIMARY KEY,
+    id           integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     degree_id    integer NOT NULL REFERENCES public.degree ON UPDATE CASCADE,
     name         text    NOT NULL,
     name_short   text,
@@ -225,7 +225,7 @@ COMMENT ON COLUMN public.program.visible IS 'Controls program visibility in the 
 
 CREATE TABLE public.track
 (
-    id           serial PRIMARY KEY,
+    id           integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     program_id   integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
     name         text    NOT NULL,
     name_short   text,
@@ -245,7 +245,7 @@ COMMENT ON COLUMN public.track.visible IS 'Controls track visibility in the user
 
 CREATE TABLE public.course_type
 (
-    id          serial PRIMARY KEY,
+    id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     label       text NOT NULL UNIQUE,
     coefficient real NOT NULL DEFAULT 1,
     description text
@@ -259,7 +259,7 @@ COMMENT ON COLUMN public.course_type.description IS 'Description of the course t
 
 CREATE TABLE public.course
 (
-    id               serial PRIMARY KEY,
+    id               integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     year             integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     program_id       integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
     track_id         integer,
@@ -316,7 +316,7 @@ COMMENT ON FUNCTION public.total_hours_effective(course) IS 'Calculates total ef
 
 CREATE TABLE public.coordination
 (
-    id         serial PRIMARY KEY,
+    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     uid        text NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
     program_id integer REFERENCES public.program ON UPDATE CASCADE,
     track_id   integer REFERENCES public.track ON UPDATE CASCADE,
@@ -341,7 +341,7 @@ COMMENT ON COLUMN public.coordination.comment IS 'Additional coordination detail
 
 CREATE TABLE public.priority
 (
-    id          serial PRIMARY KEY,
+    id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     year        integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id  integer NOT NULL,
     course_id   integer NOT NULL,
@@ -375,7 +375,7 @@ COMMENT ON COLUMN public.request_type.description IS 'Description of the request
 
 CREATE TABLE public.request
 (
-    id         serial PRIMARY KEY,
+    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     year       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id integer NOT NULL,
     course_id  integer NOT NULL,
