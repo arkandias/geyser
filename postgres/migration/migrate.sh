@@ -72,7 +72,7 @@ ORDER BY schemaname, relname"
 apply_migration() {
     local migration_file="$1"
     echo "Applying migration: ${migration_file}"
-    psql_file "${migration_file}" >/dev/null
+    psql_file "${migration_file}"
 }
 
 #if ! pg_isready -h localhost -p 5420 -d geyser &>/dev/null; then
@@ -90,13 +90,13 @@ apply_migration() {
 pg_start
 
 echo "Importing legacy data..."
-psql_file "${LEGACY_DUMP}" >/dev/null
+psql_file "${LEGACY_DUMP}" #>/dev/null
 
 summary >"${SUMMARIES_DIR}/before_migration.txt"
 
 echo "Applying migrations..."
 for migration in "${MIGRATIONS_DIR}"/*/up.sql; do
-    apply_migration "${migration}"
+    apply_migration "${migration}" #>/dev/null
 done
 
 summary >"${SUMMARIES_DIR}/after_migration.txt"
@@ -119,11 +119,11 @@ pg_start
 echo "Running initialization files..."
 for init_file in "${INIT_FILES[@]}"; do
     echo "Processing ${init_file}..."
-    psql_file "${init_file}" >/dev/null
+    psql_file "${init_file}" #>/dev/null
 done
 
 echo "Importing migrated data..."
-psql_file "${MIGRATED_DUMP}" >/dev/null
+psql_file "${MIGRATED_DUMP}" #>/dev/null
 
 summary >"${SUMMARIES_DIR}/final.txt"
 
