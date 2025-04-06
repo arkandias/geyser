@@ -145,7 +145,7 @@ Activated by setting `MODE=production`. Enforces the following security measures
 
 - SSL/TLS encryption required:
     - Place certificates in `certs/${GEYSER_HOSTNAME}/`:
-        - `fullchain.cer`: SSL certificate chain
+        - `fullchain.crt`: SSL certificate chain
         - `private.key`: Private key
 - Secure container configuration:
     - Optimized Keycloak image
@@ -293,7 +293,7 @@ geyser -q kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIEN
         ```
         certs/
         └── geyser.example.com/
-            ├── fullchain.cer   # Certificate chain
+            ├── fullchain.crt   # Certificate chain
             └── private.key     # Private key
         ```
     - Admin secret header stripped from GraphQL requests

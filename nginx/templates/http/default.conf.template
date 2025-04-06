@@ -1,3 +1,25 @@
+# Default server configuration
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    # Return no response and close connection
+    return 444;
+}
+
+server {
+    listen 80;
+    server_name localhost;
+
+    # Healthcheck
+    location /health {
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+        return 200 "healthy\n";
+    }
+}
+
 server {
     listen 80;
     server_name ${GEYSER_HOSTNAME};

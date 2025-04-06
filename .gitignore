@@ -5,6 +5,7 @@
 !/logs/README.md
 /certs/*
 !/certs/README.md
+!/certs/default
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/dumps/

@@ -1,3 +1,30 @@
+# Default server configuration
+server {
+    listen 80 default_server;
+    listen 443 ssl default_server;
+    server_name _;
+
+    # Self-signed certificate for rejected connections
+    ssl_certificate /etc/nginx/certs/default/default.crt;
+    ssl_certificate_key /etc/nginx/certs/default/default.key;
+
+    # Return no response and close connection
+    return 444;
+}
+
+server {
+    listen 80;
+    server_name localhost;
+
+    # Healthcheck
+    location /health {
+        access_log off;
+        allow 127.0.0.1;
+        deny all;
+        return 200 "healthy\n";
+    }
+}
+
 # Redirect HTTP traffic to HTTPS
 server {
     listen 80;
@@ -8,9 +35,11 @@ server {
 server {
     listen 443 ssl;
     server_name ${GEYSER_HOSTNAME};
-
-    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.cer;
+    
+    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    # Restrict to modern TLS protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
 
     # Keycloak
     location /auth/realms/ {
