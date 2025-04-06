@@ -147,6 +147,7 @@ Activated by setting `MODE=production`. Enforces the following security measures
     - Place certificates in `certs/${GEYSER_HOSTNAME}/`:
         - `fullchain.crt`: SSL certificate chain
         - `private.key`: Private key
+    - **Do not use certificates in `certs/default/`!**
 - Secure container configuration:
     - Optimized Keycloak image
     - Keycloak running in production mode
@@ -289,13 +290,15 @@ geyser -q kcadm update "clients/${client_id}" -r geyser -s rootUrl=<HASURA_CLIEN
         - Development: `localhost`
         - Production: `geyser.example.com`
 - Production mode:
-    - SSL/TLS encryption with certificates in `certs/${GEYSER_HOSTNAME}/`:
-        ```
-        certs/
-        └── geyser.example.com/
-            ├── fullchain.crt   # Certificate chain
-            └── private.key     # Private key
-        ```
+    - SSL/TLS encryption with certificates in `certs/${GEYSER_HOSTNAME}/`
+        - Example:
+            ```
+            certs/
+            └── default/            # DO NOT USE THESE!
+            └── geyser.example.com/
+                ├── fullchain.crt   # Certificate Chain
+                └── private.key     # Private Key
+            ```
     - Admin secret header stripped from GraphQL requests
     - HTTP → HTTPS redirect (port 80 → 443)
 
