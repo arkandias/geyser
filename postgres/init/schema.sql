@@ -17,7 +17,7 @@ CREATE TABLE public.phase
     value       text PRIMARY KEY,
     current     boolean UNIQUE,
     description text,
-    CONSTRAINT chk_phase_current_true_or_null CHECK (current)
+    CONSTRAINT phase_current_true_or_null_check CHECK (current)
 );
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
@@ -46,8 +46,8 @@ CREATE TABLE public.year
     value   integer PRIMARY KEY,
     current boolean UNIQUE,
     visible boolean NOT NULL DEFAULT TRUE,
-    CONSTRAINT chk_year_current_true_or_null CHECK (current),
-    CONSTRAINT chk_year_current_visible CHECK (current IS NULL OR visible IS TRUE)
+    CONSTRAINT year_current_true_or_null_check CHECK (current),
+    CONSTRAINT year_current_visible_check CHECK (current IS NULL OR visible IS TRUE)
 );
 
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
@@ -122,8 +122,7 @@ CREATE TABLE public.service
     hours   real    NOT NULL,
     message text,
     UNIQUE (year, uid),
-    -- referenced in requests and priorities to ensure data consistency
-    UNIQUE (id, year)
+    UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
 );
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
@@ -233,8 +232,7 @@ CREATE TABLE public.track
     name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
     visible      boolean NOT NULL DEFAULT TRUE,
     UNIQUE (program_id, name),
-    -- referenced in courses to ensure data consistency
-    UNIQUE (id, program_id)
+    UNIQUE (id, program_id) -- referenced in courses to ensure data consistency
 );
 
 COMMENT ON TABLE public.track IS 'Specialization tracks within academic programs';
@@ -265,7 +263,6 @@ CREATE TABLE public.course
     year             integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     program_id       integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
     track_id         integer,
-    FOREIGN KEY (track_id, program_id) REFERENCES public.track (id, program_id) ON UPDATE CASCADE,
     name             text    NOT NULL,
     name_short       text,
     name_display     text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
@@ -273,20 +270,20 @@ CREATE TABLE public.course
     type_id          integer NOT NULL REFERENCES public.course_type ON UPDATE CASCADE,
     cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
     hours            real    NOT NULL,
-    CONSTRAINT chk_course_hours_non_negative CHECK (hours >= 0),
     hours_adjusted   real,
     hours_effective  integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
     groups           integer NOT NULL,
-    CONSTRAINT chk_course_groups_non_negative CHECK (groups >= 0),
     groups_adjusted  integer,
     groups_effective integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
     description      text,
     priority_rule    integer, -- 0=: Infinity; NULL: No rule
-    CONSTRAINT chk_course_priority_rule_non_negative CHECK (priority_rule >= 0),
     visible          boolean NOT NULL DEFAULT TRUE,
+    FOREIGN KEY (track_id, program_id) REFERENCES public.track (id, program_id) ON UPDATE CASCADE,
     UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id),
-    -- referenced in requests and priorities to ensure data consistency
-    UNIQUE (id, year)
+    UNIQUE (id, year),        -- referenced in requests and priorities to ensure data consistency
+    CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
+    CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
+    CONSTRAINT course_priority_rule_non_negative_check CHECK (priority_rule >= 0)
 );
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
@@ -326,7 +323,7 @@ CREATE TABLE public.coordination
     course_id  integer REFERENCES public.course ON UPDATE CASCADE,
     comment    text,
     UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
-    CONSTRAINT chk_coordination_exclusive_type CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
+    CONSTRAINT coordination_exclusive_type_check CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
 
 COMMENT ON TABLE public.coordination IS 'Academic coordination assignments at program, track, or course level';
@@ -347,14 +344,14 @@ CREATE TABLE public.priority
     id          serial PRIMARY KEY,
     year        integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id  integer NOT NULL,
-    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
     course_id   integer NOT NULL,
-    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     seniority   integer,
-    CONSTRAINT chk_priority_seniority_non_negative CHECK (seniority >= 0),
     computed    boolean NOT NULL DEFAULT FALSE,
     is_priority boolean,
-    UNIQUE (service_id, course_id)
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
+    UNIQUE (service_id, course_id),
+    CONSTRAINT priority_seniority_non_negative_check CHECK (seniority >= 0)
 );
 
 COMMENT ON TABLE public.priority IS 'Teacher course assignment history and priority status';
@@ -381,13 +378,13 @@ CREATE TABLE public.request
     id         serial PRIMARY KEY,
     year       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id integer NOT NULL,
-    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
     course_id  integer NOT NULL,
-    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
     hours      real    NOT NULL,
-    CONSTRAINT chk_request_hours_non_negative CHECK (hours > 0),
-    UNIQUE (service_id, course_id, type)
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
+    UNIQUE (service_id, course_id, type),
+    CONSTRAINT request_hours_positive_check CHECK (hours > 0)
 );
 
 COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
@@ -467,7 +464,7 @@ SET is_priority = (p.seniority > 0 AND (c.priority_rule > p.seniority OR c.prior
 FROM public.course c
 WHERE p.service_id = service_row.id
   AND p.course_id = c.id
-  AND c.is_priority IS NOT NULL;
+  AND c.priority_rule IS NOT NULL;
 
 SELECT *
 FROM public.priority
@@ -563,13 +560,13 @@ BEGIN
         COMMENT ON COLUMN public.%I.created_at IS ''Timestamp when the record was created'';
         COMMENT ON COLUMN public.%I.updated_at IS ''Timestamp when the record was last updated, automatically managed by trigger'';
 
-        CREATE TRIGGER trg_%I_before_update_set_timestamp
+        CREATE TRIGGER trg_%s_before_update_set_timestamp
         BEFORE UPDATE ON public.%I
         FOR EACH ROW
         EXECUTE FUNCTION public.set_timestamp()
     ', target_table, target_table, target_table, target_table, target_table);
 
-    RAISE NOTICE 'Added created_at and updated_at columns to table public.%I', target_table;
+    RAISE NOTICE 'Added created_at and updated_at columns to table %', target_table;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.add_timestamp_columns(text) IS 'Adds created_at and updated_at timestamp columns to the specified table, along with an automatic update trigger for updated_at';
