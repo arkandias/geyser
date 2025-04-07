@@ -8,11 +8,11 @@ server {
 }
 
 server {
-    listen 80;
+    listen 8000;
     server_name localhost;
 
     # Healthcheck
-    location /health {
+    location = /health {
         access_log off;
         allow 127.0.0.1;
         deny all;
