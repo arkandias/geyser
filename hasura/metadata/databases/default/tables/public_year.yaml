@@ -30,6 +30,15 @@ array_relationships:
         table:
           name: service
           schema: public
+  - name: vServices
+    using:
+      manual_configuration:
+        column_mapping:
+          value: year
+        insertion_order: null
+        remote_table:
+          name: v_service
+          schema: public
 select_permissions:
   - role: commissioner
     permission:
