@@ -102,6 +102,7 @@ CREATE TABLE public.teacher
     visible            boolean NOT NULL DEFAULT TRUE,
     active             boolean NOT NULL DEFAULT TRUE
 );
+CREATE INDEX idx_teacher_position_id ON public.teacher (position_id);
 
 COMMENT ON TABLE public.teacher IS 'Core teacher information and status';
 COMMENT ON COLUMN public.teacher.uid IS 'Teacher''s email address (primary key).';
@@ -124,6 +125,8 @@ CREATE TABLE public.service
     UNIQUE (year, uid),
     UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
 );
+CREATE INDEX idx_service_year ON public.service (year);
+CREATE INDEX idx_service_uid ON public.service (uid);
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
 COMMENT ON COLUMN public.service.id IS 'Unique service identifier';
@@ -158,6 +161,8 @@ CREATE TABLE public.service_modification
     type_id    integer NOT NULL REFERENCES public.service_modification_type ON UPDATE CASCADE,
     hours      real    NOT NULL
 );
+CREATE INDEX idx_service_modification_service_id ON public.service_modification (service_id);
+CREATE INDEX idx_service_modification_type_id ON public.service_modification (type_id);
 
 COMMENT ON TABLE public.service_modification IS 'Individual modifications to base teaching service hours';
 COMMENT ON COLUMN public.service_modification.id IS 'Unique modification identifier';
@@ -183,6 +188,8 @@ CREATE TABLE public.role
     comment text,
     UNIQUE (uid, type)
 );
+CREATE INDEX idx_role_uid ON public.role (uid);
+CREATE INDEX idx_role_type ON public.role (type);
 
 COMMENT ON TABLE public.role IS 'Teacher role assignments for system privileges';
 COMMENT ON COLUMN public.role.id IS 'Unique role assignment identifier';
@@ -221,6 +228,7 @@ CREATE TABLE public.program
     visible      boolean NOT NULL DEFAULT TRUE,
     UNIQUE (degree_id, name)
 );
+CREATE INDEX idx_program_degree_id ON public.program (degree_id);
 
 COMMENT ON TABLE public.program IS 'Academic programs within each degree';
 COMMENT ON COLUMN public.program.id IS 'Unique program identifier';
@@ -241,6 +249,7 @@ CREATE TABLE public.track
     UNIQUE (program_id, name),
     UNIQUE (id, program_id) -- referenced in courses to ensure data consistency
 );
+CREATE INDEX idx_track_program_id ON public.track (program_id);
 
 COMMENT ON TABLE public.track IS 'Specialization tracks within academic programs';
 COMMENT ON COLUMN public.track.id IS 'Unique track identifier';
@@ -292,6 +301,10 @@ CREATE TABLE public.course
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
     CONSTRAINT course_priority_rule_non_negative_check CHECK (priority_rule >= 0)
 );
+CREATE INDEX idx_course_year ON public.course (year);
+CREATE INDEX idx_course_program_id ON public.course (program_id);
+CREATE INDEX idx_course_type_id ON public.course (type_id);
+CREATE INDEX idx_course_track_id_program_id ON public.course (track_id, program_id);
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
 COMMENT ON COLUMN public.course.id IS 'Unique course identifier';
@@ -332,6 +345,10 @@ CREATE TABLE public.coordination
     UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
     CONSTRAINT coordination_exclusive_type_check CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
+CREATE INDEX idx_coordination_uid ON public.coordination (uid);
+CREATE INDEX idx_coordination_program_id ON public.coordination (program_id);
+CREATE INDEX idx_coordination_track_id ON public.coordination (track_id);
+CREATE INDEX idx_coordination_course_id ON public.coordination (course_id);
 
 COMMENT ON TABLE public.coordination IS 'Academic coordination assignments at program, track, or course level';
 COMMENT ON COLUMN public.coordination.id IS 'Unique coordination identifier';
@@ -360,6 +377,9 @@ CREATE TABLE public.priority
     UNIQUE (service_id, course_id),
     CONSTRAINT priority_seniority_non_negative_check CHECK (seniority >= 0)
 );
+CREATE INDEX idx_priority_year ON public.priority (year);
+CREATE INDEX idx_priority_year_service_id ON public.priority (year, service_id);
+CREATE INDEX idx_priority_year_course_id ON public.priority (year, course_id);
 
 COMMENT ON TABLE public.priority IS 'Teacher course assignment history and priority status';
 COMMENT ON COLUMN public.priority.id IS 'Unique priority record identifier';
@@ -393,6 +413,10 @@ CREATE TABLE public.request
     UNIQUE (service_id, course_id, type),
     CONSTRAINT request_hours_positive_check CHECK (hours > 0)
 );
+CREATE INDEX idx_request_year ON public.request (year);
+CREATE INDEX idx_request_year_service_id ON public.request (year, service_id);
+CREATE INDEX idx_request_year_course_id ON public.request (year, course_id);
+CREATE INDEX idx_request_type ON public.request (type);
 
 COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
 COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
