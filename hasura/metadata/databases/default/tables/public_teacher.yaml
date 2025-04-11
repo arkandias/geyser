@@ -32,8 +32,11 @@ select_permissions:
     permission:
       columns:
         - active
+        - alias
         - base_service_hours
         - displayname
+        - firstname
+        - lastname
         - position_id
         - uid
         - visible
@@ -53,8 +56,11 @@ select_permissions:
     permission:
       columns:
         - active
+        - alias
         - base_service_hours
         - displayname
+        - firstname
+        - lastname
         - position_id
         - uid
         - visible

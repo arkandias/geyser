@@ -25,6 +25,7 @@ select_permissions:
         - is_priority
         - seniority
         - service_id
+        - year
       filter:
         _exists:
           _table:
@@ -46,6 +47,7 @@ select_permissions:
         - is_priority
         - seniority
         - service_id
+        - year
       filter:
         _and:
           - _exists:

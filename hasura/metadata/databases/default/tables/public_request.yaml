@@ -131,6 +131,7 @@ select_permissions:
         - id
         - service_id
         - type
+        - year
       computed_fields:
         - hoursWeighted
         - isPriority
@@ -155,6 +156,7 @@ select_permissions:
         - id
         - service_id
         - type
+        - year
       computed_fields:
         - hoursWeighted
         - isPriority
