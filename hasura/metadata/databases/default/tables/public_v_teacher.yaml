@@ -1,0 +1,66 @@
+table:
+  name: v_teacher
+  schema: public
+array_relationships:
+  - name: coordinations
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: coordination
+          schema: public
+  - name: v_services
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: v_service
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - alias
+        - displayname
+        - firstname
+        - lastname
+        - uid
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: public
+          _where:
+            _and:
+              - value:
+                  _eq: assignments
+              - current:
+                  _eq: true
+      allow_aggregations: true
+    comment: Can view all services [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - alias
+        - displayname
+        - firstname
+        - lastname
+        - uid
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: public
+          _where:
+            _and:
+              - value:
+                  _neq: shutdown
+              - current:
+                  _eq: true
+    comment: Can view all teachers [except during shutdown phase]
