@@ -7,14 +7,14 @@ object_relationships:
       foreign_key_constraint_on:
         - course_id
         - year
+  - name: requestType
+    using:
+      foreign_key_constraint_on: type
   - name: service
     using:
       foreign_key_constraint_on:
         - service_id
         - year
-  - name: requestType
-    using:
-      foreign_key_constraint_on: type
   - name: yearByYear
     using:
       foreign_key_constraint_on: year
