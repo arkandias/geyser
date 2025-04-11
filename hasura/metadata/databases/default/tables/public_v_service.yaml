@@ -1,0 +1,3 @@
+table:
+  name: v_service
+  schema: public

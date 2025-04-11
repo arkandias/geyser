@@ -16,4 +16,5 @@
 - "!include public_teacher.yaml"
 - "!include public_track.yaml"
 - "!include public_ui_text.yaml"
+- "!include public_v_service.yaml"
 - "!include public_year.yaml"

@@ -132,6 +132,13 @@ COMMENT ON COLUMN public.service.uid IS 'Teacher identifier linking to teacher t
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours for the year before modifications';
 COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to course assignment committee';
 
+-- View exposing only non-sensitive service data for general user access
+CREATE VIEW public.v_service AS
+SELECT id,
+       year,
+       uid
+FROM public.service;
+
 CREATE TABLE public.service_modification_type
 (
     id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
