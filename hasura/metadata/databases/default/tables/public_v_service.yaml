@@ -50,3 +50,52 @@ array_relationships:
         remote_table:
           name: request
           schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - id
+        - uid
+        - year
+      filter:
+        _exists:
+          _table:
+            name: phase
+            schema: public
+          _where:
+            _and:
+              - value:
+                  _eq: assignments
+              - current:
+                  _eq: true
+      allow_aggregations: true
+    comment: Can view all services [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - id
+        - uid
+        - year
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: phase
+                schema: public
+              _where:
+                _and:
+                  - value:
+                      _neq: shutdown
+                  - current:
+                      _eq: true
+          - yearByYear:
+              visible:
+                _eq: true
+          - _or:
+              - uid:
+                  _eq: X-Hasura-User-Id
+              - teacher:
+                  visible:
+                    _eq: true
+      allow_aggregations: true
+    comment: Can view their own services for visible years [except during shutdown phase]
