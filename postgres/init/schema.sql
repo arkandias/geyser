@@ -304,7 +304,7 @@ COMMENT ON COLUMN public.course.groups IS 'Standard number of student groups';
 COMMENT ON COLUMN public.course.groups_adjusted IS 'Modified number of groups if different from standard';
 COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups used, defaulting to standard if no adjustment';
 COMMENT ON COLUMN public.course.description IS 'Course description';
-COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (3=default, 1=none, 0=permanent, NULL=disabled)';
+COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the user interface and queries';
 
 -- Computed field
@@ -346,8 +346,8 @@ CREATE TABLE public.priority
     service_id  integer NOT NULL,
     course_id   integer NOT NULL,
     seniority   integer,
-    computed    boolean NOT NULL DEFAULT FALSE,
     is_priority boolean,
+    computed    boolean NOT NULL DEFAULT FALSE,
     FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
     FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     UNIQUE (service_id, course_id),
