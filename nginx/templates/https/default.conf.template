@@ -5,8 +5,8 @@ server {
     server_name _;
 
     # Self-signed certificate for rejected connections
-    ssl_certificate /etc/nginx/certs/default/default.crt;
-    ssl_certificate_key /etc/nginx/certs/default/default.key;
+    ssl_certificate /etc/nginx/certs/default/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/default/private.key;
 
     # Return no response and close connection
     return 444;
