@@ -11,7 +11,16 @@ array_relationships:
         remote_table:
           name: coordination
           schema: public
-  - name: v_services
+  - name: services
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: service
+          schema: public
+  - name: vServices
     using:
       manual_configuration:
         column_mapping:

@@ -11,6 +11,15 @@ object_relationships:
         remote_table:
           name: teacher
           schema: public
+  - name: vTeacher
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: teacher
+          schema: public
   - name: yearByYear
     using:
       manual_configuration:
@@ -94,7 +103,7 @@ select_permissions:
           - _or:
               - uid:
                   _eq: X-Hasura-User-Id
-              - teacher:
+              - vTeacher:
                   visible:
                     _eq: true
       allow_aggregations: true

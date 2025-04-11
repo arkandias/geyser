@@ -14,6 +14,15 @@ object_relationships:
   - name: track
     using:
       foreign_key_constraint_on: track_id
+  - name: vTeacher
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: v_teacher
+          schema: public
 select_permissions:
   - role: commissioner
     permission:
