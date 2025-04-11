@@ -117,6 +117,16 @@ COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for 
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
 
+-- View exposing only non-sensitive service data for general user access
+CREATE VIEW public.v_teacher AS
+SELECT uid,
+       firstname,
+       lastname,
+       alias,
+       displayname,
+       visible
+FROM public.teacher;
+
 CREATE TABLE public.service
 (
     id      integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
