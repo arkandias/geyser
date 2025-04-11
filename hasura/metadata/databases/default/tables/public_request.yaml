@@ -65,6 +65,7 @@ insert_permissions:
         - hours
         - service_id
         - type
+        - year
     comment: Can create assignments for current year courses [during assignments phase only]
   - role: teacher
     permission:
@@ -131,6 +132,7 @@ insert_permissions:
         - hours
         - service_id
         - type
+        - year
     comment: 'During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities'
 select_permissions:
   - role: commissioner
@@ -244,7 +246,7 @@ select_permissions:
               - course:
                   yearByYear:
                     current:
-                      _neq: true
+                      _eq: false
               - type:
                   _neq: assignment
       allow_aggregations: true
