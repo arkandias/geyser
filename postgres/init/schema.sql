@@ -15,10 +15,11 @@ COMMENT ON COLUMN public.ui_text.value IS 'Text content';
 CREATE TABLE public.phase
 (
     value       text PRIMARY KEY,
-    current     boolean UNIQUE,
-    description text,
-    CONSTRAINT phase_current_true_or_null_check CHECK (current)
+    current     boolean NOT NULL DEFAULT FALSE,
+    description text
 );
+CREATE UNIQUE INDEX unique_current_phase ON public.phase (current)
+    WHERE current = TRUE;
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
@@ -28,7 +29,7 @@ COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permiss
 CREATE FUNCTION public.clear_current_phase_flag() RETURNS trigger AS
 $$
 BEGIN
-    UPDATE public.phase SET current = NULL WHERE current IS TRUE;
+    UPDATE public.phase SET current = FALSE WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
@@ -44,11 +45,12 @@ EXECUTE FUNCTION clear_current_phase_flag();
 CREATE TABLE public.year
 (
     value   integer PRIMARY KEY,
-    current boolean UNIQUE,
+    current boolean NOT NULL DEFAULT FALSE,
     visible boolean NOT NULL DEFAULT TRUE,
-    CONSTRAINT year_current_true_or_null_check CHECK (current),
     CONSTRAINT year_current_visible_check CHECK (current IS NULL OR visible IS TRUE)
 );
+CREATE UNIQUE INDEX unique_current_year ON public.year (current)
+    WHERE current = TRUE;
 
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
@@ -58,7 +60,7 @@ COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the
 CREATE FUNCTION public.clear_current_year_flag() RETURNS trigger AS
 $$
 BEGIN
-    UPDATE public.year SET current = NULL WHERE current IS TRUE;
+    UPDATE public.year SET current = FALSE WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
