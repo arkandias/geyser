@@ -4,27 +4,17 @@ table:
 object_relationships:
   - name: course
     using:
-      manual_configuration:
-        column_mapping:
-          course_id: id
-          year: year
-        insertion_order: null
-        remote_table:
-          name: course
-          schema: public
+      foreign_key_constraint_on:
+        - course_id
+        - year
   - name: requestType
     using:
       foreign_key_constraint_on: type
   - name: service
     using:
-      manual_configuration:
-        column_mapping:
-          service_id: id
-          year: year
-        insertion_order: null
-        remote_table:
-          name: service
-          schema: public
+      foreign_key_constraint_on:
+        - service_id
+        - year
   - name: yearByYear
     using:
       foreign_key_constraint_on: year

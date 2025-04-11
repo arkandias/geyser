@@ -7,14 +7,9 @@ object_relationships:
       foreign_key_constraint_on: program_id
   - name: track
     using:
-      manual_configuration:
-        column_mapping:
-          program_id: program_id
-          track_id: id
-        insertion_order: null
-        remote_table:
-          name: track
-          schema: public
+      foreign_key_constraint_on:
+        - track_id
+        - program_id
   - name: type
     using:
       foreign_key_constraint_on: type_id
@@ -31,22 +26,20 @@ array_relationships:
           schema: public
   - name: priorities
     using:
-      manual_configuration:
-        column_mapping:
-          id: course_id
-          year: year
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        columns:
+          - course_id
+          - year
+        table:
           name: priority
           schema: public
   - name: requests
     using:
-      manual_configuration:
-        column_mapping:
-          id: course_id
-          year: year
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        columns:
+          - course_id
+          - year
+        table:
           name: request
           schema: public
 computed_fields:

@@ -18,22 +18,20 @@ array_relationships:
           schema: public
   - name: priorities
     using:
-      manual_configuration:
-        column_mapping:
-          id: service_id
-          year: year
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        columns:
+          - service_id
+          - year
+        table:
           name: priority
           schema: public
   - name: requests
     using:
-      manual_configuration:
-        column_mapping:
-          id: service_id
-          year: year
-        insertion_order: null
-        remote_table:
+      foreign_key_constraint_on:
+        columns:
+          - service_id
+          - year
+        table:
           name: request
           schema: public
 select_permissions:
