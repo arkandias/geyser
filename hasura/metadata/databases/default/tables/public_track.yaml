@@ -15,11 +15,12 @@ array_relationships:
           schema: public
   - name: courses
     using:
-      foreign_key_constraint_on:
-        columns:
-          - track_id
-          - program_id
-        table:
+      manual_configuration:
+        column_mapping:
+          id: track_id
+          program_id: program_id
+        insertion_order: null
+        remote_table:
           name: course
           schema: public
 select_permissions:
