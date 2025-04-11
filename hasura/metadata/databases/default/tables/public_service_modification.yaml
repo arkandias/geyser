@@ -63,7 +63,6 @@ select_permissions:
                   _eq: assignments
               - current:
                   _eq: true
-      allow_aggregations: true
     comment: Can view all service modifications [during assignments phase only]
   - role: teacher
     permission:
@@ -91,7 +90,6 @@ select_permissions:
           - service:
               uid:
                 _eq: X-Hasura-User-Id
-      allow_aggregations: true
     comment: Can view their own service modifications for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher

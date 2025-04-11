@@ -79,5 +79,4 @@ select_permissions:
               - program:
                   visible:
                     _eq: true
-      allow_aggregations: true
     comment: Can view visible coordination roles [except during shutdown phase]
