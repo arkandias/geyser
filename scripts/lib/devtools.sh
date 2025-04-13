@@ -5,7 +5,7 @@
 # Runs Docker Compose with environment files and conditional service configurations
 compose() {
     local env_files=() compose_files=(
-        "-f" "${GEYSER_HOME}/compose.yaml"
+        "-f" "${GEYSER_HOME}/compose.base.yaml"
     )
 
     [[ -f "${GEYSER_HOME}/.env" ]] &&

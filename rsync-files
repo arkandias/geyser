@@ -11,4 +11,4 @@ compose.auth.yaml
 compose.kc.yaml
 compose.prod.yaml
 compose.web.yaml
-compose.yaml
+compose.base.yaml
