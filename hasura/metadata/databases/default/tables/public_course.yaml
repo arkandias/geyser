@@ -42,12 +42,6 @@ array_relationships:
         table:
           name: request
           schema: public
-computed_fields:
-  - name: totalHoursEffective
-    definition:
-      function:
-        name: total_hours_effective
-        schema: public
 select_permissions:
   - role: commissioner
     permission:
@@ -71,8 +65,6 @@ select_permissions:
         - type_id
         - visible
         - year
-      computed_fields:
-        - totalHoursEffective
       filter:
         _exists:
           _table:
@@ -107,8 +99,6 @@ select_permissions:
         - type_id
         - visible
         - year
-      computed_fields:
-        - totalHoursEffective
       filter:
         _and:
           - _exists:

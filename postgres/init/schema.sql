@@ -47,7 +47,7 @@ CREATE TABLE public.year
     value   integer PRIMARY KEY,
     current boolean NOT NULL DEFAULT FALSE,
     visible boolean NOT NULL DEFAULT TRUE,
-    CONSTRAINT year_current_visible_check CHECK (current IS NULL OR visible IS TRUE)
+    CONSTRAINT year_current_visible_check CHECK (NOT current OR visible)
 );
 CREATE UNIQUE INDEX unique_current_year ON public.year (current)
     WHERE current = TRUE;
@@ -338,13 +338,6 @@ COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups use
 COMMENT ON COLUMN public.course.description IS 'Course description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the user interface and queries';
-
--- Computed field
-CREATE FUNCTION public.total_hours_effective(course_row course) RETURNS real AS
-$$
-SELECT course_row.hours_effective * course_row.groups_effective;
-$$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION public.total_hours_effective(course) IS 'Calculates total effective teaching hours for a course by multiplying hours_effective by groups_effective';
 
 CREATE TABLE public.coordination
 (
