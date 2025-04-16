@@ -2,15 +2,15 @@
 -- General tables
 --
 
-CREATE TABLE public.ui_text
+CREATE TABLE public.app_settings
 (
     key   text PRIMARY KEY,
-    value text NOT NULL
+    value text
 );
 
-COMMENT ON TABLE ui_text IS 'Custom texts for the UI';
-COMMENT ON COLUMN public.ui_text.key IS 'Text identifier';
-COMMENT ON COLUMN public.ui_text.value IS 'Text content';
+COMMENT ON TABLE public.app_settings IS 'Application settings (e.g., custom UI parameters)';
+COMMENT ON COLUMN public.app_settings.key IS 'Text identifier';
+COMMENT ON COLUMN public.app_settings.value IS 'Text content';
 
 CREATE TABLE public.phase
 (
