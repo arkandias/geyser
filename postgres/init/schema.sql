@@ -2,15 +2,15 @@
 -- General tables
 --
 
-CREATE TABLE public.app_settings
+CREATE TABLE public.app_setting
 (
     key   text PRIMARY KEY,
     value text
 );
 
-COMMENT ON TABLE public.app_settings IS 'Application settings (e.g., custom UI parameters)';
-COMMENT ON COLUMN public.app_settings.key IS 'Text identifier';
-COMMENT ON COLUMN public.app_settings.value IS 'Text content';
+COMMENT ON TABLE public.app_setting IS 'Application settings (e.g., custom UI parameters)';
+COMMENT ON COLUMN public.app_setting.key IS 'Text identifier';
+COMMENT ON COLUMN public.app_setting.value IS 'Text content';
 
 CREATE TABLE public.phase
 (

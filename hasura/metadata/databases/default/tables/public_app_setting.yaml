@@ -1,5 +1,5 @@
 table:
-  name: app_settings
+  name: app_setting
   schema: public
 select_permissions:
   - role: commissioner

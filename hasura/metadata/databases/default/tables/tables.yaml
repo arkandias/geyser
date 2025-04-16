@@ -1,4 +1,4 @@
-- "!include public_app_settings.yaml"
+- "!include public_app_setting.yaml"
 - "!include public_coordination.yaml"
 - "!include public_course.yaml"
 - "!include public_course_type.yaml"
