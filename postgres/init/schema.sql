@@ -23,24 +23,24 @@ CREATE UNIQUE INDEX unique_current_phase ON public.phase (current)
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
-COMMENT ON COLUMN public.phase.current IS 'Current phase flag (TRUE or NULL). Constrained to have at most one current phase';
+COMMENT ON COLUMN public.phase.current IS 'Current phase flag. Constrained to have at most one current phase';
 COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
-CREATE FUNCTION public.clear_current_phase_flag() RETURNS trigger AS
+CREATE FUNCTION public.clear_current_phase_flag_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
     UPDATE public.phase SET current = FALSE WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION clear_current_phase_flag() IS 'Trigger function that clears the current phase flag before a phase is set as current';
+COMMENT ON FUNCTION clear_current_phase_flag_trigger_fn() IS 'Trigger function that clears the current phase flag before a phase is set as current';
 
-CREATE TRIGGER trg_phase_before_update_clear_current
+CREATE TRIGGER phase_before_update_clear_current_flag_trigger
     BEFORE UPDATE OF current
     ON public.phase
     FOR EACH ROW
     WHEN (new.current = TRUE)
-EXECUTE FUNCTION clear_current_phase_flag();
+EXECUTE FUNCTION clear_current_phase_flag_trigger_fn();
 
 CREATE TABLE public.year
 (
@@ -54,24 +54,24 @@ CREATE UNIQUE INDEX unique_current_year ON public.year (current)
 
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
-COMMENT ON COLUMN public.year.current IS 'Current academic year flag (TRUE or NULL). Constrained to have at most one current year';
+COMMENT ON COLUMN public.year.current IS 'Current academic year flag. Constrained to have at most one current year';
 COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
 
-CREATE FUNCTION public.clear_current_year_flag() RETURNS trigger AS
+CREATE FUNCTION public.clear_current_year_flag_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
     UPDATE public.year SET current = FALSE WHERE current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION clear_current_year_flag() IS 'Trigger function that clears the current year flag before a year is set as current';
+COMMENT ON FUNCTION clear_current_year_flag_trigger_fn() IS 'Trigger function that clears the current year flag before a year is set as current';
 
-CREATE TRIGGER trg_year_before_update_clear_current
+CREATE TRIGGER year_before_update_clear_current_flag_trigger
     BEFORE UPDATE OF current
     ON public.year
     FOR EACH ROW
     WHEN (new.current = TRUE)
-EXECUTE FUNCTION clear_current_year_flag();
+EXECUTE FUNCTION clear_current_year_flag_trigger_fn();
 
 
 --
@@ -456,7 +456,7 @@ COMMENT ON FUNCTION public.is_priority(request) IS 'Determines the priority stat
 -- Functions
 --
 
-CREATE FUNCTION public.create_service(p_year integer, p_uid text) RETURNS setof service AS
+CREATE FUNCTION public.create_service(p_year integer, p_uid text) RETURNS setof public.service AS
 $$
 INSERT INTO public.service (year, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
@@ -468,7 +468,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
-CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof priority AS
+CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof public.priority AS
 $$
 DELETE
 FROM public.priority
@@ -511,24 +511,24 @@ COMMENT ON FUNCTION public.compute_service_priorities(service) IS 'Computes cour
 
 -- Compute Priorities Trigger
 
-CREATE FUNCTION public.compute_service_priorities_trigger() RETURNS trigger AS
+CREATE FUNCTION public.compute_service_priorities_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
     PERFORM public.compute_service_priorities(new);
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.compute_service_priorities_trigger() IS 'Trigger function that computes courses seniority and priority status for newly inserted services';
+COMMENT ON FUNCTION public.compute_service_priorities_trigger_fn() IS 'Trigger function that computes courses seniority and priority status for newly inserted services';
 
-CREATE TRIGGER trg_service_after_insert_compute_priorities
+CREATE TRIGGER service_after_insert_compute_priorities_trigger
     AFTER INSERT
     ON public.service
     FOR EACH ROW
-EXECUTE FUNCTION public.compute_service_priorities_trigger();
+EXECUTE FUNCTION public.compute_service_priorities_trigger_fn();
 
 -- Year Management
 
-CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof service AS
+CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof public.service AS
 $$
 SELECT s.*
 FROM public.teacher t
@@ -537,7 +537,7 @@ WHERE t.active IS TRUE;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
-CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof course AS
+CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof public.course AS
 $$
 INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
                            groups, groups_adjusted, description, priority_rule, visible)
@@ -562,7 +562,7 @@ RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.copy_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
-CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof priority AS
+CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof public.priority AS
 $$
 SELECT p.*
 FROM public.service s
@@ -576,16 +576,16 @@ COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniori
 -- Timestamps
 --
 
-CREATE FUNCTION public.set_timestamp() RETURNS trigger AS
+CREATE FUNCTION public.set_timestamp_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
     new.updated_at = now();
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION public.set_timestamp() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
+COMMENT ON FUNCTION public.set_timestamp_trigger_fn() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
 
-CREATE FUNCTION public.add_timestamp_columns(target_table text) RETURNS void AS
+CREATE FUNCTION public.add_timestamp_columns(p_table text) RETURNS void AS
 $$
 BEGIN
     EXECUTE format('
@@ -596,13 +596,13 @@ BEGIN
         COMMENT ON COLUMN public.%I.created_at IS ''Timestamp when the record was created'';
         COMMENT ON COLUMN public.%I.updated_at IS ''Timestamp when the record was last updated, automatically managed by trigger'';
 
-        CREATE TRIGGER trg_%s_before_update_set_timestamp
+        CREATE TRIGGER %s_before_update_set_timestamp_trigger
         BEFORE UPDATE ON public.%I
         FOR EACH ROW
-        EXECUTE FUNCTION public.set_timestamp()
-    ', target_table, target_table, target_table, target_table, target_table);
+        EXECUTE FUNCTION public.set_timestamp_trigger_fn()
+    ', p_table, p_table, p_table, p_table, p_table);
 
-    RAISE NOTICE 'Added created_at and updated_at columns to table %', target_table;
+    RAISE NOTICE 'Added created_at and updated_at columns to table %', p_table;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.add_timestamp_columns(text) IS 'Adds created_at and updated_at timestamp columns to the specified table, along with an automatic update trigger for updated_at';
@@ -616,6 +616,7 @@ BEGIN
         SELECT tablename
         FROM pg_tables
         WHERE schemaname = 'public'
+          AND tablename NOT IN ('request_type', 'role_type')
         LOOP
             PERFORM public.add_timestamp_columns(table_name);
         END LOOP;
