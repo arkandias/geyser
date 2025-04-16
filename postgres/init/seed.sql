@@ -18,4 +18,5 @@ VALUES ('assignment', 'Final course assignment made by the committee during the 
 -- Role types
 INSERT INTO public.role_type(value, description)
 VALUES ('admin', 'Full system administration access with ability to manage users, roles, and system configuration'),
-       ('commissioner', 'Member of the course assignment committee with extra abilities during the assignments phase');
+       ('commissioner', 'Member of the course assignment committee with extra abilities during the assignments phase'),
+       ('teacher', 'Base role with limited abilities');

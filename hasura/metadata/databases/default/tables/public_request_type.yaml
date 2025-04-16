@@ -1,6 +1,7 @@
 table:
   name: request_type
   schema: public
+is_enum: true
 array_relationships:
   - name: requests
     using:
