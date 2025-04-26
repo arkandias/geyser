@@ -24,14 +24,11 @@ insert_permissions:
         _and:
           - _exists:
               _table:
-                name: phase
+                name: current_phase
                 schema: public
               _where:
-                _and:
-                  - value:
-                      _eq: requests
-                  - current:
-                      _eq: true
+                value:
+                  _eq: requests
           - service:
               yearByYear:
                 current:
@@ -55,14 +52,11 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: phase
+            name: current_phase
             schema: public
           _where:
-            _and:
-              - value:
-                  _eq: assignments
-              - current:
-                  _eq: true
+            value:
+              _eq: assignments
     comment: Can view all service modifications [during assignments phase only]
   - role: teacher
     permission:
@@ -75,14 +69,11 @@ select_permissions:
         _and:
           - _exists:
               _table:
-                name: phase
+                name: current_phase
                 schema: public
               _where:
-                _and:
-                  - value:
-                      _neq: shutdown
-                  - current:
-                      _eq: true
+                value:
+                  _neq: shutdown
           - service:
               yearByYear:
                 visible:
@@ -101,14 +92,11 @@ update_permissions:
         _and:
           - _exists:
               _table:
-                name: phase
+                name: current_phase
                 schema: public
               _where:
-                _and:
-                  - value:
-                      _eq: requests
-                  - current:
-                      _eq: true
+                value:
+                  _eq: requests
           - service:
               yearByYear:
                 current:
@@ -125,14 +113,11 @@ delete_permissions:
         _and:
           - _exists:
               _table:
-                name: phase
+                name: current_phase
                 schema: public
               _where:
-                _and:
-                  - value:
-                      _eq: requests
-                  - current:
-                      _eq: true
+                value:
+                  _eq: requests
           - service:
               yearByYear:
                 current:

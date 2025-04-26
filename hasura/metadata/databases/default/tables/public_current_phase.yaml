@@ -1,18 +1,22 @@
 table:
-  name: app_setting
+  name: current_phase
   schema: public
+object_relationships:
+  - name: phase
+    using:
+      foreign_key_constraint_on: value
 select_permissions:
   - role: commissioner
     permission:
       columns:
-        - key
+        - id
         - value
       filter: {}
-    comment: Can view all application settings
+    comment: ""
   - role: teacher
     permission:
       columns:
-        - key
+        - id
         - value
       filter: {}
-    comment: Can view all application settings
+    comment: ""

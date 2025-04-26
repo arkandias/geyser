@@ -19,14 +19,11 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: phase
+            name: current_phase
             schema: public
           _where:
-            _and:
-              - value:
-                  _eq: assignments
-              - current:
-                  _eq: true
+            value:
+              _eq: assignments
     comment: Can view all roles [during assignments phase only]
   - role: teacher
     permission:

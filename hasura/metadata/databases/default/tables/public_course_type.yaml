@@ -20,14 +20,11 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: phase
+            name: current_phase
             schema: public
           _where:
-            _and:
-              - value:
-                  _eq: assignments
-              - current:
-                  _eq: true
+            value:
+              _eq: assignments
     comment: Can view all course types [during assignments phase only]
   - role: teacher
     permission:
@@ -39,12 +36,9 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: phase
+            name: current_phase
             schema: public
           _where:
-            _and:
-              - value:
-                  _neq: shutdown
-              - current:
-                  _eq: true
+            value:
+              _neq: shutdown
     comment: Can view all course types [except during shutdown phase]
