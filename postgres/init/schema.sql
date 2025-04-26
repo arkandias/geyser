@@ -15,32 +15,22 @@ COMMENT ON COLUMN public.app_setting.value IS 'Text content';
 CREATE TABLE public.phase
 (
     value       text PRIMARY KEY,
-    current     boolean NOT NULL DEFAULT FALSE,
     description text
 );
-CREATE UNIQUE INDEX unique_current_phase ON public.phase (current)
-    WHERE current = TRUE;
 
 COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
-COMMENT ON COLUMN public.phase.current IS 'Current phase flag. Constrained to have at most one current phase';
 COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
-CREATE FUNCTION public.clear_current_phase_flag_trigger_fn() RETURNS trigger AS
-$$
-BEGIN
-    UPDATE public.phase SET current = FALSE WHERE current IS TRUE;
-    RETURN new;
-END;
-$$ LANGUAGE plpgsql;
-COMMENT ON FUNCTION clear_current_phase_flag_trigger_fn() IS 'Trigger function that clears the current phase flag before a phase is set as current';
+CREATE TABLE public.current_phase
+(
+    id    integer PRIMARY KEY DEFAULT 1 CHECK ( id = 1 ),
+    value text REFERENCES public.phase
+);
 
-CREATE TRIGGER phase_before_update_clear_current_flag_trigger
-    BEFORE UPDATE OF current
-    ON public.phase
-    FOR EACH ROW
-    WHEN (new.current = TRUE)
-EXECUTE FUNCTION clear_current_phase_flag_trigger_fn();
+COMMENT ON TABLE public.current_phase IS 'Singleton table that stores the active system phase reference';
+COMMENT ON COLUMN public.current_phase.id IS 'Primary key with constraint to ensure only one record exists';
+COMMENT ON COLUMN public.current_phase.value IS 'Reference to the currently active phase identifier';
 
 CREATE TABLE public.year
 (
