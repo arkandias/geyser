@@ -1,6 +1,7 @@
 table:
   name: phase
   schema: public
+is_enum: true
 array_relationships:
   - name: currentPhases
     using:
@@ -15,12 +16,12 @@ select_permissions:
       columns:
         - description
         - value
-      filter: { }
+      filter: {}
     comment: Can view all phases and their status
   - role: teacher
     permission:
       columns:
         - description
         - value
-      filter: { }
+      filter: {}
     comment: Can view all phases and their status

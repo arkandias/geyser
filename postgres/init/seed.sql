@@ -8,6 +8,9 @@ VALUES ('requests',
        ('shutdown',
         'System is temporarily closed, typically between academic years or during maintenance periods.');
 
+INSERT INTO public.current_phase(value)
+VALUES ('shutdown');
+
 INSERT INTO public.request_type(value, description)
 VALUES ('assignment', 'Final course assignment made by the committee during the assignments phase'),
        ('primary', 'Teacher''s preferred course choices submitted during the requests phase'),
