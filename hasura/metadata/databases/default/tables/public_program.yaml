@@ -1,0 +1,69 @@
+table:
+  name: program
+  schema: public
+object_relationships:
+  - name: degree
+    using:
+      foreign_key_constraint_on: degree_id
+array_relationships:
+  - name: coordinations
+    using:
+      foreign_key_constraint_on:
+        column: program_id
+        table:
+          name: coordination
+          schema: public
+  - name: courses
+    using:
+      foreign_key_constraint_on:
+        column: program_id
+        table:
+          name: course
+          schema: public
+  - name: tracks
+    using:
+      foreign_key_constraint_on:
+        column: program_id
+        table:
+          name: track
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - degree_id
+        - id
+        - name
+        - name_display
+        - name_short
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all programs [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - degree_id
+        - id
+        - name
+        - name_display
+        - name_short
+        - visible
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - visible:
+              _eq: true
+    comment: Can view visible programs [except during shutdown phase]

@@ -1,0 +1,159 @@
+#compdef kcadm.sh
+
+_kcadm() {
+    local state line
+    local -a commands subcommands
+
+    # shellcheck disable=SC2034
+    commands=(
+        'config:Set up credentials and configuration settings'
+        'create:Create new resource'
+        'get:Get a resource'
+        'update:Update a resource'
+        'delete:Delete a resource'
+        'get-roles:List roles for user/group'
+        'add-roles:Add roles to user/group'
+        'remove-roles:Remove roles from user/group'
+        'set-password:Reset password for user'
+        'help:Show help information'
+    )
+
+    _arguments -C \
+        '-x[Print full stack trace on error]' \
+        '--help[Print help for specific command]' \
+        '--config[Path to config file]' \
+        '--token[Token to use for Keycloak]' \
+        '--truststore[Path to truststore]' \
+        '--trustpass[Truststore password]' \
+        '1: :->cmds' \
+        '*:: :->args'
+
+    case "${state}" in
+    cmds)
+        _describe -t commands 'kcadm.sh commands' commands
+        ;;
+    args)
+        case "${line[1]}" in
+        config)
+            # shellcheck disable=SC2034
+            subcommands=(
+                'credentials:Configure authentication credentials'
+                'truststore:Configure truststore'
+            )
+            _arguments \
+                '1: :->subcmds' \
+                '*:: :->subargs'
+            case "${state}" in
+            subcmds)
+                _describe -t commands 'config subcommands' subcommands
+                ;;
+            subargs)
+                case "${line[1]}" in
+                credentials)
+                    _arguments \
+                        '-x[Print full stack trace on error]' \
+                        '--config[Path to config file]' \
+                        '--truststore[Path to truststore]' \
+                        '--trustpass[Truststore password]' \
+                        '--server[Server endpoint URL]' \
+                        '--realm[Realm name]' \
+                        '--user[Username]' \
+                        '--password[Password]' \
+                        '--client[Client ID]' \
+                        '--secret[Client secret]' \
+                        '--keystore[Path to keystore]' \
+                        '--storepass[Keystore password]' \
+                        '--keypass[Key password]' \
+                        '--alias[Alias of the key]' \
+                        '--status[Check connection status]'
+                    ;;
+                truststore)
+                    _arguments \
+                        '-x[Print full stack trace on error]' \
+                        '--config[Path to config file]' \
+                        '--trustpass[Truststore password]' \
+                        '(-d --delete)'{-d,--delete}'[Remove truststore config]'
+                    ;;
+                esac
+                ;;
+            esac
+            ;;
+        create | get | update | delete)
+            _arguments \
+                '-x[Print full stack trace on error]' \
+                '--config[Path to config file]' \
+                '--no-config[Don'\''t use config file]' \
+                '--token[Token to use for Keycloak]' \
+                '--truststore[Path to truststore]' \
+                '--trustpass[Truststore password]' \
+                '(-r --target-realm)'{-r,--target-realm}'[Target realm]' \
+                '-s[Set attribute]' \
+                '-d[Delete attribute]' \
+                '-f[Input file]' \
+                '-b[Request body]' \
+                '-q[Query parameter]' \
+                '-h[Request header]' \
+                '-H[Print response headers]' \
+                '-o[Output result]' \
+                '-F[Filter fields]' \
+                '-c[Compressed output]' \
+                '--format[Output format]' \
+                '(-n --no-merge)'{-n,--no-merge}'[Suppress merge mode]' \
+                '(-m --merge)'{-m,--merge}'[Merge mode]' \
+                '-i[Print only ID after creation]' \
+                '(-a --admin-root)'{-a,--admin-root}'[Admin REST endpoint URL]' \
+                '--noquotes[Don'\''t quote strings in CSV]' \
+                '--offset[Set paging offset]' \
+                '--limit[Set limit to number of items]'
+            ;;
+        get-roles | add-roles | remove-roles)
+            _arguments \
+                '-x[Print full stack trace on error]' \
+                '--config[Path to config file]' \
+                '--no-config[Don'\''t use config file]' \
+                '--token[Token to use for Keycloak]' \
+                '--truststore[Path to truststore]' \
+                '--trustpass[Truststore password]' \
+                '(-r --target-realm)'{-r,--target-realm}'[Target realm]' \
+                '--uusername[User username]' \
+                '--uid[User ID]' \
+                '--gname[Group name]' \
+                '--gpath[Group path]' \
+                '--gid[Group ID]' \
+                '--rname[Role name]' \
+                '--rid[Role ID]' \
+                '--cclientid[Client ID]' \
+                '--cid[Client ID]' \
+                '--rolename[Role name]' \
+                '--roleid[Role ID]' \
+                '--available[Show available roles]' \
+                '--effective[Show effective roles]' \
+                '--all[Show all roles]' \
+                '(-a --admin-root)'{-a,--admin-root}'[Admin REST endpoint URL]' \
+                '-H[Print response headers]' \
+                '-F[Filter fields]' \
+                '-c[Compressed output]' \
+                '--format[Output format]' \
+                '--noquotes[Don'\''t quote strings in CSV]'
+            ;;
+        set-password)
+            _arguments \
+                '-x[Print full stack trace on error]' \
+                '--config[Path to config file]' \
+                '--no-config[Don'\''t use config file]' \
+                '--token[Token to use for Keycloak]' \
+                '--truststore[Path to truststore]' \
+                '--trustpass[Truststore password]' \
+                '--username[Username]' \
+                '--userid[User ID]' \
+                '--new-password[New password]' \
+                '(-t --temporary)'{-t,--temporary}'[Temporary password]' \
+                '(-a --admin-root)'{-a,--admin-root}'[Admin REST endpoint URL]' \
+                '(-r --target-realm)'{-r,--target-realm}'[Target realm]'
+            ;;
+        esac
+        ;;
+    esac
+}
+
+_kcadm "$@"

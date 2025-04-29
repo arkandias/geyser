@@ -1,0 +1,38 @@
+table:
+  name: role
+  schema: public
+object_relationships:
+  - name: roleType
+    using:
+      foreign_key_constraint_on: type
+  - name: teacher
+    using:
+      foreign_key_constraint_on: uid
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - comment
+        - id
+        - type
+        - uid
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all roles [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - comment
+        - id
+        - type
+        - uid
+      filter:
+        uid:
+          _eq: X-Hasura-User-Id
+    comment: Can view their own role

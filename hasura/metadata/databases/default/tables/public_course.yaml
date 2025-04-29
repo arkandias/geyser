@@ -1,0 +1,172 @@
+table:
+  name: course
+  schema: public
+object_relationships:
+  - name: program
+    using:
+      foreign_key_constraint_on: program_id
+  - name: track
+    using:
+      foreign_key_constraint_on:
+        - track_id
+        - program_id
+  - name: type
+    using:
+      foreign_key_constraint_on: type_id
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
+array_relationships:
+  - name: coordinations
+    using:
+      foreign_key_constraint_on:
+        column: course_id
+        table:
+          name: coordination
+          schema: public
+  - name: priorities
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - course_id
+          - year
+        table:
+          name: priority
+          schema: public
+  - name: requests
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - course_id
+          - year
+        table:
+          name: request
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - cycle_year
+        - description
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - id
+        - name
+        - name_display
+        - name_short
+        - program_id
+        - priority_rule
+        - semester
+        - track_id
+        - type_id
+        - visible
+        - year
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all courses [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - cycle_year
+        - description
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - id
+        - name
+        - name_display
+        - name_short
+        - program_id
+        - priority_rule
+        - semester
+        - track_id
+        - type_id
+        - visible
+        - year
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - _or:
+              - _and:
+                  - visible:
+                      _eq: true
+                  - yearByYear:
+                      visible:
+                        _eq: true
+                  - program:
+                      _and:
+                        - visible:
+                            _eq: true
+                        - degree:
+                            visible:
+                              _eq: true
+                  - track:
+                      visible:
+                        _eq: true
+              - coordinations:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - track:
+                  coordinations:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - program:
+                  coordinations:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - requests:
+                  service:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - priorities:
+                  service:
+                    uid:
+                      _eq: X-Hasura-User-Id
+    comment: 'Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities'
+update_permissions:
+  - role: teacher
+    permission:
+      columns:
+        - description
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - _or:
+              - coordinations:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - track:
+                  coordinations:
+                    uid:
+                      _eq: X-Hasura-User-Id
+              - program:
+                  coordinations:
+                    uid:
+                      _eq: X-Hasura-User-Id
+      check: null
+    comment: Can update course description of courses that they coordinate (directly or via program/track) [except during shutdown phase]

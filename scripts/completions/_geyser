@@ -1,0 +1,236 @@
+#compdef geyser
+
+# shellcheck disable=SC2120
+#compdef geyser
+
+_geyser() {
+    # Handle completion for wrappers
+    if [[ " ${words[*]} " == *" compose "* ]]; then
+        _geyser_compose
+        return
+    elif [[ " ${words[*]} " == *" hasura "* ]]; then
+        _geyser_hasura
+        return
+    elif [[ " ${words[*]} " == *" kc "* ]]; then
+        _geyser_kc
+        return
+    elif [[ " ${words[*]} " == *" kcadm "* ]]; then
+        _geyser_kcadm
+        return
+    elif [[ " ${words[*]} " == *" rsync "* ]]; then
+        _geyser_rsync
+        return
+    fi
+
+    # shellcheck disable=SC2034
+    local -a commands=(
+        'init:Initialize a fresh Geyser installation'
+        'start:Start Geyser services'
+        'stop:Stop Geyser services'
+        'update:Update Geyser services'
+        'reset:Reset Geyser to a fresh installation'
+        'backup:Create a backup of Geyser main database'
+        'restore:Restore Geyser main database from a backup'
+        'export-realms:Export Keycloak realms and users'
+        'import-realms:Import Keycloak realms and users'
+        'sync-keycloak:Synchronize Keycloak users and groups with app data'
+        'compose:Docker Compose wrapper'
+        'hasura:Hasura CLI wrapper'
+        'kc:Keycloak CLI access'
+        'kcadm:Keycloak Admin CLI access'
+        'rsync:Configured rsync wrapper'
+        'install-completion:Install zsh completion'
+    )
+
+    local state
+
+    _arguments -s -S -C \
+        '(-h --help)'{-h,--help}'[Show help message]' \
+        '(-v --version)'{-v,--version}'[Show version information]' \
+        '(-s --status)'{-s,--status}'[Show current status]' \
+        '(-q --quiet)'{-q,--quiet}'[Disable log messages]' \
+        '1: :->cmds' \
+        '*:: :->args'
+
+    case "${state}" in
+    cmds)
+        _describe -t commands 'geyser commands' commands
+        ;;
+    args)
+        case "${words[1]}" in
+        backup)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Set the name of the backup]:name'
+            ;;
+        restore)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Set the name of the backup]:name'
+            ;;
+        export-realms)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]:name' \
+                '--name[Set the name of the export]'
+            ;;
+        import-realms)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Set the name of the export]:name'
+            ;;
+        kc)
+            _arguments '--restart-with[Restart container and run command]:command'
+            ;;
+        kcadm)
+            _arguments '--login[Start an authenticated session]'
+            ;;
+        *)
+            _arguments '(-h --help)'{-h,--help}'[Show help message]'
+            ;;
+        esac
+        ;;
+    esac
+}
+
+# shellcheck disable=SC2120
+_geyser_compose() {
+    if [[ -z "${GEYSER_HOME}" ]]; then
+        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        return 1
+    fi
+
+    # Parse options before compose and store words after
+    for ((i = 2; i <= ${#words}; i++)); do
+        case "${words[i]}" in
+        compose) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    words_after_compose=("${words[@]:$((i))}")
+
+    # Configuration
+    local MODE=development
+    local NO_AUTH=false
+    local NO_WEB=false
+
+    # Load env files
+    . "${GEYSER_HOME}/.env" || true
+    . "${GEYSER_HOME}/.env.local" || true
+
+    # Resolving incompatibilities
+    [[ "${MODE}" == "production" ]] && NO_AUTH="false"
+    [[ "${MODE}" == "production" ]] && NO_WEB="false"
+    [[ "${NO_AUTH}" == "true" ]] && NO_WEB="true"
+
+    local -a compose_files=(-f "${GEYSER_HOME}"/compose.base.yaml)
+    [[ "${NO_AUTH}" == "false" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
+    [[ "${NO_WEB}" == "false" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
+    [[ "${MODE}" == "production" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
+
+    words=("docker" "compose" "${compose_files[@]}" "${words_after_compose[@]}")
+    ((CURRENT = CURRENT + 2 - i + 2 * ${#compose_files[@]}))
+
+    _docker
+}
+
+# shellcheck disable=SC2120
+_geyser_hasura() {
+    if [[ -z "${GEYSER_HOME}" ]]; then
+        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        return 1
+    fi
+
+    # Parse options before hasura and store words after
+    for ((i = 2; i <= ${#words}; i++)); do
+        case "${words[i]}" in
+        hasura) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    words_after_hasura=("${words[@]:$((i))}")
+
+    words=("hasura" "--project" "${GEYSER_HOME}/hasura" "${words_after_hasura[@]}")
+    ((CURRENT = CURRENT + 3 - i))
+
+    _hasura
+}
+
+# shellcheck disable=SC2120
+_geyser_kc() {
+    # Parse options before kc and store words after
+    for ((i = 2; i <= ${#words}; i++)); do
+        case "${words[i]}" in
+        kc) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    # Remove option --restart-with
+    if [[ "${words[i]}" == "--restart-with" ]]; then
+        ((i++))
+    fi
+    words_after_kc=("${words[@]:$((i))}")
+
+    words=("kc.sh" "${words_after_kc[@]}")
+    ((CURRENT = CURRENT + 1 - i))
+
+    _kc
+}
+
+# shellcheck disable=SC2120
+_geyser_kcadm() {
+    # Parse options before kcadm and store words after
+    for ((i = 2; i <= ${#words}; i++)); do
+        case "${words[i]}" in
+        kcadm) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    # Remove option --login
+    if [[ "${words[i]}" == "--login" ]]; then
+        ((i++))
+    fi
+    words_after_kcadm=("${words[@]:$((i))}")
+
+    words=("kcadm.sh" "${words_after_kcadm[@]}")
+    ((CURRENT = CURRENT + 1 - i))
+
+    _kcadm
+}
+
+# shellcheck disable=SC2120
+_geyser_rsync() {
+    if [[ -z "${GEYSER_HOME}" ]]; then
+        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        return 1
+    fi
+
+    # Parse options before rsync and store words after
+    for ((i = 2; i <= ${#words}; i++)); do
+        case "${words[i]}" in
+        rsync) break ;;
+        --*) continue ;;
+        *) return 1 ;;
+        esac
+    done
+    words_after_rsync=("${words[@]:$((i))}")
+
+    words=(
+        "rsync" "-rlv" "--delete"
+        "--files-from=${GEYSER_HOME}/rsync-files"
+        "--exclude-from=${GEYSER_HOME}/rsync-exclude"
+        "${GEYSER_HOME}/"
+        "${words_after_rsync[@]}"
+    )
+    ((CURRENT = CURRENT + 6 - i))
+
+    _rsync
+}
+
+_geyser

@@ -1,0 +1,110 @@
+table:
+  name: service
+  schema: public
+object_relationships:
+  - name: teacher
+    using:
+      foreign_key_constraint_on: uid
+  - name: vTeacher
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: v_teacher
+          schema: public
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
+array_relationships:
+  - name: modifications
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: service_modification
+          schema: public
+  - name: priorities
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - service_id
+          - year
+        table:
+          name: priority
+          schema: public
+  - name: requests
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - service_id
+          - year
+        table:
+          name: request
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - hours
+        - id
+        - message
+        - uid
+        - year
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+      allow_aggregations: true
+    comment: Can view all services [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - hours
+        - id
+        - message
+        - uid
+        - year
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - yearByYear:
+              visible:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      allow_aggregations: true
+    comment: Can view their own services for visible years [except during shutdown phase]
+update_permissions:
+  - role: teacher
+    permission:
+      columns:
+        - hours
+        - message
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _eq: requests
+          - yearByYear:
+              current:
+                _eq: true
+          - uid:
+              _eq: X-Hasura-User-Id
+      check: null
+    comment: During requests phase, can update their own service hours and message for the current year

@@ -1,0 +1,44 @@
+table:
+  name: course_type
+  schema: public
+array_relationships:
+  - name: courses
+    using:
+      foreign_key_constraint_on:
+        column: type_id
+        table:
+          name: course
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - coefficient
+        - description
+        - id
+        - label
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all course types [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - coefficient
+        - description
+        - id
+        - label
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _neq: shutdown
+    comment: Can view all course types [except during shutdown phase]

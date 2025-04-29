@@ -1,0 +1,6 @@
+.pnpm-store/
+pnpm-lock.yaml
+
+/client/public/
+/client/src/gql/
+/client/schema.graphql

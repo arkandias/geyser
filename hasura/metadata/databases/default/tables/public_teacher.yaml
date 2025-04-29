@@ -1,0 +1,87 @@
+table:
+  name: teacher
+  schema: public
+object_relationships:
+  - name: position
+    using:
+      foreign_key_constraint_on: position_id
+array_relationships:
+  - name: coordinations
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: coordination
+          schema: public
+  - name: roles
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: role
+          schema: public
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: uid
+        table:
+          name: service
+          schema: public
+  - name: vServices
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: v_service
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - active
+        - alias
+        - base_service_hours
+        - displayname
+        - firstname
+        - lastname
+        - position_id
+        - uid
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all teachers [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - active
+        - alias
+        - base_service_hours
+        - displayname
+        - firstname
+        - lastname
+        - position_id
+        - uid
+        - visible
+      filter:
+        _or:
+          - uid:
+              _eq: X-Hasura-User-Id
+          - _and:
+              - _exists:
+                  _table:
+                    name: current_phase
+                    schema: public
+                  _where:
+                    value:
+                      _neq: shutdown
+              - visible:
+                  _eq: true
+    comment: Can always view themselves. Can view visible teachers [except during shutdown phase]

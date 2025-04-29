@@ -1,0 +1,40 @@
+services:
+  keycloak:
+    environment:
+      KC_HOSTNAME: "http://${GEYSER_HOSTNAME}/auth"
+      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_DEBUG: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+    networks:
+      - public
+
+  hasura:
+    networks:
+      - public
+  
+  nginx:
+    build: nginx
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:8000/health || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      GEYSER_HOSTNAME: null
+    ports:
+      - "80:80"
+    networks:
+      - public
+    volumes:
+      - ./nginx/templates/http:/etc/nginx/templates:ro
+
+networks:
+  public:

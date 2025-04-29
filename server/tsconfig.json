@@ -1,0 +1,23 @@
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    /* Language and Environment */
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+
+    /* Module */
+    "module": "CommonJS",
+    "moduleResolution": "node",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@geyser/shared/*": ["../shared/src/*"]
+    },
+    "types": ["node", "jest"],
+
+    /* Emit */
+    "outDir": "./dist"
+  },
+  "references": [{ "path": "../shared" }],
+  "include": ["src/**/*"],
+  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
+}

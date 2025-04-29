@@ -1,0 +1,75 @@
+table:
+  name: year
+  schema: public
+array_relationships:
+  - name: courses
+    using:
+      foreign_key_constraint_on:
+        column: year
+        table:
+          name: course
+          schema: public
+  - name: priorities
+    using:
+      foreign_key_constraint_on:
+        column: year
+        table:
+          name: priority
+          schema: public
+  - name: requests
+    using:
+      foreign_key_constraint_on:
+        column: year
+        table:
+          name: request
+          schema: public
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        column: year
+        table:
+          name: service
+          schema: public
+  - name: vServices
+    using:
+      manual_configuration:
+        column_mapping:
+          value: year
+        insertion_order: null
+        remote_table:
+          name: v_service
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - current
+        - value
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all years [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - current
+        - value
+        - visible
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - visible:
+              _eq: true
+    comment: Can view visible years [except during shutdown phase]

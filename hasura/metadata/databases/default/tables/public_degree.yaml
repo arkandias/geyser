@@ -1,0 +1,49 @@
+table:
+  name: degree
+  schema: public
+array_relationships:
+  - name: programs
+    using:
+      foreign_key_constraint_on:
+        column: degree_id
+        table:
+          name: program
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - id
+        - name
+        - name_display
+        - name_short
+        - visible
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all degrees [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - id
+        - name
+        - name_display
+        - name_short
+        - visible
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - visible:
+              _eq: true
+    comment: Can view visible degrees [except during shutdown phase]

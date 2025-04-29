@@ -1,0 +1,208 @@
+#!/usr/bin/env bash
+# shellcheck disable=SC2034
+
+#######################################
+# Geyser Administration Script
+# Author: Julien Hauseux <julien.hauseux@univ-lille.fr>
+# Version: 1.0.0
+# License: GNU AGPL v3.0
+#######################################
+
+# Exit the script immediately if any command fails
+set -e
+
+###############################################################################
+# HELP
+###############################################################################
+
+# Help text function
+show_help() {
+    cat <<EOF
+Geyser Administration Script v${VERSION}
+
+Usage: geyser [OPTIONS] COMMAND
+
+Core Commands:
+  init              Initialize a fresh Geyser installation
+  start             Start Geyser services
+  stop              Stop Geyser services
+  update            Update Geyser services
+  reset             Reset Geyser to a fresh installation
+
+Data Management:
+  backup            Create a backup of Geyser main database
+  restore           Restore Geyser main database from a backup
+  export-realms     Export Keycloak realms and users
+  import-realms     Import Keycloak realms and users
+  sync-keycloak     Synchronize Keycloak users and groups with app data
+
+Development Tools:
+  compose           Docker Compose wrapper
+  hasura            Hasura CLI wrapper
+  kc                Keycloak CLI access
+  kcadm             Keycloak Admin CLI access
+  rsync             Configured rsync wrapper 
+
+Setup:
+  install-completion    Install zsh completion (using oh-my-zsh)
+
+Options:
+  -h, --help        Show this help message
+  -v, --version     Show version information
+  -s, --status      Show current status
+  -q, --quiet       Disable log messages
+
+Run 'geyser COMMAND --help' for more information on a command.
+EOF
+}
+
+###############################################################################
+# GLOBAL VARIABLES
+###############################################################################
+
+readonly VERSION="1.0.0"
+
+# Directory Setup
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
+GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"
+readonly SCRIPT_DIR
+readonly GEYSER_HOME
+readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
+readonly KC_BACKUP_DIR="${GEYSER_HOME}/keycloak/backups"
+readonly LOG_DIR="${GEYSER_HOME}/logs"
+
+# Create required directories
+mkdir -p "${DB_BACKUP_DIR}"
+mkdir -p "${KC_BACKUP_DIR}"
+mkdir -p "${LOG_DIR}"
+
+# Environment Variables
+GEYSER_HOSTNAME="localhost" # Hostname where Geyser services will be accessible
+MODE="development"          # Application deployment context (development/production)
+NO_AUTH="false"             # Disable Keycloak authentication service (development mode only)
+NO_WEB="false"              # Disable Nginx reverse proxy frontend (development mode only)
+LOG_LEVEL="INFO"            # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
+
+# Load env files
+[[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
+[[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
+
+###############################################################################
+# LIBRARIES
+###############################################################################
+
+source "${SCRIPT_DIR}/lib/config.sh"
+source "${SCRIPT_DIR}/lib/logging.sh"
+source "${SCRIPT_DIR}/lib/utils.sh"
+source "${SCRIPT_DIR}/lib/devtools.sh"
+
+# Source all command handlers
+for cmd in "${SCRIPT_DIR}/lib/commands"/*.sh; do
+    # shellcheck disable=SC1090
+    source "${cmd}"
+done
+
+###############################################################################
+# MAIN
+###############################################################################
+
+main() {
+    # If no arguments provided, show help
+    if [[ "$#" -eq 0 ]]; then
+        show_help
+        exit 0
+    fi
+
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_help
+            exit 0
+            ;;
+        -v | --version)
+            echo "Geyser Administration Script v${VERSION}"
+            exit 0
+            ;;
+        -s | --status)
+            echo "Checking status..."
+            compose ps -a --format '{{.Service}}: {{.Status}}' 2>/dev/null || {
+                echo >&2 "Failed to check Geyser status. Is Docker daemon running?"
+                exit 1
+            }
+            exit 0
+            ;;
+        -q | --quiet)
+            LOG_LEVEL="SILENT"
+            shift
+            ;;
+        *)
+            break
+            ;;
+        esac
+    done
+
+    setup_logging
+    check_dependencies
+    validate_configuration
+
+    # Execute command
+    case "$1" in
+    init)
+        shift
+        handle_init "$@"
+        ;;
+    start)
+        shift
+        handle_start "$@"
+        ;;
+    stop)
+        shift
+        handle_stop "$@"
+        ;;
+    update)
+        shift
+        handle_update "$@"
+        ;;
+    reset)
+        shift
+        handle_reset "$@"
+        ;;
+    backup)
+        shift
+        handle_backup "$@"
+        ;;
+    restore)
+        shift
+        handle_restore "$@"
+        ;;
+    export-realms)
+        shift
+        handle_export_realms "$@"
+        ;;
+    import-realms)
+        shift
+        handle_import_realms "$@"
+        ;;
+    sync-keycloak)
+        shift
+        handle_sync_keycloak "$@"
+        ;;
+    compose | hasura | kc | kcadm | rsync)
+        cmd="$1"
+        shift
+        "${cmd}" "$@"
+        ;;
+    install-completion)
+        handle_install_completion
+        ;;
+    "")
+        exit 0
+        ;;
+    *)
+        error "Unknown command '$1' (see 'geyser --help')"
+        ;;
+    esac
+}
+
+main "$@"

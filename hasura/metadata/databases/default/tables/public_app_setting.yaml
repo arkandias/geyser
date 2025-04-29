@@ -1,0 +1,18 @@
+table:
+  name: app_setting
+  schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - key
+        - value
+      filter: {}
+    comment: Can view all application settings
+  - role: teacher
+    permission:
+      columns:
+        - key
+        - value
+      filter: {}
+    comment: Can view all application settings

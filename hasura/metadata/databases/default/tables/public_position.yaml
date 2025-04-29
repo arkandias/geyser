@@ -1,0 +1,44 @@
+table:
+  name: position
+  schema: public
+array_relationships:
+  - name: teachers
+    using:
+      foreign_key_constraint_on:
+        column: position_id
+        table:
+          name: teacher
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - base_service_hours
+        - description
+        - id
+        - label
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all teaching positions [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - base_service_hours
+        - description
+        - id
+        - label
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _neq: shutdown
+    comment: Can view all teaching positions [except during shutdown phase]

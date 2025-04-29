@@ -1,0 +1,115 @@
+table:
+  name: priority
+  schema: public
+object_relationships:
+  - name: course
+    using:
+      foreign_key_constraint_on:
+        - course_id
+        - year
+  - name: service
+    using:
+      foreign_key_constraint_on:
+        - service_id
+        - year
+  - name: vService
+    using:
+      manual_configuration:
+        column_mapping:
+          service_id: id
+          year: year
+        insertion_order: null
+        remote_table:
+          name: v_service
+          schema: public
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on: year
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - computed
+        - course_id
+        - id
+        - is_priority
+        - seniority
+        - service_id
+        - year
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all priorities [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - computed
+        - course_id
+        - id
+        - is_priority
+        - seniority
+        - service_id
+        - year
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - _or:
+              - service:
+                  uid:
+                    _eq: X-Hasura-User-Id
+              - course:
+                  _or:
+                    - coordinations:
+                        uid:
+                          _eq: X-Hasura-User-Id
+                    - track:
+                        coordinations:
+                          uid:
+                            _eq: X-Hasura-User-Id
+                    - program:
+                        coordinations:
+                          uid:
+                            _eq: X-Hasura-User-Id
+              - _and:
+                  - service:
+                      teacher:
+                        visible:
+                          _eq: true
+                  - course:
+                      _or:
+                        - _and:
+                            - visible:
+                                _eq: true
+                            - yearByYear:
+                                visible:
+                                  _eq: true
+                            - program:
+                                _and:
+                                  - visible:
+                                      _eq: true
+                                  - degree:
+                                      visible:
+                                        _eq: true
+                            - track:
+                                visible:
+                                  _eq: true
+                        - requests:
+                            service:
+                              uid:
+                                _eq: X-Hasura-User-Id
+                        - priorities:
+                            service:
+                              uid:
+                                _eq: X-Hasura-User-Id
+    comment: 'Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities'

@@ -1,0 +1,76 @@
+table:
+  name: coordination
+  schema: public
+object_relationships:
+  - name: course
+    using:
+      foreign_key_constraint_on: course_id
+  - name: program
+    using:
+      foreign_key_constraint_on: program_id
+  - name: teacher
+    using:
+      foreign_key_constraint_on: uid
+  - name: track
+    using:
+      foreign_key_constraint_on: track_id
+  - name: vTeacher
+    using:
+      manual_configuration:
+        column_mapping:
+          uid: uid
+        insertion_order: null
+        remote_table:
+          name: v_teacher
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - comment
+        - course_id
+        - id
+        - program_id
+        - track_id
+        - uid
+      filter:
+        _exists:
+          _table:
+            name: current_phase
+            schema: public
+          _where:
+            value:
+              _eq: assignments
+    comment: Can view all coordination roles [during assignments phase only]
+  - role: teacher
+    permission:
+      columns:
+        - comment
+        - course_id
+        - id
+        - program_id
+        - track_id
+        - uid
+      filter:
+        _and:
+          - _exists:
+              _table:
+                name: current_phase
+                schema: public
+              _where:
+                value:
+                  _neq: shutdown
+          - teacher:
+              visible:
+                _eq: true
+          - _or:
+              - course:
+                  visible:
+                    _eq: true
+              - track:
+                  visible:
+                    _eq: true
+              - program:
+                  visible:
+                    _eq: true
+    comment: Can view visible coordination roles [except during shutdown phase]

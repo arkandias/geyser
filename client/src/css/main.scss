@@ -1,0 +1,25 @@
+// couleurs des liens hypertextes
+a:link,
+a:visited {
+  color: var(--q-primary);
+}
+a:hover,
+a:active {
+  color: $accent;
+}
+
+// lists and paragraphs margins
+ol,
+ul,
+li {
+  margin: 0;
+}
+p {
+  margin: 16px 0;
+}
+p:first-child {
+  margin-top: 0;
+}
+p:last-child {
+  margin-bottom: 0;
+}
