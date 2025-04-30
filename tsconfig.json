@@ -43,5 +43,5 @@
     "skipLibCheck": true
   },
   "include": ["**/*.ts"],
-  "exclude": ["./client/src/"]
+  "exclude": ["client/src/"]
 }

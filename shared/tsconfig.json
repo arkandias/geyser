@@ -2,13 +2,12 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     /* Module */
-    "module": "ESNext",
-    "moduleResolution": "nodenext",
-    "types": [],
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* Emit */
     "outDir": "./dist"
   },
-  "include": ["src/**/*.ts"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
+  "include": ["src/**/*.ts"]
 }

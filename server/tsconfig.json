@@ -15,9 +15,11 @@
     "types": ["node", "jest"],
 
     /* Emit */
-    "outDir": "./dist"
+    "outDir": "./dist",
+
+    /* Interop Constraints */
+    "verbatimModuleSyntax": false
   },
   "references": [{ "path": "../shared" }],
-  "include": ["src/**/*"],
-  "exclude": ["node_modules", "dist", "**/*.spec.ts", "**/*.test.ts"]
+  "include": ["src/**/*.ts"]
 }

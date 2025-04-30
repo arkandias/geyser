@@ -3,4 +3,5 @@ packages:
   - server
   - shared
 onlyBuiltDependencies:
+  - '@nestjs/core'
   - esbuild

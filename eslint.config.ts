@@ -41,7 +41,7 @@ const tsrules: Linter.RulesRecord = {
   ],
 };
 
-export default tseslint.config(
+const config: tseslint.ConfigArray = tseslint.config(
   includeIgnoreFile(fileURLToPath(new URL(".gitignore", import.meta.url))),
   {
     languageOptions: {
@@ -193,3 +193,5 @@ export default tseslint.config(
   },
   eslintConfigPrettier,
 );
+
+export default config;
