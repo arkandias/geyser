@@ -127,7 +127,7 @@ insert_permissions:
         - service_id
         - type
         - year
-    comment: 'During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities'
+    comment: "During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities"
 select_permissions:
   - role: commissioner
     permission:
@@ -235,7 +235,7 @@ select_permissions:
               - type:
                   _neq: assignment
       allow_aggregations: true
-    comment: 'Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase'
+    comment: "Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase"
 update_permissions:
   - role: commissioner
     permission:

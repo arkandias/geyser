@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, watch } from "vue";
+import { computed, inject, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
@@ -11,7 +11,7 @@ import {
   PhaseEnum,
   RoleTypeEnum,
 } from "@/gql/graphql.ts";
-import { setRoleHeader } from "@/services/urql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
@@ -20,7 +20,7 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
-const { uid } = defineProps<{ uid: string | null }>();
+const authManager = inject<AuthManager>("authManager");
 
 graphql(`
   query GetUserProfile($uid: String!) {
@@ -67,8 +67,8 @@ const { setCustomTexts } = useCustomTextsStore();
 // Fetch user profile
 const getUserProfile = useQuery({
   query: GetUserProfileDocument,
-  variables: { uid: uid ?? "" },
-  pause: uid === null,
+  variables: { uid: authManager?.userId() ?? "" },
+  pause: !authManager?.userId(),
   context: { additionalTypenames: ["All", "Role", "Service"] },
 });
 watch(
@@ -93,7 +93,15 @@ watch(
   },
   { immediate: true },
 );
-watch(activeRole, setRoleHeader, { immediate: true });
+watch(
+  activeRole,
+  (role) => {
+    if (authManager) {
+      authManager?.setRole(role);
+    }
+  },
+  { immediate: true },
+);
 
 // Fetch app data
 const getAppData = useQuery({
@@ -133,7 +141,7 @@ watch(
 
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
-  if (uid === null) {
+  if (!authManager?.userId()) {
     return t("home.alert.noAuth");
   }
   if (getUserProfile.fetching.value) {

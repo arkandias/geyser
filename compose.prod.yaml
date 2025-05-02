@@ -17,7 +17,7 @@ services:
     volumes:
       - ./certs:/opt/keycloak/certs:ro
     command: start --optimized --import-realm
-  
+
   db:
     restart: always
 
@@ -26,7 +26,7 @@ services:
     environment:
       HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_HOSTNAME}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
-  
+
   nginx:
     restart: always
     environment:

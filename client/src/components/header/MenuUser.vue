@@ -1,14 +1,16 @@
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import type { RoleTypeEnum } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
-import { logout } from "@/services/keycloak.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
+
+const authManager = inject<AuthManager>("authManager");
 
 const { t } = useTypedI18n();
 const { displayname, roles, activeRole, setActiveRole } = useProfileStore();
@@ -54,7 +56,7 @@ const update = async (value: RoleTypeEnum) => {
         />
       </QItem>
       <QSeparator />
-      <QItem v-close-popup clickable @click="logout()">
+      <QItem v-close-popup clickable @click="authManager?.logout()">
         <QItemSection side>
           <QIcon name="sym_s_logout" color="primary" />
         </QItemSection>

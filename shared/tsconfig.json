@@ -1,11 +1,8 @@
 {
-  "extends": "../tsconfig.json",
+  "extends": "../tsconfig.base.json",
   "compilerOptions": {
     /* Module */
-    "paths": {
-      "@/*": ["./src/*"]
-    },
-
+    "rootDir": "./src",
     /* Emit */
     "outDir": "./dist"
   },

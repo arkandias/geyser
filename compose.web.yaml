@@ -11,7 +11,7 @@ services:
   hasura:
     networks:
       - public
-  
+
   nginx:
     build: nginx
     restart: unless-stopped

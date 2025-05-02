@@ -13,7 +13,14 @@ export default defineConfig({
       output: {
         manualChunks: {
           "vendor-core": ["vue", "vue-router", "vue-i18n"],
-          "vendor-data": ["graphql", "@urql/vue", "papaparse", "dompurify"],
+          "vendor-data": [
+            "@geyser/shared",
+            "@urql/vue",
+            "axios",
+            "graphql",
+            "dompurify",
+            "papaparse",
+          ],
           "vendor-auth": ["keycloak-js"],
         },
       },
@@ -44,12 +51,16 @@ export default defineConfig({
         find: "@",
         replacement: fileURLToPath(new URL("./src", import.meta.url)),
       },
+      {
+        find: "@geyser/shared",
+        replacement: fileURLToPath(new URL("../shared/dist", import.meta.url)),
+      },
     ],
   },
   css: {
     preprocessorOptions: {
       scss: {
-        additionalData: `@import "@/css/global.variables.scss";`,
+        additionalData: '@import "@/css/global.variables.scss";',
       },
     },
   },

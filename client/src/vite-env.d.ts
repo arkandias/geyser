@@ -10,11 +10,12 @@ declare module "*.vue" {
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ImportMetaEnv {
   readonly VITE_BUILD_VERSION?: string;
+  readonly VITE_KEYCLOAK_URL?: string;
+  readonly VITE_API_URL?: string;
   readonly VITE_GRAPHQL_URL?: string;
-  readonly VITE_AUTH_URL?: string;
   readonly VITE_BYPASS_AUTH?: string;
-  readonly VITE_HASURA_ADMIN_SECRET?: string;
   readonly VITE_HASURA_USER_ID?: string;
+  readonly VITE_HASURA_ADMIN_SECRET?: string;
 }
 
 // eslint-disable-next-line @typescript-eslint/consistent-type-definitions

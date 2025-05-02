@@ -3,7 +3,6 @@
   "importOrder": [
     "^node:",
     "<THIRD_PARTY_MODULES>",
-    "^/",
     "^[@.]/(?!(css|components|pages)/)",
     "^[@.]/css/",
     "^[@.]/(components|pages)/"

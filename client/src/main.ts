@@ -3,11 +3,11 @@ import { createApp } from "vue";
 import { Quasar } from "quasar";
 import urql from "@urql/vue";
 
-import { getAuthHeader, initKeycloak } from "@/services/keycloak.ts";
+import { AuthManager } from "@/services/auth.ts";
 import { quasarOptions } from "@/services/quasar.ts";
 import { i18n } from "@/services/i18n.ts";
 import { router } from "@/services/router.ts";
-import { clientOptions, tmp } from "@/services/urql.ts";
+import { makeClientOptions } from "@/services/urql.ts";
 
 import "quasar/src/css/index.sass";
 import "@/css/main.scss";
@@ -20,31 +20,13 @@ if (import.meta.env.PROD) {
   };
 }
 
-const claims = await initKeycloak();
-console.log("claims", claims);
+const authManager = new AuthManager();
+await authManager.init();
 
-async function exchangeToken() {
-  const url = "http://localhost/authz/login";
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { ...getAuthHeader() },
-      credentials: "include",
-    });
-    if (!response.ok) {
-      throw new Error(`Response status: ${response.status}`);
-    }
-    const json = await response.json();
-    tmp.token = json.token;
-    console.log("RESPONSE", json);
-  } catch (error) {
-    console.error("ERROR", error.message);
-  }
-}
+const clientOptions = makeClientOptions(authManager);
 
-await exchangeToken();
-
-createApp(App, { uid: claims.email ?? null })
+createApp(App)
+  .provide("authManager", authManager)
   .use(Quasar, quasarOptions)
   .use(i18n)
   .use(router)
