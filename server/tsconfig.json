@@ -9,10 +9,9 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "paths": {
-      "@/*": ["./src/*"],
       "@geyser/shared/*": ["../shared/src/*"]
     },
-    "types": ["node", "jest"],
+    "types": ["node"],
 
     /* Emit */
     "outDir": "./dist",
