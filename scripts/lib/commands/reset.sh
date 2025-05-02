@@ -48,6 +48,5 @@ handle_reset() {
     info "Removing logs..."
     rm -rf "${LOG_DIR:?}"/*
 
-    success "Reset completed successfully
-Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser restore'"
+    success "Reset completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser restore'"
 }

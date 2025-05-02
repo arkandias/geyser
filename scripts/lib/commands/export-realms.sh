@@ -67,8 +67,7 @@ handle_export_realms() {
                 break
             fi
 
-            warn "Invalid input: enter an export name using only letters, \
-numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
@@ -85,6 +84,5 @@ numbers, underscores, and hyphens, or leave empty to use timestamp"
     info "Stopping services..."
     compose down
 
-    success "Realms exported successfully in ${backup_path}
-Restart Geyser with 'geyser start'"
+    success "Realms exported successfully in ${backup_path}. Restart Geyser with 'geyser start'"
 }

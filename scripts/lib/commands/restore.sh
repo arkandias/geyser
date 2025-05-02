@@ -74,6 +74,5 @@ handle_restore() {
     info "Stopping services..."
     compose down
 
-    success "Backup restored successfully
-Restart Geyser with 'geyser start'"
+    success "Backup restored successfully. Restart Geyser with 'geyser start'"
 }

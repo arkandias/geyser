@@ -34,8 +34,7 @@ handle_init() {
 
     # Check if data volume already exists
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
-        warn "Existing Geyser data volume found (this may cause conflicts). \
-You should reset Geyser first with 'geyser reset'"
+        warn "Existing Geyser data volume found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
         if ! confirm "Initialize anyway?"; then
             info "Initialization cancelled: reset Geyser first with 'geyser reset'"
             return

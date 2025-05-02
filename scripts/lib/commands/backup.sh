@@ -52,8 +52,7 @@ handle_backup() {
                 backup="${INPUT}"
                 break
             fi
-            warn "Invalid input: enter a backup name using only letters, \
-numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 

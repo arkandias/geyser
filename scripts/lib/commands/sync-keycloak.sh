@@ -34,8 +34,7 @@ handle_sync_keycloak() {
         esac
     done
 
-    command -v jq &>/dev/null || error "jq is not installed.
-You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
+    command -v jq &>/dev/null || error "jq is not installed. You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
 
     if [[ "$(compose ps --format '{{.Health}}' keycloak)" != "healthy" ]]; then
         error "Keycloak must be up and healthy. Start services first with 'geyser start'"

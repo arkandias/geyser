@@ -15,8 +15,7 @@ check_dependencies() {
     fi
 
     docker compose version &>/dev/null || error "Docker Compose V2 is required"
-    command -v hasura &>/dev/null || error "Hasura CLI is not installed.
-You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
+    command -v hasura &>/dev/null || error "Hasura CLI is not installed. You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
 }
 
 validate_configuration() {

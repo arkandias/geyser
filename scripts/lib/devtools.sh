@@ -59,8 +59,7 @@ kcadm() {
 
 # Syncs files using rsync with predefined include/exclude patterns from rsync-files and rsync-exclude
 rsync() {
-    command -v rsync &>/dev/null || error "rsync is not installed.
-You can install it with 'sudo apt install rsync' (Ubuntu) or 'brew install rsync' (macOS)"
+    command -v rsync &>/dev/null || error "rsync is not installed. You can install it with 'sudo apt install rsync' (Ubuntu) or 'brew install rsync' (macOS)"
 
     command rsync -rlv --delete \
         --files-from="${GEYSER_HOME}"/rsync-files \
