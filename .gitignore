@@ -1,5 +1,6 @@
 .idea/
 dist/
 node_modules/
+*.tsbuildinfo
 *.local
 .DS_Store
