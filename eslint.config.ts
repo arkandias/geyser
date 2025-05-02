@@ -50,7 +50,8 @@ const config: tseslint.ConfigArray = tseslint.config(
     },
   },
   {
-    files: ["*.ts"],
+    files: ["**/*.ts"],
+    ignores: ["client/src"],
     extends: [
       eslint.configs.recommended,
       tseslint.configs.strictTypeChecked,
@@ -59,14 +60,14 @@ const config: tseslint.ConfigArray = tseslint.config(
     languageOptions: {
       globals: globals.node,
       parserOptions: {
-        project: ["./tsconfig.node.json"],
+        project: ["tsconfig.json"],
       },
     },
     rules: tsrules,
   },
   {
-    files: ["src/**/*.ts", "src/**/*.vue"],
-    ignores: ["src/gql/"],
+    files: ["client/src/**/*.ts", "client/src/**/*.vue"],
+    ignores: ["client/src/gql/"],
     extends: [
       eslint.configs.recommended,
       tseslint.configs.strictTypeChecked,
@@ -78,7 +79,7 @@ const config: tseslint.ConfigArray = tseslint.config(
       parserOptions: {
         extraFileExtensions: [".vue"],
         parser: tseslint.parser,
-        project: ["./tsconfig.app.json"],
+        project: ["client/tsconfig.app.json"],
       },
     },
     rules: {

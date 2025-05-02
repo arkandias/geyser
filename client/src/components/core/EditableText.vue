@@ -15,8 +15,8 @@ const {
   text,
   setText,
   defaultText = "",
-  textClass,
-  textStyle,
+  textClass = "",
+  textStyle = "",
 } = defineProps<{
   text: string;
   setText: (text: string) => Promise<SetTextReturn>;

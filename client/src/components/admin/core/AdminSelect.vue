@@ -7,7 +7,11 @@ import type { Option, Scalar } from "@/types/data.ts";
 const modelValue = defineModel<Scalar | Scalar[]>();
 const selectedFields = defineModel<string[]>("selectedFields");
 
-const { name, options, multipleSelection } = defineProps<{
+const {
+  name,
+  options = [],
+  multipleSelection,
+} = defineProps<{
   keyPrefix: string;
   name: string;
   options?: Scalar[] | Option[];
@@ -19,7 +23,7 @@ const { t } = useTypedI18n();
 
 const disable = computed(
   () =>
-    !options?.length ||
+    !options.length ||
     (multipleSelection && !(selectedFields.value?.includes(name) ?? true)),
 );
 </script>

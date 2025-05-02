@@ -97,7 +97,7 @@ watch(
   activeRole,
   (role) => {
     if (authManager) {
-      authManager?.setRole(role);
+      authManager.setRole(role);
     }
   },
   { immediate: true },

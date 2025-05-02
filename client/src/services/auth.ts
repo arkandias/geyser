@@ -8,6 +8,9 @@ import {
 } from "@/config/constants.ts";
 import { apiURL, keycloakURL } from "@/config/env.ts";
 
+const errorMessage = (error: unknown) =>
+  error instanceof Error ? error.message : "Unknown error";
+
 const keycloak = new Keycloak({
   url: keycloakURL,
   realm: "geyser",
@@ -53,9 +56,7 @@ export class AuthManager {
         `Server returned ${response.status} ${response.statusText}`,
       );
     } catch (error) {
-      throw new Error(
-        `Login status check failed: ${error instanceof Error ? error.message : error}`,
-      );
+      throw new Error(`Login status check failed: ${errorMessage(error)}`);
     }
   }
 
@@ -86,9 +87,7 @@ export class AuthManager {
         `Server returned ${response.status} ${response.statusText}`,
       );
     } catch (error) {
-      throw new Error(
-        `Login failed: ${error instanceof Error ? error.message : error}`,
-      );
+      throw new Error(`Login failed: ${errorMessage(error)}`);
     }
   }
 
@@ -106,9 +105,7 @@ export class AuthManager {
         `Server returned ${response.status} ${response.statusText}`,
       );
     } catch (error) {
-      throw new Error(
-        `Token refresh failed: ${error instanceof Error ? error.message : error}`,
-      );
+      throw new Error(`Token refresh failed: ${errorMessage(error)}`);
     }
   }
 
@@ -124,26 +121,24 @@ export class AuthManager {
         `Server returned ${response.status} ${response.statusText}`,
       );
     } catch (error) {
-      throw new Error(
-        `Logout failed: ${error instanceof Error ? error.message : error}`,
-      );
+      throw new Error(`Logout failed: ${errorMessage(error)}`);
     }
   }
 
   userId(): string | undefined {
-    return this.data?.userId;
+    return this.data.userId;
   }
 
   allowedRoles(): string[] | undefined {
-    return this.data?.allowedRoles;
+    return this.data.allowedRoles;
   }
 
   defaultRole(): string | undefined {
-    return this.data?.defaultRole;
+    return this.data.defaultRole;
   }
 
   role(): string | undefined {
-    return this.data?.role;
+    return this.data.role;
   }
 
   setRole(newRole?: string) {
@@ -152,7 +147,7 @@ export class AuthManager {
 
   isValid(): boolean {
     return (
-      (this.data?.expiresAt ?? 0) - Math.floor(Date.now() / 1000) >
+      (this.data.expiresAt ?? 0) - Math.floor(Date.now() / 1000) >
       API_TOKEN_MIN_VALIDITY
     );
   }
