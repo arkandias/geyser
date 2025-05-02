@@ -11,5 +11,6 @@
   "importOrderSortSpecifiers": true,
   "importOrderGroupNamespaceSpecifiers": true,
   "importOrderCaseInsensitive": false,
+  "importOrderParserPlugins": ["typescript", "decorators-legacy"],
   "importOrderSideEffects": true
 }
