@@ -27,8 +27,6 @@ export class AuthService {
 
     // Create a payload for the new token
     const payload = {
-      sub: email,
-      aud: "hasura",
       "x-hasura-user-id": email,
       "x-hasura-allowed-roles": roles.map((role) => role.type),
       "x-hasura-default-role": "teacher",
@@ -41,10 +39,11 @@ export class AuthService {
 
     // Generate a new token with role information
     const accessToken = await new jose.SignJWT(payload)
-      .setIssuedAt()
       .setIssuer("geyser-backend")
+      .setSubject(email)
       .setAudience(["hasura", "geyser-backend"])
       .setExpirationTime("1h")
+      .setIssuedAt()
       .sign(privateKey);
 
     return { accessToken };
