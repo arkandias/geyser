@@ -1,2 +1,2 @@
-export * from "./auth-data.js";
-export * from "./hasura.js";
+export * from "./auth-data.ts";
+export * from "./hasura.ts";

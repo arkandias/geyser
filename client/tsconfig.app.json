@@ -8,8 +8,8 @@
     /* Module */
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "rewriteRelativeImportExtensions": false,
     "allowImportingTsExtensions": true,
-    "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"],
       "@geyser/shared/*": ["../shared/src/*"]

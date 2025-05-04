@@ -7,8 +7,6 @@
     /* Module */
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "noUncheckedSideEffectImports": true,
 
     /* Emit */
     "noEmit": true

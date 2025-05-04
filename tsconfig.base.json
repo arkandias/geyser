@@ -17,7 +17,9 @@
     /* Module */
     "module": "NodeNext",
     "moduleResolution": "nodenext",
+    "noUncheckedSideEffectImports": true,
     "resolveJsonModule": true,
+    "rewriteRelativeImportExtensions": true,
     "types": ["node"],
 
     /* Emit */
