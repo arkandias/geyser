@@ -11,7 +11,7 @@ import { graphqlURL } from "@/config/env.ts";
 import type { AuthManager } from "@/services/auth.ts";
 
 export const makeClientOptions = (authManager: AuthManager): ClientOptions => ({
-  rootURL: graphqlURL,
+  url: graphqlURL,
   exchanges: [
     devtoolsExchange,
     cacheExchange,

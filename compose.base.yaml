@@ -25,11 +25,76 @@ services:
       - ./postgres/init:/initdb
       - ./postgres/backups:/backups
 
+  kc-db:
+    image: postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: "pg_isready -U postgres -d keycloak || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      POSTGRES_DB: "keycloak"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_KC_PASSWORD}"
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "5433:5432"
+    networks:
+      - auth-db
+    volumes:
+      - kc-data:/var/lib/postgresql/data
+      - ./postgres/backups:/backups
+
+  keycloak:
+    build: keycloak
+    restart: unless-stopped
+    depends_on:
+      kc-db:
+        condition: service_healthy
+    healthcheck:
+      test: "/opt/healthcheck/healthcheck.sh || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 120s
+      start_interval: 1s
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: null
+      KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
+      KC_DB_USERNAME: "postgres"
+      KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
+      KC_DB_SCHEMA: "public"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME: "http://${GEYSER_HOSTNAME}/auth"
+      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_DEBUG: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+      HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+    ports:
+      - "8081:8080"
+      - "9000:9000"
+    networks:
+      - auth-db
+      - auth-api
+      - public
+    volumes:
+      - ./keycloak/healthcheck:/opt/healthcheck:ro
+      - ./keycloak/templates:/opt/keycloak/data/import:ro
+      - ./keycloak/backups:/opt/keycloak/data/backups
+    command: start --optimized --import-realm
+
   hasura:
     image: hasura/graphql-engine:latest
     restart: unless-stopped
     depends_on:
       db:
+        condition: service_healthy
+      keycloak:
         condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost:8080/healthz || exit 1"
@@ -39,8 +104,9 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      HASURA_GRAPHQL_ADMIN_SECRET: null
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
+      HASURA_GRAPHQL_ADMIN_SECRET: null
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"ES256","key":"-----BEGIN PUBLIC KEY-----\nMFkwEwYHKoZIzj0CAQYIKoZIzj0DAQcDQgAEk3szFXMsLDWEgmfadSTWS3IJkGZy\nQqJgEYZ+dzANRdPUwDZ7yru2p1CVRJxh9gFXgET/KaZzTY372LAq9e0QWw==\n-----END PUBLIC KEY-----\n","audience":"hasura","issuer":"http://localhost","claims_namespace_path":"$","header":{"type":"Cookie","name":"access_token"}}'
       HASURA_GRAPHQL_CORS_DOMAIN: "*"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
@@ -48,9 +114,39 @@ services:
       - "8080:8080"
     networks:
       - app-db
+      - auth-api
+      - public
+
+  nginx:
+    build: nginx
+    restart: unless-stopped
+    depends_on:
+      keycloak:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:8000/health || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      GEYSER_HOSTNAME: null
+    ports:
+      - "80:80"
+    networks:
+      - public
+    volumes:
+      - ./nginx/templates/http:/etc/nginx/templates:ro
 
 networks:
   app-db:
+  auth-db:
+  auth-api:
+  public:
 
 volumes:
   data:
+  kc-data:

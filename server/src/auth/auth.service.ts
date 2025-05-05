@@ -53,6 +53,7 @@ export class AuthService {
   ): Promise<string> {
     const { sub, aud, exp, nbf, iat, jti, ...rest } = payload;
     return new jose.SignJWT(rest)
+      .setProtectedHeader({ alg: "RS256" })
       .setIssuer("api")
       .setSubject(sub)
       .setAudience(aud)

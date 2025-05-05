@@ -1,6 +1,7 @@
 import { LogLevel } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
+import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
 import { Env } from "./config/env.schema";
@@ -14,6 +15,8 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     logger: logLevels,
   });
+
+  app.use(cookieParser());
 
   // Enable CORS
   app.enableCors({

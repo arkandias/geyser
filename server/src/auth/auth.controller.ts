@@ -1,4 +1,5 @@
 import { ConfigService } from "../config/config.service";
+import { Cookies } from "../cookies/cookies.decorator";
 import {
   Controller,
   Get,
@@ -22,18 +23,17 @@ export class AuthController {
   ) {}
 
   @Get("verify")
-  async verify(@Req() req: Request): Promise<void> {
-    await this.authService.verifyToken(req.cookies["access_token"]);
+  async verify(@Cookies("access_token") accessToken: string): Promise<void> {
+    console.log(accessToken);
+    await this.authService.verifyToken(accessToken);
   }
 
   @Get("refresh")
   async refresh(
-    @Req() req: Request,
+    @Cookies() refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const { sub: uid } = await this.authService.verifyToken(
-      req.cookies["refresh_token"],
-    );
+    const { sub: uid } = await this.authService.verifyToken(refreshToken);
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
   }

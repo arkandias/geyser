@@ -24,6 +24,10 @@ server {
     listen 80;
     server_name ${GEYSER_HOSTNAME};
     
+    location @auth_redirect {
+        return 302 /api/auth/login;
+    }
+    
     # Backend
     location /api/ {
         proxy_pass http://host.docker.internal:3000/api/;
@@ -72,6 +76,8 @@ server {
 
     # SPA
     location / {
+        auth_request /api/auth/verify;
+        error_page 401 = @auth_redirect;
 #        root /usr/share/nginx/html;
 #        try_files $uri $uri/ /index.html =404;
         proxy_pass http://host.docker.internal:5173/;
