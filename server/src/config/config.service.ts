@@ -7,23 +7,18 @@ import { Env } from "./env.schema";
 export class ConfigService {
   constructor(private configService: NestConfigService<Env, true>) {}
 
-  get nodeEnv(): string {
-    // todo: why not inferred?
-    return this.configService.getOrThrow<string>("NODE_ENV");
+  get nodeEnv(): "development" | "production" | "test" {
+    return this.configService.getOrThrow<"development" | "production" | "test">(
+      "NODE_ENV",
+    );
   }
 
   get port() {
     return this.configService.getOrThrow<number>("PORT");
   }
 
-  get url() {
-    return {
-      root: this.configService.getOrThrow<string>("ROOT_URL"),
-      prefix: {
-        keycloak: this.configService.getOrThrow<string>("KEYCLOAK_PREFIX"),
-        api: this.configService.getOrThrow<string>("API_PREFIX"),
-      },
-    };
+  get rootURL() {
+    return this.configService.getOrThrow<string>("ROOT_URL");
   }
 
   get database() {
@@ -36,11 +31,33 @@ export class ConfigService {
     };
   }
 
+  get hasura() {
+    return {
+      claimsNamespace: this.configService.getOrThrow<string>(
+        "HASURA_CLAIMS_NAMESPACE",
+      ),
+    };
+  }
+
   get keycloak() {
     return {
       url: this.configService.getOrThrow<string>("KEYCLOAK_URL"),
       realm: this.configService.getOrThrow<string>("KEYCLOAK_REALM"),
       clientId: this.configService.getOrThrow<string>("KEYCLOAK_CLIENT_ID"),
+      stateExpirationTime: this.configService.getOrThrow<number>(
+        "KEYCLOAK_STATE_EXPIRATION_TIME_MS",
+      ),
+    };
+  }
+
+  get jwt() {
+    return {
+      accessTokenMaxAge: this.configService.getOrThrow<number>(
+        "JWT_ACCESS_TOKEN_MAX_AGE_MS",
+      ),
+      refreshTokenMaxAge: this.configService.getOrThrow<number>(
+        "JWT_REFRESH_TOKEN_MAX_AGE_MS",
+      ),
     };
   }
 }

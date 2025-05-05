@@ -21,6 +21,7 @@ if (import.meta.env.PROD) {
 }
 
 const authManager = new AuthManager();
+// todo: implement bypassAuth
 await authManager.init();
 
 const clientOptions = makeClientOptions(authManager);

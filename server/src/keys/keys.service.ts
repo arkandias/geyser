@@ -79,24 +79,28 @@ export class KeysService {
     this.jwk.alg = "RS256";
   }
 
-  getKeyPair():
-    | {
-        privateKey: jose.CryptoKey;
-        publicKey: jose.CryptoKey;
-      }
-    | undefined {
+  getKeyPair(): {
+    privateKey: jose.CryptoKey;
+    publicKey: jose.CryptoKey;
+  } {
+    if (!this.keyPair) {
+      throw new Error("No key pair available");
+    }
     return this.keyPair;
   }
 
-  getPrivateKey(): jose.CryptoKey | undefined {
-    return this.keyPair?.privateKey;
+  getPrivateKey(): jose.CryptoKey {
+    return this.getKeyPair().privateKey;
   }
 
-  getPublicKey(): jose.CryptoKey | undefined {
-    return this.keyPair?.publicKey;
+  getPublicKey(): jose.CryptoKey {
+    return this.getKeyPair().publicKey;
   }
 
-  getJWK(): jose.JWK | undefined {
+  getJWK(): jose.JWK {
+    if (!this.jwk) {
+      throw new Error("JWK not initialized");
+    }
     return this.jwk;
   }
 }

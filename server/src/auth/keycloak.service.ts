@@ -3,7 +3,7 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose, { createRemoteJWKSet } from "jose";
 
 @Injectable()
-export class KeycloakJwtService {
+export class KeycloakService {
   private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
 
   constructor(private configService: ConfigService) {
@@ -12,8 +12,8 @@ export class KeycloakJwtService {
     this.jwks = jose.createRemoteJWKSet(new URL(jwksURL));
   }
 
-  async verifyToken(token: string): Promise<string> {
-    // Decode the token to get the kid (key ID)
+  async verifyJWT(token: string): Promise<jose.JWTPayload> {
+    // Decode the token to get the key ID
     const decoded = jose.decodeJwt(token);
     if (!decoded) {
       throw new UnauthorizedException("Invalid token");
@@ -22,26 +22,15 @@ export class KeycloakJwtService {
     // Get the key ID from the token header
     const kid = String(decoded["kid"]);
     if (!decoded["kid"]) {
-      throw new UnauthorizedException('Missing claim "kid"');
+      throw new UnauthorizedException('Missing claim "kid" in token');
     }
 
     // Get the public key from Keycloak
     const key = await this.jwks({ kid });
 
     // Verify the token with the public key
-    let verified: jose.JWTVerifyResult;
-    try {
-      verified = await jose.jwtVerify(token, key);
-    } catch (error) {
-      throw new UnauthorizedException(
-        error instanceof Error ? error.message : "Token verification failed",
-      );
-    }
+    const verified = await jose.jwtVerify(token, key);
 
-    if (!verified.payload["email"]) {
-      throw new UnauthorizedException('Missing claim "email"');
-    }
-
-    return String(verified.payload["email"]);
+    return verified.payload;
   }
 }

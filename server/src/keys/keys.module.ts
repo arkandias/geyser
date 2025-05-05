@@ -4,8 +4,8 @@ import { KeysController } from "./keys.controller";
 import { KeysService } from "./keys.service";
 
 @Module({
-  providers: [KeysService],
   controllers: [KeysController],
+  providers: [KeysService],
   exports: [KeysService],
 })
 export class KeysModule implements OnModuleInit {
