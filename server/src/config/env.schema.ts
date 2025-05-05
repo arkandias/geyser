@@ -5,20 +5,22 @@ export const EnvSchema = z.object({
     .enum(["development", "production", "test"])
     .default("development"),
   PORT: z.coerce.number().default(3000),
-  ROOT_URL: z.string(),
+  ROOT_URL: z.string().default("http://localhost"),
 
-  DATABASE_HOST: z.string(),
+  DATABASE_HOST: z.string().default("localhost"),
   DATABASE_PORT: z.coerce.number().default(5432),
-  DATABASE_USER: z.string(),
+  DATABASE_USER: z.string().default("postgres"),
   DATABASE_PASSWORD: z.string(),
-  DATABASE_NAME: z.string(),
+  DATABASE_NAME: z.string().default("geyser"),
 
-  HASURA_CLAIMS_NAMESPACE: z.string(),
+  HASURA_CLAIMS_NAMESPACE: z.string().default("https://hasura.io/jwt/claims"),
 
-  KEYCLOAK_URL: z.string(),
-  KEYCLOAK_REALM: z.string(),
-  KEYCLOAK_CLIENT_ID: z.string(),
-  KEYCLOAK_STATE_EXPIRATION_TIME_MS: z.number().default(5 * 60 * 1000), // 5m
+  KEYCLOAK_URL: z.string().default("http://localhost:8081"),
+  KEYCLOAK_REALM: z.string().default("geyser"),
+  KEYCLOAK_CLIENT_ID: z.string().default("backend"),
+  KEYCLOAK_CLIENT_SECRET: z.string(),
+
+  STATE_EXPIRATION_TIME_MS: z.number().default(5 * 60 * 1000), // 5m
 
   JWT_ACCESS_TOKEN_MAX_AGE_MS: z.number().default(60 * 60 * 1000), // 1h
   JWT_REFRESH_TOKEN_MAX_AGE_MS: z.number().default(7 * 24 * 60 * 60 * 1000), // 7d

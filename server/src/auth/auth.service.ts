@@ -7,15 +7,9 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { Response } from "express";
 import jose from "jose";
 
-import { AuthTokenSchema } from "./auth-token.dto";
+import { AuthState } from "./auth-state.interface";
 import { HasuraClaims } from "./hasura-claims.dto";
 import { JWTPayload } from "./jwt-payload.dto";
-import { KeycloakService } from "./keycloak.service";
-
-interface AuthState {
-  expiresAt: number;
-  redirectURL: string;
-}
 
 @Injectable()
 export class AuthService {
@@ -23,7 +17,6 @@ export class AuthService {
 
   constructor(
     private configService: ConfigService,
-    private keycloakService: KeycloakService,
     private keysService: KeysService,
     private rolesService: RolesService,
   ) {}
@@ -125,64 +118,22 @@ export class AuthService {
     });
   }
 
-  newState(redirectURL: string): string {
+  newState(originalURL: string, redirectURI: string): string {
     const id = randomUUID();
-    const expiresAt =
-      Date.now() + this.configService.keycloak.stateExpirationTime;
-    this.stateRecord.set(id, { expiresAt, redirectURL });
+    const expiresAt = Date.now() + this.configService.stateExpirationTime;
+    this.stateRecord.set(id, { expiresAt, originalURL, redirectURI });
     return id;
   }
 
-  getState(id: string): string {
+  getState(id: string): { originalURL: string; redirectURI: string } {
     const authState = this.stateRecord.get(id);
     if (!authState) {
-      throw new UnauthorizedException("Missing state");
+      throw new UnauthorizedException("State not found");
     }
+    const { expiresAt, ...rest } = authState;
     if (authState.expiresAt < Date.now()) {
       throw new UnauthorizedException("State has expired");
     }
-    return authState.redirectURL;
+    return rest;
   }
-
-  async login(token: string): Promise<boolean> {
-    await jose.jwtVerify(token, this.keysService.getPublicKey(), {
-      issuer: "api",
-      audience: "api",
-    });
-    return true;
-  }
-
-  async exchangeToken(token: string): Promise<LoginResponseDto> {
-    const authToken = AuthTokenSchema.parse(
-      await this.keycloakService.verifyJWT(token),
-    );
-
-    // Get user roles from the database
-    const roles = await this.rolesService.findByUid(authToken.email);
-
-    // Create a payload for the new token
-    const payload = {
-      "x-hasura-user-id": authToken.email,
-      "x-hasura-allowed-roles": roles.map((role) => role.type),
-      "x-hasura-default-role": "teacher",
-    };
-
-    // Get private key to sign the new token
-    const privateKey = this.keysService.getPrivateKey();
-
-    // Generate and sign the new token
-    const accessToken = await new jose.SignJWT(payload)
-      .setIssuer("api")
-      .setSubject(authToken.email)
-      .setAudience(["api", "hasura"])
-      .setExpirationTime("1h")
-      .setNotBefore("0s")
-      .setIssuedAt()
-      .setJti(randomUUID())
-      .sign(privateKey);
-
-    return { accessToken };
-  }
-
-  // todo: makeAuthData
 }

@@ -1,5 +1,3 @@
-import { randomUUID } from "node:crypto";
-
 import { ConfigService } from "../config/config.service";
 import {
   Controller,
@@ -13,12 +11,14 @@ import {
 import { Request, Response } from "express";
 
 import { AuthService } from "./auth.service";
+import { KeycloakService } from "./keycloak.service";
 
 @Controller("auth")
 export class AuthController {
   constructor(
     private configService: ConfigService,
     private authService: AuthService,
+    private keycloakService: KeycloakService,
   ) {}
 
   @Get("verify")
@@ -40,20 +40,21 @@ export class AuthController {
 
   @Post("login")
   async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    const redirectURI = `${req.protocol}://${req.get("host")}/auth/callback`;
+
     // Prevent CSRF attacks
-    const stateId = this.authService.newState(req.url);
+    const stateId = this.authService.newState(req.url, redirectURI);
 
     // Building authentication URL
     const authUrl = new URL("/auth/realms/geyser/protocol/openid-connect/auth");
-    authUrl.searchParams.append("client_id", "geyser-backend");
     authUrl.searchParams.append(
-      "redirect_uri",
-      `${req.protocol}://${req.get("host")}/auth/callback`,
+      "client_id",
+      this.configService.keycloak.clientId,
     );
+    authUrl.searchParams.append("redirect_uri", redirectURI);
     authUrl.searchParams.append("response_type", "code");
     authUrl.searchParams.append("scope", "openid email");
     authUrl.searchParams.append("state", stateId);
-    // todo: client secret
 
     res.redirect(authUrl.toString());
   }
@@ -62,17 +63,23 @@ export class AuthController {
   async callback(
     @Query("code") code: string,
     @Query("state") state: string,
-    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const redirectURL = this.authService.getState(state);
-    const uid = await this.authService.exchangeCodeForTokens(
+    const { originalURL, redirectURI } = this.authService.getState(state);
+    const { accessToken } = await this.keycloakService.exchangeCodeForTokens(
+      redirectURI,
       code,
-      req.get("host"),
     );
+    const payload = await this.keycloakService.verifyJWT(accessToken);
+    const uid = String(payload["email"]);
+
+    if (!uid) {
+      throw new UnauthorizedException("Missing claim 'email' in token");
+    }
+
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
-    return res.redirect(redirectURL || "/");
+    return res.redirect(originalURL || "/");
   }
 
   @Post("logout")

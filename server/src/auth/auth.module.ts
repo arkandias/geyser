@@ -1,4 +1,5 @@
 import { ConfigModule } from "../config/config.module";
+import { KeysService } from "../keys/keys.service";
 import { RolesModule } from "../roles/roles.module";
 import { Module } from "@nestjs/common";
 
@@ -9,7 +10,6 @@ import { KeycloakService } from "./keycloak.service";
 @Module({
   imports: [ConfigModule, RolesModule],
   controllers: [AuthController],
-  providers: [AuthService, KeycloakService],
-  exports: [AuthService],
+  providers: [AuthService, KeysService, KeycloakService],
 })
 export class AuthModule {}

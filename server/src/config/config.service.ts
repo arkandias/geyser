@@ -21,6 +21,10 @@ export class ConfigService {
     return this.configService.getOrThrow<string>("ROOT_URL");
   }
 
+  get stateExpirationTime() {
+    return this.configService.getOrThrow<number>("STATE_EXPIRATION_TIME_MS");
+  }
+
   get database() {
     return {
       host: this.configService.getOrThrow<string>("DATABASE_HOST"),
@@ -40,12 +44,20 @@ export class ConfigService {
   }
 
   get keycloak() {
+    const rootURL = this.configService.getOrThrow<string>("KEYCLOAK_URL");
+    const realm = this.configService.getOrThrow<string>("KEYCLOAK_REALM");
     return {
-      url: this.configService.getOrThrow<string>("KEYCLOAK_URL"),
-      realm: this.configService.getOrThrow<string>("KEYCLOAK_REALM"),
+      rootURL,
+      realm,
+      authURL: `${rootURL}/realms/${realm}/protocol/openid-connect/auth`,
+      certsURL: `${rootURL}/realms/${realm}/protocol/openid-connect/certs`,
+      introspectURL: `${rootURL}/realms/${realm}/protocol/openid-connect/introspect`,
+      logoutURL: `${rootURL}/realms/${realm}/protocol/openid-connect/logout`,
+      tokenURL: `${rootURL}/realms/${realm}/protocol/openid-connect/token`,
+      userinfoURL: `${rootURL}/realms/${realm}/protocol/openid-connect/userinfo`,
       clientId: this.configService.getOrThrow<string>("KEYCLOAK_CLIENT_ID"),
-      stateExpirationTime: this.configService.getOrThrow<number>(
-        "KEYCLOAK_STATE_EXPIRATION_TIME_MS",
+      clientSecret: this.configService.getOrThrow<string>(
+        "KEYCLOAK_CLIENT_SECRET",
       ),
     };
   }
