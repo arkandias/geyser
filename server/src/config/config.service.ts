@@ -21,6 +21,10 @@ export class ConfigService {
     return this.configService.getOrThrow<string>("ROOT_URL");
   }
 
+  get tokenMinValidity() {
+    return this.configService.getOrThrow<number>("TOKEN_MIN_VALIDITY_SECONDS");
+  }
+
   get stateExpirationTime() {
     return this.configService.getOrThrow<number>("STATE_EXPIRATION_TIME_MS");
   }

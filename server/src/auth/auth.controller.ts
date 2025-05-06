@@ -5,11 +5,10 @@ import {
   Get,
   Post,
   Query,
-  Req,
   Res,
   UnauthorizedException,
 } from "@nestjs/common";
-import { Request, Response } from "express";
+import { Response } from "express";
 
 import { AuthService } from "./auth.service";
 import { KeycloakService } from "./keycloak.service";
@@ -24,29 +23,42 @@ export class AuthController {
 
   @Get("verify")
   async verify(@Cookies("access_token") accessToken: string): Promise<void> {
-    console.log(accessToken);
-    await this.authService.verifyToken(accessToken);
+    await this.authService.verifyToken(
+      accessToken,
+      this.configService.tokenMinValidity,
+    );
   }
 
   @Get("refresh")
   async refresh(
     @Cookies() refreshToken: string,
+    @Query("redirect") redirect: string = "/",
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const { sub: uid } = await this.authService.verifyToken(refreshToken);
-    await this.authService.setAccessCookie(res, uid);
-    await this.authService.setRefreshCookie(res, uid);
+    try {
+      const { sub: uid } = await this.authService.verifyToken(refreshToken);
+      await this.authService.setAccessCookie(res, uid);
+      await this.authService.setRefreshCookie(res, uid);
+
+      res.redirect(redirect);
+    } catch (error) {
+      const params = new URLSearchParams({ redirect });
+      res.redirect(`/auth/login?${params.toString()}`);
+    }
   }
 
-  @Post("login")
-  async login(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    const redirectURI = `${req.protocol}://${req.get("host")}/auth/callback`;
+  @Get("login")
+  async login(
+    @Query("redirect") redirect: string = "/",
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const redirectURI = `${this.configService.rootURL}/api/auth/callback`;
 
     // Prevent CSRF attacks
-    const stateId = this.authService.newState(req.url, redirectURI);
+    const stateId = this.authService.newState(redirect, redirectURI);
 
     // Building authentication URL
-    const authUrl = new URL("/auth/realms/geyser/protocol/openid-connect/auth");
+    const authUrl = new URL(this.configService.keycloak.authURL);
     authUrl.searchParams.append(
       "client_id",
       this.configService.keycloak.clientId,
@@ -70,7 +82,7 @@ export class AuthController {
       redirectURI,
       code,
     );
-    const payload = await this.keycloakService.verifyJWT(accessToken);
+    const payload = await this.keycloakService.verifyToken(accessToken);
     const uid = String(payload["email"]);
 
     if (!uid) {

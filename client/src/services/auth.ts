@@ -6,21 +6,13 @@ import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
-import { apiURL, keycloakURL } from "@/config/env.ts";
-
-const errorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : "Unknown error";
-
-const keycloak = new Keycloak({
-  url: keycloakURL,
-  realm: "geyser",
-  clientId: "geyser-spa",
-});
+import { apiURL } from "@/config/env.ts";
 
 const api = axios.create({
   baseURL: apiURL,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
+  validateStatus: () => true,
 });
 
 export class AuthManager {
@@ -30,7 +22,7 @@ export class AuthManager {
     if (this.data.adminSecret) {
       return;
     }
-    await this.getStatus();
+    await this.verify();
     await this.setup();
   }
 
@@ -45,18 +37,45 @@ export class AuthManager {
     await this.login();
   }
 
-  async getStatus(): Promise<void> {
+  async verify(): Promise<boolean> {
     try {
-      const response = await api.get("/auth/status");
+      const response = await api.get("/auth/verify");
+
+      if (response.status === 200) {
+        console.debug("Authentication successfully verified");
+        return true;
+      }
+
+      if (response.status === 401) {
+        console.debug("Authentication has expired");
+        return false;
+      }
+
+      console.warn(
+        `Unexpected response from /auth/verify: ${response.status} ${response.statusText}`,
+      );
+      return false;
+    } catch (error) {
+      console.error("Authentication verification failed:", error);
+      return false;
+    }
+  }
+
+  async refresh(): Promise<boolean> {
+    try {
+      const response = await api.post("/auth/refresh");
       if (response.status === 200) {
         this.data = AuthDataSchema.parse(response.data);
-        return;
+        return true;
+      }
+      if (response.status === 401) {
+        return false;
       }
       throw new Error(
         `Server returned ${response.status} ${response.statusText}`,
       );
     } catch (error) {
-      throw new Error(`Login status check failed: ${errorMessage(error)}`);
+      throw new Error(`Token refresh failed: ${errorMessage(error)}`);
     }
   }
 

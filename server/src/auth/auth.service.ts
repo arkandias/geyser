@@ -21,12 +21,14 @@ export class AuthService {
     private rolesService: RolesService,
   ) {}
 
-  async verifyToken(token?: string): Promise<JWTPayload> {
+  async verifyToken(token?: string, minValidity?: number): Promise<JWTPayload> {
     if (!token) {
       throw new UnauthorizedException("Missing token");
     }
+
+    let payload: JWTPayload;
     try {
-      const { payload } = await jose.jwtVerify<JWTPayload>(
+      const result = await jose.jwtVerify<JWTPayload>(
         token,
         this.keysService.getPublicKey(),
         {
@@ -35,10 +37,21 @@ export class AuthService {
           requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
         },
       );
-      return payload;
+      payload = result.payload;
     } catch (error) {
       throw new UnauthorizedException(`Token verification failed: ${error}`);
     }
+
+    if (minValidity) {
+      const nowSeconds = Math.floor(Date.now() / 1000);
+      const timeRemaining = payload.exp - nowSeconds;
+
+      if (timeRemaining < minValidity) {
+        throw new UnauthorizedException("Token is about to expire");
+      }
+    }
+
+    return payload;
   }
 
   async makeToken(
@@ -98,7 +111,7 @@ export class AuthService {
   }
 
   async setAccessCookie(res: Response, uid: string) {
-    const accessToken = this.makeAccessToken(uid);
+    const accessToken = await this.makeAccessToken(uid);
     res.cookie("access_token", accessToken, {
       httpOnly: true,
       secure: this.configService.nodeEnv === "production",
@@ -109,13 +122,13 @@ export class AuthService {
   }
 
   async setRefreshCookie(res: Response, uid: string) {
-    const refreshToken = this.makeRefreshToken(uid);
+    const refreshToken = await this.makeRefreshToken(uid);
     res.cookie("refresh_token", refreshToken, {
       httpOnly: true,
       secure: this.configService.nodeEnv === "production",
       sameSite: "strict",
       maxAge: this.configService.jwt.refreshTokenMaxAge,
-      path: "/api/refresh",
+      path: "/api/auth/refresh",
     });
   }
 

@@ -3,11 +3,10 @@ import { createApp } from "vue";
 import { Quasar } from "quasar";
 import urql from "@urql/vue";
 
-import { AuthManager } from "@/services/auth.ts";
 import { quasarOptions } from "@/services/quasar.ts";
 import { i18n } from "@/services/i18n.ts";
 import { router } from "@/services/router.ts";
-import { makeClientOptions } from "@/services/urql.ts";
+import { clientOptions } from "@/services/urql.ts";
 
 import "quasar/src/css/index.sass";
 import "@/css/main.scss";
@@ -20,14 +19,7 @@ if (import.meta.env.PROD) {
   };
 }
 
-const authManager = new AuthManager();
-// todo: implement bypassAuth
-await authManager.init();
-
-const clientOptions = makeClientOptions(authManager);
-
 createApp(App)
-  .provide("authManager", authManager)
   .use(Quasar, quasarOptions)
   .use(i18n)
   .use(router)

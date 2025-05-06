@@ -1,6 +1,7 @@
 .idea/
 dist/
 node_modules/
+prod/
 
 /keycloak/backups/*
 !/keycloak/backups/README.md
@@ -12,6 +13,7 @@ node_modules/
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/
+/server/keys/
 
 *.tsbuildinfo
 *.local

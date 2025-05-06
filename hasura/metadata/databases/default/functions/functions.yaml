@@ -3,3 +3,5 @@
 - "!include public_copy_year_courses.yaml"
 - "!include public_create_service.yaml"
 - "!include public_create_year_services.yaml"
+- "!include public_get_user_data.yaml"
+- "!include public_user_profile.yaml"

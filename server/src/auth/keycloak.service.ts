@@ -15,26 +15,21 @@ export class KeycloakService {
     );
   }
 
-  async verifyJWT(token: string): Promise<jose.JWTPayload> {
-    // Decode the token to get the key ID
-    const decoded = jose.decodeJwt(token);
-    if (!decoded) {
-      throw new UnauthorizedException("Invalid token");
+  async verifyToken(token: string): Promise<jose.JWTPayload> {
+    try {
+      // Decode the token's protected header to get the key ID
+      const protectedHeaderParameters = jose.decodeProtectedHeader(token);
+
+      // Get the public key from Keycloak
+      const key = await this.jwks(protectedHeaderParameters);
+
+      // Verify the token with the public key
+      const verified = await jose.jwtVerify(token, key);
+
+      return verified.payload;
+    } catch (error) {
+      throw new UnauthorizedException(`Failed to verify token: ${error}`);
     }
-
-    // Get the key ID from the token header
-    const kid = String(decoded["kid"]);
-    if (!decoded["kid"]) {
-      throw new UnauthorizedException("Missing claim 'kid' in token");
-    }
-
-    // Get the public key from Keycloak
-    const key = await this.jwks({ kid });
-
-    // Verify the token with the public key
-    const verified = await jose.jwtVerify(token, key);
-
-    return verified.payload;
   }
 
   async exchangeCodeForTokens(
@@ -42,6 +37,9 @@ export class KeycloakService {
     code: string,
   ): Promise<KeycloakToken> {
     try {
+      const headers = {
+        "Content-Type": "application/x-www-form-urlencoded",
+      };
       const params = new URLSearchParams({
         grant_type: "authorization_code",
         client_id: this.configService.keycloak.clientId,
@@ -53,11 +51,7 @@ export class KeycloakService {
       const response = await axios.post(
         this.configService.keycloak.tokenURL,
         params.toString(),
-        {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-        },
+        { headers },
       );
 
       return {

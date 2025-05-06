@@ -3,6 +3,7 @@ lockfileVersion: '9.0'
 settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
+  injectWorkspacePackages: true
 
 importers:
 
@@ -56,6 +57,9 @@ importers:
       '@geyser/shared':
         specifier: workspace:*
         version: link:../shared
+      '@urql/exchange-auth':
+        specifier: ^2.2.1
+        version: 2.2.1(@urql/core@5.1.1(graphql@16.11.0))
       '@urql/vue':
         specifier: ^1.4.3
         version: 1.4.3(@urql/core@5.1.1(graphql@16.11.0))(vue@3.5.13(typescript@5.8.3))
@@ -1325,6 +1329,11 @@ packages:
     peerDependencies:
       '@urql/core': '>= 1.14.0'
       graphql: '>= 0.11.0'
+
+  '@urql/exchange-auth@2.2.1':
+    resolution: {integrity: sha512-n4xUxxjvY36GJh539sLaPFyvFzreADOv8EFQdTiXOCIRVoXXhWVVI7DjY/HNtLICfbg1+UlbvQ7sNkwaBouDHg==}
+    peerDependencies:
+      '@urql/core': ^5.0.0
 
   '@urql/vue@1.4.3':
     resolution: {integrity: sha512-+zdMQFBHL1V+tdTKzAqhiIP14cJ6GAUDux7uhC3rAt/rQhaVcdRmLuf0dhco04UHC+rdkd6sZ4epemL9VeTfRA==}
@@ -5375,6 +5384,11 @@ snapshots:
     dependencies:
       '@urql/core': 5.1.1(graphql@16.11.0)
       graphql: 16.11.0
+      wonka: 6.3.5
+
+  '@urql/exchange-auth@2.2.1(@urql/core@5.1.1(graphql@16.11.0))':
+    dependencies:
+      '@urql/core': 5.1.1(graphql@16.11.0)
       wonka: 6.3.5
 
   '@urql/vue@1.4.3(@urql/core@5.1.1(graphql@16.11.0))(vue@3.5.13(typescript@5.8.3))':

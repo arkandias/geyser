@@ -5,3 +5,4 @@ packages:
 onlyBuiltDependencies:
   - "@nestjs/core"
   - esbuild
+injectWorkspacePackages: true

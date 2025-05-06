@@ -20,6 +20,7 @@ export const EnvSchema = z.object({
   KEYCLOAK_CLIENT_ID: z.string().default("backend"),
   KEYCLOAK_CLIENT_SECRET: z.string(),
 
+  TOKEN_MIN_VALIDITY_SECONDS: z.number().default(60), // 1m
   STATE_EXPIRATION_TIME_MS: z.number().default(5 * 60 * 1000), // 5m
 
   JWT_ACCESS_TOKEN_MAX_AGE_MS: z.number().default(60 * 60 * 1000), // 1h

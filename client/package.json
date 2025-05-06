@@ -17,6 +17,7 @@
   },
   "dependencies": {
     "@geyser/shared": "workspace:*",
+    "@urql/exchange-auth": "^2.2.1",
     "@urql/vue": "^1.4.3",
     "axios": "^1.9.0",
     "dompurify": "^3.2.5",
