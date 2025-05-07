@@ -8,11 +8,10 @@
     /* Module */
     "module": "ESNext",
     "moduleResolution": "bundler",
-    "rewriteRelativeImportExtensions": false,
     "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@geyser/shared/*": ["../shared/src/*"]
+      "@geyser/shared": ["../shared/dist"]
     },
     "types": [],
 

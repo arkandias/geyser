@@ -6,12 +6,9 @@
     "experimentalDecorators": true,
 
     /* Module */
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "paths": {
-      "@geyser/shared/*": ["../shared/src/*"]
+      "@geyser/shared": ["../shared/dist"]
     },
-    "types": ["node"],
 
     /* Emit */
     "outDir": "./dist",
@@ -20,5 +17,5 @@
     "verbatimModuleSyntax": false
   },
   "references": [{ "path": "../shared" }],
-  "include": ["src/**/*.ts"]
+  "include": ["*.ts", "src/**/*.ts"]
 }

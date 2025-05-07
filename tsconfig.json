@@ -1,5 +1,5 @@
 {
   "extends": "./tsconfig.base.json",
   "include": ["**/*.ts"],
-  "exclude": ["client/src/", "server/src/"]
+  "exclude": ["client/", "server/", "shared/"]
 }

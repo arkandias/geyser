@@ -1,3 +1,4 @@
+import { errorMessage } from "@geyser/shared";
 import { useClientHandle } from "@urql/vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
@@ -105,10 +106,10 @@ export const useDownloadAssignments = () => {
     } catch (error) {
       notify(NotifyType.Error, {
         message: t("downloadAssignments.error.downloadFailed"),
-        caption:
-          error instanceof Error
-            ? error.message
-            : t("downloadAssignments.error.unknownError"),
+        caption: errorMessage(
+          error,
+          t("downloadAssignments.error.unknownError"),
+        ),
       });
     }
   };

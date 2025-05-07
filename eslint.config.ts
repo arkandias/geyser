@@ -8,13 +8,23 @@ import eslintPluginVue from "eslint-plugin-vue";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-const tsrules: Linter.RulesRecord = {
+const tsConfigs: tseslint.InfiniteDepthConfigWithExtends[] = [
+  eslint.configs.recommended,
+  tseslint.configs.strictTypeChecked,
+  tseslint.configs.stylisticTypeChecked,
+];
+
+const tsRules: Linter.RulesRecord = {
   "no-duplicate-imports": "error",
   // https://typescript-eslint.io/troubleshooting/faqs/eslint#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
   "no-undef": "off",
   "@typescript-eslint/consistent-type-definitions": ["error", "type"],
   "@typescript-eslint/consistent-type-exports": "error",
   "@typescript-eslint/consistent-type-imports": "error",
+  "@typescript-eslint/no-extraneous-class": [
+    "error",
+    { allowWithDecorator: true },
+  ],
   "@typescript-eslint/no-import-type-side-effects": "error",
   "@typescript-eslint/no-unused-vars": [
     "error",
@@ -44,46 +54,39 @@ const tsrules: Linter.RulesRecord = {
 const config: tseslint.ConfigArray = tseslint.config(
   includeIgnoreFile(fileURLToPath(new URL(".gitignore", import.meta.url))),
   {
-    languageOptions: {
-      ecmaVersion: "latest",
-      sourceType: "module",
-    },
-  },
-  {
     files: ["**/*.ts"],
-    ignores: ["client/src"],
-    extends: [
-      eslint.configs.recommended,
-      tseslint.configs.strictTypeChecked,
-      tseslint.configs.stylisticTypeChecked,
-    ],
+    extends: tsConfigs,
     languageOptions: {
       globals: globals.node,
+      parser: tseslint.parser,
       parserOptions: {
         project: ["tsconfig.json"],
       },
     },
-    rules: tsrules,
+    rules: tsRules,
+  },
+  {
+    files: ["client/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: ["client/tsconfig.node.json"],
+      },
+    },
   },
   {
     files: ["client/src/**/*.ts", "client/src/**/*.vue"],
-    ignores: ["client/src/gql/"],
-    extends: [
-      eslint.configs.recommended,
-      tseslint.configs.strictTypeChecked,
-      tseslint.configs.stylisticTypeChecked,
-      eslintPluginVue.configs["flat/recommended"],
-    ],
+    ignores: ["client/src/gql/*"],
+    extends: [...tsConfigs, eslintPluginVue.configs["flat/recommended"]],
     languageOptions: {
       globals: globals.browser,
+      parser: tseslint.parser,
       parserOptions: {
         extraFileExtensions: [".vue"],
-        parser: tseslint.parser,
         project: ["client/tsconfig.app.json"],
       },
     },
     rules: {
-      ...tsrules,
+      ...tsRules,
       // Uncategorized eslint-plugin-vue rules
       "vue/block-lang": ["error", { script: { lang: "ts" } }],
       "vue/block-order": ["warn", { order: ["script", "template", "style"] }],
@@ -190,6 +193,26 @@ const config: tseslint.ConfigArray = tseslint.config(
       "vue/slot-name-casing": ["warn", "camelCase"],
       "vue/v-for-delimiter-style": ["warn", "in"],
       "vue/valid-define-options": ["error"],
+    },
+  },
+  {
+    files: ["server/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: ["server/tsconfig.json"],
+      },
+    },
+    rules: {
+      ...tsRules,
+      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    },
+  },
+  {
+    files: ["shared/**/*.ts"],
+    languageOptions: {
+      parserOptions: {
+        project: ["shared/tsconfig.json"],
+      },
     },
   },
   eslintConfigPrettier,

@@ -106,7 +106,7 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-#      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://server:3000/api/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token","issuer":"api","audience":"hasura"}}'
+      #      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://server:3000/api/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token","issuer":"api","audience":"hasura"}}'
       HASURA_GRAPHQL_CORS_DOMAIN: "*"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
@@ -116,26 +116,26 @@ services:
       - app-db
       - auth-api
       - public
-        
-#  server:
-#    build: server
-#    restart: unless-stopped
-#    environment:
-#      DATABASE_HOST: db
-#      DATABASE_PORT: 5432
-#      DATABASE_USER: postgres
-#      DATABASE_PASSWORD: postgres_pwd
-#      DATABASE_NAME: geyser
-#      KEYCLOAK_URL: http://localhost/auth
-#      KEYCLOAK_REALM: geyser
-#      KEYCLOAK_CLIENT_ID: backend
-#      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
-#    ports:
-#      - "3000:3000"
-#    networks:
-#      - app-db
-#      - public
-#    command: node dist/src/main.js
+
+  #  server:
+  #    build: server
+  #    restart: unless-stopped
+  #    environment:
+  #      DATABASE_HOST: db
+  #      DATABASE_PORT: 5432
+  #      DATABASE_USER: postgres
+  #      DATABASE_PASSWORD: postgres_pwd
+  #      DATABASE_NAME: geyser
+  #      KEYCLOAK_URL: http://localhost/auth
+  #      KEYCLOAK_REALM: geyser
+  #      KEYCLOAK_CLIENT_ID: backend
+  #      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
+  #    ports:
+  #      - "3000:3000"
+  #    networks:
+  #      - app-db
+  #      - public
+  #    command: node dist/src/main.js
 
   nginx:
     image: nginx:latest
@@ -145,8 +145,8 @@ services:
         condition: service_healthy
       hasura:
         condition: service_healthy
-#      server:
-#        condition: service_healthy
+    #      server:
+    #        condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost:8000/health || exit 1"
       interval: 30s

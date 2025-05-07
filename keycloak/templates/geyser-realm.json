@@ -38,9 +38,7 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "hasura": [
-          "admin"
-        ]
+        "hasura": ["admin"]
       }
     },
     {
@@ -50,9 +48,7 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "hasura": [
-          "commissioner"
-        ]
+        "hasura": ["commissioner"]
       }
     },
     {
@@ -62,9 +58,7 @@
       "attributes": {},
       "realmRoles": [],
       "clientRoles": {
-        "hasura": [
-          "teacher"
-        ]
+        "hasura": ["teacher"]
       }
     }
   ],
@@ -80,13 +74,8 @@
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
-      "redirectUris": [
-        "/*"
-      ],
-      "webOrigins": [
-        "+",
-        "http://localhost:5173"
-      ],
+      "redirectUris": ["/*"],
+      "webOrigins": ["+", "http://localhost:5173"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,

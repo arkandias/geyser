@@ -1,3 +1,4 @@
+import { errorMessage } from "@geyser/shared";
 import { Injectable, Logger } from "@nestjs/common";
 import fs from "fs";
 import jose from "jose";
@@ -44,7 +45,7 @@ export class KeysService {
         this.logger.log("Loaded existing RSA key pair");
         return;
       } catch (error) {
-        this.logger.warn(`Failed to load RSA key pair: ${error}`);
+        this.logger.warn(`Failed to load RSA key pair: ${errorMessage(error)}`);
       }
     } else {
       // Generate a new RSA key pair

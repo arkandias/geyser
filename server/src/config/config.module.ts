@@ -7,7 +7,7 @@ import { EnvSchema } from "./env.schema";
 @Module({
   imports: [
     NestConfigModule.forRoot({
-      validate: EnvSchema.parse,
+      validate: (config: Record<string, unknown>) => EnvSchema.parse(config),
     }),
   ],
   providers: [ConfigService],

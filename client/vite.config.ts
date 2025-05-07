@@ -15,13 +15,13 @@ export default defineConfig({
           "vendor-core": ["vue", "vue-router", "vue-i18n"],
           "vendor-data": [
             "@geyser/shared",
+            "@urql/exchange-auth",
             "@urql/vue",
             "axios",
             "graphql",
             "dompurify",
             "papaparse",
           ],
-          "vendor-auth": ["keycloak-js"],
         },
       },
     },
@@ -54,7 +54,7 @@ export default defineConfig({
       },
       {
         find: "@geyser/shared",
-        replacement: fileURLToPath(new URL("../shared/dist", import.meta.url)),
+        replacement: fileURLToPath(new URL("../shared/src", import.meta.url)),
       },
     ],
   },

@@ -1,10 +1,10 @@
-import { LogLevel } from "@nestjs/common";
+import type { LogLevel } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
-import { Env } from "./config/env.schema";
+import type { Env } from "./config/env.schema";
 
 async function bootstrap() {
   const logLevels: LogLevel[] =
@@ -12,12 +12,14 @@ async function bootstrap() {
       ? ["error", "warn", "log", "debug"]
       : ["error", "warn", "log"];
 
+  // todo: logging
   const app = await NestFactory.create(AppModule, {
     logger: logLevels,
   });
 
   app.use(cookieParser());
 
+  // todo: CORS
   // Enable CORS
   app.enableCors({
     origin: ["http://localhost:3000", "http://localhost:5173"],
@@ -29,10 +31,10 @@ async function bootstrap() {
   });
 
   const configService = app.get(ConfigService<Env, true>);
-  const port = configService.getOrThrow("PORT");
+  const port = configService.getOrThrow<number>("PORT");
 
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);
 }
 
-bootstrap();
+void bootstrap();

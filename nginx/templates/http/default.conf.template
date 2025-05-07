@@ -24,11 +24,7 @@ server {
     listen 80;
     server_name ${GEYSER_HOSTNAME};
     
-    location @auth_redirect {
-        return 302 /api/auth/refresh?redirect=$request_uri;
-    }
-    
-    # Backend
+    # API
     location /api/ {
 #        proxy_pass http://server:3000/;
         proxy_pass http://host.docker.internal:3000/;
@@ -36,7 +32,7 @@ server {
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
         proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Real-IP $remote_addr; # ????
         proxy_cache_bypass $http_upgrade;
     }
 
@@ -79,7 +75,6 @@ server {
     location / {
 #        auth_request /api/auth/verify;
 #        error_page 401 = @auth_redirect;
-        
         proxy_pass http://host.docker.internal:5173/;
 #        root /usr/share/nginx/html;
 #        try_files $uri $uri/ /index.html =404;

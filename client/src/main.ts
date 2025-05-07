@@ -12,6 +12,7 @@ import "quasar/src/css/index.sass";
 import "@/css/main.scss";
 
 import App from "@/App.vue";
+import { AuthManager } from "@/services/auth.ts";
 
 if (import.meta.env.PROD) {
   console.debug = () => {
@@ -19,7 +20,11 @@ if (import.meta.env.PROD) {
   };
 }
 
+const authManager = new AuthManager();
+await authManager.init();
+
 createApp(App)
+  .provide("authManager", authManager)
   .use(Quasar, quasarOptions)
   .use(i18n)
   .use(router)

@@ -1,8 +1,8 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
-import { ConfigModule } from '../config/config.module';
-import { ConfigService } from '../config/config.service';
-import { Role } from '../roles/role.entity';
+import { ConfigModule } from "../config/config.module";
+import { ConfigService } from "../config/config.service";
+import { Role } from "../roles/role.entity";
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
 
 @Module({
   imports: [
@@ -10,7 +10,7 @@ import { Role } from '../roles/role.entity';
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
-        type: 'postgres',
+        type: "postgres",
         host: configService.database.host,
         port: configService.database.port,
         username: configService.database.username,

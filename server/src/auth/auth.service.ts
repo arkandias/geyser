@@ -3,17 +3,19 @@ import { randomUUID } from "node:crypto";
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
+import { errorMessage } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { Response } from "express";
+import { CookieOptions, Response } from "express";
 import jose from "jose";
 
-import { AuthState } from "./auth-state.interface";
 import { HasuraClaims } from "./hasura-claims.dto";
-import { JWTPayload } from "./jwt-payload.dto";
+import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
+import { IdentityTokenRequestState } from "./identity-token-request-state.interface";
+import { JWTPayload } from "./jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
-  private stateRecord = new Map<string, AuthState>();
+  private stateRecord = new Map<string, IdentityTokenRequestState>();
 
   constructor(
     private configService: ConfigService,
@@ -39,7 +41,9 @@ export class AuthService {
       );
       payload = result.payload;
     } catch (error) {
-      throw new UnauthorizedException(`Token verification failed: ${error}`);
+      throw new UnauthorizedException(
+        `Token verification failed: ${errorMessage(error)}`,
+      );
     }
 
     if (minValidity) {
@@ -54,7 +58,7 @@ export class AuthService {
     return payload;
   }
 
-  async makeToken(
+  private async makeToken(
     payload: {
       sub: string;
       aud: string | string[];
@@ -77,12 +81,10 @@ export class AuthService {
       .sign(this.keysService.getPrivateKey());
   }
 
-  async makeAccessToken(uid: string) {
+  private async makeAccessToken(uid: string) {
     const roles = await this.rolesService.findByUid(uid);
 
-    const payload: {
-      [namespace: string]: HasuraClaims;
-    } = {
+    const payload: Record<string, HasuraClaims> = {
       [this.configService.hasura.claimsNamespace]: {
         "x-hasura-user-id": uid,
         "x-hasura-allowed-roles": roles.map((role) => role.type),
@@ -100,7 +102,7 @@ export class AuthService {
     });
   }
 
-  async makeRefreshToken(uid: string) {
+  private async makeRefreshToken(uid: string) {
     return this.makeToken({
       sub: uid,
       aud: ["api"],
@@ -110,44 +112,62 @@ export class AuthService {
     });
   }
 
-  async setAccessCookie(res: Response, uid: string) {
-    const accessToken = await this.makeAccessToken(uid);
-    res.cookie("access_token", accessToken, {
+  private accessCookieOptions(): CookieOptions {
+    return {
       httpOnly: true,
       secure: this.configService.nodeEnv === "production",
-      sameSite: "strict",
+      sameSite: "lax",
       maxAge: this.configService.jwt.accessTokenMaxAge,
       path: "/",
-    });
+    };
+  }
+
+  private refreshCookieOptions(): CookieOptions {
+    return {
+      httpOnly: true,
+      secure: this.configService.nodeEnv === "production",
+      sameSite: "lax",
+      maxAge: this.configService.jwt.refreshTokenMaxAge,
+      path: "/api/auth/refresh",
+    };
+  }
+
+  async setAccessCookie(res: Response, uid: string) {
+    const accessToken = await this.makeAccessToken(uid);
+    res.cookie("access_token", accessToken, this.accessCookieOptions());
   }
 
   async setRefreshCookie(res: Response, uid: string) {
     const refreshToken = await this.makeRefreshToken(uid);
-    res.cookie("refresh_token", refreshToken, {
-      httpOnly: true,
-      secure: this.configService.nodeEnv === "production",
-      sameSite: "strict",
-      maxAge: this.configService.jwt.refreshTokenMaxAge,
-      path: "/api/auth/refresh",
-    });
+    res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
-  newState(originalURL: string, redirectURI: string): string {
+  unsetAccessCookie(res: Response) {
+    res.clearCookie("access_token", this.accessCookieOptions());
+  }
+
+  unsetRefreshCookie(res: Response) {
+    res.clearCookie("refresh_token", this.refreshCookieOptions());
+  }
+
+  newState(
+    parameters: Partial<IdentityTokenRequestParameters>,
+    redirectURL?: string,
+  ): string {
     const id = randomUUID();
     const expiresAt = Date.now() + this.configService.stateExpirationTime;
-    this.stateRecord.set(id, { expiresAt, originalURL, redirectURI });
+    this.stateRecord.set(id, { parameters, expiresAt, redirectURL });
     return id;
   }
 
-  getState(id: string): { originalURL: string; redirectURI: string } {
+  getState(id: string): IdentityTokenRequestState {
     const authState = this.stateRecord.get(id);
     if (!authState) {
       throw new UnauthorizedException("State not found");
     }
-    const { expiresAt, ...rest } = authState;
     if (authState.expiresAt < Date.now()) {
       throw new UnauthorizedException("State has expired");
     }
-    return rest;
+    return authState;
   }
 }

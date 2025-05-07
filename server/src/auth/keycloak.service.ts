@@ -1,13 +1,23 @@
 import { ConfigService } from "../config/config.service";
+import { errorMessage } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import axios from "axios";
-import jose, { createRemoteJWKSet } from "jose";
+import jose from "jose";
 
-import { KeycloakToken } from "./keycloak-token.interface";
+import { IdentityProvider } from "./identity-provider.interface";
+import {
+  IdentityTokenPayload,
+  IdentityTokenPayloadSchema,
+} from "./identity-token-payload.dto";
+import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
+import {
+  IdentityTokenResponseSchema,
+  TokenResponse,
+} from "./identity-token-response.dto";
 
 @Injectable()
-export class KeycloakService {
-  private readonly jwks: ReturnType<typeof createRemoteJWKSet>;
+export class KeycloakService implements IdentityProvider {
+  private readonly jwks: ReturnType<typeof jose.createRemoteJWKSet>;
 
   constructor(private configService: ConfigService) {
     this.jwks = jose.createRemoteJWKSet(
@@ -15,54 +25,39 @@ export class KeycloakService {
     );
   }
 
-  async verifyToken(token: string): Promise<jose.JWTPayload> {
+  async verifyToken(token: string): Promise<IdentityTokenPayload> {
     try {
       // Decode the token's protected header to get the key ID
       const protectedHeaderParameters = jose.decodeProtectedHeader(token);
 
-      // Get the public key from Keycloak
+      // Get the public key from Keycloak's JWKS
       const key = await this.jwks(protectedHeaderParameters);
 
       // Verify the token with the public key
       const verified = await jose.jwtVerify(token, key);
 
-      return verified.payload;
+      return IdentityTokenPayloadSchema.parse(verified.payload);
     } catch (error) {
-      throw new UnauthorizedException(`Failed to verify token: ${error}`);
+      throw new UnauthorizedException(
+        `Identity token verification failed: ${errorMessage(error)}`,
+      );
     }
   }
 
-  async exchangeCodeForTokens(
-    redirectURI: string,
-    code: string,
-  ): Promise<KeycloakToken> {
+  async requestToken(
+    params: IdentityTokenRequestParameters,
+  ): Promise<TokenResponse> {
     try {
-      const headers = {
-        "Content-Type": "application/x-www-form-urlencoded",
-      };
-      const params = new URLSearchParams({
-        grant_type: "authorization_code",
-        client_id: this.configService.keycloak.clientId,
-        client_secret: this.configService.keycloak.clientSecret,
-        redirect_uri: redirectURI,
-        code,
-      });
-
       const response = await axios.post(
         this.configService.keycloak.tokenURL,
-        params.toString(),
-        { headers },
+        new URLSearchParams({ ...params }).toString(),
+        { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
 
-      return {
-        accessToken: response.data.access_token,
-        refreshToken: response.data.refresh_token,
-        idToken: response.data.id_token,
-        expiresIn: response.data.expires_in,
-      };
+      return IdentityTokenResponseSchema.parse(response.data);
     } catch (error) {
       throw new UnauthorizedException(
-        "Failed to exchange authorization code for tokens",
+        `Identity token request failed: ${errorMessage(error)}`,
       );
     }
   }

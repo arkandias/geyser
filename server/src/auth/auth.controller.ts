@@ -1,14 +1,7 @@
 import { ConfigService } from "../config/config.service";
 import { Cookies } from "../cookies/cookies.decorator";
-import {
-  Controller,
-  Get,
-  Post,
-  Query,
-  Res,
-  UnauthorizedException,
-} from "@nestjs/common";
-import { Response } from "express";
+import { Controller, Get, Post, Query, Res } from "@nestjs/common";
+import type { Response } from "express";
 
 import { AuthService } from "./auth.service";
 import { KeycloakService } from "./keycloak.service";
@@ -32,30 +25,25 @@ export class AuthController {
   @Get("refresh")
   async refresh(
     @Cookies() refreshToken: string,
-    @Query("redirect") redirect: string = "/",
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    try {
-      const { sub: uid } = await this.authService.verifyToken(refreshToken);
-      await this.authService.setAccessCookie(res, uid);
-      await this.authService.setRefreshCookie(res, uid);
-
-      res.redirect(redirect);
-    } catch (error) {
-      const params = new URLSearchParams({ redirect });
-      res.redirect(`/auth/login?${params.toString()}`);
-    }
+    const { sub: uid } = await this.authService.verifyToken(refreshToken);
+    await this.authService.setAccessCookie(res, uid);
+    await this.authService.setRefreshCookie(res, uid);
   }
 
   @Get("login")
-  async login(
-    @Query("redirect") redirect: string = "/",
+  login(
+    @Query("redirect") redirectURL: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const redirectURI = `${this.configService.rootURL}/api/auth/callback`;
+    const callbackURL = `${this.configService.rootURL}/api/auth/callback`;
 
-    // Prevent CSRF attacks
-    const stateId = this.authService.newState(redirect, redirectURI);
+    // Use state parameter to prevent CSRF attacks
+    const stateId = this.authService.newState(
+      { redirect_uri: callbackURL },
+      redirectURL,
+    );
 
     // Building authentication URL
     const authUrl = new URL(this.configService.keycloak.authURL);
@@ -63,10 +51,10 @@ export class AuthController {
       "client_id",
       this.configService.keycloak.clientId,
     );
-    authUrl.searchParams.append("redirect_uri", redirectURI);
     authUrl.searchParams.append("response_type", "code");
-    authUrl.searchParams.append("scope", "openid email");
     authUrl.searchParams.append("state", stateId);
+    authUrl.searchParams.append("scope", "openid");
+    authUrl.searchParams.append("redirect_uri", callbackURL);
 
     res.redirect(authUrl.toString());
   }
@@ -77,37 +65,28 @@ export class AuthController {
     @Query("state") state: string,
     @Res() res: Response,
   ): Promise<void> {
-    const { originalURL, redirectURI } = this.authService.getState(state);
-    const { accessToken } = await this.keycloakService.exchangeCodeForTokens(
-      redirectURI,
+    const { parameters, redirectURL } = this.authService.getState(state);
+    const { accessToken } = await this.keycloakService.requestToken({
+      client_id: this.configService.keycloak.clientId,
+      client_secret: this.configService.keycloak.clientSecret,
+      grant_type: "authorization_code",
       code,
-    );
-    const payload = await this.keycloakService.verifyToken(accessToken);
-    const uid = String(payload["email"]);
-
-    if (!uid) {
-      throw new UnauthorizedException("Missing claim 'email' in token");
-    }
+      ...parameters,
+    });
+    const { uid } = await this.keycloakService.verifyToken(accessToken);
 
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
-    return res.redirect(originalURL || "/");
+
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    res.redirect(redirectURL || "/");
   }
 
   @Post("logout")
-  async logout(@Res({ passthrough: true }) res: Response): Promise<void> {
-    res.clearCookie("access_token", {
-      httpOnly: true,
-      secure: this.configService.nodeEnv === "production",
-      sameSite: "strict",
-      path: "/",
-    });
+  logout(@Res({ passthrough: true }) res: Response): void {
+    this.authService.unsetAccessCookie(res);
+    this.authService.unsetRefreshCookie(res);
 
-    res.clearCookie("refresh_token", {
-      httpOnly: true,
-      secure: this.configService.nodeEnv === "production",
-      sameSite: "strict",
-      path: "/api/refresh",
-    });
+    res.redirect("/");
   }
 }

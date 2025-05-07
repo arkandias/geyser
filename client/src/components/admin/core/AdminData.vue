@@ -10,6 +10,7 @@
     UpdateColumn extends string
   "
 >
+import { errorMessage } from "@geyser/shared";
 import type { UseMutationResponse } from "@urql/vue";
 import { type Ref, computed, ref, toValue, watch } from "vue";
 
@@ -176,9 +177,6 @@ const openForm = (rows?: Row[]) => {
 };
 
 // ===== Data Operations =====
-const errorMessage = (error: unknown) =>
-  error instanceof Error ? error.message : t("admin.data.error.unknownError");
-
 const validateForm = (fields?: (keyof T)[]): FlatRow => {
   const flatRow: Record<string, Scalar> = {};
 
@@ -231,7 +229,7 @@ const insertDataHandle = async () => {
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
-      caption: errorMessage(error),
+      caption: errorMessage(error, t("admin.data.error.unknownError")),
     });
     return;
   }
@@ -242,7 +240,9 @@ const insertDataHandle = async () => {
   if (error || !data?.insertData?.returning) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.insertFailed"),
-      caption: error ? errorMessage(error) : t("admin.data.error.noReturnData"),
+      caption: error
+        ? errorMessage(error, t("admin.data.error.unknownError"))
+        : t("admin.data.error.noReturnData"),
     });
   } else {
     notify(NotifyType.Success, {
@@ -267,7 +267,7 @@ const updateDataHandle = async () => {
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
-      caption: errorMessage(error),
+      caption: errorMessage(error, t("admin.data.error.unknownError")),
     });
     return;
   }
@@ -279,7 +279,9 @@ const updateDataHandle = async () => {
   if (error || !data?.updateData?.returning) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.updateFailed"),
-      caption: error ? errorMessage(error) : t("admin.data.error.noReturnData"),
+      caption: error
+        ? errorMessage(error, t("admin.data.error.unknownError"))
+        : t("admin.data.error.noReturnData"),
     });
   } else {
     notify(NotifyType.Success, {
@@ -467,7 +469,9 @@ const importRowsHandle = async () => {
       text = await selectedFile.value.text();
     } catch (error) {
       throw new Error(
-        t("admin.data.error.unreadableFile", { reason: errorMessage(error) }),
+        t("admin.data.error.unreadableFile", {
+          reason: errorMessage(error, t("admin.data.error.unknownError")),
+        }),
       );
     }
 
@@ -476,7 +480,9 @@ const importRowsHandle = async () => {
       flatRows = importCSV(text, rowDescriptor);
     } catch (error) {
       throw new Error(
-        t("admin.data.error.parsingError", { reason: errorMessage(error) }),
+        t("admin.data.error.parsingError", {
+          reason: errorMessage(error, t("admin.data.error.unknownError")),
+        }),
       );
     }
 
@@ -487,7 +493,7 @@ const importRowsHandle = async () => {
         throw new Error(
           t("admin.data.error.invalidRow", {
             index,
-            reason: errorMessage(error),
+            reason: errorMessage(error, t("admin.data.error.unknownError")),
           }),
         );
       }
@@ -514,7 +520,7 @@ const importRowsHandle = async () => {
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.importFailed"),
-      caption: errorMessage(error),
+      caption: errorMessage(error, t("admin.data.error.unknownError")),
     });
   } finally {
     importing.value = false;
@@ -538,7 +544,7 @@ const exportDataHandle = () => {
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.exportFailed"),
-      caption: errorMessage(error),
+      caption: errorMessage(error, t("admin.data.error.unknownError")),
     });
   }
 };

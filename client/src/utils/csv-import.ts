@@ -1,3 +1,4 @@
+import { errorMessage } from "@geyser/shared";
 import { type ParseConfig, parse } from "papaparse";
 
 import type {
@@ -61,7 +62,7 @@ const transform =
     try {
       return parseField(value, descriptor);
     } catch (error) {
-      const message = error instanceof Error ? error.message : "Unknown error";
+      const message = errorMessage(error);
       throw new Error(`Error while parsing field '${field}': ${message}`);
     }
   };

@@ -11,5 +11,5 @@
     /* Emit */
     "noEmit": true
   },
-  "include": ["vite.config.ts"]
+  "include": ["*.ts"]
 }
