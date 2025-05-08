@@ -1,6 +1,7 @@
 {
   "name": "geyser",
   "version": "0.0.0",
+  "description": "",
   "author": "Julien Hauseux <julien.hauseux@univ-lille.fr>",
   "license": "AGPL-3.0-only",
   "private": true,

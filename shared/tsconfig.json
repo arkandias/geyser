@@ -4,9 +4,13 @@
     /* Module */
     "rootDir": "./src",
     "rewriteRelativeImportExtensions": true,
+    "types": [],
 
     /* Emit */
-    "outDir": "./dist"
+    "outDir": "./dist",
+
+    /* Project */
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
   },
-  "include": ["*.ts", "src/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

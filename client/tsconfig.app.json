@@ -11,7 +11,7 @@
     "allowImportingTsExtensions": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@geyser/shared": ["../shared/dist"]
+      "@geyser/shared": ["../shared/src"]
     },
     "types": [],
 

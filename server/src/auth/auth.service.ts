@@ -3,15 +3,18 @@ import { randomUUID } from "node:crypto";
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
-import { errorMessage } from "@geyser/shared";
+import {
+  AccessTokenPayload,
+  AccessTokenPayloadSchema,
+  type JWTPayload,
+  errorMessage,
+} from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
 import jose from "jose";
 
-import { HasuraClaims } from "./hasura-claims.dto";
 import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
 import { IdentityTokenRequestState } from "./identity-token-request-state.interface";
-import { JWTPayload } from "./jwt-payload.interface";
 
 @Injectable()
 export class AuthService {
@@ -22,41 +25,6 @@ export class AuthService {
     private keysService: KeysService,
     private rolesService: RolesService,
   ) {}
-
-  async verifyToken(token?: string, minValidity?: number): Promise<JWTPayload> {
-    if (!token) {
-      throw new UnauthorizedException("Missing token");
-    }
-
-    let payload: JWTPayload;
-    try {
-      const result = await jose.jwtVerify<JWTPayload>(
-        token,
-        this.keysService.getPublicKey(),
-        {
-          issuer: "api",
-          audience: "api",
-          requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
-        },
-      );
-      payload = result.payload;
-    } catch (error) {
-      throw new UnauthorizedException(
-        `Token verification failed: ${errorMessage(error)}`,
-      );
-    }
-
-    if (minValidity) {
-      const nowSeconds = Math.floor(Date.now() / 1000);
-      const timeRemaining = payload.exp - nowSeconds;
-
-      if (timeRemaining < minValidity) {
-        throw new UnauthorizedException("Token is about to expire");
-      }
-    }
-
-    return payload;
-  }
 
   private async makeToken(
     payload: {
@@ -83,18 +51,21 @@ export class AuthService {
 
   private async makeAccessToken(uid: string) {
     const roles = await this.rolesService.findByUid(uid);
+    const roleTypes = roles.map((role) => role.type);
 
-    const payload: Record<string, HasuraClaims> = {
-      [this.configService.hasura.claimsNamespace]: {
+    const payload: AccessTokenPayload = {
+      uid,
+      roles: roleTypes,
+      hasura: {
         "x-hasura-user-id": uid,
-        "x-hasura-allowed-roles": roles.map((role) => role.type),
-        "x-hasura-default-role": "teacher",
+        "x-hasura-allowed-roles": roleTypes,
+        "x-hasura-default-role": "user",
       },
     };
 
     return this.makeToken({
       sub: uid,
-      aud: ["api", "hasura"],
+      aud: ["api-access", "hasura"],
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
@@ -105,10 +76,52 @@ export class AuthService {
   private async makeRefreshToken(uid: string) {
     return this.makeToken({
       sub: uid,
-      aud: ["api"],
+      aud: ["api-refresh"],
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
+    });
+  }
+
+  private async verifyToken(
+    token?: string,
+    options?: jose.JWTVerifyOptions,
+  ): Promise<JWTPayload> {
+    if (!token) {
+      throw new UnauthorizedException(
+        "Token verification failed: Missing token",
+      );
+    }
+
+    try {
+      const result = await jose.jwtVerify<JWTPayload>(
+        token,
+        this.keysService.getPublicKey(),
+        {
+          issuer: "api",
+          audience: "api",
+          requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
+          ...options,
+        },
+      );
+      return result.payload;
+    } catch (error) {
+      throw new UnauthorizedException(
+        `Token verification failed: ${errorMessage(error)}`,
+      );
+    }
+  }
+
+  async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
+    const payload = await this.verifyToken(accessToken, {
+      audience: "api-access",
+    });
+    return AccessTokenPayloadSchema.parse(payload);
+  }
+
+  async verifyRefreshToken(refreshToken: string): Promise<JWTPayload> {
+    return this.verifyToken(refreshToken, {
+      audience: "api-access",
     });
   }
 

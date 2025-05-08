@@ -6,16 +6,21 @@
     "experimentalDecorators": true,
 
     /* Module */
+    "module": "CommonJS",
+    "moduleResolution": "node",
     "paths": {
-      "@geyser/shared": ["../shared/dist"]
+      "@geyser/shared": ["../shared/src"]
     },
 
     /* Emit */
     "outDir": "./dist",
 
     /* Interop Constraints */
-    "verbatimModuleSyntax": false
+    "verbatimModuleSyntax": false,
+
+    /* Project */
+    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
   },
   "references": [{ "path": "../shared" }],
-  "include": ["*.ts", "src/**/*.ts"]
+  "include": ["src/**/*.ts"]
 }

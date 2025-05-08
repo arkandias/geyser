@@ -1,5 +1,6 @@
 import { ConfigService } from "../config/config.service";
 import { Cookies } from "../cookies/cookies.decorator";
+import type { AccessTokenPayload } from "@geyser/shared";
 import { Controller, Get, Post, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -15,11 +16,10 @@ export class AuthController {
   ) {}
 
   @Get("verify")
-  async verify(@Cookies("access_token") accessToken: string): Promise<void> {
-    await this.authService.verifyToken(
-      accessToken,
-      this.configService.tokenMinValidity,
-    );
+  async verify(
+    @Cookies("access_token") accessToken: string,
+  ): Promise<AccessTokenPayload> {
+    return await this.authService.verifyAccessToken(accessToken);
   }
 
   @Get("refresh")
@@ -27,7 +27,8 @@ export class AuthController {
     @Cookies() refreshToken: string,
     @Res({ passthrough: true }) res: Response,
   ): Promise<void> {
-    const { sub: uid } = await this.authService.verifyToken(refreshToken);
+    const { sub: uid } =
+      await this.authService.verifyRefreshToken(refreshToken);
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
   }
