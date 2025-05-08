@@ -7,6 +7,7 @@ import {
   AccessTokenPayload,
   AccessTokenPayloadSchema,
   type JWTPayload,
+  JWTPayloadSchema,
   errorMessage,
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
@@ -49,20 +50,27 @@ export class AuthService {
       .sign(this.keysService.getPrivateKey());
   }
 
-  private async makeAccessToken(uid: string) {
+  private async makeAccessTokenPayload(
+    uid: string,
+  ): Promise<AccessTokenPayload> {
     const roles = await this.rolesService.findByUid(uid);
     const roleTypes = roles.map((role) => role.type);
 
-    const payload: AccessTokenPayload = {
+    return {
       uid,
       roles: roleTypes,
       hasura: {
-        "x-hasura-user-id": uid,
-        "x-hasura-allowed-roles": roleTypes,
-        "x-hasura-default-role": "user",
+        "X-Hasura-User-Id": uid,
+        "X-Hasura-Allowed-Roles": roleTypes,
+        "X-Hasura-Default-Role": "user",
       },
     };
+  }
 
+  private async makeAccessToken(
+    uid: string,
+    payload: AccessTokenPayload,
+  ): Promise<string> {
     return this.makeToken({
       sub: uid,
       aud: ["api-access", "hasura"],
@@ -73,7 +81,7 @@ export class AuthService {
     });
   }
 
-  private async makeRefreshToken(uid: string) {
+  private async makeRefreshToken(uid: string): Promise<string> {
     return this.makeToken({
       sub: uid,
       aud: ["api-refresh"],
@@ -112,11 +120,13 @@ export class AuthService {
     }
   }
 
-  async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
+  async verifyAccessToken(
+    accessToken: string,
+  ): Promise<JWTPayload & AccessTokenPayload> {
     const payload = await this.verifyToken(accessToken, {
       audience: "api-access",
     });
-    return AccessTokenPayloadSchema.parse(payload);
+    return JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(payload);
   }
 
   async verifyRefreshToken(refreshToken: string): Promise<JWTPayload> {
@@ -145,21 +155,26 @@ export class AuthService {
     };
   }
 
-  async setAccessCookie(res: Response, uid: string) {
-    const accessToken = await this.makeAccessToken(uid);
+  async setAccessCookie(
+    res: Response,
+    uid: string,
+  ): Promise<AccessTokenPayload> {
+    const payload = await this.makeAccessTokenPayload(uid);
+    const accessToken = await this.makeAccessToken(uid, payload);
     res.cookie("access_token", accessToken, this.accessCookieOptions());
+    return payload;
   }
 
-  async setRefreshCookie(res: Response, uid: string) {
+  async setRefreshCookie(res: Response, uid: string): Promise<void> {
     const refreshToken = await this.makeRefreshToken(uid);
     res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
-  unsetAccessCookie(res: Response) {
+  unsetAccessCookie(res: Response): void {
     res.clearCookie("access_token", this.accessCookieOptions());
   }
 
-  unsetRefreshCookie(res: Response) {
+  unsetRefreshCookie(res: Response): void {
     res.clearCookie("refresh_token", this.refreshCookieOptions());
   }
 

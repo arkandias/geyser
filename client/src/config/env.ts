@@ -5,6 +5,7 @@ export const version = import.meta.env.DEV
 export const apiURL = import.meta.env.VITE_API_URL ?? "";
 export const graphqlURL = import.meta.env.VITE_GRAPHQL_URL ?? "";
 
+// TODO: implement or remove
 export const bypassAuth =
   import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === "true";
 export const hasuraUserId = import.meta.env.VITE_HASURA_USER_ID ?? "";

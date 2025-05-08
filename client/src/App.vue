@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, watch } from "vue";
+import { computed, inject, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
@@ -11,7 +11,7 @@ import {
   PhaseEnum,
   RoleTypeEnum,
 } from "@/gql/graphql.ts";
-import { setRoleHeader } from "@/services/urql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
@@ -21,9 +21,8 @@ import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
 graphql(`
-  query GetUserProfile {
-    profile: userProfile {
-      uid
+  query GetUserProfile($uid: String!) {
+    profile: teacherByPk(uid: $uid) {
       displayname
       active
       roles {
@@ -62,10 +61,17 @@ const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
 
+const authManager = inject<AuthManager>("authManager");
+if (!authManager) {
+  throw new Error("Authentication manager is not provided to the app");
+}
+const uid = authManager.getUserId() ?? "";
+
 // Fetch user profile
 const getUserProfile = useQuery({
   query: GetUserProfileDocument,
-  variables: {},
+  variables: { uid },
+  pause: !uid,
   context: { additionalTypenames: ["All", "Role", "Service"] },
 });
 watch(
@@ -80,7 +86,7 @@ watch(
 
     if (data?.profile) {
       setProfile({
-        uid: data.profile.uid,
+        uid,
         displayname: data.profile.displayname ?? "",
         active: data.profile.active,
         roles: data.profile.roles.map((role) => role.type),
@@ -90,7 +96,13 @@ watch(
   },
   { immediate: true },
 );
-watch(activeRole, setRoleHeader, { immediate: true });
+watch(
+  activeRole,
+  (role) => {
+    authManager.setActiveRole(role);
+  },
+  { immediate: true },
+);
 
 // Fetch app data
 const getAppData = useQuery({
@@ -130,7 +142,7 @@ watch(
 
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
-  if (!authManager?.userId()) {
+  if (!uid) {
     return t("home.alert.noAuth");
   }
   if (getUserProfile.fetching.value) {

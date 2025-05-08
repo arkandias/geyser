@@ -1,4 +1,5 @@
 .idea/
+certs/
 dist/
 node_modules/
 prod/
@@ -13,7 +14,6 @@ prod/
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/
-/server/keys/
 
 *.tsbuildinfo
 *.local

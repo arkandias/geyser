@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const HasuraClaimsSchema = z.object({
-  "x-hasura-user-id": z.string(),
-  "x-hasura-allowed-roles": z.array(z.string()),
-  "x-hasura-default-role": z.string(),
+  "X-Hasura-User-Id": z.string(),
+  "X-Hasura-Allowed-Roles": z.array(z.string()),
+  "X-Hasura-Default-Role": z.string(),
 });
 
 export type HasuraClaims = z.infer<typeof HasuraClaimsSchema>;

@@ -1,21 +1,28 @@
-import { type AuthData, AuthDataSchema, errorMessage } from "@geyser/shared";
-import axios from "axios";
+import {
+  type AccessTokenPayload,
+  AccessTokenPayloadSchema,
+  type JWTPayload,
+  JWTPayloadSchema,
+  errorMessage,
+} from "@geyser/shared";
+import axios, { isAxiosError } from "axios";
 
 import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
 import { apiURL } from "@/config/env.ts";
+import type { RoleTypeEnum } from "@/gql/graphql.ts";
 
 const api = axios.create({
   baseURL: apiURL,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
-  validateStatus: () => true,
 });
 
 export class AuthManager {
-  private data: AuthData = {};
+  private payload?: JWTPayload & AccessTokenPayload;
+  private activeRole?: RoleTypeEnum;
 
   async init(): Promise<void> {
     const verified = await this.verify();
@@ -31,52 +38,39 @@ export class AuthManager {
     this.login();
   }
 
-  async verify(): Promise<boolean> {
+  private async getPayload(endpoint: string): Promise<boolean> {
     try {
-      const response = await api.get("/auth/verify");
+      const response = await api.get(endpoint);
 
-      if (response.status === 200) {
-        console.debug("Authentication successfully verified");
-        return true;
-      }
-
-      if (response.status === 401) {
-        console.debug("Authentication has expired");
-        return false;
-      }
-
-      console.warn(
-        `Unexpected response from /auth/verify: ${response.status} ${response.statusText}`,
+      this.payload = JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(
+        response.data,
       );
-      return false;
+
+      return true;
     } catch (error) {
-      console.error("Authentication verification failed:", error);
+      if (isAxiosError(error) && error.response) {
+        if (error.response.status !== 401) {
+          console.warn(
+            `Unexpected response from ${apiURL}/${endpoint}: ${error.response.status} ${error.response.statusText}`,
+          );
+        }
+      } else {
+        console.warn(
+          `Request to ${apiURL}/${endpoint} failed:`,
+          errorMessage(error),
+        );
+      }
+      delete this.payload;
       return false;
     }
   }
 
+  async verify(): Promise<boolean> {
+    return this.getPayload("/auth/verify");
+  }
+
   async refresh(): Promise<boolean> {
-    try {
-      const response = await api.post("/auth/refresh");
-
-      if (response.status === 200) {
-        this.data = AuthDataSchema.parse(response.data);
-        console.debug("Authentication refreshed");
-        return true;
-      }
-
-      if (response.status === 401) {
-        console.debug("Authentication could not refresh");
-        return false;
-      }
-
-      console.warn(
-        `Unexpected response from /auth/refresh: ${response.status} ${response.statusText}`,
-      );
-      return false;
-    } catch (error) {
-      throw new Error(`Token refresh failed: ${errorMessage(error)}`);
-    }
+    return this.getPayload("/auth/refresh");
   }
 
   login(): void {
@@ -90,22 +84,29 @@ export class AuthManager {
     window.location.href = logoutURL.toString();
   }
 
-  userId(): string | undefined {
-    return this.data.userId;
+  getUserId(): string | undefined {
+    return this.payload?.uid;
   }
 
-  allowedRoles(): string[] | undefined {
-    return this.data.allowedRoles;
+  getRoles(): string[] | undefined {
+    return this.payload?.roles;
   }
 
-  defaultRole(): string | undefined {
-    return this.data.defaultRole;
+  getActiveRole(): RoleTypeEnum | undefined {
+    return this.activeRole;
+  }
+
+  setActiveRole(role?: RoleTypeEnum): void {
+    this.activeRole = role;
   }
 
   shouldRefresh(): boolean {
+    if (!this.payload) {
+      return true;
+    }
+
     return (
-      (this.data.expiresAt ?? 0) - Math.floor(Date.now() / 1000) >
-      API_TOKEN_MIN_VALIDITY
+      this.payload.exp - Math.floor(Date.now() / 1000) > API_TOKEN_MIN_VALIDITY
     );
   }
 }

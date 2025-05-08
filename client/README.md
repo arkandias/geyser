@@ -130,8 +130,8 @@ The following environment variables are used by the client.
 | Environment variable       | Description                                            |
 | -------------------------- | ------------------------------------------------------ |
 | `VITE_BUILD_VERSION`       | Build version (shown in top-left corner)               |
+| `VITE_API_URL`             | Backend server URL                                     |
 | `VITE_GRAPHQL_URL`         | GraphQL engine URL                                     |
-| `VITE_AUTH_URL`            | Keycloak authentication server URL                     |
 | `VITE_BYPASS_AUTH`         | Bypass Keycloak auth in development (if set to `true`) |
 | `VITE_HASURA_ADMIN_SECRET` | Hasura admin secret (when bypassing Keycloak)          |
 | `VITE_HASURA_USER_ID`      | Hasura user ID (when bypassing Keycloak)               |
