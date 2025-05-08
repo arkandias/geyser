@@ -62,6 +62,12 @@ const config: tsEslint.ConfigArray = tsEslint.config(
     },
   },
   {
+    files: ["client/src/vite-env.d.ts", "server/src/**/*.ts"],
+    rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
+    },
+  },
+  {
     files: ["**/*.{ts,vue}"],
     ignores: ["client/src/*"],
     languageOptions: {

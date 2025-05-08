@@ -7,7 +7,6 @@ declare module "*.vue" {
   export default component;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ImportMetaEnv {
   readonly VITE_BUILD_VERSION?: string;
   readonly VITE_API_URL?: string;
@@ -17,7 +16,6 @@ interface ImportMetaEnv {
   readonly VITE_HASURA_ADMIN_SECRET?: string;
 }
 
-// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
 interface ImportMeta {
   readonly env: ImportMetaEnv;
 }

@@ -8,15 +8,13 @@
     /* Module */
     "module": "CommonJS",
     "moduleResolution": "node",
-    "paths": {
-      "@geyser/shared": ["../shared/src"]
-    },
+    "rootDir": "./src",
 
     /* Emit */
     "outDir": "./dist",
 
     /* Interop Constraints */
-    "verbatimModuleSyntax": false,
+    "verbatimModuleSyntax": false
 
     /* Project */
     "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
