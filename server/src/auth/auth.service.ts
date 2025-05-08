@@ -67,10 +67,9 @@ export class AuthService {
     };
   }
 
-  private async makeAccessToken(
-    uid: string,
-    payload: AccessTokenPayload,
-  ): Promise<string> {
+  private async makeAccessToken(uid: string): Promise<string> {
+    const payload = await this.makeAccessTokenPayload(uid);
+
     return this.makeToken({
       sub: uid,
       aud: ["api-access", "hasura"],
@@ -131,7 +130,7 @@ export class AuthService {
 
   async verifyRefreshToken(refreshToken: string): Promise<JWTPayload> {
     return this.verifyToken(refreshToken, {
-      audience: "api-access",
+      audience: "api-refresh",
     });
   }
 
@@ -155,14 +154,9 @@ export class AuthService {
     };
   }
 
-  async setAccessCookie(
-    res: Response,
-    uid: string,
-  ): Promise<AccessTokenPayload> {
-    const payload = await this.makeAccessTokenPayload(uid);
-    const accessToken = await this.makeAccessToken(uid, payload);
+  async setAccessCookie(res: Response, uid: string): Promise<void> {
+    const accessToken = await this.makeAccessToken(uid);
     res.cookie("access_token", accessToken, this.accessCookieOptions());
-    return payload;
   }
 
   async setRefreshCookie(res: Response, uid: string): Promise<void> {

@@ -24,14 +24,13 @@ export class AuthController {
 
   @Get("refresh")
   async refresh(
-    @Cookies() refreshToken: string,
+    @Cookies("refresh_token") refreshToken: string,
     @Res({ passthrough: true }) res: Response,
-  ): Promise<AccessTokenPayload> {
+  ): Promise<void> {
     const { sub: uid } =
       await this.authService.verifyRefreshToken(refreshToken);
-    const payload = await this.authService.setAccessCookie(res, uid);
+    await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
-    return payload;
   }
 
   @Get("login")

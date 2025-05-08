@@ -5,7 +5,7 @@ import {
   JWTPayloadSchema,
   errorMessage,
 } from "@geyser/shared";
-import axios, { isAxiosError } from "axios";
+import axios, { type AxiosResponse, isAxiosError } from "axios";
 
 import {
   API_REQUEST_TIMEOUT,
@@ -32,55 +32,74 @@ export class AuthManager {
 
     const refreshed = await this.refresh();
     if (refreshed) {
+      // Verify access to get the payload
+      await this.verify();
       return;
     }
 
     this.login();
   }
 
-  private async getPayload(endpoint: string): Promise<boolean> {
+  private async requestAPI(
+    endpoint: string,
+    callbacks?: {
+      onSuccess?: (response: AxiosResponse) => void | Promise<void>;
+      onError?: (response: AxiosResponse) => void | Promise<void>;
+    },
+  ): Promise<boolean> {
     try {
       const response = await api.get(endpoint);
 
-      this.payload = JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(
-        response.data,
-      );
+      await callbacks?.onSuccess?.(response);
 
       return true;
     } catch (error) {
       if (isAxiosError(error) && error.response) {
-        if (error.response.status !== 401) {
-          console.warn(
-            `Unexpected response from ${apiURL}/${endpoint}: ${error.response.status} ${error.response.statusText}`,
-          );
-        }
+        await callbacks?.onError?.(error.response);
       } else {
         console.warn(
-          `Request to ${apiURL}/${endpoint} failed:`,
+          `Request to ${apiURL}${endpoint} failed:`,
           errorMessage(error),
         );
       }
-      delete this.payload;
+
       return false;
     }
   }
 
   async verify(): Promise<boolean> {
-    return this.getPayload("/auth/verify");
+    return this.requestAPI("/auth/verify", {
+      onSuccess: (response) => {
+        this.payload = JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(
+          response.data,
+        );
+      },
+      onError: (response) => {
+        if (response.status === 401) {
+          delete this.payload;
+        }
+      },
+    });
   }
 
   async refresh(): Promise<boolean> {
-    return this.getPayload("/auth/refresh");
+    return this.requestAPI("/auth/refresh", {
+      onError: (response) => {
+        if (response.status === 401) {
+          delete this.payload;
+        }
+      },
+    });
   }
 
   login(): void {
-    const loginURL = new URL("/api/auth/login", apiURL);
+    const loginURL = new URL("/auth/login", apiURL);
     loginURL.searchParams.append("redirect", window.location.href);
     window.location.href = loginURL.toString();
   }
 
   logout(): void {
-    const logoutURL = new URL("/api/auth/logout", apiURL);
+    const logoutURL = new URL("/auth/logout", apiURL);
     window.location.href = logoutURL.toString();
   }
 
