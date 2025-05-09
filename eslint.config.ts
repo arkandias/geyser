@@ -16,9 +16,9 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       tsEslint.configs.stylisticTypeChecked,
     ],
     languageOptions: {
-      ecmaVersion: 2023,
+      ecmaVersion: 2024,
       sourceType: "module",
-      globals: globals.es2023,
+      globals: globals.es2024,
       parser: tsEslint.parser,
       parserOptions: {
         projectService: true,

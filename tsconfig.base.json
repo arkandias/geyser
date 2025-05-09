@@ -11,8 +11,8 @@
     "noUnusedParameters": true,
 
     /* Language and Environment */
-    "target": "ES2023",
-    "lib": ["ES2023"],
+    "target": "ES2024",
+    "lib": ["ES2024"],
 
     /* Module */
     "module": "NodeNext",
@@ -27,15 +27,11 @@
     "sourceMap": true,
 
     /* Interop Constraints */
-    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "isolatedModules": true,
     "verbatimModuleSyntax": true,
 
     /* Project */
     "composite": true,
-    "incremental": true,
 
     /* Output Formatting */
     "noErrorTruncation": true,
