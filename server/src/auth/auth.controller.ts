@@ -1,7 +1,7 @@
 import { ConfigService } from "../config/config.service";
 import { Cookies } from "../cookies/cookies.decorator";
 import type { AccessTokenClaims } from "@geyser/shared";
-import { Controller, Get, Post, Query, Res } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Post, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
 
 import { AuthService } from "./auth.service";
@@ -22,7 +22,7 @@ export class AuthController {
     return await this.authService.verifyAccessToken(accessToken);
   }
 
-  @Get("refresh")
+  @Post("refresh")
   async refresh(
     @Cookies("refresh_token") refreshToken: string,
     @Res({ passthrough: true }) res: Response,
@@ -31,6 +31,7 @@ export class AuthController {
       await this.authService.verifyRefreshToken(refreshToken);
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);
+    res.status(HttpStatus.OK);
   }
 
   @Get("login")
@@ -87,7 +88,6 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response): void {
     this.authService.unsetAccessCookie(res);
     this.authService.unsetRefreshCookie(res);
-
-    res.redirect(this.configService.rootURL);
+    res.status(HttpStatus.NO_CONTENT);
   }
 }
