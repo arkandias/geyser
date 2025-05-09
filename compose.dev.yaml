@@ -19,7 +19,7 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - private-db
+      - app-db
     volumes:
       - data:/var/lib/postgresql/data
       - ./postgres/init:/initdb
@@ -44,7 +44,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - private-kc-db
+      - auth-db
     volumes:
       - kc-data:/var/lib/postgresql/data
       - ./postgres/backups:/backups
@@ -79,7 +79,8 @@ services:
       - "8081:8080"
       - "9000:9000"
     networks:
-      - private-kc-db
+      - auth-db
+      - auth-api
       - public
     volumes:
       - ./keycloak/healthcheck:/opt/healthcheck:ro
@@ -112,7 +113,8 @@ services:
     ports:
       - "8080:8080"
     networks:
-      - private-db
+      - app-db
+      - auth-api
       - public
 
   #  server:
@@ -131,7 +133,7 @@ services:
   #    ports:
   #      - "3000:3000"
   #    networks:
-  #      - private-db
+  #      - app-db
   #      - public
   #    command: node dist/src/main.js
 
@@ -153,8 +155,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      GEYSER_HOSTNAME: localhost
-
+      GEYSER_HOSTNAME: null
     ports:
       - "80:80"
     networks:
@@ -164,8 +165,9 @@ services:
       - ./client/dist:/usr/share/nginx/html
 
 networks:
-  private-db:
-  private-kc-db:
+  app-db:
+  auth-db:
+  auth-api:
   public:
 
 volumes:
