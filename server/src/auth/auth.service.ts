@@ -4,10 +4,10 @@ import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
 import {
+  AccessTokenClaims,
   AccessTokenPayload,
   AccessTokenPayloadSchema,
   type JWTPayload,
-  JWTPayloadSchema,
   errorMessage,
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
@@ -50,11 +50,9 @@ export class AuthService {
       .sign(this.keysService.getPrivateKey());
   }
 
-  private async makeAccessTokenPayload(
-    uid: string,
-  ): Promise<AccessTokenPayload> {
+  private async makeAccessTokenClaims(uid: string): Promise<AccessTokenClaims> {
     const roles = await this.rolesService.findByUid(uid);
-    const roleTypes = roles.map((role) => role.type);
+    const roleTypes = roles.map((role) => role.type).concat("teacher");
 
     return {
       uid,
@@ -62,13 +60,13 @@ export class AuthService {
       hasura: {
         "X-Hasura-User-Id": uid,
         "X-Hasura-Allowed-Roles": roleTypes,
-        "X-Hasura-Default-Role": "user",
+        "X-Hasura-Default-Role": "teacher",
       },
     };
   }
 
   private async makeAccessToken(uid: string): Promise<string> {
-    const payload = await this.makeAccessTokenPayload(uid);
+    const payload = await this.makeAccessTokenClaims(uid);
 
     return this.makeToken({
       sub: uid,
@@ -119,13 +117,11 @@ export class AuthService {
     }
   }
 
-  async verifyAccessToken(
-    accessToken: string,
-  ): Promise<JWTPayload & AccessTokenPayload> {
+  async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
     const payload = await this.verifyToken(accessToken, {
       audience: "api-access",
     });
-    return JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(payload);
+    return AccessTokenPayloadSchema.parse(payload);
   }
 
   async verifyRefreshToken(refreshToken: string): Promise<JWTPayload> {

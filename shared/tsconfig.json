@@ -10,7 +10,7 @@
     "outDir": "./dist",
 
     /* Project */
-    "tsBuildInfoFile": "./dist/tsconfig.tsbuildinfo"
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo"
   },
   "include": ["src/**/*.ts"]
 }

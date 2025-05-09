@@ -9,7 +9,10 @@
     "moduleResolution": "bundler",
 
     /* Emit */
-    "noEmit": true
+    "noEmit": true,
+
+    /* Project */
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.node.tsbuildinfo"
   },
   "include": ["*.ts"]
 }

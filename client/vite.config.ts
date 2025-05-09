@@ -12,14 +12,14 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          "vendor-core": ["vue", "vue-router", "vue-i18n"],
+          "vendor-core": ["vue", "vue-i18n", "vue-router"],
           "vendor-data": [
             "@geyser/shared",
             "@urql/exchange-auth",
             "@urql/vue",
             "axios",
-            "graphql",
             "dompurify",
+            "graphql",
             "papaparse",
           ],
         },

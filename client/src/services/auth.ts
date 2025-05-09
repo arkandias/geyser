@@ -1,8 +1,6 @@
 import {
   type AccessTokenPayload,
   AccessTokenPayloadSchema,
-  type JWTPayload,
-  JWTPayloadSchema,
   errorMessage,
 } from "@geyser/shared";
 import axios, { type AxiosResponse, isAxiosError } from "axios";
@@ -21,7 +19,7 @@ const api = axios.create({
 });
 
 export class AuthManager {
-  private payload?: JWTPayload & AccessTokenPayload;
+  private payload?: AccessTokenPayload;
   private activeRole?: RoleTypeEnum;
 
   async init(): Promise<void> {
@@ -41,14 +39,14 @@ export class AuthManager {
   }
 
   private async requestAPI(
-    endpoint: string,
+    url: string,
     callbacks?: {
       onSuccess?: (response: AxiosResponse) => void | Promise<void>;
       onError?: (response: AxiosResponse) => void | Promise<void>;
     },
   ): Promise<boolean> {
     try {
-      const response = await api.get(endpoint);
+      const response = await api.get(url);
 
       await callbacks?.onSuccess?.(response);
 
@@ -58,7 +56,7 @@ export class AuthManager {
         await callbacks?.onError?.(error.response);
       } else {
         console.warn(
-          `Request to ${apiURL}${endpoint} failed:`,
+          `Request to ${api.getUri({ url })} failed:`,
           errorMessage(error),
         );
       }
@@ -68,11 +66,9 @@ export class AuthManager {
   }
 
   async verify(): Promise<boolean> {
-    return this.requestAPI("/auth/verify", {
+    return this.requestAPI("auth/verify", {
       onSuccess: (response) => {
-        this.payload = JWTPayloadSchema.and(AccessTokenPayloadSchema).parse(
-          response.data,
-        );
+        this.payload = AccessTokenPayloadSchema.parse(response.data);
       },
       onError: (response) => {
         if (response.status === 401) {
@@ -83,7 +79,7 @@ export class AuthManager {
   }
 
   async refresh(): Promise<boolean> {
-    return this.requestAPI("/auth/refresh", {
+    return this.requestAPI("auth/refresh", {
       onError: (response) => {
         if (response.status === 401) {
           delete this.payload;
@@ -93,13 +89,13 @@ export class AuthManager {
   }
 
   login(): void {
-    const loginURL = new URL("/auth/login", apiURL);
+    const loginURL = new URL("auth/login", apiURL);
     loginURL.searchParams.append("redirect", window.location.href);
     window.location.href = loginURL.toString();
   }
 
   logout(): void {
-    const logoutURL = new URL("/auth/logout", apiURL);
+    const logoutURL = new URL("auth/logout", apiURL);
     window.location.href = logoutURL.toString();
   }
 

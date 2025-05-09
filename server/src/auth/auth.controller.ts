@@ -1,6 +1,6 @@
 import { ConfigService } from "../config/config.service";
 import { Cookies } from "../cookies/cookies.decorator";
-import type { AccessTokenPayload } from "@geyser/shared";
+import type { AccessTokenClaims } from "@geyser/shared";
 import { Controller, Get, Post, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -18,7 +18,7 @@ export class AuthController {
   @Get("verify")
   async verify(
     @Cookies("access_token") accessToken: string,
-  ): Promise<AccessTokenPayload> {
+  ): Promise<AccessTokenClaims> {
     return await this.authService.verifyAccessToken(accessToken);
   }
 
@@ -80,7 +80,7 @@ export class AuthController {
     await this.authService.setRefreshCookie(res, uid);
 
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    res.redirect(redirectURL || "/");
+    res.redirect(redirectURL || this.configService.rootURL);
   }
 
   @Post("logout")
@@ -88,6 +88,6 @@ export class AuthController {
     this.authService.unsetAccessCookie(res);
     this.authService.unsetRefreshCookie(res);
 
-    res.redirect("/");
+    res.redirect(this.configService.rootURL);
   }
 }

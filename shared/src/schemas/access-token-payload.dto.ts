@@ -1,11 +1,10 @@
-import { z } from "zod";
+import type { z } from "zod";
 
-import { HasuraClaimsSchema } from "./hasura-claims.dto.js";
+import { AccessTokenClaimsSchema } from "./access-token-claims.dto.js";
+import { JWTPayloadSchema } from "./jwt-payload.dto.js";
 
-export const AccessTokenPayloadSchema = z.object({
-  uid: z.string(),
-  roles: z.array(z.string()),
-  hasura: HasuraClaimsSchema,
-});
+export const AccessTokenPayloadSchema = JWTPayloadSchema.and(
+  AccessTokenClaimsSchema,
+);
 
 export type AccessTokenPayload = z.infer<typeof AccessTokenPayloadSchema>;
