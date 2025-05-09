@@ -74,7 +74,8 @@ services:
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
       - "9000:9000"
@@ -117,26 +118,6 @@ services:
       - auth-api
       - public
 
-  #  server:
-  #    build: server
-  #    restart: unless-stopped
-  #    environment:
-  #      DATABASE_HOST: db
-  #      DATABASE_PORT: 5432
-  #      DATABASE_USER: postgres
-  #      DATABASE_PASSWORD: postgres_pwd
-  #      DATABASE_NAME: geyser
-  #      KEYCLOAK_URL: http://localhost/auth
-  #      KEYCLOAK_REALM: geyser
-  #      KEYCLOAK_CLIENT_ID: backend
-  #      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
-  #    ports:
-  #      - "3000:3000"
-  #    networks:
-  #      - app-db
-  #      - public
-  #    command: node dist/src/main.js
-
   nginx:
     image: nginx:latest
     restart: unless-stopped
@@ -145,8 +126,6 @@ services:
         condition: service_healthy
       hasura:
         condition: service_healthy
-    #      server:
-    #        condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost:8000/health || exit 1"
       interval: 30s
@@ -154,14 +133,12 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 1s
-    environment:
-      GEYSER_HOSTNAME: null
     ports:
       - "80:80"
     networks:
       - public
     volumes:
-      - ./nginx/templates/http:/etc/nginx/templates:ro
+      - ./nginx/templates/dev:/etc/nginx/templates:ro
       - ./client/dist:/usr/share/nginx/html
 
 networks:

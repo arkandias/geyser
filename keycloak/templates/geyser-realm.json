@@ -3,79 +3,21 @@
   "displayName": "Geyser",
   "enabled": true,
   "registrationEmailAsUsername": true,
-  "roles": {
-    "client": {
-      "hasura": [
-        {
-          "name": "admin",
-          "description": "",
-          "composite": false,
-          "clientRole": true,
-          "attributes": {}
-        },
-        {
-          "name": "commissioner",
-          "description": "",
-          "composite": false,
-          "clientRole": true,
-          "attributes": {}
-        },
-        {
-          "name": "teacher",
-          "description": "",
-          "composite": false,
-          "clientRole": true,
-          "attributes": {}
-        }
-      ]
-    }
-  },
-  "groups": [
-    {
-      "name": "Admin",
-      "path": "/Admin",
-      "subGroups": [],
-      "attributes": {},
-      "realmRoles": [],
-      "clientRoles": {
-        "hasura": ["admin"]
-      }
-    },
-    {
-      "name": "Commission",
-      "path": "/Commission",
-      "subGroups": [],
-      "attributes": {},
-      "realmRoles": [],
-      "clientRoles": {
-        "hasura": ["commissioner"]
-      }
-    },
-    {
-      "name": "Teacher",
-      "path": "/Teacher",
-      "subGroups": [],
-      "attributes": {},
-      "realmRoles": [],
-      "clientRoles": {
-        "hasura": ["teacher"]
-      }
-    }
-  ],
   "clients": [
     {
-      "clientId": "hasura",
-      "name": "Hasura",
+      "clientId": "backend",
+      "name": "client_backend",
       "description": "",
-      "rootUrl": "${HASURA_CLIENT_ROOT_URL}",
+      "rootUrl": "${CLIENT_BACKEND_ROOT_URL}",
       "adminUrl": "/",
       "baseUrl": "/",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
+      "secret": "${CLIENT_BACKEND_SECRET}",
       "redirectUris": ["/*"],
-      "webOrigins": ["+", "http://localhost:5173"],
+      "webOrigins": ["+"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -83,13 +25,18 @@
       "implicitFlowEnabled": false,
       "directAccessGrantsEnabled": false,
       "serviceAccountsEnabled": false,
-      "publicClient": true,
+      "publicClient": false,
       "frontchannelLogout": true,
       "protocol": "openid-connect",
       "attributes": {
+        "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
+        "client.secret.creation.time": "1746453823",
         "backchannel.logout.session.required": "true",
+        "standard.token.exchange.enabled": "false",
+        "frontchannel.logout.session.required": "true",
         "post.logout.redirect.uris": "+",
+        "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
       },
@@ -98,58 +45,29 @@
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
         {
-          "name": "x-hasura-default-role",
+          "name": "email as uid",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "protocolMapper": "oidc-usermodel-property-mapper",
           "consentRequired": false,
           "config": {
             "introspection.token.claim": "true",
-            "claim.value": "teacher",
-            "userinfo.token.claim": "true",
-            "id.token.claim": "true",
-            "lightweight.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-default-role",
-            "jsonType.label": "String",
-            "access.tokenResponse.claim": "false"
-          }
-        },
-        {
-          "name": "x-hasura-allowed-roles",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-client-role-mapper",
-          "consentRequired": false,
-          "config": {
-            "introspection.token.claim": "true",
-            "multivalued": "true",
-            "userinfo.token.claim": "true",
-            "id.token.claim": "true",
-            "lightweight.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-allowed-roles",
-            "jsonType.label": "String",
-            "usermodel.clientRoleMapping.clientId": "hasura"
-          }
-        },
-        {
-          "name": "x-hasura-user-id",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "aggregate.attrs": "false",
-            "introspection.token.claim": "true",
-            "multivalued": "false",
             "userinfo.token.claim": "true",
             "user.attribute": "email",
             "id.token.claim": "true",
-            "lightweight.claim": "false",
+            "lightweight.claim": "true",
             "access.token.claim": "true",
-            "claim.name": "https://hasura\\.io/jwt/claims.x-hasura-user-id",
+            "claim.name": "uid",
             "jsonType.label": "String"
           }
         }
-      ]
+      ],
+      "defaultClientScopes": [],
+      "optionalClientScopes": [],
+      "access": {
+        "view": true,
+        "configure": true,
+        "manage": true
+      }
     }
   ],
   "components": {
