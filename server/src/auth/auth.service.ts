@@ -57,7 +57,7 @@ export class AuthService {
     return {
       uid,
       allowedRoles: roleTypes,
-      hasuraClaims: {
+      hasura: {
         "X-Hasura-User-Id": uid,
         "X-Hasura-Allowed-Roles": roleTypes,
         "X-Hasura-Default-Role": "teacher",
