@@ -2,7 +2,6 @@
 certs/
 dist/
 node_modules/
-prod/
 
 /keycloak/backups/*
 !/keycloak/backups/README.md

@@ -14,27 +14,14 @@ import {
 } from "@urql/vue";
 
 import { graphqlURL } from "@/config/env.ts";
-import { RoleTypeEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
-
-const roleToHeaderMap = {
-  [RoleTypeEnum.Admin]: "admin",
-  [RoleTypeEnum.Commissioner]: "commissioner",
-  [RoleTypeEnum.Teacher]: "teacher",
-} as const;
 
 const authInit =
   (authManager: AuthManager) =>
   (utils: AuthUtilities): Promise<AuthConfig> =>
     Promise.resolve({
       addAuthToOperation(operation: Operation): Operation {
-        const role = authManager.getActiveRole();
-        if (role) {
-          utils.appendHeaders(operation, {
-            "X-Hasura-Role": roleToHeaderMap[role],
-          });
-        }
-        return operation;
+        return utils.appendHeaders(operation, authManager.getRoleHeader());
       },
       didAuthError(error: CombinedError): boolean {
         return error.graphQLErrors.some((e) => {
@@ -45,7 +32,6 @@ const authInit =
             case "jwt-missing-role-claims":
             case "access-denied":
               return true;
-
             default:
               return false;
           }

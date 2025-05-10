@@ -17,8 +17,8 @@ export class ConfigService {
     return this.configService.getOrThrow<number>("PORT");
   }
 
-  get rootURL() {
-    return this.configService.getOrThrow<string>("ROOT_URL");
+  get apiURL() {
+    return this.configService.getOrThrow<string>("API_URL");
   }
 
   get tokenMinValidity() {

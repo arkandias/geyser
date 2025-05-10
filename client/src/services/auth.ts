@@ -24,7 +24,7 @@ const api = axios.create({
 
 export class AuthManager {
   private payload?: AccessTokenPayload;
-  private activeRole?: RoleTypeEnum;
+  private role?: string;
 
   async init(): Promise<void> {
     const verified = await this.verify();
@@ -110,20 +110,28 @@ export class AuthManager {
     window.location.href = "https://google.fr";
   }
 
-  getUserId(): string | undefined {
+  get uid(): string | undefined {
     return this.payload?.uid;
   }
 
-  getRoles(): string[] | undefined {
-    return this.payload?.roles;
-  }
-
-  getActiveRole(): RoleTypeEnum | undefined {
-    return this.activeRole;
+  get allowedRoles(): string[] | undefined {
+    return this.payload?.allowedRoles;
   }
 
   setActiveRole(role?: RoleTypeEnum): void {
-    this.activeRole = role;
+    if (role !== undefined) {
+      this.role = role.toLowerCase();
+    } else {
+      delete this.role;
+    }
+  }
+
+  getRoleHeader(): Record<string, string> {
+    return this.role
+      ? {
+          "X-Hasura-Role": this.role,
+        }
+      : {};
   }
 
   shouldRefresh(): boolean {

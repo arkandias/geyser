@@ -65,7 +65,7 @@ const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
   throw new Error("Authentication manager is not provided to the app");
 }
-const uid = authManager.getUserId() ?? "";
+const uid = authManager.uid ?? "";
 
 // Fetch user profile
 const getUserProfile = useQuery({

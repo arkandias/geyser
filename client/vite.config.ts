@@ -4,6 +4,7 @@ import { fileURLToPath } from "node:url";
 import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
 import vue from "@vitejs/plugin-vue";
 import { defineConfig } from "vite";
+import { compression } from "vite-plugin-compression2";
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -45,6 +46,7 @@ export default defineConfig({
         new URL("./src/css/quasar.variables.scss", import.meta.url),
       ),
     }),
+    compression(),
   ],
   resolve: {
     alias: [
