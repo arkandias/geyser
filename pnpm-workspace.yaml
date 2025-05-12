@@ -6,3 +6,5 @@ onlyBuiltDependencies:
   - "@nestjs/core"
   - esbuild
 injectWorkspacePackages: true
+syncInjectedDepsAfterScripts:
+  - build
