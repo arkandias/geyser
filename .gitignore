@@ -1,15 +1,20 @@
 .idea/
-certs/
+
 dist/
 node_modules/
 
+/api/keys/
+
 /keycloak/backups/*
 !/keycloak/backups/README.md
+
 /logs/*
 !/logs/README.md
-/certs/*
-!/certs/README.md
-!/certs/default
+
+/nginx/certs/*
+!/nginx/certs/README.md
+!/nginx/certs/default
+
 /postgres/backups/
 !/postgres/backups/README.md
 /postgres/migration/

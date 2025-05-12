@@ -10,8 +10,8 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build
 
 # Deploy only the server, not the client
-RUN pnpm deploy --filter=@geyser/server --prod /prod/server
+RUN pnpm deploy --filter=@geyser/api --prod /prod/api
 
 # Build artifacts:
 # - /usr/src/app/client/dist (client static files - all you need)
-# - /prod/server (deployable server package with dependencies)
+# - /prod/api (deployable server package with dependencies)

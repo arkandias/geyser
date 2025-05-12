@@ -1,5 +1,5 @@
+import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
-import { Cookies } from "../cookies/cookies.decorator";
 import type { AccessTokenClaims } from "@geyser/shared";
 import { Controller, Get, HttpStatus, Post, Query, Res } from "@nestjs/common";
 import type { Response } from "express";

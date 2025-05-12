@@ -1,0 +1,37 @@
+# Default server configuration
+server {
+    listen 80 default_server;
+    server_name _;
+    
+    # Return no response and close connection
+    return 444;
+}
+
+resolver 127.0.0.11 valid=1y ipv6=off;
+
+server {
+    listen 80;
+    server_name ${GEYSER_HOSTNAME};
+
+    # Enable serving pre-compressed files
+    gzip_static on;
+    
+    include /etc/nginx/includes/health.conf;
+    
+    set $api_url ${NGINX_PROXY_API_URL};
+    include /etc/nginx/includes/api.conf;
+    
+    set $hasura_url ${NGINX_PROXY_HASURA_URL};
+    include /etc/nginx/includes/hasura.conf;
+    
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/keycloak.conf;
+    
+    set $spa_url ${NGINX_PROXY_SPA_URL};
+    include /etc/nginx/includes/spa.conf;
+    
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html =404;
+    }
+}

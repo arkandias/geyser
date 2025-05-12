@@ -1,0 +1,52 @@
+# Default server configuration
+server {
+    listen 80 default_server;
+    listen 443 ssl default_server;
+    server_name _;
+
+    # Self-signed certificate for rejected connections
+    ssl_certificate /etc/nginx/certs/default/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/default/private.key;
+
+    # Return no response and close connection
+    return 444;
+}
+
+resolver 127.0.0.11 valid=1y ipv6=off;
+
+# Redirect HTTP traffic to HTTPS
+server {
+    listen 80;
+    server_name ${GEYSER_HOSTNAME};
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${GEYSER_HOSTNAME};
+    
+    # Enable serving pre-compressed files
+    gzip_static on;
+    
+    # Disable admin access
+    proxy_set_header X-Hasura-Admin-Secret "";
+    
+    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    # Restrict to modern TLS protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
+    set $api_url ${NGINX_PROXY_API_URL};
+    include /etc/nginx/includes/api.conf;
+    
+    set $hasura_url ${NGINX_PROXY_HASURA_URL};
+    include /etc/nginx/includes/hasura.conf;
+    
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/keycloak.conf;
+
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html =404;
+    }
+}

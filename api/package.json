@@ -1,5 +1,5 @@
 {
-  "name": "@geyser/server",
+  "name": "@geyser/api",
   "private": true,
   "scripts": {
     "build": "nest build",

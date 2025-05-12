@@ -1,5 +1,25 @@
 name: geyser
 services:
+  api:
+    build: api
+    restart: unless-stopped
+    environment:
+      DATABASE_HOST: db
+      DATABASE_PORT: 5432
+      DATABASE_USER: postgres
+      DATABASE_PASSWORD: postgres_pwd
+      DATABASE_NAME: geyser
+      KEYCLOAK_URL: http://localhost/auth
+      KEYCLOAK_REALM: geyser
+      KEYCLOAK_CLIENT_ID: backend
+      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
+    ports:
+      - "3000:3000"
+    networks:
+      - private-db
+      - public
+    command: node dist/src/main.js
+
   db:
     image: postgres:16
     restart: unless-stopped
@@ -24,6 +44,34 @@ services:
       - data:/var/lib/postgresql/data
       - ./postgres/init:/initdb
       - ./postgres/backups:/backups
+
+  hasura:
+    image: hasura/graphql-engine:latest
+    restart: unless-stopped
+    depends_on:
+      api:
+        condition: service_healthy
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:8080/healthz || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
+      HASURA_GRAPHQL_ADMIN_SECRET: null
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_CORS_DOMAIN: "*"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
+    ports:
+      - "8080:8080"
+    networks:
+      - private-db
+      - public
 
   kc-db:
     image: postgres:16
@@ -74,7 +122,8 @@ services:
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      HASURA_CLIENT_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
       - "9000:9000"
@@ -87,66 +136,11 @@ services:
       - ./keycloak/backups:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
-  hasura:
-    image: hasura/graphql-engine:latest
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-    healthcheck:
-      test: "curl -fsS http://localhost:8080/healthz || exit 1"
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
-      HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "*"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
-    ports:
-      - "8080:8080"
-    networks:
-      - private-db
-      - public
-
-  #  server:
-  #    build: server
-  #    restart: unless-stopped
-  #    environment:
-  #      DATABASE_HOST: db
-  #      DATABASE_PORT: 5432
-  #      DATABASE_USER: postgres
-  #      DATABASE_PASSWORD: postgres_pwd
-  #      DATABASE_NAME: geyser
-  #      KEYCLOAK_URL: http://localhost/auth
-  #      KEYCLOAK_REALM: geyser
-  #      KEYCLOAK_CLIENT_ID: backend
-  #      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
-  #    ports:
-  #      - "3000:3000"
-  #    networks:
-  #      - private-db
-  #      - public
-  #    command: node dist/src/main.js
-
   nginx:
     image: nginx:latest
     restart: unless-stopped
-    depends_on:
-      keycloak:
-        condition: service_healthy
-      hasura:
-        condition: service_healthy
-    #      server:
-    #        condition: service_healthy
     healthcheck:
-      test: "curl -fsS http://localhost:8000/health || exit 1"
+      test: "curl -fsS http://localhost/health || exit 1"
       interval: 30s
       timeout: 30s
       retries: 3
@@ -154,13 +148,18 @@ services:
       start_interval: 1s
     environment:
       GEYSER_HOSTNAME: localhost
-
+      NGINX_PROXY_API_URL: http://api:3000
+      NGINX_PROXY_HASURA_URL: http://hasura:8080/v1/graphql
+      NGINX_PROXY_KEYCLOAK_URL: http://keycloak:8080
+      NGINX_PROXY_SPA_URL: http://host.docker.internal:5173
+      SPA_MODE: internal
     ports:
       - "80:80"
     networks:
       - public
     volumes:
-      - ./nginx/templates/http:/etc/nginx/templates:ro
+      - ./nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/includes:/etc/nginx/includes:ro
       - ./client/dist:/usr/share/nginx/html
 
 networks:

@@ -19,11 +19,37 @@ services:
     ports:
       - "5432:5432"
     networks:
-      - app-db
+      - private-db
     volumes:
       - data:/var/lib/postgresql/data
       - ./postgres/init:/initdb
       - ./postgres/backups:/backups
+
+  hasura:
+    image: hasura/graphql-engine:latest
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:8080/healthz || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
+      HASURA_GRAPHQL_ADMIN_SECRET: null
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_CORS_DOMAIN: "*"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
+    ports:
+      - "8080:8080"
+    networks:
+      - private-db
+      - public
 
   kc-db:
     image: postgres:16
@@ -44,7 +70,7 @@ services:
     ports:
       - "5433:5432"
     networks:
-      - auth-db
+      - private-kc-db
     volumes:
       - kc-data:/var/lib/postgresql/data
       - ./postgres/backups:/backups
@@ -80,8 +106,7 @@ services:
       - "8081:8080"
       - "9000:9000"
     networks:
-      - auth-db
-      - auth-api
+      - private-kc-db
       - public
     volumes:
       - ./keycloak/healthcheck:/opt/healthcheck:ro
@@ -89,62 +114,37 @@ services:
       - ./keycloak/backups:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
-  hasura:
-    image: hasura/graphql-engine:latest
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-      keycloak:
-        condition: service_healthy
-    healthcheck:
-      test: "curl -fsS http://localhost:8080/healthz || exit 1"
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
-      HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "*"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
-    ports:
-      - "8080:8080"
-    networks:
-      - app-db
-      - auth-api
-      - public
-
   nginx:
     image: nginx:latest
     restart: unless-stopped
-    depends_on:
-      keycloak:
-        condition: service_healthy
-      hasura:
-        condition: service_healthy
     healthcheck:
-      test: "curl -fsS http://localhost:8000/health || exit 1"
+      test: "curl -fsS http://localhost/health || exit 1"
       interval: 30s
       timeout: 30s
       retries: 3
       start_period: 30s
       start_interval: 1s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      GEYSER_HOSTNAME: localhost
+      NGINX_PROXY_API_URL: http://host.docker.internal:3000
+      NGINX_PROXY_HASURA_URL: http://hasura:8080/v1/graphql
+      NGINX_PROXY_KEYCLOAK_URL: http://keycloak:8080
+      NGINX_PROXY_SPA_URL: http://host.docker.internal:5173
+      SPA_MODE: external
     ports:
       - "80:80"
     networks:
       - public
     volumes:
-      - ./nginx/templates/dev:/etc/nginx/templates:ro
+      - ./nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/includes:/etc/nginx/includes:ro
       - ./client/dist:/usr/share/nginx/html
 
 networks:
-  app-db:
-  auth-db:
-  auth-api:
+  private-db:
+  private-kc-db:
   public:
 
 volumes:

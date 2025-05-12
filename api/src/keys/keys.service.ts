@@ -12,7 +12,7 @@ export class KeysService {
     publicKey: jose.CryptoKey;
   };
   private jwk?: jose.JWK;
-  private readonly keysDir = path.join(process.cwd(), "certs");
+  private readonly keysDir = path.join(process.cwd(), "keys");
   private readonly privateKeyPath = path.join(this.keysDir, "private.key");
   private readonly publicKeyPath = path.join(this.keysDir, "public.key");
 

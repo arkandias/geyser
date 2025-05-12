@@ -8,14 +8,14 @@ services:
       KC_HOSTNAME: "https://${GEYSER_HOSTNAME}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "false"
-      KC_HTTPS_CERTIFICATE_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.crt"
-      KC_HTTPS_CERTIFICATE_KEY_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key"
+    #      KC_HTTPS_CERTIFICATE_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/fullchain.crt"
+    #      KC_HTTPS_CERTIFICATE_KEY_FILE: "/opt/keycloak/certs/${GEYSER_HOSTNAME}/private.key"
     ports:
       - "8443:8443"
     networks:
       - public
-    volumes:
-      - ./certs:/opt/keycloak/certs:ro
+    #    volumes:
+    #      - ./certs:/opt/keycloak/certs:ro
     command: start --optimized --import-realm
 
   db:
@@ -34,5 +34,5 @@ services:
     ports:
       - "443:443"
     volumes: !override
-      - ./certs:/etc/nginx/certs:ro
+      - ./nginx/certs:/etc/nginx/certs:ro
       - ./nginx/templates/https:/etc/nginx/templates:ro
