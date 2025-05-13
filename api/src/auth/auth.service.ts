@@ -1,10 +1,5 @@
 import { randomUUID } from "node:crypto";
 
-import { ConfigService } from "../config/config.service";
-import { IdentityTokenRequestParameters } from "../identity/identity-token-request-parameters.interface";
-import { IdentityTokenRequestState } from "../identity/identity-token-request-state.interface";
-import { KeysService } from "../keys/keys.service";
-import { RolesService } from "../roles/roles.service";
 import {
   AccessTokenClaims,
   AccessTokenPayload,
@@ -15,6 +10,12 @@ import {
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
 import jose from "jose";
+
+import { ConfigService } from "../config/config.service";
+import { IdentityTokenRequestParameters } from "../identity/identity-token-request-parameters.interface";
+import { IdentityTokenRequestState } from "../identity/identity-token-request-state.interface";
+import { KeysService } from "../keys/keys.service";
+import { RolesService } from "../roles/roles.service";
 
 @Injectable()
 export class AuthService {

@@ -1,4 +1,3 @@
-import { ConfigService } from "../config/config.service";
 import { errorMessage } from "@geyser/shared";
 import {
   Injectable,
@@ -8,6 +7,7 @@ import {
 import axios from "axios";
 import jose from "jose";
 
+import { ConfigService } from "../config/config.service";
 import {
   IdentityProviderMetadata,
   IdentityProviderMetadataSchema,
