@@ -1,8 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.development" });
-dotenv.config({ path: ".env.development.local" });
+dotenv.config({ path: ".env" });
 
 const graphqlURL = process.env["VITE_GRAPHQL_URL"];
 const hasuraAdminSecret = process.env["VITE_HASURA_ADMIN_SECRET"];

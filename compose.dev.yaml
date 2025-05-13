@@ -1,5 +1,64 @@
 name: geyser
 services:
+  kc-db:
+    image: postgres:16
+    restart: unless-stopped
+    healthcheck:
+      test: "pg_isready -U postgres -d keycloak || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      POSTGRES_DB: "keycloak"
+      POSTGRES_USER: "postgres"
+      POSTGRES_PASSWORD: "${POSTGRES_KC_PASSWORD}"
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    ports:
+      - "5433:5432"
+    networks:
+      - private-kc-db
+    volumes:
+      - kc-data:/var/lib/postgresql/data
+
+  keycloak:
+    build: keycloak
+    restart: unless-stopped
+    depends_on:
+      kc-db:
+        condition: service_healthy
+    healthcheck:
+      test: "healthcheck.sh"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 120s
+      start_interval: 1s
+    environment:
+      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
+      KC_BOOTSTRAP_ADMIN_PASSWORD: null
+      KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
+      KC_DB_USERNAME: "postgres"
+      KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
+      KC_DB_SCHEMA: "public"
+      KC_HTTP_ENABLED: "true"
+      KC_HOSTNAME_STRICT: "false"
+      KC_HOSTNAME_DEBUG: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+      CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_SECRET: null
+    ports:
+      - "8081:8080"
+    networks:
+      - private-kc-db
+      - public
+    volumes:
+      - ./keycloak/templates:/opt/keycloak/data/import:ro
+      - ./keycloak/backups:/opt/keycloak/data/backups
+    command: start --optimized --import-realm
+
   db:
     image: postgres:16
     restart: unless-stopped
@@ -53,75 +112,16 @@ services:
       - private-db
       - public
 
-  kc-db:
-    image: postgres:16
-    restart: unless-stopped
-    healthcheck:
-      test: "pg_isready -U postgres -d keycloak || exit 1"
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
-    environment:
-      POSTGRES_DB: "keycloak"
-      POSTGRES_USER: "postgres"
-      POSTGRES_PASSWORD: "${POSTGRES_KC_PASSWORD}"
-      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256"
-      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
-    ports:
-      - "5433:5432"
-    networks:
-      - private-kc-db
-    volumes:
-      - kc-data:/var/lib/postgresql/data
-
-  keycloak:
-    build: keycloak
-    restart: unless-stopped
-    depends_on:
-      kc-db:
-        condition: service_healthy
-    healthcheck:
-      test: "/opt/healthcheck/healthcheck.sh || exit 1"
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 120s
-      start_interval: 1s
-    environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
-      KC_BOOTSTRAP_ADMIN_PASSWORD: null
-      KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
-      KC_DB_USERNAME: "postgres"
-      KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
-      KC_DB_SCHEMA: "public"
-      KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME_STRICT: "false"
-      KC_HOSTNAME_DEBUG: "true"
-      KC_PROXY_HEADERS: "xforwarded"
-      CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
-      CLIENT_BACKEND_SECRET: null
-    ports:
-      - "8081:8080"
-    networks:
-      - private-kc-db
-      - public
-    volumes:
-      - ./keycloak/healthcheck:/opt/healthcheck:ro
-      - ./keycloak/templates:/opt/keycloak/data/import:ro
-      - ./keycloak/backups:/opt/keycloak/data/backups
-    command: start --optimized --import-realm
-
   nginx:
     image: nginx:latest
     restart: unless-stopped
     # These dependencies are needed for `pnpm run dev`
+    # Hasura cannot be healthy until API is started
     depends_on:
-      hasura:
-        condition: service_started
       keycloak:
         condition: service_healthy
+      hasura:
+        condition: service_started
     healthcheck:
       test: "curl -fsS http://localhost/health || exit 1"
       interval: 30s
@@ -132,7 +132,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_HOSTNAME: "${GEYSER_HOSTNAME:?}"
+      GEYSER_HOSTNAME: null
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
@@ -142,7 +142,7 @@ services:
     networks:
       - public
     volumes:
-      - ./nginx/templates/development.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/includes:/etc/nginx/includes:ro
       - ./client/dist:/usr/share/nginx/html
 
