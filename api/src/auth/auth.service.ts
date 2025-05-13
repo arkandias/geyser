@@ -1,6 +1,8 @@
 import { randomUUID } from "node:crypto";
 
 import { ConfigService } from "../config/config.service";
+import { IdentityTokenRequestParameters } from "../identity/identity-token-request-parameters.interface";
+import { IdentityTokenRequestState } from "../identity/identity-token-request-state.interface";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
 import {
@@ -13,9 +15,6 @@ import {
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
 import jose from "jose";
-
-import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
-import { IdentityTokenRequestState } from "./identity-token-request-state.interface";
 
 @Injectable()
 export class AuthService {
@@ -47,7 +46,7 @@ export class AuthService {
       .setNotBefore(nbf ?? "0s")
       .setIssuedAt(iat ?? "0s")
       .setJti(jti ?? randomUUID())
-      .sign(this.keysService.getPrivateKey());
+      .sign(this.keysService.privateKey);
   }
 
   private async makeAccessTokenClaims(uid: string): Promise<AccessTokenClaims> {
@@ -101,7 +100,7 @@ export class AuthService {
     try {
       const result = await jose.jwtVerify<JWTPayload>(
         token,
-        this.keysService.getPublicKey(),
+        this.keysService.publicKey,
         {
           issuer: "api",
           audience: "api",
@@ -173,7 +172,7 @@ export class AuthService {
     redirectURL?: string,
   ): string {
     const id = randomUUID();
-    const expiresAt = Date.now() + this.configService.stateExpirationTime;
+    const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
     this.stateRecord.set(id, { parameters, expiresAt, redirectURL });
     return id;
   }

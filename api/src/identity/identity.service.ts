@@ -1,10 +1,17 @@
 import { ConfigService } from "../config/config.service";
 import { errorMessage } from "@geyser/shared";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  OnModuleInit,
+  UnauthorizedException,
+} from "@nestjs/common";
 import axios from "axios";
 import jose from "jose";
 
-import { IdentityProvider } from "./identity-provider.interface";
+import {
+  IdentityProviderMetadata,
+  IdentityProviderMetadataSchema,
+} from "./identity-provider-metadata.dto";
 import {
   IdentityTokenPayload,
   IdentityTokenPayloadSchema,
@@ -16,13 +23,18 @@ import {
 } from "./identity-token-response.dto";
 
 @Injectable()
-export class KeycloakService implements IdentityProvider {
-  private readonly jwks: ReturnType<typeof jose.createRemoteJWKSet>;
+export class IdentityService implements OnModuleInit {
+  private _metadata: IdentityProviderMetadata | null = null;
+  private _jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
 
-  constructor(private configService: ConfigService) {
-    this.jwks = jose.createRemoteJWKSet(
-      new URL(this.configService.keycloak.certsURL),
-    );
+  constructor(private configService: ConfigService) {}
+
+  async onModuleInit() {
+    const wellKnownEndpoint = `${this.configService.oidc.issuerURL}/.well-known/openid-configuration`;
+    const response = await axios.get(wellKnownEndpoint);
+
+    this._metadata = IdentityProviderMetadataSchema.parse(response.data);
+    this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksURL));
   }
 
   async verifyToken(token: string): Promise<IdentityTokenPayload> {
@@ -30,8 +42,11 @@ export class KeycloakService implements IdentityProvider {
       // Decode the token's protected header to get the key ID
       const protectedHeaderParameters = jose.decodeProtectedHeader(token);
 
-      // Get the public key from Keycloak's JWKS
-      const key = await this.jwks(protectedHeaderParameters);
+      // Get the public key from JWKS
+      if (!this._jwks) {
+        throw new Error("JWKS is not loaded");
+      }
+      const key = await this._jwks(protectedHeaderParameters);
 
       // Verify the token with the public key
       const verified = await jose.jwtVerify(token, key);
@@ -48,8 +63,11 @@ export class KeycloakService implements IdentityProvider {
     params: IdentityTokenRequestParameters,
   ): Promise<TokenResponse> {
     try {
+      if (!this._metadata) {
+        throw new Error("Provider metadata are not loaded");
+      }
       const response = await axios.post(
-        this.configService.keycloak.tokenURL,
+        this._metadata.tokenURL,
         new URLSearchParams({ ...params }).toString(),
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
@@ -60,5 +78,12 @@ export class KeycloakService implements IdentityProvider {
         `Identity token request failed: ${errorMessage(error)}`,
       );
     }
+  }
+
+  get metadata() {
+    if (!this._metadata) {
+      throw new Error("Provider metadata are not loaded");
+    }
+    return this._metadata;
   }
 }

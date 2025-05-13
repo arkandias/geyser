@@ -7,14 +7,14 @@ import path from "path";
 @Injectable()
 export class KeysService {
   private readonly logger = new Logger(KeysService.name);
-  private keyPair?: {
-    privateKey: jose.CryptoKey;
-    publicKey: jose.CryptoKey;
-  };
-  private jwk?: jose.JWK;
   private readonly keysDir = path.join(process.cwd(), "keys");
   private readonly privateKeyPath = path.join(this.keysDir, "private.key");
   private readonly publicKeyPath = path.join(this.keysDir, "public.key");
+  private _keyPair?: {
+    privateKey: jose.CryptoKey;
+    publicKey: jose.CryptoKey;
+  };
+  private _jwk?: jose.JWK;
 
   async init(): Promise<void> {
     // Ensure keys directory exists
@@ -37,7 +37,7 @@ export class KeysService {
         const publicKeyPem = fs.readFileSync(this.publicKeyPath, "utf8");
 
         // Import keys
-        this.keyPair = {
+        this._keyPair = {
           privateKey: await jose.importPKCS8(privateKeyPem, "RS256"),
           publicKey: await jose.importSPKI(publicKeyPem, "RS256"),
         };
@@ -54,7 +54,7 @@ export class KeysService {
         extractable: true,
       });
 
-      this.keyPair = { privateKey, publicKey };
+      this._keyPair = { privateKey, publicKey };
 
       // Export the keys in PEM format for storage
       const privateKeyPem = await jose.exportPKCS8(privateKey);
@@ -69,39 +69,39 @@ export class KeysService {
   }
 
   async initializeJWK(): Promise<void> {
-    if (!this.keyPair) {
+    if (!this._keyPair) {
       this.logger.warn("Failed to initialize JWK: Missing key pair");
       return;
     }
 
-    this.jwk = await jose.exportJWK(this.keyPair.publicKey);
-    this.jwk.kid = "key-1";
-    this.jwk.use = "sig";
-    this.jwk.alg = "RS256";
+    this._jwk = await jose.exportJWK(this._keyPair.publicKey);
+    this._jwk.kid = "key-1";
+    this._jwk.use = "sig";
+    this._jwk.alg = "RS256";
   }
 
-  getKeyPair(): {
+  get keyPair(): {
     privateKey: jose.CryptoKey;
     publicKey: jose.CryptoKey;
   } {
-    if (!this.keyPair) {
+    if (!this._keyPair) {
       throw new Error("No key pair available");
     }
-    return this.keyPair;
+    return this._keyPair;
   }
 
-  getPrivateKey(): jose.CryptoKey {
-    return this.getKeyPair().privateKey;
+  get privateKey(): jose.CryptoKey {
+    return this.keyPair.privateKey;
   }
 
-  getPublicKey(): jose.CryptoKey {
-    return this.getKeyPair().publicKey;
+  get publicKey(): jose.CryptoKey {
+    return this.keyPair.publicKey;
   }
 
-  getJWK(): jose.JWK {
-    if (!this.jwk) {
-      throw new Error("JWK not initialized");
+  get jwk(): jose.JWK {
+    if (!this._jwk) {
+      throw new Error("JWK is not initialized");
     }
-    return this.jwk;
+    return this._jwk;
   }
 }

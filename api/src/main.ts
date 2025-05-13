@@ -1,10 +1,9 @@
 import type { LogLevel } from "@nestjs/common";
-import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
-import type { Env } from "./config/env.schema";
+import { ConfigService } from "./config/config.service";
 
 async function bootstrap() {
   const logLevels: LogLevel[] =
@@ -30,8 +29,8 @@ async function bootstrap() {
     optionsSuccessStatus: 204, // This ensures OPTIONS returns 204 status
   });
 
-  const configService = app.get(ConfigService<Env, true>);
-  const port = configService.getOrThrow<number>("PORT");
+  const configService = app.get(ConfigService);
+  const port = configService.port;
 
   await app.listen(port);
   console.log(`Application is running on: http://localhost:${port}`);

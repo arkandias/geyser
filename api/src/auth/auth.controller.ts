@@ -1,18 +1,18 @@
-import { Cookies } from "../common/cookies.decorator";
-import { ConfigService } from "../config/config.service";
 import type { AccessTokenClaims } from "@geyser/shared";
 import { Controller, Get, HttpStatus, Post, Query, Res } from "@nestjs/common";
 import type { Response } from "express";
 
+import { Cookies } from "../common/cookies.decorator";
+import { ConfigService } from "../config/config.service";
+import { IdentityService } from "../identity/identity.service";
 import { AuthService } from "./auth.service";
-import { KeycloakService } from "./keycloak.service";
 
 @Controller("auth")
 export class AuthController {
   constructor(
     private configService: ConfigService,
+    private identityService: IdentityService,
     private authService: AuthService,
-    private keycloakService: KeycloakService,
   ) {}
 
   @Get("verify")
@@ -48,11 +48,8 @@ export class AuthController {
     );
 
     // Building authentication URL
-    const authUrl = new URL(this.configService.keycloak.authURL);
-    authUrl.searchParams.append(
-      "client_id",
-      this.configService.keycloak.clientId,
-    );
+    const authUrl = new URL(this.identityService.metadata.authURL);
+    authUrl.searchParams.append("client_id", this.configService.oidc.clientId);
     authUrl.searchParams.append("response_type", "code");
     authUrl.searchParams.append("state", stateId);
     authUrl.searchParams.append("scope", "openid");
@@ -68,14 +65,14 @@ export class AuthController {
     @Res() res: Response,
   ): Promise<void> {
     const { parameters, redirectURL } = this.authService.getState(state);
-    const { accessToken } = await this.keycloakService.requestToken({
-      client_id: this.configService.keycloak.clientId,
-      client_secret: this.configService.keycloak.clientSecret,
+    const { accessToken } = await this.identityService.requestToken({
+      client_id: this.configService.oidc.clientId,
+      client_secret: this.configService.oidc.clientSecret,
       grant_type: "authorization_code",
       code,
       ...parameters,
     });
-    const { uid } = await this.keycloakService.verifyToken(accessToken);
+    const { uid } = await this.identityService.verifyToken(accessToken);
 
     await this.authService.setAccessCookie(res, uid);
     await this.authService.setRefreshCookie(res, uid);

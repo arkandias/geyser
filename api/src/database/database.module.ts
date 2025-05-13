@@ -11,11 +11,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
-        host: configService.database.host,
-        port: configService.database.port,
-        username: configService.database.username,
-        password: configService.database.password,
-        database: configService.database.database,
+        url: configService.databaseURL,
         entities: [Role],
       }),
     }),

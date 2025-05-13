@@ -2,8 +2,8 @@
   "name": "@geyser/api",
   "private": true,
   "scripts": {
+    "dev": "nest start --watch",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -12,10 +12,12 @@
   },
   "dependencies": {
     "@geyser/shared": "workspace:*",
+    "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
     "axios": "^1.9.0",
     "cookie-parser": "^1.4.7",

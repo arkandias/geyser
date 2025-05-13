@@ -1,7 +1,6 @@
 {
   "name": "geyser",
   "version": "0.0.0",
-  "description": "",
   "author": "Julien Hauseux <julien.hauseux@univ-lille.fr>",
   "license": "AGPL-3.0-only",
   "private": true,
@@ -10,15 +9,19 @@
     "node": ">=22",
     "pnpm": ">=10"
   },
+  "packageManager": "pnpm@10.10.0",
   "scripts": {
-    "dev": "pnpm -r --parallel run dev",
+    "dev:infra": "docker compose --env-file .env.development -f compose.dev.yaml up -d",
+    "preview:infra": "docker compose --env-file .env.preview -f compose.preview.yaml up -d",
+    "prod:infra": "docker compose --env-file .env.production -f compose.prod.yaml up -d",
+    "dev": "pnpm dev:infra && pnpm -r --parallel dev",
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit && pnpm -r run typecheck",
+    "typecheck": "pnpm -r run typecheck",
     "validate": "pnpm run format:check && pnpm run typecheck && pnpm run lint && pnpm run test"
   },
   "devDependencies": {
@@ -36,5 +39,10 @@
     "prettier": "^3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.32.1"
+  },
+  "optionalDependencies": {
+    "@esbuild/linux-x64": "^0.25.4",
+    "@rollup/rollup-linux-x64-gnu": "^4.40.2",
+    "sass-embedded-linux-x64": "^1.88.0"
   }
 }

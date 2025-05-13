@@ -1,25 +1,5 @@
 name: geyser
 services:
-  api:
-    build: api
-    restart: unless-stopped
-    environment:
-      DATABASE_HOST: db
-      DATABASE_PORT: 5432
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: postgres_pwd
-      DATABASE_NAME: geyser
-      KEYCLOAK_URL: http://localhost/auth
-      KEYCLOAK_REALM: geyser
-      KEYCLOAK_CLIENT_ID: backend
-      KEYCLOAK_CLIENT_SECRET: xajdChHeNiBgY5gT3nD1GNh1pGlh47rn
-    ports:
-      - "3000:3000"
-    networks:
-      - private-db
-      - public
-    command: node dist/src/main.js
-
   db:
     image: postgres:16
     restart: unless-stopped
@@ -45,13 +25,40 @@ services:
       - ./postgres/init:/initdb
       - ./postgres/backups:/backups
 
+  api:
+    build:
+      context: .
+      target: api
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:3000/health || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      API_URL: "${GEYSER_HOSTNAME}/api"
+      API_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
+      API_OIDC_ISSUER_URL: "http://${GEYSER_HOSTNAME}/auth/realms/geyser"
+      API_OIDC_CLIENT_ID: "backend"
+      API_OIDC_CLIENT_SECRET: "${CLIENT_BACKEND_SECRET}"
+    ports:
+      - "3000:3000"
+    networks:
+      - private-db
+      - public
+
   hasura:
     image: hasura/graphql-engine:latest
     restart: unless-stopped
     depends_on:
-      api:
-        condition: service_healthy
       db:
+        condition: service_healthy
+      api:
         condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost:8080/healthz || exit 1"
@@ -63,7 +70,7 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"${GEYSER_HOSTNAME}/api/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
       HASURA_GRAPHQL_CORS_DOMAIN: "*"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
@@ -95,7 +102,6 @@ services:
       - private-kc-db
     volumes:
       - kc-data:/var/lib/postgresql/data
-      - ./postgres/backups:/backups
 
   keycloak:
     build: keycloak
@@ -118,8 +124,7 @@ services:
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME: "http://${GEYSER_HOSTNAME}/auth"
-      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_DEBUG: "true"
       KC_PROXY_HEADERS: "xforwarded"
       CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
@@ -131,13 +136,15 @@ services:
       - private-kc-db
       - public
     volumes:
-      - ./keycloak/healthcheck:/opt/healthcheck:ro
-      - ./keycloak/templates:/opt/keycloak/data/import:ro
       - ./keycloak/backups:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
   nginx:
-    image: nginx:latest
+    build:
+      context: .
+      target: client
+      args:
+        MODE: "preview"
     restart: unless-stopped
     healthcheck:
       test: "curl -fsS http://localhost/health || exit 1"
@@ -146,20 +153,17 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 1s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_HOSTNAME: localhost
-      NGINX_PROXY_API_URL: http://api:3000
-      NGINX_PROXY_HASURA_URL: http://hasura:8080/v1/graphql
-      NGINX_PROXY_KEYCLOAK_URL: http://keycloak:8080
-      NGINX_PROXY_SPA_URL: http://host.docker.internal:5173
+      GEYSER_HOSTNAME: "${GEYSER_HOSTNAME}"
+      NGINX_PROXY_API_URL: "http://api:3000"
+      NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
+      NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
     ports:
       - "80:80"
     networks:
       - public
-    volumes:
-      - ./nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - ./nginx/includes:/etc/nginx/includes:ro
-      - ./client/dist:/usr/share/nginx/html
 
 networks:
   private-db:

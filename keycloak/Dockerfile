@@ -7,15 +7,16 @@ ENV KC_METRICS_ENABLED=true
 # Configure a database vendor
 ENV KC_DB=postgres
 
-COPY providers /opt/keycloak/providers
-
 RUN /opt/keycloak/bin/kc.sh build
 
 FROM quay.io/keycloak/keycloak:26.2
 COPY --from=builder /opt/keycloak/ /opt/keycloak/
+COPY ./healthcheck/healthcheck.sh /opt/healthcheck/
+COPY ./templates/ /opt/keycloak/data/import/
 
 ENV KC_HEALTH_ENABLED=true
 ENV KC_METRICS_ENABLED=true
 ENV KC_DB=postgres
+ENV KC_CACHE=local
 
 ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

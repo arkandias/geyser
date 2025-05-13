@@ -18,50 +18,19 @@ export class ConfigService {
   }
 
   get apiURL() {
-    return this.configService.getOrThrow<string>("API_URL");
+    return this.configService.getOrThrow<string>("API_URL").replace(/\/$/, "");
   }
 
-  get tokenMinValidity() {
-    return this.configService.getOrThrow<number>("TOKEN_MIN_VALIDITY_SECONDS");
+  get databaseURL() {
+    return this.configService.getOrThrow<string>("API_DATABASE_URL");
   }
 
-  get stateExpirationTime() {
-    return this.configService.getOrThrow<number>("STATE_EXPIRATION_TIME_MS");
-  }
-
-  get database() {
+  get oidc() {
     return {
-      host: this.configService.getOrThrow<string>("DATABASE_HOST"),
-      port: this.configService.getOrThrow<number>("DATABASE_PORT"),
-      username: this.configService.getOrThrow<string>("DATABASE_USER"),
-      password: this.configService.getOrThrow<string>("DATABASE_PASSWORD"),
-      database: this.configService.getOrThrow<string>("DATABASE_NAME"),
-    };
-  }
-
-  get hasura() {
-    return {
-      claimsNamespace: this.configService.getOrThrow<string>(
-        "HASURA_CLAIMS_NAMESPACE",
-      ),
-    };
-  }
-
-  get keycloak() {
-    const rootURL = this.configService.getOrThrow<string>("KEYCLOAK_URL");
-    const realm = this.configService.getOrThrow<string>("KEYCLOAK_REALM");
-    return {
-      rootURL,
-      realm,
-      authURL: `${rootURL}/realms/${realm}/protocol/openid-connect/auth`,
-      certsURL: `${rootURL}/realms/${realm}/protocol/openid-connect/certs`,
-      introspectURL: `${rootURL}/realms/${realm}/protocol/openid-connect/introspect`,
-      logoutURL: `${rootURL}/realms/${realm}/protocol/openid-connect/logout`,
-      tokenURL: `${rootURL}/realms/${realm}/protocol/openid-connect/token`,
-      userinfoURL: `${rootURL}/realms/${realm}/protocol/openid-connect/userinfo`,
-      clientId: this.configService.getOrThrow<string>("KEYCLOAK_CLIENT_ID"),
+      issuerURL: this.configService.getOrThrow<string>("API_OIDC_ISSUER_URL"),
+      clientId: this.configService.getOrThrow<string>("API_OIDC_CLIENT_ID"),
       clientSecret: this.configService.getOrThrow<string>(
-        "KEYCLOAK_CLIENT_SECRET",
+        "API_OIDC_CLIENT_SECRET",
       ),
     };
   }
@@ -73,6 +42,9 @@ export class ConfigService {
       ),
       refreshTokenMaxAge: this.configService.getOrThrow<number>(
         "JWT_REFRESH_TOKEN_MAX_AGE_MS",
+      ),
+      stateExpirationTime: this.configService.getOrThrow<number>(
+        "JWT_STATE_EXPIRATION_TIME_MS",
       ),
     };
   }

@@ -9,7 +9,7 @@ export class KeysController {
   @Get("jwks.json")
   @Header("Content-Type", "application/json")
   getPublicKeyJwks() {
-    const jwk = this.keysService.getJWK();
+    const jwk = this.keysService.jwk;
 
     return {
       keys: [jwk],

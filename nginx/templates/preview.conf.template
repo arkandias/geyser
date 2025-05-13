@@ -27,9 +27,6 @@ server {
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/keycloak.conf;
     
-    set $spa_url ${NGINX_PROXY_SPA_URL};
-    include /etc/nginx/includes/spa.conf;
-    
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;

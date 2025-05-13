@@ -38,6 +38,8 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 1s
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
@@ -73,7 +75,6 @@ services:
       - private-kc-db
     volumes:
       - kc-data:/var/lib/postgresql/data
-      - ./postgres/backups:/backups
 
   keycloak:
     build: keycloak
@@ -96,15 +97,13 @@ services:
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
-      KC_HOSTNAME: "http://${GEYSER_HOSTNAME}/auth"
-      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_DEBUG: "true"
       KC_PROXY_HEADERS: "xforwarded"
       CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
-      - "9000:9000"
     networks:
       - private-kc-db
       - public
@@ -117,6 +116,12 @@ services:
   nginx:
     image: nginx:latest
     restart: unless-stopped
+    # These dependencies are needed for `pnpm run dev`
+    depends_on:
+      hasura:
+        condition: service_started
+      keycloak:
+        condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost/health || exit 1"
       interval: 30s
@@ -127,18 +132,17 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_HOSTNAME: localhost
-      NGINX_PROXY_API_URL: http://host.docker.internal:3000
-      NGINX_PROXY_HASURA_URL: http://hasura:8080/v1/graphql
-      NGINX_PROXY_KEYCLOAK_URL: http://keycloak:8080
-      NGINX_PROXY_SPA_URL: http://host.docker.internal:5173
-      SPA_MODE: external
+      GEYSER_HOSTNAME: "${GEYSER_HOSTNAME:?}"
+      NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
+      NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
+      NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
+      NGINX_PROXY_SPA_URL: "http://host.docker.internal:5173"
     ports:
       - "80:80"
     networks:
       - public
     volumes:
-      - ./nginx/templates/http.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./nginx/templates/development.conf.template:/etc/nginx/templates/default.conf.template:ro
       - ./nginx/includes:/etc/nginx/includes:ro
       - ./client/dist:/usr/share/nginx/html
 
