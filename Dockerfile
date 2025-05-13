@@ -49,10 +49,10 @@ COPY ./nginx/templates/${SCHEME}.conf.template /etc/nginx/templates/default.conf
 COPY ./nginx/includes/ /etc/nginx/includes/
 
 RUN if [ "${SCHEME}" = "https" ]; then \
-        mkdir -p "/etc/nginx/certs/default" && \
-        mkdir -p "/etc/nginx/certs/${GEYSER_HOSTNAME}" && \
+        mkdir -p /etc/nginx/certs/default && \
+        mkdir -p /etc/nginx/certs/"${GEYSER_HOSTNAME}" && \
         cp ./nginx/certs/default/* /etc/nginx/certs/default/ && \
-        cp "./nginx/certs/${GEYSER_HOSTNAME}/*" "/etc/nginx/certs/${GEYSER_HOSTNAME}/"; \
+        cp ./nginx/certs/"${GEYSER_HOSTNAME}"/* /etc/nginx/certs/"${GEYSER_HOSTNAME}"/; \
     fi
 
 COPY --chmod=755 nginx/url-check.sh /docker-entrypoint.d/00-url-check.sh
