@@ -44,10 +44,10 @@ services:
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: "xforwarded"
       KC_HOSTNAME_STRICT: "false"
       KC_HOSTNAME_DEBUG: "true"
-      KC_PROXY_HEADERS: "xforwarded"
-      CLIENT_BACKEND_ROOT_URL: "http://${GEYSER_HOSTNAME}"
+      CLIENT_BACKEND_ROOT_URL: "http://localhost"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
@@ -55,7 +55,6 @@ services:
       - private-kc-db
       - public
     volumes:
-      - ./keycloak/templates:/opt/keycloak/data/import:ro
       - ./keycloak/backups:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
@@ -132,7 +131,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_HOSTNAME: null
+      GEYSER_HOSTNAME: "localhost"
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"

@@ -44,10 +44,11 @@ services:
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
+      KC_PROXY_HEADERS: "xforwarded"
+      KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME: "${GEYSER_URL}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "false"
-      KC_PROXY_HEADERS: "xforwarded"
       CLIENT_BACKEND_ROOT_URL: "${GEYSER_URL}"
       CLIENT_BACKEND_SECRET: null
     ports:
@@ -148,7 +149,6 @@ services:
       context: .
       target: client
       args:
-        MODE: "preview"
         GEYSER_URL: "${GEYSER_URL}"
     restart: unless-stopped
     depends_on:

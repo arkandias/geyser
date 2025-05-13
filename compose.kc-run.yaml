@@ -1,4 +1,0 @@
-services:
-  keycloak:
-    restart: no
-    command: ${KC_CMD}

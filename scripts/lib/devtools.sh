@@ -33,8 +33,7 @@ hasura() {
 kc() {
     if [[ "$1" == "--restart-with" ]]; then
         shift
-        export KC_CMD="$*"
-        compose -f "${GEYSER_HOME}/compose.kc-run.yaml" up keycloak
+        compose -f "${GEYSER_HOME}/compose.yaml" run keycloak "$@"
         wait_until_exit keycloak
     else
         compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
