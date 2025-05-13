@@ -3,7 +3,8 @@ name: Docker Build and Publish
 on:
   push:
     branches: [master]
-    tags: ["v*"]
+    tags:
+      - "v[0-9]+.[0-9]+.[0-9]+"
 
 permissions:
   contents: read
@@ -14,7 +15,9 @@ concurrency:
   cancel-in-progress: ${{ github.ref_type != 'tag' }}
 
 env:
-  REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-frontend
+  FRONTEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-frontend
+  BACKEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-backend
+  GEYSER_URL: https://geyserflow.org
 
 jobs:
   format:
@@ -50,10 +53,12 @@ jobs:
             # Remove 'v' prefix for the version tag
             VERSION=${GITHUB_REF_NAME#v}
             echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
-            echo "tags=${REPOSITORY}:${VERSION},${REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
+            echo "frontend_tags=${FRONTEND_REPOSITORY}:${VERSION},${FRONTEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
+            echo "backend_tags=${BACKEND_REPOSITORY}:${VERSION},${BACKEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
           else
-            echo "version=edge-${GITHUB_SHA::8}" >> "${GITHUB_OUTPUT}"
-            echo "tags=${REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
+            echo "version=${GITHUB_SHA::8}" >> "${GITHUB_OUTPUT}"
+            echo "frontend_tags=${FRONTEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
+            echo "backend_tags=${BACKEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Checkout repository
@@ -72,17 +77,19 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push Docker image
+      - name: Build and push Docker images
         uses: docker/build-push-action@v6
         with:
           context: .
-          target: client
           push: true
-          tags: ${{ steps.vars.outputs.tags }}
+          platforms: linux/amd64
+          outputs: |
+            type=image,name=${{ env.FRONTEND_REPOSITORY }},target=client,tags=${{ steps.vars.outputs.frontend_tags }}
+            type=image,name=${{ env.BACKEND_REPOSITORY }},target=api,tags=${{ steps.vars.outputs.backend_tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            GEYSER_URL=${{ 'https://geyserflow.org' }}
+            GEYSER_URL=${{ env.GEYSER_URL }}
             BUILD_DATE=${{ steps.vars.outputs.date }}
             VERSION=${{ steps.vars.outputs.version }}
             VCS_REF=${{ github.sha }}

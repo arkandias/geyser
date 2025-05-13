@@ -86,9 +86,7 @@ services:
       - ./postgres/backups:/backups
 
   api:
-    build:
-      context: .
-      target: api
+    image: ghcr.io/arkandias/geyser-backend:latest
     restart: unless-stopped
     depends_on:
       db:
@@ -145,11 +143,7 @@ services:
       - public
 
   nginx:
-    build:
-      context: .
-      target: client
-      args:
-        GEYSER_URL: "${GEYSER_URL}"
+    image: ghcr.io/arkandias/geyser-frontend:latest
     restart: unless-stopped
     depends_on:
       keycloak:
@@ -177,6 +171,8 @@ services:
       - "443:443"
     networks:
       - public
+    volumes:
+      - ./nginx/certs:/etc/nginx/certs:ro
 
 networks:
   private-db:

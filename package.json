@@ -6,14 +6,14 @@
   "private": true,
   "type": "module",
   "engines": {
-    "node": ">=22",
-    "pnpm": ">=10"
+    "node": "22",
+    "pnpm": "10"
   },
   "packageManager": "pnpm@10.10.0",
   "scripts": {
     "dev:infra": "docker compose --env-file .env.development -f compose.dev.yaml up -d",
     "dev": "pnpm dev:infra && pnpm -r --parallel dev",
-    "build": "export VITE_BUILD_VERSION=$(node -e \"console.log(require('./package.json').version)\") && pnpm -r run build",
+    "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "format": "prettier . --write",
     "format:check": "prettier . --check",
