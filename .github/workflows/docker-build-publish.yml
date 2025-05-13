@@ -22,7 +22,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm run format
+      - run: pnpm run format:check
 
   typecheck:
     runs-on: ubuntu-latest
