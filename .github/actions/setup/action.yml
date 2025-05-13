@@ -8,11 +8,5 @@ runs:
       with:
         node-version-file: "package.json"
         cache: "pnpm"
-    - uses: actions/cache@v4
-      with:
-        path: $(pnpm store path)
-        key: ${{ runner.os }}-pnpm-${{ hashFiles('**/pnpm-lock.yaml') }}
-        restore-keys: |
-          ${{ runner.os }}-pnpm-
     - run: pnpm install
       shell: bash
