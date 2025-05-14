@@ -5,9 +5,13 @@ import {
   AccessTokenPayload,
   AccessTokenPayloadSchema,
   type JWTPayload,
-  errorMessage,
 } from "@geyser/shared";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+  UnauthorizedException,
+} from "@nestjs/common";
 import { CookieOptions, Response } from "express";
 import jose from "jose";
 
@@ -19,6 +23,7 @@ import { RolesService } from "../roles/roles.service";
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(ConfigService.name);
   private stateRecord = new Map<string, IdentityTokenRequestState>();
 
   constructor(
@@ -93,9 +98,7 @@ export class AuthService {
     options?: jose.JWTVerifyOptions,
   ): Promise<JWTPayload> {
     if (!token) {
-      throw new UnauthorizedException(
-        "Token verification failed: Missing token",
-      );
+      throw new UnauthorizedException("Missing token");
     }
 
     try {
@@ -111,9 +114,10 @@ export class AuthService {
       );
       return result.payload;
     } catch (error) {
-      throw new UnauthorizedException(
-        `Token verification failed: ${errorMessage(error)}`,
-      );
+      if (error instanceof InternalServerErrorException) {
+        throw error;
+      }
+      throw new UnauthorizedException("Token verification failed");
     }
   }
 
@@ -178,13 +182,18 @@ export class AuthService {
     return id;
   }
 
-  getState(id: string): IdentityTokenRequestState {
+  getState(id: string, req: Request): IdentityTokenRequestState {
     const authState = this.stateRecord.get(id);
     if (!authState) {
-      throw new UnauthorizedException("State not found");
+      this.logger.warn({
+        message: "Potential CSRF attempt: State not found",
+        stateId: id,
+        request: req,
+      });
+      throw new UnauthorizedException("Authentication failed");
     }
     if (authState.expiresAt < Date.now()) {
-      throw new UnauthorizedException("State has expired");
+      throw new UnauthorizedException("Authentication session expired");
     }
     return authState;
   }

@@ -1,5 +1,9 @@
 import { errorMessage } from "@geyser/shared";
-import { Injectable, Logger } from "@nestjs/common";
+import {
+  Injectable,
+  InternalServerErrorException,
+  Logger,
+} from "@nestjs/common";
 import fs from "fs";
 import jose from "jose";
 import path from "path";
@@ -87,7 +91,7 @@ export class KeysService {
     publicKey: jose.CryptoKey;
   } {
     if (!this._keyPair) {
-      throw new Error("No key pair available");
+      throw new InternalServerErrorException("No key pair available");
     }
     return this._keyPair;
   }
@@ -102,7 +106,7 @@ export class KeysService {
 
   get jwk(): jose.JWK {
     if (!this._jwk) {
-      throw new Error("JWK not initialized");
+      throw new InternalServerErrorException("JWK not initialized");
     }
     return this._jwk;
   }

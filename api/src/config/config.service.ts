@@ -32,7 +32,7 @@ export class ConfigService {
 
   validateEnvironment() {
     if (this.nodeEnv === "production" && !this.api.secure) {
-      throw new Error("Production environment requires HTTPS (secure API_URL)");
+      throw new Error("Invalid API_URL: Production environment requires HTTPS");
     }
   }
 
@@ -54,14 +54,14 @@ export class ConfigService {
     let url = this.configService.getOrThrow<string>("API_URL");
     if (url.endsWith("/")) {
       url = url.slice(0, -1);
-      this.logger.warn("Removed trailing slash from API_URL");
+      this.logger.warn("Invalid API_URL: Trailing slash removed");
     }
 
     const secure = url.startsWith("https://");
 
     const origin = /^(https?:\/\/[^/]+)/.exec(url)?.[1];
     if (!origin) {
-      throw new Error("Invalid API_URL: Cannot extract origin");
+      throw new Error("Invalid API_URL: Failed to extract origin");
     }
 
     this.logger.log(`API URL: ${url} (origin: ${origin}, secure: ${secure})`);

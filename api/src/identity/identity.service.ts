@@ -1,6 +1,6 @@
-import { errorMessage } from "@geyser/shared";
 import {
   Injectable,
+  InternalServerErrorException,
   Logger,
   OnModuleInit,
   UnauthorizedException,
@@ -47,10 +47,7 @@ export class IdentityService implements OnModuleInit {
       const protectedHeaderParameters = jose.decodeProtectedHeader(token);
 
       // Get the public key from JWKS
-      if (!this._jwks) {
-        throw new Error("JWKS not loaded");
-      }
-      const key = await this._jwks(protectedHeaderParameters);
+      const key = await this.jwks(protectedHeaderParameters);
 
       // Verify the token with the public key
       const verified = await jose.jwtVerify(token, key, {
@@ -59,9 +56,10 @@ export class IdentityService implements OnModuleInit {
 
       return IdentityTokenPayloadSchema.parse(verified.payload);
     } catch (error) {
-      throw new UnauthorizedException(
-        `Identity token verification failed: ${errorMessage(error)}`,
-      );
+      if (error instanceof InternalServerErrorException) {
+        throw error;
+      }
+      throw new UnauthorizedException("Identity token verification failed");
     }
   }
 
@@ -77,15 +75,25 @@ export class IdentityService implements OnModuleInit {
 
       return IdentityTokenResponseSchema.parse(response.data);
     } catch (error) {
-      throw new UnauthorizedException(
-        `Identity token request failed: ${errorMessage(error)}`,
-      );
+      if (error instanceof InternalServerErrorException) {
+        throw error;
+      }
+      throw new UnauthorizedException(`Identity token request failed`);
     }
+  }
+
+  get jwks() {
+    if (!this._jwks) {
+      throw new InternalServerErrorException("JWKS not loaded");
+    }
+    return this._jwks;
   }
 
   get metadata() {
     if (!this._metadata) {
-      throw new Error("Identity provider metadata not loaded");
+      throw new InternalServerErrorException(
+        "Identity provider metadata not loaded",
+      );
     }
     return this._metadata;
   }

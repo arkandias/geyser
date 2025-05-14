@@ -1,5 +1,13 @@
 import type { AccessTokenClaims } from "@geyser/shared";
-import { Controller, Get, HttpStatus, Post, Query, Res } from "@nestjs/common";
+import {
+  Controller,
+  Get,
+  HttpStatus,
+  Post,
+  Query,
+  Req,
+  Res,
+} from "@nestjs/common";
 import type { Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
@@ -62,9 +70,10 @@ export class AuthController {
   async callback(
     @Query("code") code: string,
     @Query("state") state: string,
+    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const { parameters, redirectURL } = this.authService.getState(state);
+    const { parameters, redirectURL } = this.authService.getState(state, req);
     const { accessToken } = await this.identityService.requestToken({
       client_id: this.configService.oidc.clientId,
       client_secret: this.configService.oidc.clientSecret,
