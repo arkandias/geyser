@@ -1,4 +1,12 @@
-# Default server configuration
+# Configuration
+resolver 127.0.0.11 valid=1y ipv6=off;
+
+# Variables
+set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+set $api_url ${NGINX_PROXY_API_URL};
+set $hasura_url ${NGINX_PROXY_HASURA_URL};
+
+# Default server
 server {
     listen 80 default_server;
     listen 443 ssl default_server;
@@ -12,15 +20,31 @@ server {
     return 444;
 }
 
-resolver 127.0.0.11 valid=1y ipv6=off;
-
 # Redirect HTTP traffic to HTTPS
 server {
     listen 80;
-    server_name ${GEYSER_HOSTNAME};
+    server_name *.${GEYSER_HOSTNAME};
     return 301 https://$host$request_uri;
 }
 
+# Admin server
+server {
+    listen 443;
+    server_name admin.${GEYSER_HOSTNAME}
+    
+    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    # Restrict to modern TLS protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
+    # Configure allowed IPs (e.g., behind VPN)
+    #allow 10.0.0.0/24;
+    #deny all;
+    
+    include /etc/nginx/includes/admin/keycloak.conf;
+}
+
+# Main server
 server {
     listen 443 ssl;
     server_name ${GEYSER_HOSTNAME};
@@ -36,13 +60,8 @@ server {
     # Restrict to modern TLS protocols
     ssl_protocols TLSv1.2 TLSv1.3;
     
-    set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/api.conf;
-    
-    set $hasura_url ${NGINX_PROXY_HASURA_URL};
     include /etc/nginx/includes/hasura.conf;
-    
-    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/keycloak.conf;
 
     location / {

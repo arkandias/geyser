@@ -1,4 +1,12 @@
-# Default server configuration
+# Configuration
+resolver 127.0.0.11 valid=1y ipv6=off;
+
+# Variables
+set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+set $api_url ${NGINX_PROXY_API_URL};
+set $hasura_url ${NGINX_PROXY_HASURA_URL};
+
+# Default server
 server {
     listen 80 default_server;
     server_name _;
@@ -7,8 +15,19 @@ server {
     return 444;
 }
 
-resolver 127.0.0.11 valid=1y ipv6=off;
+# Admin server
+server {
+    listen 80;
+    server_name admin.${GEYSER_HOSTNAME}
+    
+    # Configure allowed IPs (e.g., behind VPN)
+    #allow 10.0.0.0/24;
+    #deny all;
+    
+    include /etc/nginx/includes/admin/keycloak.conf;
+}
 
+# Main server
 server {
     listen 80;
     server_name ${GEYSER_HOSTNAME};
@@ -17,15 +36,9 @@ server {
     gzip_static on;
     
     include /etc/nginx/includes/health.conf;
-    
-    set $api_url ${NGINX_PROXY_API_URL};
-    include /etc/nginx/includes/api.conf;
-    
-    set $hasura_url ${NGINX_PROXY_HASURA_URL};
-    include /etc/nginx/includes/hasura.conf;
-    
-    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/keycloak.conf;
+    include /etc/nginx/includes/api.conf;
+    include /etc/nginx/includes/hasura.conf;
     
     location / {
         root /usr/share/nginx/html;

@@ -48,7 +48,7 @@ services:
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME: "${GEYSER_URL}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
-      KC_HOSTNAME_DEBUG: "false"
+      KC_HOSTNAME_DEBUG: "true"
       CLIENT_BACKEND_ROOT_URL: "${GEYSER_URL}"
       CLIENT_BACKEND_SECRET: null
     ports:

@@ -41,7 +41,6 @@ COPY --from=build /prod/client /usr/share/nginx/html
 ARG GEYSER_URL
 ENV SCHEME="${GEYSER_URL%%://*}"
 ENV GEYSER_HOSTNAME="${GEYSER_URL##*://}"
-ENV GEYSER_URL_BUILD_ARG="${GEYSER_URL}"
 
 COPY ./nginx/templates/${SCHEME}.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
@@ -49,4 +48,5 @@ COPY ./nginx/includes/ /etc/nginx/includes/
 # Add a script that validates at runtime that the GEYSER_URL environment variable 
 # matches the URL used during build time. This prevents deployment misconfigurations
 # where the container built for one URL is accidentally used with a different URL.
+ENV GEYSER_URL_BUILD_ARG="${GEYSER_URL}"
 COPY --chmod=755 nginx/url-check.sh /docker-entrypoint.d/00-url-check.sh
