@@ -1,4 +1,4 @@
-# Configuration
+# Use Docker's DNS resolver
 resolver 127.0.0.11 valid=1y ipv6=off;
 
 # Default server

@@ -1,5 +1,8 @@
-# Configuration
+# Use Docker's DNS resolver
 resolver 127.0.0.11 valid=1y ipv6=off;
+
+# Restrict to modern TLS protocols
+ssl_protocols TLSv1.2 TLSv1.3;
 
 # Default server
 server {
@@ -33,8 +36,6 @@ server {
     
     ssl_certificate /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/private.key;
-    # Restrict to modern TLS protocols
-    ssl_protocols TLSv1.2 TLSv1.3;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/admin/keycloak.conf;
@@ -47,8 +48,6 @@ server {
     
     ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
-    # Restrict to modern TLS protocols
-    ssl_protocols TLSv1.2 TLSv1.3;
     
     # Enable serving pre-compressed files
     gzip_static on;
