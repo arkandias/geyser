@@ -87,7 +87,7 @@ services:
       - ./postgres/backups:/backups
 
   api:
-    image: ghcr.io/arkandias/geyser-backend:edge
+    image: ghcr.io/arkandias/geyser-backend:latest
     restart: unless-stopped
     depends_on:
       db:

@@ -25,7 +25,7 @@ server {
 # Admin server
 server {
     listen 443;
-    server_name admin.${GEYSER_HOSTNAME}
+    server_name admin.${GEYSER_HOSTNAME};
     
     # Configure allowed IPs (e.g., behind VPN)
     #allow 10.0.0.0/24;
