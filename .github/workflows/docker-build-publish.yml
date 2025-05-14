@@ -81,7 +81,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          target: api
+          target: backend
           push: true
           tags: ${{ steps.vars.outputs.backend_tags }}
           cache-from: type=gha
@@ -96,7 +96,7 @@ jobs:
         uses: docker/build-push-action@v6
         with:
           context: .
-          target: client
+          target: frontend
           push: true
           tags: ${{ steps.vars.outputs.frontend_tags }}
           cache-from: type=gha
