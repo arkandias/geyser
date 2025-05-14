@@ -45,14 +45,6 @@ jobs:
     needs: [format, lint, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Debug GitHub context
-        run: |
-          echo "GITHUB_REF: $GITHUB_REF"
-          echo "GITHUB_REF_NAME: $GITHUB_REF_NAME" 
-          echo "GITHUB_REF_TYPE: $GITHUB_REF_TYPE"
-          echo "GITHUB_SHA: $GITHUB_SHA"
-          echo "GITHUB_EVENT_NAME: $GITHUB_EVENT_NAME"
-
       - name: Set variables
         id: vars
         run: |
@@ -85,15 +77,28 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push Docker images
+      - name: Build and push Docker image (Backend)
         uses: docker/build-push-action@v6
         with:
           context: .
+          target: api
           push: true
-          platforms: linux/amd64
-          outputs: |
-            type=image,name=${{ env.FRONTEND_REPOSITORY }},target=client,tags=${{ steps.vars.outputs.frontend_tags }}
-            type=image,name=${{ env.BACKEND_REPOSITORY }},target=api,tags=${{ steps.vars.outputs.backend_tags }}
+          tags: ${{ steps.vars.outputs.backend_tags }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            GEYSER_URL=${{ env.GEYSER_URL }}
+            BUILD_DATE=${{ steps.vars.outputs.date }}
+            VERSION=${{ steps.vars.outputs.version }}
+            VCS_REF=${{ github.sha }}
+
+      - name: Build and push Frontend Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: client
+          push: true
+          tags: ${{ steps.vars.outputs.frontend_tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

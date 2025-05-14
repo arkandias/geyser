@@ -9,7 +9,7 @@
     "node": "22",
     "pnpm": "10"
   },
-  "packageManager": "pnpm@10.10.0",
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev:infra": "docker compose --env-file .env.development -f compose.dev.yaml up -d",
     "dev": "pnpm dev:infra && pnpm -r --parallel dev",
