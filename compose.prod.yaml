@@ -1,0 +1,25 @@
+services:
+  kc-db:
+    restart: always
+
+  keycloak:
+    restart: always
+    environment:
+      KC_HOSTNAME_DEBUG: "false"
+
+  db:
+    restart: always
+
+  api:
+    image: ghcr.io/arkandias/geyser-backend:latest
+    restart: always
+
+  hasura:
+    image: hasura/graphql-engine:v2.48.0.ubuntu
+    restart: always
+    environment:
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+
+  nginx:
+    image: ghcr.io/arkandias/geyser-frontend:latest
+    restart: always

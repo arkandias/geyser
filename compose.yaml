@@ -48,7 +48,7 @@ services:
       KC_HOSTNAME: "${GEYSER_URL}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
-      KC_HOSTNAME_DEBUG: "false"
+      KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
       CLIENT_BACKEND_ROOT_URL: "${GEYSER_URL}"
       CLIENT_BACKEND_SECRET: null
@@ -87,7 +87,7 @@ services:
       - ./postgres/backups:/backups
 
   api:
-    image: ghcr.io/arkandias/geyser-backend:latest
+    image: ghcr.io/arkandias/geyser-backend:edge
     restart: unless-stopped
     depends_on:
       db:
@@ -135,7 +135,7 @@ services:
       HASURA_GRAPHQL_ADMIN_SECRET: null
       HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://api:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
       HASURA_GRAPHQL_CORS_DOMAIN: "${GEYSER_URL}"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:
       - "8080:8080"
@@ -144,7 +144,7 @@ services:
       - public
 
   nginx:
-    image: ghcr.io/arkandias/geyser-frontend:latest
+    image: ghcr.io/arkandias/geyser-frontend:edge
     restart: unless-stopped
     depends_on:
       keycloak:
