@@ -12,7 +12,7 @@ import { Role } from "../roles/role.entity";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
-        url: configService.databaseURL,
+        url: configService.database.url,
         entities: [Role],
       }),
     }),

@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const IdentityProviderMetadataSchema = z
+export const IdentityProviderConfigurationSchema = z
   .object({
     issuer: z.string(),
     authorization_endpoint: z.string(),
@@ -16,6 +16,6 @@ export const IdentityProviderMetadataSchema = z
     };
   });
 
-export type IdentityProviderMetadata = z.infer<
-  typeof IdentityProviderMetadataSchema
+export type IdentityProviderConfiguration = z.infer<
+  typeof IdentityProviderConfigurationSchema
 >;

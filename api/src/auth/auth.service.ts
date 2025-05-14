@@ -133,7 +133,7 @@ export class AuthService {
   private accessCookieOptions(): CookieOptions {
     return {
       httpOnly: true,
-      secure: this.configService.api.isSecure,
+      secure: this.configService.api.secure,
       sameSite: "lax",
       maxAge: this.configService.jwt.accessTokenMaxAge,
       path: "/",
@@ -143,7 +143,7 @@ export class AuthService {
   private refreshCookieOptions(): CookieOptions {
     return {
       httpOnly: true,
-      secure: this.configService.api.isSecure,
+      secure: this.configService.api.secure,
       sameSite: "lax",
       maxAge: this.configService.jwt.refreshTokenMaxAge,
       path: "/api/auth/refresh",

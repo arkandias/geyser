@@ -10,7 +10,9 @@ export const EnvSchema = z.object({
       (url) => /^(https?):\/\//.test(url),
       "Must start with 'http://' or 'https://'",
     ),
+
   API_DATABASE_URL: z.string(),
+
   API_OIDC_DISCOVERY_URL: z.string(),
   API_OIDC_CLIENT_ID: z.string(),
   API_OIDC_CLIENT_SECRET: z.string(),

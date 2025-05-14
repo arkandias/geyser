@@ -33,13 +33,13 @@ export class KeysService {
     ) {
       try {
         // Read existing keys
-        const privateKeyPem = fs.readFileSync(this.privateKeyPath, "utf8");
-        const publicKeyPem = fs.readFileSync(this.publicKeyPath, "utf8");
+        const privateKeyPEM = fs.readFileSync(this.privateKeyPath, "utf8");
+        const publicKeyPEM = fs.readFileSync(this.publicKeyPath, "utf8");
 
         // Import keys
         this._keyPair = {
-          privateKey: await jose.importPKCS8(privateKeyPem, "RS256"),
-          publicKey: await jose.importSPKI(publicKeyPem, "RS256"),
+          privateKey: await jose.importPKCS8(privateKeyPEM, "RS256"),
+          publicKey: await jose.importSPKI(publicKeyPEM, "RS256"),
         };
 
         this.logger.log("Loaded existing RSA key pair");
@@ -78,6 +78,8 @@ export class KeysService {
     this._jwk.kid = "key-1";
     this._jwk.use = "sig";
     this._jwk.alg = "RS256";
+
+    this.logger.log("JWK initialized");
   }
 
   get keyPair(): {
@@ -100,7 +102,7 @@ export class KeysService {
 
   get jwk(): jose.JWK {
     if (!this._jwk) {
-      throw new Error("JWK is not initialized");
+      throw new Error("JWK not initialized");
     }
     return this._jwk;
   }

@@ -1,6 +1,7 @@
 import { errorMessage } from "@geyser/shared";
 import {
   Injectable,
+  Logger,
   OnModuleInit,
   UnauthorizedException,
 } from "@nestjs/common";
@@ -9,9 +10,9 @@ import jose from "jose";
 
 import { ConfigService } from "../config/config.service";
 import {
-  IdentityProviderMetadata,
-  IdentityProviderMetadataSchema,
-} from "./identity-provider-metadata.dto";
+  IdentityProviderConfiguration,
+  IdentityProviderConfigurationSchema,
+} from "./identity-provider-configuration.dto";
 import {
   IdentityTokenPayload,
   IdentityTokenPayloadSchema,
@@ -24,7 +25,8 @@ import {
 
 @Injectable()
 export class IdentityService implements OnModuleInit {
-  private _metadata: IdentityProviderMetadata | null = null;
+  private readonly logger = new Logger(IdentityService.name);
+  private _metadata: IdentityProviderConfiguration | null = null;
   private _jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
 
   constructor(private configService: ConfigService) {}
@@ -32,8 +34,11 @@ export class IdentityService implements OnModuleInit {
   async onModuleInit() {
     const response = await axios.get(this.configService.oidc.discoveryURL);
 
-    this._metadata = IdentityProviderMetadataSchema.parse(response.data);
+    this._metadata = IdentityProviderConfigurationSchema.parse(response.data);
+    this.logger.log(`Identity provider metadata loaded`);
+
     this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksURL));
+    this.logger.log("JWKS loaded");
   }
 
   async verifyToken(token: string): Promise<IdentityTokenPayload> {
@@ -43,7 +48,7 @@ export class IdentityService implements OnModuleInit {
 
       // Get the public key from JWKS
       if (!this._jwks) {
-        throw new Error("JWKS is not loaded");
+        throw new Error("JWKS not loaded");
       }
       const key = await this._jwks(protectedHeaderParameters);
 
@@ -80,7 +85,7 @@ export class IdentityService implements OnModuleInit {
 
   get metadata() {
     if (!this._metadata) {
-      throw new Error("Provider metadata are not loaded");
+      throw new Error("Identity provider metadata not loaded");
     }
     return this._metadata;
   }
