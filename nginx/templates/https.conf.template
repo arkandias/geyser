@@ -32,14 +32,14 @@ server {
     listen 443;
     server_name admin.${GEYSER_HOSTNAME}
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
-    # Restrict to modern TLS protocols
-    ssl_protocols TLSv1.2 TLSv1.3;
-    
     # Configure allowed IPs (e.g., behind VPN)
     #allow 10.0.0.0/24;
     #deny all;
+    
+    ssl_certificate /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/private.key;
+    # Restrict to modern TLS protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
     
     include /etc/nginx/includes/admin/keycloak.conf;
 }
