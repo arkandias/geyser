@@ -104,7 +104,7 @@ services:
     environment:
       API_URL: "${GEYSER_URL}/api"
       API_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
-      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser"
+      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
       API_OIDC_CLIENT_SECRET: "${CLIENT_BACKEND_SECRET}"
     ports:
