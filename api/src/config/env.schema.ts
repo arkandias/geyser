@@ -1,14 +1,17 @@
 import { z } from "zod";
 
 export const EnvSchema = z.object({
-  NODE_ENV: z
-    .enum(["development", "production", "test"])
-    .default("development"),
+  NODE_ENV: z.enum(["development", "production"]).default("development"),
   PORT: z.coerce.number().default(3000),
 
-  API_URL: z.string(),
+  API_URL: z
+    .string()
+    .refine(
+      (url) => /^(https?):\/\//.test(url),
+      "Must start with 'http://' or 'https://'",
+    ),
   API_DATABASE_URL: z.string(),
-  API_OIDC_ISSUER_URL: z.string(),
+  API_OIDC_DISCOVERY_URL: z.string(),
   API_OIDC_CLIENT_ID: z.string(),
   API_OIDC_CLIENT_SECRET: z.string(),
 

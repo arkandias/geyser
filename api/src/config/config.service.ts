@@ -5,10 +5,34 @@ import { Env } from "./env.schema";
 
 @Injectable()
 export class ConfigService {
-  constructor(private configService: NestConfigService<Env, true>) {}
+  private readonly apiURL: string;
+  private readonly apiOrigin: string;
+  private readonly apiIsSecure: boolean;
 
-  get nodeEnv(): "development" | "production" | "test" {
-    return this.configService.getOrThrow<"development" | "production" | "test">(
+  constructor(private configService: NestConfigService<Env, true>) {
+    this.validateEnvironment();
+
+    this.apiURL = this.configService
+      .getOrThrow<string>("API_URL")
+      .replace(/\/$/, "");
+
+    this.apiIsSecure = this.apiURL.startsWith("https://");
+
+    const match = /^(https?:\/\/[^/]+)/.exec(this.apiURL)?.[1];
+    if (!match) {
+      throw new Error("Invalid API_URL: Cannot extract origin");
+    }
+    this.apiOrigin = match;
+  }
+
+  validateEnvironment() {
+    if (this.nodeEnv === "production" && !this.api.isSecure) {
+      throw new Error("Production environment requires HTTPS (secure API_URL)");
+    }
+  }
+
+  get nodeEnv(): "development" | "production" {
+    return this.configService.getOrThrow<"development" | "production">(
       "NODE_ENV",
     );
   }
@@ -17,8 +41,12 @@ export class ConfigService {
     return this.configService.getOrThrow<number>("PORT");
   }
 
-  get apiURL() {
-    return this.configService.getOrThrow<string>("API_URL").replace(/\/$/, "");
+  get api() {
+    return {
+      url: this.apiURL,
+      isSecure: this.apiIsSecure,
+      origin: this.apiOrigin,
+    };
   }
 
   get databaseURL() {
@@ -27,7 +55,9 @@ export class ConfigService {
 
   get oidc() {
     return {
-      issuerURL: this.configService.getOrThrow<string>("API_OIDC_ISSUER_URL"),
+      discoveryURL: this.configService.getOrThrow<string>(
+        "API_OIDC_DISCOVERY_URL",
+      ),
       clientId: this.configService.getOrThrow<string>("API_OIDC_CLIENT_ID"),
       clientSecret: this.configService.getOrThrow<string>(
         "API_OIDC_CLIENT_SECRET",

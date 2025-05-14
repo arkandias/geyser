@@ -39,7 +39,7 @@ export class AuthController {
     @Query("redirect") redirectURL: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const callbackURL = `${this.configService.apiURL}/auth/callback`;
+    const callbackURL = `${this.configService.api.url}/auth/callback`;
 
     // Use state parameter to prevent CSRF attacks
     const stateId = this.authService.newState(
@@ -78,7 +78,7 @@ export class AuthController {
     await this.authService.setRefreshCookie(res, uid);
 
     // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    res.redirect(redirectURL || this.configService.apiURL);
+    res.redirect(redirectURL || this.configService.api.url);
   }
 
   @Post("logout")

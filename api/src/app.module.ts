@@ -9,12 +9,12 @@ import { RolesModule } from "./roles/roles.module";
 
 @Module({
   imports: [
-    ConfigModule,
     AuthModule,
+    ConfigModule,
     DatabaseModule,
+    HealthModule,
     KeysModule,
     RolesModule,
-    HealthModule,
   ],
 })
 export class AppModule {}

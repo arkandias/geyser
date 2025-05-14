@@ -30,8 +30,7 @@ export class IdentityService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const wellKnownEndpoint = `${this.configService.oidc.issuerURL}/.well-known/openid-configuration`;
-    const response = await axios.get(wellKnownEndpoint);
+    const response = await axios.get(this.configService.oidc.discoveryURL);
 
     this._metadata = IdentityProviderMetadataSchema.parse(response.data);
     this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksURL));
@@ -49,7 +48,9 @@ export class IdentityService implements OnModuleInit {
       const key = await this._jwks(protectedHeaderParameters);
 
       // Verify the token with the public key
-      const verified = await jose.jwtVerify(token, key);
+      const verified = await jose.jwtVerify(token, key, {
+        issuer: this.metadata.issuerURL,
+      });
 
       return IdentityTokenPayloadSchema.parse(verified.payload);
     } catch (error) {
@@ -63,11 +64,8 @@ export class IdentityService implements OnModuleInit {
     params: IdentityTokenRequestParameters,
   ): Promise<TokenResponse> {
     try {
-      if (!this._metadata) {
-        throw new Error("Provider metadata are not loaded");
-      }
       const response = await axios.post(
-        this._metadata.tokenURL,
+        this.metadata.tokenURL,
         new URLSearchParams({ ...params }).toString(),
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );

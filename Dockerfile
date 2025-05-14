@@ -39,10 +39,9 @@ FROM nginx:latest AS frontend
 COPY --from=build /prod/client /usr/share/nginx/html
 
 ARG GEYSER_URL
-ENV SCHEME="${GEYSER_URL%%://*}"
-ENV GEYSER_HOSTNAME="${GEYSER_URL##*://}"
+ENV GEYSER_HOSTNAME="${GEYSER_URL#https://}"
 
-COPY ./nginx/templates/${SCHEME}.conf.template /etc/nginx/templates/default.conf.template
+COPY ./nginx/templates/prod.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
 
 # Add a script that validates at runtime that the GEYSER_URL environment variable 

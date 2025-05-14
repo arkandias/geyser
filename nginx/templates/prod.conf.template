@@ -1,11 +1,6 @@
 # Configuration
 resolver 127.0.0.11 valid=1y ipv6=off;
 
-# Variables
-set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-set $api_url ${NGINX_PROXY_API_URL};
-set $hasura_url ${NGINX_PROXY_HASURA_URL};
-
 # Default server
 server {
     listen 80 default_server;
@@ -41,7 +36,8 @@ server {
     # Restrict to modern TLS protocols
     ssl_protocols TLSv1.2 TLSv1.3;
     
-    include /etc/nginx/includes/admin/keycloak.conf;
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/locations/admin/keycloak.conf;
 }
 
 # Main server
@@ -49,21 +45,28 @@ server {
     listen 443 ssl;
     server_name ${GEYSER_HOSTNAME};
     
+    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    # Restrict to modern TLS protocols
+    ssl_protocols TLSv1.2 TLSv1.3;
+    
     # Enable serving pre-compressed files
     gzip_static on;
     
     # Disable admin access
     proxy_set_header X-Hasura-Admin-Secret "";
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
-    # Restrict to modern TLS protocols
-    ssl_protocols TLSv1.2 TLSv1.3;
+    include /etc/nginx/includes/locations/health.conf;
     
-    include /etc/nginx/includes/api.conf;
-    include /etc/nginx/includes/hasura.conf;
-    include /etc/nginx/includes/keycloak.conf;
-
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/locations/keycloak.conf;
+    
+    set $api_url ${NGINX_PROXY_API_URL};
+    include /etc/nginx/includes/locations/api.conf;
+    
+    set $hasura_url ${NGINX_PROXY_HASURA_URL};
+    include /etc/nginx/includes/locations/hasura.conf;
+    
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;

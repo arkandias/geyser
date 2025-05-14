@@ -30,7 +30,7 @@ export class HealthController {
       () => this.db.pingCheck("database"),
 
       // OIDC issuer health check
-      () => this.http.pingCheck("oidc", this.configService.oidc.issuerURL),
+      () => this.http.pingCheck("oidc", this.configService.oidc.discoveryURL),
 
       // Disk storage health check
       () =>
