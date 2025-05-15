@@ -33,12 +33,14 @@ export const totalValue = <T extends string>(
   value: T,
 ) => arr.reduce((tot, val) => tot + (val[value] ?? 0), 0);
 
-export const capitalize = <T extends string>(
-  str: T,
-): Capitalize<Lowercase<T>> =>
-  (str.charAt(0).toUpperCase() + str.slice(1).toLowerCase()) as Capitalize<
-    Lowercase<T>
-  >;
+export const toLowerCase = <T extends string>(str: T): Lowercase<T> =>
+  str.toLowerCase() as Lowercase<T>;
+
+export const toUpperCase = <T extends string>(str: T): Uppercase<T> =>
+  str.toUpperCase() as Uppercase<T>;
+
+export const capitalize = <T extends string>(str: T): Capitalize<T> =>
+  (str.charAt(0).toUpperCase() + str.slice(1)) as Capitalize<T>;
 
 export const inputToNumber = (input: string | number | null) =>
   typeof input === "string" ? (input === "" ? null : Number(input)) : input;

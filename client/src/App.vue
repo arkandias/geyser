@@ -82,9 +82,9 @@ watch(
     if (data?.profile) {
       setProfile({
         uid: authManager.uid,
+        roles: authManager.allowedRoles,
         displayname: data.profile.displayname ?? "",
         active: data.profile.active,
-        roles: data.profile.roles.map((role) => role.type),
         services: data.profile.services,
       });
     }

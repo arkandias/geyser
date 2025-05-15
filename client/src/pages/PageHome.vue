@@ -5,7 +5,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { phaseMessage, phaseSubtitle } from "@/locales/helpers.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
-import { capitalize } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils/misc.ts";
 
 defineProps<{ alert?: string }>();
 
@@ -18,13 +18,13 @@ const title = computed(
 );
 const subtitle = computed(
   () =>
-    getCustomText(`homeSubtitle${capitalize(currentPhase.value)}`).value ||
-    phaseSubtitle(t, currentPhase.value),
+    getCustomText(`homeSubtitle${capitalize(toLowerCase(currentPhase.value))}`)
+      .value || phaseSubtitle(t, currentPhase.value),
 );
 const message = computed(
   () =>
-    getCustomText(`homeMessage${capitalize(currentPhase.value)}`).value ||
-    phaseMessage(t, currentPhase.value),
+    getCustomText(`homeMessage${capitalize(toLowerCase(currentPhase.value))}`)
+      .value || phaseMessage(t, currentPhase.value),
 );
 </script>
 

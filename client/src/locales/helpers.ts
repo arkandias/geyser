@@ -3,7 +3,7 @@ import type { ComposerTranslation } from "vue-i18n";
 import type { CustomTextKey } from "@/config/custom-text-keys.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
 import { PhaseEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
-import { capitalize } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils/misc.ts";
 
 export const phaseSubtitle = (t: ComposerTranslation, phase: PhaseEnum) => {
   switch (phase) {
@@ -84,21 +84,21 @@ export const customTextDefault = (
   switch (key) {
     case "homeTitle":
       return t("home.title");
-    case `homeSubtitle${capitalize(PhaseEnum.Requests)}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Requests))}`:
       return t("home.subtitle.requests");
-    case `homeSubtitle${capitalize(PhaseEnum.Assignments)}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
       return t("home.subtitle.assignments");
-    case `homeSubtitle${capitalize(PhaseEnum.Results)}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Results))}`:
       return t("home.subtitle.results");
-    case `homeSubtitle${capitalize(PhaseEnum.Shutdown)}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
       return t("home.subtitle.shutdown");
-    case `homeMessage${capitalize(PhaseEnum.Requests)}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Requests))}`:
       return t("home.message.requests");
-    case `homeMessage${capitalize(PhaseEnum.Assignments)}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
       return t("home.message.assignments");
-    case `homeMessage${capitalize(PhaseEnum.Results)}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Results))}`:
       return t("home.message.results");
-    case `homeMessage${capitalize(PhaseEnum.Shutdown)}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
       return t("home.message.shutdown");
     case "contact":
       return t("header.info.contact.message");

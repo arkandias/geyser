@@ -1,6 +1,7 @@
 import {
   type AccessTokenPayload,
   AccessTokenPayloadSchema,
+  type RoleType,
   errorMessage,
 } from "@geyser/shared";
 import axios, {
@@ -14,7 +15,8 @@ import {
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
 import { apiURL } from "@/config/env.ts";
-import type { RoleTypeEnum } from "@/gql/graphql.ts";
+import { RoleTypeEnum } from "@/gql/graphql.ts";
+import { capitalize, toLowerCase } from "@/utils/misc.ts";
 
 const api = axios.create({
   baseURL: apiURL.href,
@@ -24,7 +26,7 @@ const api = axios.create({
 
 export class AuthManager {
   private _payload?: AccessTokenPayload;
-  private _role?: string;
+  private _role?: RoleType;
 
   async init(): Promise<void> {
     const verified = await this.verify();
@@ -124,16 +126,10 @@ export class AuthManager {
     return this.payload.uid;
   }
 
-  get allowedRoles(): string[] {
-    return this.payload.allowedRoles;
-  }
-
-  setActiveRole(role?: RoleTypeEnum): void {
-    if (role !== undefined) {
-      this._role = role.toLowerCase();
-    } else {
-      delete this._role;
-    }
+  get allowedRoles(): RoleTypeEnum[] {
+    return this.payload.allowedRoles.map(
+      (role) => RoleTypeEnum[capitalize(role)],
+    );
   }
 
   getRoleHeader(): Record<string, string> {
@@ -142,6 +138,14 @@ export class AuthManager {
           "X-Hasura-Role": this._role,
         }
       : {};
+  }
+
+  setActiveRole(role?: RoleTypeEnum): void {
+    if (role !== undefined) {
+      this._role = toLowerCase(role);
+    } else {
+      delete this._role;
+    }
   }
 
   shouldRefresh(): boolean {

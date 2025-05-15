@@ -49,7 +49,7 @@ const update = async (value: RoleTypeEnum) => {
       <QSeparator />
       <QItem class="q-pl-sm">
         <QOptionGroup
-          v-model="selectedRole"
+          :model-value="selectedRole"
           :options="roleOptions"
           type="radio"
           @update:model-value="update"

@@ -5,6 +5,7 @@ import {
   AccessTokenPayload,
   AccessTokenPayloadSchema,
   type JWTPayload,
+  RoleTypeSchema,
 } from "@geyser/shared";
 import {
   Injectable,
@@ -57,7 +58,9 @@ export class AuthService {
 
   private async makeAccessTokenClaims(uid: string): Promise<AccessTokenClaims> {
     const roles = await this.rolesService.findByUid(uid);
-    const roleTypes = roles.map((role) => role.type).concat("teacher");
+    const roleTypes = roles
+      .map((role) => RoleTypeSchema.parse(role.type))
+      .concat("teacher");
 
     return {
       uid,
