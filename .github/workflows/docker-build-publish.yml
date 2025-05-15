@@ -77,7 +77,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push Docker image (Backend)
+      - name: Build and push Backend Docker image
         uses: docker/build-push-action@v6
         with:
           context: .
