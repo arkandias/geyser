@@ -1,6 +1,7 @@
 {
   "name": "geyser",
-  "version": "0.0.0",
+  "version": "1.0.0",
+  "description": "Course Assignment Flow",
   "author": "Julien Hauseux <julien.hauseux@univ-lille.fr>",
   "license": "AGPL-3.0-only",
   "private": true,
@@ -11,8 +12,8 @@
   },
   "packageManager": "pnpm@10.11.0",
   "scripts": {
-    "dev:infra": "docker compose -f compose.dev.yaml up -d",
-    "dev": "pnpm dev:infra && pnpm -r --parallel dev",
+    "docker:dev": "docker compose -f compose.dev.yaml up -d",
+    "docker:prod": "docker compose -f compose.yaml -f compose.dev.yaml up -d",
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "format": "prettier . --write",

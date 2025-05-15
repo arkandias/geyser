@@ -7,6 +7,7 @@ import {
   Query,
   Req,
   Res,
+  UnauthorizedException,
 } from "@nestjs/common";
 import type { Response } from "express";
 
@@ -68,11 +69,14 @@ export class AuthController {
 
   @Get("callback")
   async callback(
-    @Query("code") code: string,
-    @Query("state") state: string,
     @Req() req: Request,
     @Res() res: Response,
+    @Query("code") code: string | undefined,
+    @Query("state") state: string | undefined,
   ): Promise<void> {
+    if (!code || !state) {
+      throw new UnauthorizedException("Authentication failed");
+    }
     const { parameters, redirectURL } = this.authService.getState(state, req);
     const { accessToken } = await this.identityService.requestToken({
       client_id: this.configService.oidc.clientId,

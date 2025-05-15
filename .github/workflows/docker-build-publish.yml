@@ -87,7 +87,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            GEYSER_URL=${{ env.GEYSER_URL }}
             BUILD_DATE=${{ steps.vars.outputs.date }}
             VERSION=${{ steps.vars.outputs.version }}
             VCS_REF=${{ github.sha }}
@@ -102,7 +101,6 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            GEYSER_URL=${{ env.GEYSER_URL }}
             BUILD_DATE=${{ steps.vars.outputs.date }}
             VERSION=${{ steps.vars.outputs.version }}
             VCS_REF=${{ github.sha }}

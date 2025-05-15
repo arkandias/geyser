@@ -11,9 +11,6 @@ interface ImportMetaEnv {
   readonly VITE_BUILD_VERSION?: string;
   readonly VITE_API_URL?: string;
   readonly VITE_GRAPHQL_URL?: string;
-  readonly VITE_BYPASS_AUTH?: string;
-  readonly VITE_HASURA_USER_ID?: string;
-  readonly VITE_HASURA_ADMIN_SECRET?: string;
 }
 
 interface ImportMeta {

@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
 import { AllExceptionsFilter } from "./common/all-exceptions.filter";
+import { LoggingInterceptor } from "./common/logging.interceptor";
 import { ConfigService } from "./config/config.service";
 
 async function bootstrap() {
@@ -14,14 +15,22 @@ async function bootstrap() {
   const { httpAdapter } = app.get(HttpAdapterHost);
 
   const allowOrigin =
-    configService.nodeEnv === "production" ? configService.api.origin : "*";
-  logger.log(`CORS enabled: ${allowOrigin}`);
+    configService.nodeEnv === "production"
+      ? [configService.api.origin]
+      : ["http://localhost", "http://localhost:5173"];
+  const credentials = true;
+  logger.log("CORS configuration:");
+  logger.log(`- Allow origin: ${allowOrigin.join(", ")}`);
+  logger.log(`- Credentials: ${credentials}`);
   app.enableCors({
     origin: allowOrigin,
-    credentials: true,
+    credentials,
   });
 
   app.use(cookieParser());
+  if (configService.nodeEnv === "development") {
+    app.useGlobalInterceptors(new LoggingInterceptor());
+  }
   app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   await app.listen(configService.port);

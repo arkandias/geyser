@@ -25,10 +25,6 @@ graphql(`
     profile: teacherByPk(uid: $uid) {
       displayname
       active
-      roles {
-        id
-        type
-      }
       services {
         id
         year
@@ -65,13 +61,12 @@ const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
   throw new Error("Authentication manager is not provided to the app");
 }
-const uid = authManager.uid ?? "";
 
 // Fetch user profile
 const getUserProfile = useQuery({
   query: GetUserProfileDocument,
-  variables: { uid },
-  pause: !uid,
+  variables: { uid: authManager.uid },
+  pause: !authManager.uid,
   context: { additionalTypenames: ["All", "Role", "Service"] },
 });
 watch(
@@ -86,7 +81,7 @@ watch(
 
     if (data?.profile) {
       setProfile({
-        uid,
+        uid: authManager.uid,
         displayname: data.profile.displayname ?? "",
         active: data.profile.active,
         roles: data.profile.roles.map((role) => role.type),
@@ -142,7 +137,7 @@ watch(
 
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
-  if (!uid) {
+  if (!authManager.uid) {
     return t("home.alert.noAuth");
   }
   if (getUserProfile.fetching.value) {

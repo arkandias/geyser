@@ -17,14 +17,14 @@ import { apiURL } from "@/config/env.ts";
 import type { RoleTypeEnum } from "@/gql/graphql.ts";
 
 const api = axios.create({
-  baseURL: apiURL,
+  baseURL: apiURL.href,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
 });
 
 export class AuthManager {
-  private payload?: AccessTokenPayload;
-  private role?: string;
+  private _payload?: AccessTokenPayload;
+  private _role?: string;
 
   async init(): Promise<void> {
     const verified = await this.verify();
@@ -34,7 +34,7 @@ export class AuthManager {
 
     const refreshed = await this.refresh();
     if (refreshed) {
-      // Verify access to get the payload
+      // Verify access again to store the payload
       await this.verify();
       return;
     }
@@ -43,9 +43,12 @@ export class AuthManager {
   }
 
   login(): void {
-    const loginURL = new URL(apiURL + "/auth/login");
-    loginURL.searchParams.append("redirect", window.location.href);
-    window.location.href = loginURL.toString();
+    window.location.href = api.getUri({
+      url: "/auth/login",
+      params: {
+        redirect: window.location.href,
+      },
+    });
   }
 
   private async requestAPI(
@@ -80,11 +83,11 @@ export class AuthManager {
       { url: "/auth/verify" },
       {
         onSuccess: (response) => {
-          this.payload = AccessTokenPayloadSchema.parse(response.data);
+          this._payload = AccessTokenPayloadSchema.parse(response.data);
         },
         onError: (response) => {
           if (response.status === 401) {
-            delete this.payload;
+            delete this._payload;
           }
         },
       },
@@ -97,7 +100,7 @@ export class AuthManager {
       {
         onError: (response) => {
           if (response.status === 401) {
-            delete this.payload;
+            delete this._payload;
           }
         },
       },
@@ -106,41 +109,48 @@ export class AuthManager {
 
   async logout(): Promise<void> {
     await this.requestAPI({ url: "/auth/logout", method: "POST" });
-    delete this.payload;
+    delete this._payload;
     window.location.href = "https://google.fr";
   }
 
-  get uid(): string | undefined {
-    return this.payload?.uid;
+  get payload(): AccessTokenPayload {
+    if (!this._payload) {
+      throw new Error("No stored payload");
+    }
+    return this._payload;
   }
 
-  get allowedRoles(): string[] | undefined {
-    return this.payload?.allowedRoles;
+  get uid(): string {
+    return this.payload.uid;
+  }
+
+  get allowedRoles(): string[] {
+    return this.payload.allowedRoles;
   }
 
   setActiveRole(role?: RoleTypeEnum): void {
     if (role !== undefined) {
-      this.role = role.toLowerCase();
+      this._role = role.toLowerCase();
     } else {
-      delete this.role;
+      delete this._role;
     }
   }
 
   getRoleHeader(): Record<string, string> {
-    return this.role
+    return this._role
       ? {
-          "X-Hasura-Role": this.role,
+          "X-Hasura-Role": this._role,
         }
       : {};
   }
 
   shouldRefresh(): boolean {
-    if (!this.payload) {
+    if (!this._payload) {
       return true;
     }
 
     return (
-      this.payload.exp - Math.floor(Date.now() / 1000) > API_TOKEN_MIN_VALIDITY
+      this._payload.exp - Math.floor(Date.now() / 1000) > API_TOKEN_MIN_VALIDITY
     );
   }
 }

@@ -2,7 +2,6 @@
   "name": "@geyser/api",
   "private": true,
   "scripts": {
-    "dev": "pnpm run start:dev",
     "build": "nest build",
     "start": "nest start",
     "start:dev": "nest start --watch",
@@ -25,6 +24,7 @@
     "jose": "^6.0.10",
     "pg": "^8.15.6",
     "reflect-metadata": "^0.2.2",
+    "rxjs": "^7.8.2",
     "typeorm": "^0.3.22",
     "zod": "^3.24.3"
   },

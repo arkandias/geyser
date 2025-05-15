@@ -188,7 +188,11 @@ export class AuthService {
       this.logger.warn({
         message: "Potential CSRF attempt: State not found",
         stateId: id,
-        request: req,
+        request: {
+          method: req.method,
+          path: req.url,
+          headers: req.headers,
+        },
       });
       throw new UnauthorizedException("Authentication failed");
     }
