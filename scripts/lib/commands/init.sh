@@ -31,6 +31,11 @@ handle_init() {
             ;;
         esac
     done
+    
+    # Ensure client secret is provided
+    if [[ -z "${CLIENT_BACKEND_SECRET}" ]]; then
+        error "Missing required variable CLIENT_BACKEND_SECRET"
+    fi
 
     # Check if data volume already exists
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
@@ -64,7 +69,7 @@ handle_init() {
     compose down
 
     info "Cleaning up..."
-    docker system prune -f
+    docker system prune -a -f
 
     success "Initialization completed successfully. Start Geyser with 'geyser start'"
 }

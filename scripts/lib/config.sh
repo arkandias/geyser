@@ -20,79 +20,37 @@ check_dependencies() {
 
 validate_configuration() {
     debug "Validating configuration..."
-    debug "Configuration: GEYSER_HOME=${GEYSER_HOME}"
-    debug "Configuration: GEYSER_HOSTNAME=${GEYSER_HOSTNAME}"
-    _validate_mode
-    _validate_auth
-    _validate_web
     _validate_env
-}
-
-_validate_mode() {
-    if [[ "${MODE}" != "development" && "${MODE}" != "production" ]]; then
-        error "Invalid value: MODE=${MODE} (must be development or production)"
-    fi
-    debug "Configuration: MODE=${MODE}"
-}
-
-_validate_auth() {
-    case "${NO_AUTH}" in
-    "true")
-        if [[ "${MODE}" == "production" ]]; then
-            warn "Authentication is required in production mode (switching to NO_AUTH=false)"
-            NO_AUTH="false"
-        fi
-        ;;
-    "false") ;;
-    *)
-        error "Invalid value: NO_AUTH=${NO_AUTH} (must be true or false)"
-        ;;
-    esac
-    debug "Configuration: NO_AUTH=${NO_AUTH}"
-}
-
-_validate_web() {
-    case "${NO_WEB}" in
-    "true")
-        if [[ "${MODE}" == "production" ]]; then
-            warn "Web is required in production mode (switching to NO_WEB=false)"
-            NO_WEB="false"
-        fi
-        ;;
-    "false")
-        if [[ "${NO_AUTH}" == "true" ]]; then
-            warn "Cannot run web without authentication (switching to NO_WEB=true)"
-            NO_WEB="true"
-        fi
-        ;;
-    *)
-        error "Invalid value: NO_WEB=${NO_WEB} (must be true or false)"
-        ;;
-    esac
-    debug "Configuration: NO_WEB=${NO_WEB}"
+    debug "Configuration:"
+    debug "* GEYSER_HOME=${GEYSER_HOME}"
+    debug "* GEYSER_URL=${GEYSER_URL}"
 }
 
 _validate_env() {
+    # Required environment variables
     local required_vars=(
-        GEYSER_HOSTNAME
-        MODE
-        NO_AUTH
-        NO_WEB
-        LOG_LEVEL
+        GEYSER_URL
         POSTGRES_PASSWORD
+        POSTGRES_KC_PASSWORD
         HASURA_GRAPHQL_ADMIN_SECRET
+        KC_BOOTSTRAP_ADMIN_PASSWORD
     )
-
-    if [[ "${NO_AUTH}" == "false" ]]; then
-        required_vars+=(
-            POSTGRES_KC_PASSWORD
-            KC_BOOTSTRAP_ADMIN_PASSWORD
-        )
-    fi
 
     for var in "${required_vars[@]}"; do
         if [[ -z "${!var}" ]]; then
             error "Missing required environment variable ${var}"
         fi
     done
+    
+    # Optional environment variables
+    
+    if [[ -z "${CLIENT_BACKEND_SECRET}" ]]; then
+        info "Environment variable CLIENT_BACKEND_SECRET is not set. \
+It is required to initialize Geyser with 'geyser init'"
+    fi
+    
+    if [[ -z "${WEBHOOK_SECRET}" ]]; then
+        info "Environment variable WEBHOOK_SECRET is not set. \
+It is required to start a webhook with 'geyser start-webhook'"
+    fi
 }

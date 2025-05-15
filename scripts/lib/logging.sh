@@ -23,8 +23,8 @@ LOG_MAX_SIZE=${LOG_MAX_SIZE:-${DEFAULT_LOG_MAX_SIZE}}
 LOG_BACKUP_COUNT=${LOG_BACKUP_COUNT:-${DEFAULT_LOG_BACKUP_COUNT}}
 
 setup_logging() {
-    LOG_LEVEL_NUM="$(log_level "${LOG_LEVEL}" 2>/dev/null)" || {
-        echo "Invalid value: LOG_LEVEL=${LOG_LEVEL} (must be DEBUG, INFO, WARN, ERROR, or SILENT)" >&2
+    LOG_LEVEL_NUM="$(log_level "${GEYSER_LOG_LEVEL}" 2>/dev/null)" || {
+        echo "Invalid value: GEYSER_LOG_LEVEL=${GEYSER_LOG_LEVEL} (must be DEBUG, INFO, WARN, ERROR, or SILENT)" >&2
         exit 1
     }
     readonly LOG_LEVEL_NUM

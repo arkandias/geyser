@@ -2,25 +2,23 @@
 # DEVELOPMENT TOOLS
 ###############################################################################
 
-# Runs Docker Compose with environment files and conditional service configurations
+# Runs Docker Compose with environment variables and conditional services configuration
 compose() {
-    local env_files=() compose_files=(
+    local compose_files=(
         "-f" "${GEYSER_HOME}/compose.base.yaml"
     )
 
-    [[ -f "${GEYSER_HOME}/.env" ]] &&
-        env_files+=("--env-file" "${GEYSER_HOME}/.env")
-    [[ -f "${GEYSER_HOME}/.env.local" ]] &&
-        env_files+=("--env-file" "${GEYSER_HOME}/.env.local")
-
-    [[ "${NO_AUTH}" == "false" ]] &&
-        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
-    [[ "${NO_WEB}" == "false" ]] &&
-        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
-    [[ "${MODE}" == "production" ]] &&
+    [[ "${GEYSER_MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
 
-    docker compose "${env_files[@]}" "${compose_files[@]}" "$@"
+    export GEYSER_URL
+    export POSTGRES_PASSWORD
+    export HASURA_GRAPHQL_ADMIN_SECRET
+    export POSTGRES_KC_PASSWORD
+    export KC_BOOTSTRAP_ADMIN_PASSWORD
+    export CLIENT_BACKEND_SECRET
+
+    docker compose "${compose_files[@]}" "$@"
 }
 
 # Runs Hasura CLI with project configuration and admin secret

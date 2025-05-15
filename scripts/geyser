@@ -3,7 +3,7 @@
 
 #######################################
 # Geyser Administration Script
-# Author: Julien Hauseux <julien.hauseux@univ-lille.fr>
+# Author: Julien Hauseux <julien.hauseux@gmail.fr>
 # Version: 1.0.0
 # License: GNU AGPL v3.0
 #######################################
@@ -27,6 +27,7 @@ Core Commands:
   start             Start Geyser services
   stop              Stop Geyser services
   update            Update Geyser services
+  cleanup           Cleanup Geyser services
   reset             Reset Geyser to a fresh installation
 
 Data Management:
@@ -41,7 +42,10 @@ Development Tools:
   hasura            Hasura CLI wrapper
   kc                Keycloak CLI access
   kcadm             Keycloak Admin CLI access
-  rsync             Configured rsync wrapper 
+  rsync             Configured rsync wrapper
+  start-webhook     Start a webhook on port 9000
+  stop-webhook      Terminate any process listening on port 9000
+  deploy            Deploy Geyser from remote repository
 
 Setup:
   install-completion    Install zsh completion (using oh-my-zsh)
@@ -76,14 +80,12 @@ mkdir -p "${DB_BACKUP_DIR}"
 mkdir -p "${KC_BACKUP_DIR}"
 mkdir -p "${LOG_DIR}"
 
-# Environment Variables
-GEYSER_HOSTNAME="localhost" # Hostname where Geyser services will be accessible
-MODE="development"          # Application deployment context (development/production)
-NO_AUTH="false"             # Disable Keycloak authentication service (development mode only)
-NO_WEB="false"              # Disable Nginx reverse proxy frontend (development mode only)
-LOG_LEVEL="INFO"            # Logging verbosity threshold (DEBUG/INFO/WARN/ERROR)
+# Global environment variables with default values
+: "${GEYSER_URL:=}"             # URL at which Geyser will be accessible (required)
+: "${GEYSER_MODE:=staging}"     # Application deployment context [staging/production]
+: "${GEYSER_LOG_LEVEL:=INFO}"   # Logging verbosity threshold [SILENT/DEBUG/INFO/WARN/ERROR]
 
-# Load env files
+# Load env files (if exist) -- higher precedence than shell environment
 [[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
 [[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
 
@@ -133,7 +135,7 @@ main() {
             exit 0
             ;;
         -q | --quiet)
-            LOG_LEVEL="SILENT"
+            GEYSER_LOG_LEVEL="SILENT"
             shift
             ;;
         *)
@@ -164,6 +166,10 @@ main() {
         shift
         handle_update "$@"
         ;;
+    cleanup)
+        shift
+        handle_cleanup "$@"
+        ;;
     reset)
         shift
         handle_reset "$@"
@@ -192,6 +198,18 @@ main() {
         cmd="$1"
         shift
         "${cmd}" "$@"
+        ;;
+    start-webhook)
+        shift
+        handle_start_webhook "$@"
+        ;;
+    stop-webhook)
+        shift
+        handle_stop_webhook "$@"
+        ;;
+    deploy)
+        shift
+        handle_deploy "$@"
         ;;
     install-completion)
         handle_install_completion

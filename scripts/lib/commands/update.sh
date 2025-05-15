@@ -50,7 +50,7 @@ handle_update() {
     compose up -d
 
     info "Cleaning up..."
-    docker system prune -f
+    docker system prune -a -f
 
     success "Update completed successfully. Restart Geyser with 'geyser start'"
 }
