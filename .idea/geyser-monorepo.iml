@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<module type="WEB_MODULE" version="4">
+  <component name="NewModuleRootManager">
+    <content url="file://$MODULE_DIR$">
+      <excludeFolder url="file://$MODULE_DIR$/.tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/temp" />
+      <excludeFolder url="file://$MODULE_DIR$/tmp" />
+      <excludeFolder url="file://$MODULE_DIR$/postgres/backups" />
+      <excludeFolder url="file://$MODULE_DIR$/postgres/migration" />
+      <excludeFolder url="file://$MODULE_DIR$/api/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/api/keys" />
+      <excludeFolder url="file://$MODULE_DIR$/api/prod" />
+      <excludeFolder url="file://$MODULE_DIR$/nginx/certs/geyser-dev.univ-lille.fr" />
+      <excludeFolder url="file://$MODULE_DIR$/nginx/certs/geyser.univ-lille.fr" />
+      <excludeFolder url="file://$MODULE_DIR$/nginx/certs/admin.geyserflow.org" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
+    </content>
+    <orderEntry type="inheritedJdk" />
+    <orderEntry type="sourceFolder" forTests="false" />
+  </component>
+</module>

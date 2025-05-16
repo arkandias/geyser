@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Server sources" pattern="file[geyser-monorepo]:api/src//*" />
+</component>
