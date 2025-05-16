@@ -2,7 +2,7 @@
 # DEPLOY COMMAND
 ###############################################################################
 
-show_stop_webhook_help() {
+show_webhook_stop_help() {
     cat <<EOF
 Deploy Geyser from remote repository
 

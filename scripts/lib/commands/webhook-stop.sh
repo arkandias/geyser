@@ -1,8 +1,8 @@
 ###############################################################################
-# STOP-WEBHOOK COMMAND
+# WEBHOOK-STOP COMMAND
 ###############################################################################
 
-show_stop_webhook_help() {
+show_webhook_stop_help() {
     cat <<EOF
 Terminate any process listening on port 9000
 
@@ -14,16 +14,16 @@ Options:
 EOF
 }
 
-handle_stop_webhook() {
+handle_webhook_stop() {
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_stop_webhook_help
+            show_webhook_stop_help
             exit 0
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser stop-webhook --help')"
+            error "Unknown parameter '$1' (see 'geyser webhook-stop --help')"
             ;;
         esac
     done

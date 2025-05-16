@@ -51,6 +51,6 @@ It is required to initialize Geyser with 'geyser init'"
     
     if [[ -z "${WEBHOOK_SECRET}" ]]; then
         info "Environment variable WEBHOOK_SECRET is not set. \
-It is required to start a webhook with 'geyser start-webhook'"
+It is required to start a webhook with 'geyser webhook-start'"
     fi
 }

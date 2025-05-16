@@ -43,8 +43,8 @@ Development Tools:
   kc                Keycloak CLI access
   kcadm             Keycloak Admin CLI access
   rsync             Configured rsync wrapper
-  start-webhook     Start a webhook on port 9000
-  stop-webhook      Terminate any process listening on port 9000
+  webhook-start     Start a webhook on port 9000
+  webhook-stop      Terminate any process listening on port 9000
   deploy            Deploy Geyser from remote repository
 
 Setup:
@@ -199,13 +199,13 @@ main() {
         shift
         "${cmd}" "$@"
         ;;
-    start-webhook)
+    webhook-start)
         shift
-        handle_start_webhook "$@"
+        handle_webhook_start "$@"
         ;;
-    stop-webhook)
+    webhook-stop)
         shift
-        handle_stop_webhook "$@"
+        handle_webhook_stop "$@"
         ;;
     deploy)
         shift
