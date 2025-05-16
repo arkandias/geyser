@@ -1,11 +1,8 @@
 [
   {
     "id": "deploy",
-    "execute-command": "scripts/geyser",
+    "execute-command": "scripts/geyser deploy",
     "command-working-directory": "/home/arkandias/geyser-monorepo",
-    "arguments": [
-      "deploy"
-    ],
     "trigger-rule": {
       "and": [
         {
