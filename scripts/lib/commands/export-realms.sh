@@ -1,12 +1,12 @@
 ###############################################################################
-# REALMS-EXPORT COMMAND
+# EXPORT-REALMS COMMAND
 ###############################################################################
 
-show_realms_export_help() {
+show_export_realms_help() {
     cat <<EOF
 Export Keycloak realms and users
 
-Usage: geyser realms-export
+Usage: geyser export-realms
 
 Export Keycloak realms and users in a subdirectory of keycloak/backups.
 
@@ -25,19 +25,19 @@ handle_export_realms() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_realms_export_help
+            show_export_realms_help
             exit 0
             ;;
         --name)
             if [[ -z "$2" ]]; then
-                error "Missing parameter for option --name (see 'geyser realms-export --help')"
+                error "Missing parameter for option --name (see 'geyser export-realms --help')"
             fi
             backup="$2"
             debug "Export name set to ${backup} with option --name"
             shift 2
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser realms-export --help')"
+            error "Unknown parameter '$1' (see 'geyser export-realms --help')"
             ;;
         esac
     done

@@ -1,12 +1,12 @@
 ###############################################################################
-# REALMS-IMPORT COMMAND
+# IMPORT-REALMS COMMAND
 ###############################################################################
 
-show_realms_import_help() {
+show_import_realms_help() {
     cat <<EOF
 Import Keycloak realms and users
 
-Usage: geyser realms-import
+Usage: geyser import-realms
 
 Import Keycloak realms and users from the list of previous exports.
 
@@ -25,7 +25,7 @@ handle_import_realms() {
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_realms_import_help
+            show_import_realms_help
             exit 0
             ;;
         --name)

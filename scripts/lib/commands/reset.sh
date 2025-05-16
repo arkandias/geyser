@@ -35,10 +35,10 @@ handle_reset() {
     done
 
     warn "This will completely reset your Geyser installation"
-    warn "You should backup Geyser first with 'geyser backup' and 'geyser realms-export'"
+    warn "You should backup Geyser first with 'geyser backup' and 'geyser export-realms'"
     warn "Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser realms-export'"
+        info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser export-realms'"
         return
     fi
 
