@@ -1,43 +1,43 @@
 ###############################################################################
-# RESTORE COMMAND
+# DATA-RESTORE COMMAND
 ###############################################################################
 
-show_restore_help() {
+show_data_restore_help() {
     cat <<EOF
-Restore Geyser main database from a previous backup
+Restore Geyser main database
 
-Usage: geyser restore
+Usage: geyser data-restore
 
-Restore a backup from the list of previous backups.
+Restore a dump of Geyser main database.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup (prompt for name if not set)
+  --name            Set the name of the dump (prompt otherwise)
 
 Note: Services will be stopped during restore.
 EOF
 }
 
-handle_restore() {
+handle_data_restore() {
     local backup backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_restore_help
+            show_data_restore_help
             exit 0
             ;;
         --name)
             if [[ -z "$2" ]]; then
-                error "Missing parameter for option --name (see 'geyser restore --help')"
+                error "Missing parameter for option --name (see 'geyser data-restore --help')"
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Dump name set to ${backup} with option --name"
             shift 2
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser restore --help')"
+            error "Unknown parameter '$1' (see 'geyser data-restore --help')"
             ;;
         esac
     done
@@ -68,8 +68,7 @@ handle_restore() {
 
     info "Restoring database..."
     wait_until_healthy db
-    compose exec -T db bash -c \
-        "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}"
+    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}"
 
     info "Stopping services..."
     compose down

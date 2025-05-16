@@ -15,7 +15,6 @@ services:
     restart: always
 
   hasura:
-    image: hasura/graphql-engine:v2.48.0.ubuntu
     restart: always
     environment:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"

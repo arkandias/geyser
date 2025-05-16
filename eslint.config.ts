@@ -62,7 +62,7 @@ const config: tsEslint.ConfigArray = tsEslint.config(
     },
   },
   {
-    files: ["client/src/vite-env.d.ts", "api/src/**/*.ts"],
+    files: ["client/src/vite-env.d.ts", "server/src/**/*.ts"],
     rules: {
       "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
     },

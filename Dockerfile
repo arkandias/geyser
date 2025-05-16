@@ -18,11 +18,11 @@ ARG VITE_GRAPHQL_URL
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build
-RUN pnpm deploy --filter=@geyser/api --prod /prod/api
+RUN pnpm deploy --filter=@geyser/server --prod /prod/server
 RUN mkdir -p /prod/client && cp -r client/dist/* /prod/client/
 
 FROM base AS backend
-COPY --from=build /prod/api /app
+COPY --from=build /prod/server /app
 WORKDIR /app
 
 # Add curl for health check

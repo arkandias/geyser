@@ -8,11 +8,11 @@ Export Keycloak realms and users
 
 Usage: geyser realms-export
 
-Export Keycloak realms and users in a subdirectory of keycloak/backups.
+Export Keycloak realms and users.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the export (prompt for name if not set)
+  --name            Set the name of the export (prompt otherwise)
 
 Note: Services must be stopped before export.
 EOF
@@ -56,7 +56,7 @@ handle_realms_export() {
     if [[ -z "${backup}" ]]; then
         backup=$(date +%Y-%m-%d-%H-%M-%S)
         while true; do
-            prompt "Enter a backup name [${backup}]:"
+            prompt "Enter an export name [${backup}]:"
 
             if [[ -z "${INPUT}" ]]; then
                 break
@@ -74,7 +74,7 @@ handle_realms_export() {
     # Create backup directory
     backup_path="${KC_BACKUP_DIR}/${backup}"
     if [[ -e "${backup_path}" ]]; then
-        error "Backup ${backup_path} already exists"
+        error "Export ${backup_path} already exists"
     fi
     mkdir -p "${backup_path}"
 

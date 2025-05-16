@@ -1,0 +1,3 @@
+<component name="DependencyValidationManager">
+  <scope name="Sources" pattern="file[geyser-monorepo]:*/&amp;&amp;!file[geyser-monorepo]:.idea//*&amp;&amp;!file[geyser-monorepo]:client/public//*&amp;&amp;!file[geyser-monorepo]:client/src/gql//*&amp;&amp;!file:client/schema.graphql&amp;&amp;!file:client/pnpm-lock.yaml&amp;&amp;!file:LICENSE&amp;&amp;!file:pnpm-lock.yaml&amp;&amp;!file:pnpm-workspace.yaml&amp;&amp;!file[geyser-monorepo]:nginx/certs//*&amp;&amp;!file[geyser-monorepo]:logs//*" />
+</component>

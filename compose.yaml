@@ -58,7 +58,7 @@ services:
       - private-kc-db
       - public
     volumes:
-      - ./keycloak/backups:/opt/keycloak/data/backups
+      - ./backups/realms:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
   db:
@@ -84,7 +84,7 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
       - ./postgres/init:/initdb
-      - ./postgres/backups:/backups
+      - ./backups/data:/backups
 
   api:
     image: ghcr.io/arkandias/geyser-backend:edge
@@ -114,7 +114,7 @@ services:
       - public
 
   hasura:
-    image: hasura/graphql-engine:latest
+    image: hasura/graphql-engine:v2.48.0.ubuntu
     restart: unless-stopped
     depends_on:
       db:
@@ -133,7 +133,7 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://api:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"api","audience":"hasura","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://api:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"${GEYSER_URL}/api","audience":"${GEYSER_URL}/graphql","claims_namespace":"hasura"}'
       HASURA_GRAPHQL_CORS_DOMAIN: "${GEYSER_URL}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"

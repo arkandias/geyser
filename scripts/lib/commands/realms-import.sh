@@ -8,11 +8,11 @@ Import Keycloak realms and users
 
 Usage: geyser realms-import
 
-Import Keycloak realms and users from the list of previous exports.
+Import Keycloak realms and users.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the export (prompt for name if not set)
+  --name            Set the name of the export (prompt otherwise)
 
 Note: Services must be stopped before import.
 EOF
@@ -33,7 +33,7 @@ handle_realms_import() {
                 error "Missing parameter for option --name (see 'geyser realms-import --help')"
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Export name set to ${backup} with option --name"
             shift 2
             ;;
         *)

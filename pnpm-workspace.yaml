@@ -1,6 +1,6 @@
 packages:
-  - api
   - client
+  - server
   - shared
 onlyBuiltDependencies:
   - "@nestjs/core"

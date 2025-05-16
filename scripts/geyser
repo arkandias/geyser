@@ -31,8 +31,8 @@ Core Commands:
   reset             Reset Geyser to a fresh installation
 
 Data Management:
-  backup            Create a backup of Geyser main database
-  restore           Restore Geyser main database from a backup
+  data-dump         Dump Geyser main database
+  data-restore      Restore Geyser main database
   realms-export     Export Keycloak realms and users
   realms-import     Import Keycloak realms and users
   sync-keycloak     Synchronize Keycloak users and groups with app data
@@ -71,8 +71,8 @@ SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/
 GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"
 readonly SCRIPT_DIR
 readonly GEYSER_HOME
-readonly DB_BACKUP_DIR="${GEYSER_HOME}/postgres/backups"
-readonly KC_BACKUP_DIR="${GEYSER_HOME}/keycloak/backups"
+readonly DB_BACKUP_DIR="${GEYSER_HOME}/backups/data"
+readonly KC_BACKUP_DIR="${GEYSER_HOME}/backups/realms"
 readonly LOG_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
@@ -174,13 +174,13 @@ main() {
         shift
         handle_reset "$@"
         ;;
-    backup)
+    data-dump)
         shift
-        handle_backup "$@"
+        handle_data_dump "$@"
         ;;
-    restore)
+    data-restore)
         shift
-        handle_restore "$@"
+        handle_data_restore "$@"
         ;;
     realms-export)
         shift

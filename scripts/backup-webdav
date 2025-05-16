@@ -50,7 +50,7 @@ for var in "${required_vars[@]}"; do
     fi
 done
 
-readonly LOCAL_BACKUPS_DIR="${GEYSER_HOME}/postgres/backups"
+readonly LOCAL_BACKUPS_DIR="${GEYSER_HOME}/backups"
 readonly REMOTE_BACKUPS_DIR="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/geyser/backups"
 
 timestamp=$(date +%Y-%m-%d-%H-%M-%S)

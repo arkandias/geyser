@@ -34,19 +34,14 @@ export class AuthService {
   ) {}
 
   private async makeToken(
-    payload: {
-      sub: string;
-      aud: string | string[];
-      exp: number | string | Date;
-      nbf?: number | string | Date;
-      iat?: number | string | Date;
-      jti?: string;
-    } & Record<string, unknown>,
+    payload: JWTPayload &
+      Required<Pick<JWTPayload, "sub" | "aud" | "exp">> &
+      Record<string, unknown>,
   ): Promise<string> {
     const { sub, aud, exp, nbf, iat, jti, ...rest } = payload;
     return new jose.SignJWT(rest)
       .setProtectedHeader({ alg: "RS256" })
-      .setIssuer("api")
+      .setIssuer(this.configService.api.url)
       .setSubject(sub)
       .setAudience(aud)
       .setExpirationTime(exp)
@@ -78,7 +73,10 @@ export class AuthService {
 
     return this.makeToken({
       sub: uid,
-      aud: ["api-access", "hasura"],
+      aud: [
+        this.configService.api.url,
+        this.configService.api.origin + "/graphql",
+      ],
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
@@ -89,31 +87,26 @@ export class AuthService {
   private async makeRefreshToken(uid: string): Promise<string> {
     return this.makeToken({
       sub: uid,
-      aud: ["api-refresh"],
+      aud: [this.configService.api.url + "/auth/verify"],
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
     });
   }
 
-  private async verifyToken(
+  private async verifyToken<T extends JWTPayload>(
     token?: string,
     options?: jose.JWTVerifyOptions,
-  ): Promise<JWTPayload> {
+  ): Promise<T> {
     if (!token) {
       throw new UnauthorizedException("Missing token");
     }
 
     try {
-      const result = await jose.jwtVerify<JWTPayload>(
+      const result = await jose.jwtVerify<T>(
         token,
         this.keysService.publicKey,
-        {
-          issuer: "api",
-          audience: "api",
-          requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
-          ...options,
-        },
+        options,
       );
       return result.payload;
     } catch (error) {
@@ -125,15 +118,21 @@ export class AuthService {
   }
 
   async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
-    const payload = await this.verifyToken(accessToken, {
-      audience: "api-access",
+    const payload = await this.verifyToken<Required<JWTPayload>>(accessToken, {
+      issuer: this.configService.api.url,
+      audience: this.configService.api.url + "/auth/verify",
+      requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
     });
     return AccessTokenPayloadSchema.parse(payload);
   }
 
-  async verifyRefreshToken(refreshToken: string): Promise<JWTPayload> {
-    return this.verifyToken(refreshToken, {
-      audience: "api-refresh",
+  async verifyRefreshToken(
+    refreshToken: string,
+  ): Promise<Required<JWTPayload>> {
+    return this.verifyToken<Required<JWTPayload>>(refreshToken, {
+      issuer: this.configService.api.url,
+      audience: this.configService.api.url + "/auth/refresh",
+      requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
     });
   }
 
