@@ -10,6 +10,8 @@ RemainAfterExit=yes
 WorkingDirectory=/home/arkandias/geyser-monorepo
 ExecStart=/home/arkandias/geyser-monorepo/scripts/geyser start
 ExecStop=/home/arkandias/geyser-monorepo/scripts/geyser stop
+Restart=on-failure
+RestartSec=10
 
 [Install]
 WantedBy=multi-user.target
