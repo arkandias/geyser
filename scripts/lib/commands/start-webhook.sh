@@ -48,9 +48,10 @@ Stop it first with 'geyser stop-webhook'"
     GEYSER_HOSTNAME="${GEYSER_HOSTNAME%%/*}"
 
     export WEBHOOK_SECRET
-    webhook -template hooks.json -port 9000 -verbose -secure \
-        -cert "nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt" \
-        -key "nginx/certs/${GEYSER_HOSTNAME}/private.key" \
+    webhook -port 9000 -verbose -secure \
+        -template "${GEYSER_HOME}/config/webhooks/${GEYSER_MODE}.json" \
+        -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt" \
+        -key "${GEYSER_HOME}/nginx/certs/${GEYSER_HOSTNAME}/private.key" \
         &>>"${LOG_DIR}/webhook.log" &
     info "Webhook listening on port 9000. Run 'geyser stop-webhook' to stop it"
 }

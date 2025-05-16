@@ -38,6 +38,16 @@
         {
           "match": {
             "type": "value",
+            "value": "CI",
+            "parameter": {
+              "source": "payload",
+              "name": "workflow_run.name"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
             "value": "push",
             "parameter": {
               "source": "payload",

@@ -1,0 +1,71 @@
+[
+  {
+    "id": "deploy",
+    "execute-command": "scripts/deploy.sh",
+    "command-working-directory": "/home/arkandias/geyser-monorepo",
+    "trigger-rule": {
+      "and": [
+        {
+          "match": {
+            "type": "payload-hmac-sha256",
+            "secret": "{{ getenv "WEBHOOK_SECRET" | js }}",
+            "parameter": {
+              "source": "header",
+              "name": "X-Hub-Signature-256"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "workflow_run",
+            "parameter": {
+              "source": "header",
+              "name": "X-GitHub-Event"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "completed",
+            "parameter": {
+              "source": "payload",
+              "name": "action"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "CI",
+            "parameter": {
+              "source": "payload",
+              "name": "workflow_run.name"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "tag",
+            "parameter": {
+              "source": "payload",
+              "name": "workflow_run.event"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "success",
+            "parameter": {
+              "source": "payload",
+              "name": "workflow_run.conclusion"
+            }
+          }
+        }
+      ]
+    }
+  }
+]

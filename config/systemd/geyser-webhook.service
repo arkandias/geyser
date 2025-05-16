@@ -1,0 +1,18 @@
+[Unit]
+Description=Geyser Webhook Service
+After=docker.service
+Requires=docker.service
+After=geyser.service
+Wants=geyser.service
+
+[Service]
+Type=simple
+User=arkandias
+WorkingDirectory=/home/arkandias/geyser-monorepo
+ExecStart=/home/arkandias/geyser-monorepo/scripts/geyser start-webhook
+ExecStopPost=/home/arkandias/geyser-monorepo/scripts/geyser stop-webhook
+Restart=always
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target
