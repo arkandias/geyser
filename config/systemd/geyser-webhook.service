@@ -1,9 +1,7 @@
 [Unit]
 Description=Geyser Webhook Service
-After=docker.service
-Requires=docker.service
 After=geyser.service
-Wants=geyser.service
+Requires=geyser.service
 
 [Service]
 Type=simple

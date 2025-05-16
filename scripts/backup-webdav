@@ -23,12 +23,12 @@
 set -e
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
-GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"
+: "${GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 readonly SCRIPT_DIR
 readonly GEYSER_HOME
 
-source "${GEYSER_HOME}"/.env
-source "${GEYSER_HOME}"/.env.local
+. "${GEYSER_HOME}"/.env
+. "${GEYSER_HOME}"/.env.local
 
 error() {
     echo "Error: $1" >&2

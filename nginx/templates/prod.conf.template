@@ -34,8 +34,8 @@ server {
     #allow 10.0.0.0/24;
     #deny all;
     
-    ssl_certificate /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/admin.${GEYSER_HOSTNAME}/private.key;
+    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/admin/keycloak.conf;
