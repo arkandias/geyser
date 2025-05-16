@@ -16,7 +16,7 @@ Options:
 
 Warning: This will delete all data. You should first run:
 - 'geyser backup' to save the application data, and
-- 'geyser export-realms' to save Keycloak configuration.
+- 'geyser realms-export' to save Keycloak configuration.
 EOF
 }
 
@@ -35,10 +35,10 @@ handle_reset() {
     done
 
     warn "This will completely reset your Geyser installation"
-    warn "You should backup Geyser first with 'geyser backup' and 'geyser export-realms'"
+    warn "You should backup Geyser first with 'geyser backup' and 'geyser realms-export'"
     warn "Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser export-realms'"
+        info "Reset cancelled: backup Geyser first with 'geyser backup' and 'geyser realms-export'"
         return
     fi
 

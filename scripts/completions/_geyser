@@ -31,8 +31,8 @@ _geyser() {
         'reset:Reset Geyser to a fresh installation'
         'backup:Create a backup of Geyser main database'
         'restore:Restore Geyser main database from a backup'
-        'export-realms:Export Keycloak realms and users'
-        'import-realms:Import Keycloak realms and users'
+        'realms-export:Export Keycloak realms and users'
+        'realms-import:Import Keycloak realms and users'
         'sync-keycloak:Synchronize Keycloak users and groups with app data'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
@@ -68,12 +68,12 @@ _geyser() {
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--name[Set the name of the backup]:name'
             ;;
-        export-realms)
+        realms-export)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]:name' \
                 '--name[Set the name of the export]'
             ;;
-        import-realms)
+        realms-import)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--name[Set the name of the export]:name'
