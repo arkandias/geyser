@@ -1,14 +1,17 @@
 [
   {
     "id": "deploy",
-    "execute-command": "scripts/geyser deploy",
+    "execute-command": "scripts/geyser",
     "command-working-directory": "/home/arkandias/geyser-monorepo",
+    "arguments": [
+      "deploy"
+    ],
     "trigger-rule": {
       "and": [
         {
           "match": {
             "type": "payload-hmac-sha256",
-            "secret": "{{ getenv 'WEBHOOK_SECRET' | js }}",
+            "secret": "{{ getenv "WEBHOOK_SECRET" | js }}",
             "parameter": {
               "source": "header",
               "name": "X-Hub-Signature-256"
