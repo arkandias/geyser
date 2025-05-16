@@ -13,7 +13,7 @@ server {
 # Main server
 server {
     listen 80;
-    server_name ${GEYSER_HOSTNAME};
+    server_name ${GEYSER_DOMAIN};
     
     include /etc/nginx/includes/locations/health.conf;
     

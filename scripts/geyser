@@ -81,7 +81,7 @@ mkdir -p "${KC_BACKUP_DIR}"
 mkdir -p "${LOG_DIR}"
 
 # Global environment variables with default values
-: "${GEYSER_URL:=}"             # URL at which Geyser will be accessible (required)
+: "${GEYSER_DOMAIN:=}"          # Domain at which Geyser will be accessible (required)
 : "${GEYSER_MODE:=staging}"     # Application deployment context [staging/production]
 : "${GEYSER_LOG_LEVEL:=INFO}"   # Logging verbosity threshold [SILENT/DEBUG/INFO/WARN/ERROR]
 

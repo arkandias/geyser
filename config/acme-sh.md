@@ -24,7 +24,7 @@ acme.sh --issue -d geyserflow.org -d "*.geyserflow.org" --dns dns_ovh --server l
 acme.sh --install-cert -d geyserflow.org \
 --fullchain-file /home/arkandias/geyser-monorepo/nginx/certs/geyserflow.org/fullchain.crt \
 --key-file /home/arkandias/geyser-monorepo/nginx/certs/geyserflow.org/private.key \
---reloadcmd "/home/arkandias/geyser-monorepo/scripts/geyser compose exec nginx nginx -s reload"
+--reloadcmd "/home/arkandias/geyser-monorepo/scripts/geyser compose exec frontend nginx -s reload"
 ```
 
 ## Renew certificates

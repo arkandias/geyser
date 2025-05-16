@@ -11,7 +11,7 @@ compose() {
     [[ "${GEYSER_MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
 
-    export GEYSER_URL
+    export GEYSER_DOMAIN
     export POSTGRES_PASSWORD
     export HASURA_GRAPHQL_ADMIN_SECRET
     export POSTGRES_KC_PASSWORD

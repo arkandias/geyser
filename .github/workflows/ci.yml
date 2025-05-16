@@ -18,7 +18,6 @@ concurrency:
 env:
   FRONTEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-frontend
   BACKEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-backend
-  GEYSER_URL: https://geyserflow.org
 
 jobs:
   format:

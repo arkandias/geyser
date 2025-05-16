@@ -10,7 +10,7 @@ services:
   db:
     restart: always
 
-  api:
+  backend:
     image: ghcr.io/arkandias/geyser-backend:latest
     restart: always
 
@@ -19,6 +19,6 @@ services:
     environment:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
 
-  nginx:
+  frontend:
     image: ghcr.io/arkandias/geyser-frontend:latest
     restart: always

@@ -67,7 +67,7 @@
           "consentRequired": false,
           "config": {
             "introspection.token.claim": "true",
-            "claim.value": "${CLIENT_BACKEND_ROOT_URL}",
+            "claim.value": "${CLIENT_BACKEND_ROOT_URL}/api",
             "userinfo.token.claim": "true",
             "id.token.claim": "true",
             "lightweight.claim": "true",

@@ -45,12 +45,12 @@ services:
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      KC_HOSTNAME: "${GEYSER_URL}/auth"
+      KC_HOSTNAME: "https://${GEYSER_DOMAIN}/auth"
       KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
-      CLIENT_BACKEND_ROOT_URL: "${GEYSER_URL}"
+      CLIENT_BACKEND_ROOT_URL: "https://${GEYSER_DOMAIN}"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
@@ -86,7 +86,7 @@ services:
       - ./postgres/init:/initdb
       - ./backups/data:/backups
 
-  api:
+  backend:
     image: ghcr.io/arkandias/geyser-backend:edge
     restart: unless-stopped
     depends_on:
@@ -102,7 +102,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      API_URL: "${GEYSER_URL}/api"
+      API_URL: "https://${GEYSER_DOMAIN}/api"
       API_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
@@ -119,7 +119,7 @@ services:
     depends_on:
       db:
         condition: service_healthy
-      api:
+      backend:
         condition: service_healthy
     healthcheck:
       test: "curl -fsS http://localhost:8080/healthz || exit 1"
@@ -133,8 +133,8 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://api:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"${GEYSER_URL}/api","audience":"${GEYSER_URL}/graphql","claims_namespace":"hasura"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "${GEYSER_URL}"
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://backend:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://${GEYSER_DOMAIN}/api","audience":"https://${GEYSER_DOMAIN}/graphql","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_DOMAIN}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:
@@ -143,18 +143,18 @@ services:
       - private-db
       - public
 
-  nginx:
+  frontend:
     image: ghcr.io/arkandias/geyser-frontend:edge
     restart: unless-stopped
     depends_on:
       keycloak:
         condition: service_healthy
-      api:
+      backend:
         condition: service_healthy
       hasura:
         condition: service_healthy
     healthcheck:
-      test: "curl -fsS ${GEYSER_URL}/health || exit 1"
+      test: "curl -fsS https://${GEYSER_DOMAIN}/health || exit 1"
       interval: 30s
       timeout: 30s
       retries: 3
@@ -163,8 +163,8 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_URL: null
-      NGINX_PROXY_API_URL: "http://api:3000"
+      GEYSER_DOMAIN: null
+      NGINX_PROXY_API_URL: "http://backend:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
     ports:

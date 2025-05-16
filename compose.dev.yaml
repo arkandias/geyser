@@ -131,7 +131,7 @@ services:
     extra_hosts:
       - "host.docker.internal:host-gateway"
     environment:
-      GEYSER_HOSTNAME: "localhost"
+      GEYSER_DOMAIN: "localhost"
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"

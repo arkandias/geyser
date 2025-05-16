@@ -23,13 +23,13 @@ validate_configuration() {
     _validate_env
     debug "Configuration:"
     debug "* GEYSER_HOME=${GEYSER_HOME}"
-    debug "* GEYSER_URL=${GEYSER_URL}"
+    debug "* GEYSER_DOMAIN=${GEYSER_DOMAIN}"
 }
 
 _validate_env() {
     # Required environment variables
     local required_vars=(
-        GEYSER_URL
+        GEYSER_DOMAIN
         POSTGRES_PASSWORD
         POSTGRES_KC_PASSWORD
         HASURA_GRAPHQL_ADMIN_SECRET

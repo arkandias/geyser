@@ -21,21 +21,21 @@ server {
 # Redirect HTTP traffic to HTTPS
 server {
     listen 80;
-    server_name *.${GEYSER_HOSTNAME};
+    server_name *.${GEYSER_DOMAIN};
     return 301 https://$host$request_uri;
 }
 
 # Admin server
 server {
     listen 443;
-    server_name admin.${GEYSER_HOSTNAME};
+    server_name admin.${GEYSER_DOMAIN};
     
     # Configure allowed IPs (e.g., behind VPN)
     #allow 10.0.0.0/24;
     #deny all;
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/admin/keycloak.conf;
@@ -44,10 +44,10 @@ server {
 # Main server
 server {
     listen 443 ssl;
-    server_name ${GEYSER_HOSTNAME};
+    server_name ${GEYSER_DOMAIN};
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_HOSTNAME}/private.key;
+    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
     
     # Enable serving pre-compressed files
     gzip_static on;

@@ -43,15 +43,11 @@ handle_webhook_start() {
 Stop it first with 'geyser webhook-stop'"
     fi
 
-    # Get hostname from url (remove protocol and trailing slash)
-    GEYSER_HOSTNAME="${GEYSER_URL#https://}"
-    GEYSER_HOSTNAME="${GEYSER_HOSTNAME%%/*}"
-
     export WEBHOOK_SECRET
     webhook -port 9000 -verbose -secure \
         -template "${GEYSER_HOME}/config/webhooks/${GEYSER_MODE}.json" \
-        -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt" \
-        -key "${GEYSER_HOME}/nginx/certs/${GEYSER_HOSTNAME}/private.key" \
+        -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
+        -key "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
         &>>"${LOG_DIR}/webhook.log" &
     info "Webhook listening on port 9000. Run 'geyser webhook-stop' to stop it"
 }
