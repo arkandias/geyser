@@ -1,7 +1,7 @@
 [
   {
     "id": "deploy",
-    "execute-command": "scripts/geyser deploy",
+    "execute-command": "scripts/deploy",
     "command-working-directory": "/home/arkandias/geyser-monorepo",
     "trigger-rule": {
       "and": [
