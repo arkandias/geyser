@@ -47,6 +47,7 @@ Stop it first with 'geyser stop-webhook'"
     GEYSER_HOSTNAME="${GEYSER_URL#https://}"
     GEYSER_HOSTNAME="${GEYSER_HOSTNAME%%/*}"
 
+    export WEBHOOK_SECRET
     webhook -template hooks.json -port 9000 -verbose -secure \
         -cert "nginx/certs/${GEYSER_HOSTNAME}/fullchain.crt" \
         -key "nginx/certs/${GEYSER_HOSTNAME}/private.key" \

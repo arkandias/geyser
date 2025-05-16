@@ -1,0 +1,14 @@
+[Unit]
+Description=Geyser Web Application
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=${GEYSER_HOME}
+ExecStart=${GEYSER_HOME}/scripts/geyser start
+ExecStop=${GEYSER_HOME}/scripts/geyser stop
+
+[Install]
+WantedBy=multi-user.target
