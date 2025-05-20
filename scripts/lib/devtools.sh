@@ -8,17 +8,16 @@ compose() {
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
 
+    [[ -f "${GEYSER_HOME}/.env" ]] &&
+        env_files+=("--env-file" "${GEYSER_HOME}/.env")
+    [[ -f "${GEYSER_HOME}/.env.local" ]] &&
+        env_files+=("--env-file" "${GEYSER_HOME}/.env.local")
+
     [[ "${GEYSER_MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
 
     export GEYSER_DOMAIN
-    export POSTGRES_PASSWORD
-    export HASURA_GRAPHQL_ADMIN_SECRET
-    export POSTGRES_KC_PASSWORD
-    export KC_BOOTSTRAP_ADMIN_PASSWORD
-    export CLIENT_BACKEND_SECRET
-
-    docker compose "${compose_files[@]}" "$@"
+    docker compose "${env_files[@]}" "${compose_files[@]}" "$@"
 }
 
 # Runs Hasura CLI with project configuration and admin secret

@@ -22,3 +22,6 @@ services:
   frontend:
     image: ghcr.io/arkandias/geyser-frontend:latest
     restart: always
+
+  duplicati:
+    restart: always

@@ -68,7 +68,7 @@ handle_data_restore() {
 
     info "Restoring database..."
     wait_until_healthy db
-    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${SELECTED_BACKUP}"
+    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/data/${SELECTED_BACKUP}"
 
     info "Stopping services..."
     compose down

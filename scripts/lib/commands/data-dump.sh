@@ -69,7 +69,7 @@ handle_data_backup() {
     fi
 
     info "Dumping database..."
-    compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}.dump"
+    compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/data/${backup}.dump"
 
     success "Dump created successfully in ${backup_path}"
 }

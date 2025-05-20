@@ -1,15 +1,14 @@
 dist/
 node_modules/
 
-/server/keys/
 /backups/
-
+# todo: remove logs et READMEs?
 /logs/*
 !/logs/README.md
-
 /nginx/certs/*
 !/nginx/certs/README.md
 !/nginx/certs/default
+/server/keys/
 
 *.tsbuildinfo
 *.local

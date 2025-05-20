@@ -3,9 +3,8 @@ import { randomUUID } from "node:crypto";
 import {
   AccessTokenPayload,
   type BaseTokenPayload,
-  RefreshTokenPayload,
   accessTokenPayloadSchema,
-  refreshTokenPayloadSchema,
+  baseTokenPayloadSchema,
   roleTypeSchema,
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
@@ -88,10 +87,7 @@ export class AuthService {
 
     return this.makeToken({
       sub: uid,
-      aud: [
-        this.configService.api.url,
-        this.configService.api.origin + "/graphql",
-      ],
+      aud: this.configService.api.url,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
@@ -117,8 +113,7 @@ export class AuthService {
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
       scope: "refresh",
-      uid,
-    } satisfies OmitWithIndex<RefreshTokenPayload, "iss" | "iat" | "jti">);
+    } satisfies OmitWithIndex<BaseTokenPayload, "iss" | "iat" | "jti">);
   }
 
   async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
@@ -132,10 +127,10 @@ export class AuthService {
     return parsed.data;
   }
 
-  async verifyRefreshToken(refreshToken: string): Promise<RefreshTokenPayload> {
+  async verifyRefreshToken(refreshToken: string): Promise<BaseTokenPayload> {
     const payload = await this.verifyToken(refreshToken, "refresh");
 
-    const parsed = refreshTokenPayloadSchema.safeParse(payload);
+    const parsed = baseTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {
       throw new UnauthorizedException("Invalid refresh token");
     }

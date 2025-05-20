@@ -51,6 +51,7 @@ export class ConfigService {
   }
 
   parseApiUrl(): ParsedApiUrl {
+    // todo: use URL
     let url = this.configService.getOrThrow<string>("API_URL");
     if (url.endsWith("/")) {
       url = url.slice(0, -1);
@@ -123,7 +124,7 @@ export class ConfigService {
     this.logger.log(`- Client ID: ${clientId}`);
 
     return {
-      discoveryUrl: discoveryUrl,
+      discoveryUrl,
       clientId,
       clientSecret,
     };

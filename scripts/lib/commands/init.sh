@@ -31,7 +31,7 @@ handle_init() {
             ;;
         esac
     done
-    
+
     # Ensure client secret is provided
     if [[ -z "${CLIENT_BACKEND_SECRET}" ]]; then
         error "Missing required variable CLIENT_BACKEND_SECRET"
@@ -53,17 +53,17 @@ handle_init() {
     info "Starting services..."
     compose up -d
 
-    info "Initializing Geyser database..."
-    wait_until_healthy db
-    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql"
-    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/seed.sql"
+    #    TODO
+    #    info "Initializing Geyser database..."
+    #    wait_until_healthy db
+    #    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql"
+    #    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/seed.sql"
 
-    info "Applying Hasura metadata..."
+    info "Initializing Geyser database and Hasura configuration..."
     wait_until_healthy hasura
+    hasura migrate apply
+    hasura seed apply
     hasura metadata apply
-
-    [[ "${NO_AUTH}" == "true" ]] || wait_until_healthy keycloak
-    [[ "${NO_WEB}" == "true" ]] || wait_until_healthy nginx
 
     info "Stopping services..."
     compose down

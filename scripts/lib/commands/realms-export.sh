@@ -79,7 +79,7 @@ handle_realms_export() {
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms..."
-    kc --restart-with export --dir "/opt/keycloak/data/backups/${backup}"
+    kc --restart-with export --dir "/opt/keycloak/data/backups/realms/${backup}"
 
     info "Stopping services..."
     compose down

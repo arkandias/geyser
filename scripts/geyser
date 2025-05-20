@@ -81,11 +81,11 @@ mkdir -p "${KC_BACKUP_DIR}"
 mkdir -p "${LOG_DIR}"
 
 # Global environment variables with default values
-: "${GEYSER_DOMAIN:=}"          # Domain at which Geyser will be accessible (required)
+: "${GEYSER_DOMAIN:=localhost}" # Domain at which Geyser will be accessible
 : "${GEYSER_MODE:=staging}"     # Application deployment context [staging/production]
 : "${GEYSER_LOG_LEVEL:=INFO}"   # Logging verbosity threshold [SILENT/DEBUG/INFO/WARN/ERROR]
 
-# Load env files (if exist) -- higher precedence than shell environment
+# Load env files (if they exist) -- higher precedence than shell environment
 [[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
 [[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
 

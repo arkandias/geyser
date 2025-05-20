@@ -45,12 +45,11 @@ services:
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      KC_HOSTNAME: "https://${GEYSER_DOMAIN}/auth"
-      KC_HOSTNAME_ADMIN: "http://localhost:8081"
-      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
+      KC_HOSTNAME: "https://auth.${GEYSER_DOMAIN}"
+      KC_HOSTNAME_ADMIN: "https://admin.${GEYSER_DOMAIN}"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
-      CLIENT_BACKEND_ROOT_URL: "https://${GEYSER_DOMAIN}/api"
+      CLIENT_BACKEND_ROOT_URL: "https://api.${GEYSER_DOMAIN}"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
@@ -58,7 +57,7 @@ services:
       - private-kc-db
       - public
     volumes:
-      - ./backups/realms:/opt/keycloak/data/backups
+      - backups:/opt/keycloak/data/backups
     command: start --optimized --import-realm
 
   db:
@@ -83,8 +82,8 @@ services:
       - private-db
     volumes:
       - data:/var/lib/postgresql/data
-      - ./postgres/init:/initdb
-      - ./backups/data:/backups
+      - backups:/backups
+  #      - ./postgres/init:/initdb
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge
@@ -102,9 +101,9 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      API_URL: "https://${GEYSER_DOMAIN}/api"
+      API_URL: "https://api.${GEYSER_DOMAIN}"
       API_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
-      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
+      API_OIDC_DISCOVERY_URL: "https://auth.${GEYSER_DOMAIN}/realms/geyser/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
       API_OIDC_CLIENT_SECRET: "${CLIENT_BACKEND_SECRET}"
     ports:
@@ -133,8 +132,8 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://backend:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://${GEYSER_DOMAIN}/api","audience":"https://${GEYSER_DOMAIN}/graphql"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_DOMAIN}"
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"https://api.${GEYSER_DOMAIN}/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://api.${GEYSER_DOMAIN}","audience":"https://api.${GEYSER_DOMAIN}"}'
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://*.${GEYSER_DOMAIN}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:
@@ -154,7 +153,7 @@ services:
       hasura:
         condition: service_healthy
     healthcheck:
-      test: "curl -fsS https://${GEYSER_DOMAIN}/health || exit 1"
+      test: "service nginx status || exit 1"
       interval: 30s
       timeout: 30s
       retries: 3
@@ -164,9 +163,9 @@ services:
       - "host.docker.internal:host-gateway"
     environment:
       GEYSER_DOMAIN: null
+      NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://backend:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
-      NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
     ports:
       - "80:80"
       - "443:443"
@@ -174,6 +173,21 @@ services:
       - public
     volumes:
       - ./nginx/certs:/etc/nginx/certs:ro
+
+  duplicati:
+    image: lscr.io/linuxserver/duplicati:latest
+    restart: unless-stopped
+    environment:
+      PUID: 1000
+      PGID: 1000
+      TZ: Europe/Paris
+      SETTINGS_ENCRYPTION_KEY: null
+      DUPLICATI__WEBSERVICE_PASSWORD: null
+    volumes:
+      - duplicati-config:/config
+      - backups:/source
+    ports:
+      - "8200:8200"
 
 networks:
   private-db:
@@ -183,3 +197,5 @@ networks:
 volumes:
   data:
   kc-data:
+  backups:
+  duplicati-config:

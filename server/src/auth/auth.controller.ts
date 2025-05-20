@@ -113,8 +113,8 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");
     }
-    const { uid } = await this.authService.verifyRefreshToken(refreshToken);
-    const user = await this.authService.getUser(uid);
+    const { sub } = await this.authService.verifyRefreshToken(refreshToken);
+    const user = await this.authService.getUser(sub);
     await this.authService.setAccessCookie(res, user);
     await this.authService.setRefreshCookie(res, user);
   }
