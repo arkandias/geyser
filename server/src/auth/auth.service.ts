@@ -10,7 +10,7 @@ import {
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
-import jose, { JWTVerifyResult } from "jose";
+import jose from "jose";
 
 import { OmitWithIndex } from "../common/types";
 import { ConfigService } from "../config/config.service";
@@ -43,7 +43,7 @@ export class AuthService {
     token: string,
     scope?: string,
   ): Promise<T> {
-    let result: JWTVerifyResult<T>;
+    let result: jose.JWTVerifyResult<T>;
     try {
       result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
         issuer: this.configService.api.url,

@@ -20,13 +20,13 @@ export interface NonParsedDatabaseUrl {
   parsed: false;
 }
 
-export interface OIDCConfig {
+export interface OidcConfig {
   discoveryUrl: string;
   clientId: string;
   clientSecret: string;
 }
 
-export interface JWTConfig {
+export interface JwtConfig {
   accessTokenMaxAge: number;
   refreshTokenMaxAge: number;
   stateExpirationTime: number;

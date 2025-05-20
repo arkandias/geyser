@@ -2,9 +2,9 @@ import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
 
 import {
-  JWTConfig,
+  JwtConfig,
   NonParsedDatabaseUrl,
-  OIDCConfig,
+  OidcConfig,
   ParsedApiUrl,
   ParsedDatabaseUrl,
 } from "./config.interfaces";
@@ -17,16 +17,16 @@ export class ConfigService {
   readonly port: number;
   readonly api: ParsedApiUrl;
   readonly database: ParsedDatabaseUrl | NonParsedDatabaseUrl;
-  readonly oidc: OIDCConfig;
-  readonly jwt: JWTConfig;
+  readonly oidc: OidcConfig;
+  readonly jwt: JwtConfig;
 
   constructor(private configService: NestConfigService<Env, true>) {
     this.nodeEnv = this.parseNodeEnv();
     this.port = this.parsePort();
     this.api = this.parseApiUrl();
     this.database = this.parseDatabaseUrl();
-    this.oidc = this.parseOIDCConfig();
-    this.jwt = this.parseJWTConfig();
+    this.oidc = this.parseOidcConfig();
+    this.jwt = this.parseJwtConfig();
     this.validateEnvironment();
   }
 
@@ -108,7 +108,7 @@ export class ConfigService {
     };
   }
 
-  parseOIDCConfig(): OIDCConfig {
+  parseOidcConfig(): OidcConfig {
     const discoveryUrl = this.configService.getOrThrow<string>(
       "API_OIDC_DISCOVERY_URL",
     );
@@ -129,7 +129,7 @@ export class ConfigService {
     };
   }
 
-  parseJWTConfig(): JWTConfig {
+  parseJwtConfig(): JwtConfig {
     const accessTokenMaxAge = this.configService.getOrThrow<number>(
       "JWT_ACCESS_TOKEN_MAX_AGE_MS",
     );
