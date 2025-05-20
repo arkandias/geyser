@@ -8,7 +8,7 @@
       "clientId": "backend",
       "name": "client_backend",
       "description": "",
-      "rootUrl": "${CLIENT_BACKEND_ROOT_URL}",
+      "rootUrl": "${GEYSER_URL}/api",
       "adminUrl": "/",
       "baseUrl": "/",
       "surrogateAuthRequired": false,
@@ -16,8 +16,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "${CLIENT_BACKEND_SECRET}",
-      "redirectUris": ["/*"],
-      "webOrigins": ["+"],
+      "redirectUris": ["/auth/callback"],
+      "webOrigins": ["${GEYSER_URL}"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -35,7 +35,7 @@
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "+",
+        "post.logout.redirect.uris": "-",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
@@ -58,23 +58,6 @@
             "access.token.claim": "true",
             "claim.name": "uid",
             "jsonType.label": "String"
-          }
-        },
-        {
-          "name": "audience",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-hardcoded-claim-mapper",
-          "consentRequired": false,
-          "config": {
-            "introspection.token.claim": "true",
-            "claim.value": "${CLIENT_BACKEND_ROOT_URL}/api",
-            "userinfo.token.claim": "true",
-            "id.token.claim": "true",
-            "lightweight.claim": "true",
-            "access.token.claim": "true",
-            "claim.name": "aud",
-            "jsonType.label": "String",
-            "access.tokenResponse.claim": "true"
           }
         }
       ],

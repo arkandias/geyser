@@ -6,7 +6,7 @@ import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetServiceDetailsDocument } from "@/gql/graphql.ts";
-import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { useServicesStore } from "@/stores/useServicesStore.ts";
 
 import ServiceDetails from "@/components/service/ServiceDetails.vue";
 import ServiceMessage from "@/components/service/ServiceMessage.vue";
@@ -29,7 +29,7 @@ graphql(`
 `);
 
 const { t } = useTypedI18n();
-const { serviceId: myServiceId } = useProfileStore();
+const { serviceId: myServiceId } = useServicesStore();
 const { getValue: selectedService } = useQueryParam("serviceId", true);
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);

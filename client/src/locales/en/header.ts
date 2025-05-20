@@ -138,6 +138,7 @@ export default {
     },
     user: {
       label: "User",
+      login: "Login",
       logout: "Logout",
     },
   },

@@ -140,6 +140,7 @@ export default {
     },
     user: {
       label: "Utilisateur",
+      login: "Connexion",
       logout: "Déconnexion",
     },
   },

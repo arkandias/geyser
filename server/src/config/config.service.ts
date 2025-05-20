@@ -3,31 +3,31 @@ import { ConfigService as NestConfigService } from "@nestjs/config";
 
 import {
   JWTConfig,
-  NonParsedDatabaseURL,
+  NonParsedDatabaseUrl,
   OIDCConfig,
-  ParsedApiURL,
-  ParsedDatabaseURL,
+  ParsedApiUrl,
+  ParsedDatabaseUrl,
 } from "./config.interfaces";
-import { Env } from "./env.schema";
+import { Env } from "./envSchema";
 
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
   readonly nodeEnv: string;
   readonly port: number;
-  readonly api: ParsedApiURL;
-  readonly database: ParsedDatabaseURL | NonParsedDatabaseURL;
+  readonly api: ParsedApiUrl;
+  readonly database: ParsedDatabaseUrl | NonParsedDatabaseUrl;
   readonly oidc: OIDCConfig;
   readonly jwt: JWTConfig;
 
   constructor(private configService: NestConfigService<Env, true>) {
-    this.validateEnvironment();
     this.nodeEnv = this.parseNodeEnv();
     this.port = this.parsePort();
-    this.api = this.parseApiURL();
-    this.database = this.parseDatabaseURL();
+    this.api = this.parseApiUrl();
+    this.database = this.parseDatabaseUrl();
     this.oidc = this.parseOIDCConfig();
     this.jwt = this.parseJWTConfig();
+    this.validateEnvironment();
   }
 
   validateEnvironment() {
@@ -50,7 +50,7 @@ export class ConfigService {
     return port;
   }
 
-  parseApiURL(): ParsedApiURL {
+  parseApiUrl(): ParsedApiUrl {
     let url = this.configService.getOrThrow<string>("API_URL");
     if (url.endsWith("/")) {
       url = url.slice(0, -1);
@@ -69,7 +69,7 @@ export class ConfigService {
     return { url, secure, origin };
   }
 
-  parseDatabaseURL(): ParsedDatabaseURL | NonParsedDatabaseURL {
+  parseDatabaseUrl(): ParsedDatabaseUrl | NonParsedDatabaseUrl {
     const url = this.configService.getOrThrow<string>("API_DATABASE_URL");
     const matches =
       /^([a-z-]+):\/\/([^:@]+):([^:@]*)@([a-z]+):(\d+)\/(.+)$/.exec(url);
@@ -109,7 +109,7 @@ export class ConfigService {
   }
 
   parseOIDCConfig(): OIDCConfig {
-    const discoveryURL = this.configService.getOrThrow<string>(
+    const discoveryUrl = this.configService.getOrThrow<string>(
       "API_OIDC_DISCOVERY_URL",
     );
     const clientId =
@@ -119,11 +119,11 @@ export class ConfigService {
     );
 
     this.logger.log("OIDC configuration:");
-    this.logger.log(`- Discovery URL: ${discoveryURL}`);
+    this.logger.log(`- Discovery URL: ${discoveryUrl}`);
     this.logger.log(`- Client ID: ${clientId}`);
 
     return {
-      discoveryURL,
+      discoveryUrl: discoveryUrl,
       clientId,
       clientSecret,
     };

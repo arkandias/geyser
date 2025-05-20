@@ -50,7 +50,7 @@ services:
       KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
-      CLIENT_BACKEND_ROOT_URL: "https://${GEYSER_DOMAIN}"
+      CLIENT_BACKEND_ROOT_URL: "https://${GEYSER_DOMAIN}/api"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
@@ -133,7 +133,7 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://backend:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://${GEYSER_DOMAIN}/api","audience":"https://${GEYSER_DOMAIN}/graphql","claims_namespace":"hasura"}'
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://backend:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://${GEYSER_DOMAIN}/api","audience":"https://${GEYSER_DOMAIN}/graphql"}'
       HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_DOMAIN}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"

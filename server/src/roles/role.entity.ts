@@ -8,6 +8,6 @@ export class Role {
   @Column()
   uid!: string;
 
-  @Column({ name: "type" })
+  @Column()
   type!: string;
 }

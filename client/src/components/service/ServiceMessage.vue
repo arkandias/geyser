@@ -64,7 +64,7 @@ const setMessage = computed(
   <DetailsSection
     v-model="editMessage"
     :title="t('service.message.title')"
-    :editable="perm.toEditAMessage(data.uid)"
+    :editable="perm.toEditAMessage(data)"
     :edition-tooltip="t('service.message.editionTooltip')"
   >
     <EditableText

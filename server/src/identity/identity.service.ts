@@ -7,20 +7,21 @@ import {
 } from "@nestjs/common";
 import axios from "axios";
 import jose from "jose";
+import { z } from "zod";
 
 import { ConfigService } from "../config/config.service";
 import {
   IdentityProviderConfiguration,
-  IdentityProviderConfigurationSchema,
+  identityProviderConfigurationSchema,
 } from "./identity-provider-configuration.dto";
 import {
   IdentityTokenPayload,
-  IdentityTokenPayloadSchema,
+  identityTokenPayloadSchema,
 } from "./identity-token-payload.dto";
 import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
 import {
-  IdentityTokenResponseSchema,
   TokenResponse,
+  identityTokenResponseSchema,
 } from "./identity-token-response.dto";
 
 @Injectable()
@@ -32,12 +33,12 @@ export class IdentityService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const response = await axios.get(this.configService.oidc.discoveryURL);
+    const response = await axios.get(this.configService.oidc.discoveryUrl);
 
-    this._metadata = IdentityProviderConfigurationSchema.parse(response.data);
+    this._metadata = identityProviderConfigurationSchema.parse(response.data);
     this.logger.log(`Identity provider metadata loaded`);
 
-    this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksURL));
+    this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksUrl));
     this.logger.log("JWKS loaded");
   }
 
@@ -50,16 +51,19 @@ export class IdentityService implements OnModuleInit {
       const key = await this.jwks(protectedHeaderParameters);
 
       // Verify the token with the public key
-      const verified = await jose.jwtVerify(token, key, {
-        issuer: this.metadata.issuerURL,
+      const { payload } = await jose.jwtVerify(token, key, {
+        issuer: this.metadata.issuerUrl,
       });
 
-      return IdentityTokenPayloadSchema.parse(verified.payload);
+      return identityTokenPayloadSchema.parse(payload);
     } catch (error) {
-      if (error instanceof InternalServerErrorException) {
-        throw error;
+      if (error instanceof jose.errors.JOSEError) {
+        throw new UnauthorizedException("Token verification failed");
       }
-      throw new UnauthorizedException("Identity token verification failed");
+      if (error instanceof z.ZodError) {
+        throw new UnauthorizedException("Invalid identity token");
+      }
+      throw error;
     }
   }
 
@@ -68,12 +72,12 @@ export class IdentityService implements OnModuleInit {
   ): Promise<TokenResponse> {
     try {
       const response = await axios.post(
-        this.metadata.tokenURL,
+        this.metadata.tokenUrl,
         new URLSearchParams({ ...params }).toString(),
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
 
-      return IdentityTokenResponseSchema.parse(response.data);
+      return identityTokenResponseSchema.parse(response.data);
     } catch (error) {
       if (error instanceof InternalServerErrorException) {
         throw error;

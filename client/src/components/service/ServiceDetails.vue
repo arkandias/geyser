@@ -239,7 +239,7 @@ const formatWH = (hours: number) =>
               </QTooltip>
             </QBtn>
             <QBtn
-              v-else-if="perm.toEditAService(service.uid)"
+              v-else-if="perm.toEditAService(service)"
               form="edit-base-service"
               icon="sym_s_edit"
               color="primary"
@@ -285,7 +285,7 @@ const formatWH = (hours: number) =>
               </QTooltip>
             </QBtn>
             <QBtn
-              v-else-if="perm.toEditAService(service.uid)"
+              v-else-if="perm.toEditAService(service)"
               icon="sym_s_add_circle"
               color="primary"
               size="sm"
@@ -356,7 +356,7 @@ const formatWH = (hours: number) =>
         <tr v-for="m in service.modifications" :key="m.id">
           <td>
             <QBtn
-              v-if="perm.toEditAService(service.uid)"
+              v-if="perm.toEditAService(service)"
               icon="sym_s_cancel"
               color="primary"
               size="sm"

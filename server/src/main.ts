@@ -1,9 +1,8 @@
 import { Logger } from "@nestjs/common";
-import { HttpAdapterHost, NestFactory } from "@nestjs/core";
+import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
-import { AllExceptionsFilter } from "./common/all-exceptions.filter";
 import { LoggingInterceptor } from "./common/logging.interceptor";
 import { ConfigService } from "./config/config.service";
 
@@ -12,7 +11,6 @@ async function bootstrap() {
 
   const logger = new Logger("Bootstrap");
   const configService = app.get(ConfigService);
-  const { httpAdapter } = app.get(HttpAdapterHost);
 
   const allowOrigin =
     configService.nodeEnv === "production"
@@ -31,7 +29,6 @@ async function bootstrap() {
   if (configService.nodeEnv === "development") {
     app.useGlobalInterceptors(new LoggingInterceptor());
   }
-  app.useGlobalFilters(new AllExceptionsFilter(httpAdapter));
 
   await app.listen(configService.port);
   logger.log(

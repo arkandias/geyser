@@ -3,10 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.development" });
 
-const graphqlURL = process.env["VITE_GRAPHQL_URL"];
+const graphqlUrl = process.env["VITE_GRAPHQL_URL"];
 const hasuraAdminSecret = process.env["HASURA_ADMIN_SECRET"];
 
-if (!graphqlURL) {
+if (!graphqlUrl) {
   throw new Error("Missing VITE_GRAPHQL_URL environment variable");
 }
 if (!hasuraAdminSecret) {
@@ -15,7 +15,7 @@ if (!hasuraAdminSecret) {
 
 const config: CodegenConfig = {
   schema: {
-    [graphqlURL]: {
+    [graphqlUrl]: {
       headers: {
         "X-Hasura-Admin-Secret": hasuraAdminSecret,
       },

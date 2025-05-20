@@ -5,34 +5,18 @@ import { computed, inject, watch } from "vue";
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import {
-  GetAppDataDocument,
-  GetUserProfileDocument,
-  PhaseEnum,
-  RoleTypeEnum,
-} from "@/gql/graphql.ts";
+import { GetAppDataDocument, PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
-import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { useServicesStore } from "@/stores/useServicesStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
 graphql(`
-  query GetUserProfile($uid: String!) {
-    profile: teacherByPk(uid: $uid) {
-      displayname
-      active
-      services {
-        id
-        year
-      }
-    }
-  }
-
-  query GetAppData {
+  query GetAppData($uid: String!) {
     phase: currentPhase(
       limit: 1 # unique
     ) {
@@ -47,63 +31,30 @@ graphql(`
       key
       value
     }
+    services: service(where: { uid: { _eq: $uid } }) {
+      id
+      year
+    }
   }
 `);
 
 const { t } = useTypedI18n();
 const { notify } = useNotify();
-const { active, activeRole, loaded, setProfile } = useProfileStore();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
+const { setServices } = useServicesStore();
 
 const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
   throw new Error("Authentication manager is not provided to the app");
 }
 
-// Fetch user profile
-const getUserProfile = useQuery({
-  query: GetUserProfileDocument,
-  variables: { uid: authManager.uid },
-  pause: !authManager.uid,
-  context: { additionalTypenames: ["All", "Role", "Service"] },
-});
-watch(
-  [getUserProfile.data, getUserProfile.error],
-  ([data, error]) => {
-    if (error) {
-      notify(NotifyType.Error, {
-        message: t("app.userProfile.error"),
-        caption: error.message,
-      });
-    }
-
-    if (data?.profile) {
-      setProfile({
-        uid: authManager.uid,
-        roles: authManager.allowedRoles,
-        displayname: data.profile.displayname ?? "",
-        active: data.profile.active,
-        services: data.profile.services,
-      });
-    }
-  },
-  { immediate: true },
-);
-watch(
-  activeRole,
-  (role) => {
-    authManager.setActiveRole(role);
-  },
-  { immediate: true },
-);
-
 // Fetch app data
 const getAppData = useQuery({
   query: GetAppDataDocument,
   variables: {},
-  pause: () => !loaded.value || !active.value,
+  pause: () => !authManager.isAuthenticated || !authManager.isActive,
   context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
 });
 watch(
@@ -131,30 +82,35 @@ watch(
     if (data?.customTexts) {
       setCustomTexts(data.customTexts);
     }
+    if (data?.services) {
+      setServices(data.services);
+    }
   },
   { immediate: true },
 );
 
+watch(currentPhase, (phase) => {
+  if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
+    authManager.setActiveRole(RoleTypeEnum.Admin);
+  } else if (
+    authManager.allowedRoles.includes(RoleTypeEnum.Commissioner) &&
+    phase === PhaseEnum.Assignments
+  ) {
+    authManager.setActiveRole(RoleTypeEnum.Commissioner);
+  }
+});
+
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
-  if (!authManager.uid) {
+  if (!authManager.isAuthenticated) {
     return t("home.alert.noAuth");
-  }
-  if (getUserProfile.fetching.value) {
-    return t("home.alert.loadingProfile");
-  }
-  if (!loaded.value) {
-    return t("home.alert.profileNotLoaded");
-  }
-  if (!active.value) {
-    return t("home.alert.profileNotActive");
   }
   if (getAppData.fetching.value) {
     return t("home.alert.loadingAppData");
   }
   if (
     currentPhase.value === PhaseEnum.Shutdown &&
-    activeRole.value !== RoleTypeEnum.Admin
+    authManager.activeRole.value !== RoleTypeEnum.Admin
   ) {
     return t("home.alert.shutdown");
   }

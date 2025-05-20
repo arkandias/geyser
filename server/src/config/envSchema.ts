@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const EnvSchema = z.object({
+export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]).default("development"),
   PORT: z.coerce.number().default(3000),
 
@@ -22,4 +22,4 @@ export const EnvSchema = z.object({
   JWT_REFRESH_TOKEN_MAX_AGE_MS: z.number().default(7 * 24 * 60 * 60 * 1000), // 7d
 });
 
-export type Env = z.infer<typeof EnvSchema>;
+export type Env = z.infer<typeof envSchema>;

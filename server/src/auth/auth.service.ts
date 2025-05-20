@@ -1,75 +1,90 @@
 import { randomUUID } from "node:crypto";
 
 import {
-  AccessTokenClaims,
   AccessTokenPayload,
-  AccessTokenPayloadSchema,
-  type JWTPayload,
-  RoleTypeSchema,
+  type BaseTokenPayload,
+  RefreshTokenPayload,
+  accessTokenPayloadSchema,
+  refreshTokenPayloadSchema,
+  roleTypeSchema,
 } from "@geyser/shared";
-import {
-  Injectable,
-  InternalServerErrorException,
-  Logger,
-  UnauthorizedException,
-} from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
-import jose from "jose";
+import jose, { JWTVerifyResult } from "jose";
 
+import { OmitWithIndex } from "../common/types";
 import { ConfigService } from "../config/config.service";
-import { IdentityTokenRequestParameters } from "../identity/identity-token-request-parameters.interface";
-import { IdentityTokenRequestState } from "../identity/identity-token-request-state.interface";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
+import { User } from "../users/user.entity";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class AuthService {
-  private readonly logger = new Logger(ConfigService.name);
-  private stateRecord = new Map<string, IdentityTokenRequestState>();
-
   constructor(
     private configService: ConfigService,
     private keysService: KeysService,
     private rolesService: RolesService,
+    private usersService: UsersService,
   ) {}
 
   private async makeToken(
-    payload: JWTPayload &
-      Required<Pick<JWTPayload, "sub" | "aud" | "exp">> &
-      Record<string, unknown>,
+    payload: Omit<BaseTokenPayload, "iss" | "iat" | "jti">,
   ): Promise<string> {
-    const { sub, aud, exp, nbf, iat, jti, ...rest } = payload;
-    return new jose.SignJWT(rest)
+    return new jose.SignJWT(payload)
       .setProtectedHeader({ alg: "RS256" })
       .setIssuer(this.configService.api.url)
-      .setSubject(sub)
-      .setAudience(aud)
-      .setExpirationTime(exp)
-      .setNotBefore(nbf ?? "0s")
-      .setIssuedAt(iat ?? "0s")
-      .setJti(jti ?? randomUUID())
+      .setIssuedAt()
+      .setJti(randomUUID())
       .sign(this.keysService.privateKey);
   }
 
-  private async makeAccessTokenClaims(uid: string): Promise<AccessTokenClaims> {
-    const roles = await this.rolesService.findByUid(uid);
-    const roleTypes = roles
-      .map((role) => RoleTypeSchema.parse(role.type))
-      .concat("teacher");
+  private async verifyToken<T extends BaseTokenPayload>(
+    token: string,
+    scope?: string,
+  ): Promise<T> {
+    let result: JWTVerifyResult<T>;
+    try {
+      result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
+        issuer: this.configService.api.url,
+        audience: this.configService.api.url,
+        requiredClaims: ["sub", "exp", "iat", "jti", "scope"],
+      });
+    } catch (error) {
+      if (error instanceof jose.errors.JOSEError) {
+        throw new UnauthorizedException("Token verification failed");
+      }
+      throw error;
+    }
 
-    return {
-      uid,
-      allowedRoles: roleTypes,
-      hasura: {
-        "X-Hasura-User-Id": uid,
-        "X-Hasura-Allowed-Roles": roleTypes,
-        "X-Hasura-Default-Role": "teacher",
-      },
-    };
+    if (scope) {
+      const payloadScopes = result.payload.scope?.split(" ");
+      scope.split(" ").forEach((s) => {
+        if (!payloadScopes?.includes(s)) {
+          throw new UnauthorizedException("Token verification failed");
+        }
+      });
+    }
+
+    return result.payload;
   }
 
-  private async makeAccessToken(uid: string): Promise<string> {
-    const payload = await this.makeAccessTokenClaims(uid);
+  async getUser(uid: string): Promise<User> {
+    const user = await this.usersService.findByUid(uid);
+
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    return user;
+  }
+
+  private async makeAccessToken(user: User): Promise<string> {
+    const { uid, displayname, active } = user;
+    const roles = await this.rolesService.findByUid(uid);
+    const roleTypes = roles
+      .map((role) => roleTypeSchema.parse(role.type))
+      .concat("teacher");
 
     return this.makeToken({
       sub: uid,
@@ -80,60 +95,52 @@ export class AuthService {
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
-      ...payload,
-    });
+      scope: "access",
+      uid,
+      displayname,
+      active,
+      roles: roleTypes,
+      "https://hasura.io/jwt/claims": {
+        "X-Hasura-User-Id": uid,
+        "X-Hasura-Allowed-Roles": roleTypes,
+        "X-Hasura-Default-Role": "teacher",
+      },
+    } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  private async makeRefreshToken(uid: string): Promise<string> {
+  private async makeRefreshToken(user: User): Promise<string> {
+    const { uid } = user;
     return this.makeToken({
       sub: uid,
-      aud: [this.configService.api.url + "/auth/verify"],
+      aud: this.configService.api.url,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
-    });
-  }
-
-  private async verifyToken<T extends JWTPayload>(
-    token?: string,
-    options?: jose.JWTVerifyOptions,
-  ): Promise<T> {
-    if (!token) {
-      throw new UnauthorizedException("Missing token");
-    }
-
-    try {
-      const result = await jose.jwtVerify<T>(
-        token,
-        this.keysService.publicKey,
-        options,
-      );
-      return result.payload;
-    } catch (error) {
-      if (error instanceof InternalServerErrorException) {
-        throw error;
-      }
-      throw new UnauthorizedException("Token verification failed");
-    }
+      scope: "refresh",
+      uid,
+    } satisfies OmitWithIndex<RefreshTokenPayload, "iss" | "iat" | "jti">);
   }
 
   async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
-    const payload = await this.verifyToken<Required<JWTPayload>>(accessToken, {
-      issuer: this.configService.api.url,
-      audience: this.configService.api.url + "/auth/verify",
-      requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
-    });
-    return AccessTokenPayloadSchema.parse(payload);
+    const payload = await this.verifyToken(accessToken, "access");
+
+    const parsed = accessTokenPayloadSchema.safeParse(payload);
+    if (!parsed.success) {
+      throw new UnauthorizedException("Invalid access token");
+    }
+
+    return parsed.data;
   }
 
-  async verifyRefreshToken(
-    refreshToken: string,
-  ): Promise<Required<JWTPayload>> {
-    return this.verifyToken<Required<JWTPayload>>(refreshToken, {
-      issuer: this.configService.api.url,
-      audience: this.configService.api.url + "/auth/refresh",
-      requiredClaims: ["sub", "exp", "nbf", "iat", "jti"],
-    });
+  async verifyRefreshToken(refreshToken: string): Promise<RefreshTokenPayload> {
+    const payload = await this.verifyToken(refreshToken, "refresh");
+
+    const parsed = refreshTokenPayloadSchema.safeParse(payload);
+    if (!parsed.success) {
+      throw new UnauthorizedException("Invalid refresh token");
+    }
+
+    return parsed.data;
   }
 
   private accessCookieOptions(): CookieOptions {
@@ -156,13 +163,13 @@ export class AuthService {
     };
   }
 
-  async setAccessCookie(res: Response, uid: string): Promise<void> {
-    const accessToken = await this.makeAccessToken(uid);
+  async setAccessCookie(res: Response, user: User): Promise<void> {
+    const accessToken = await this.makeAccessToken(user);
     res.cookie("access_token", accessToken, this.accessCookieOptions());
   }
 
-  async setRefreshCookie(res: Response, uid: string): Promise<void> {
-    const refreshToken = await this.makeRefreshToken(uid);
+  async setRefreshCookie(res: Response, user: User): Promise<void> {
+    const refreshToken = await this.makeRefreshToken(user);
     res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
@@ -172,35 +179,5 @@ export class AuthService {
 
   unsetRefreshCookie(res: Response): void {
     res.clearCookie("refresh_token", this.refreshCookieOptions());
-  }
-
-  newState(
-    parameters: Partial<IdentityTokenRequestParameters>,
-    redirectURL?: string,
-  ): string {
-    const id = randomUUID();
-    const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
-    this.stateRecord.set(id, { parameters, expiresAt, redirectURL });
-    return id;
-  }
-
-  getState(id: string, req: Request): IdentityTokenRequestState {
-    const authState = this.stateRecord.get(id);
-    if (!authState) {
-      this.logger.warn({
-        message: "Potential CSRF attempt: State not found",
-        stateId: id,
-        request: {
-          method: req.method,
-          path: req.url,
-          headers: req.headers,
-        },
-      });
-      throw new UnauthorizedException("Authentication failed");
-    }
-    if (authState.expiresAt < Date.now()) {
-      throw new UnauthorizedException("Authentication session expired");
-    }
-    return authState;
   }
 }

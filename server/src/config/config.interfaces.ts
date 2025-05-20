@@ -1,10 +1,10 @@
-export interface ParsedApiURL {
+export interface ParsedApiUrl {
   url: string;
   secure: boolean;
   origin: string;
 }
 
-export interface ParsedDatabaseURL {
+export interface ParsedDatabaseUrl {
   url: string;
   parsed: true;
   protocol: string;
@@ -15,13 +15,13 @@ export interface ParsedDatabaseURL {
   database: string;
 }
 
-export interface NonParsedDatabaseURL {
+export interface NonParsedDatabaseUrl {
   url: string;
   parsed: false;
 }
 
 export interface OIDCConfig {
-  discoveryURL: string;
+  discoveryUrl: string;
   clientId: string;
   clientSecret: string;
 }

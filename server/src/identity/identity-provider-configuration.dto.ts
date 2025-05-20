@@ -1,21 +1,21 @@
 import { z } from "zod";
 
-export const IdentityProviderConfigurationSchema = z
+export const identityProviderConfigurationSchema = z
   .object({
     issuer: z.string(),
     authorization_endpoint: z.string(),
     token_endpoint: z.string(),
     jwks_uri: z.string(),
+    end_session_endpoint: z.string(),
   })
-  .transform((data) => {
-    return {
-      issuerURL: data.issuer,
-      authURL: data.authorization_endpoint,
-      tokenURL: data.token_endpoint,
-      jwksURL: data.jwks_uri,
-    };
-  });
+  .transform((data) => ({
+    issuerUrl: data.issuer,
+    authUrl: data.authorization_endpoint,
+    tokenUrl: data.token_endpoint,
+    jwksUrl: data.jwks_uri,
+    logoutUrl: data.end_session_endpoint,
+  }));
 
 export type IdentityProviderConfiguration = z.infer<
-  typeof IdentityProviderConfigurationSchema
+  typeof identityProviderConfigurationSchema
 >;

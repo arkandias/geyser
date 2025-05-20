@@ -2,13 +2,13 @@
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
-import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { useServicesStore } from "@/stores/useServicesStore.ts";
 import { buttonColor } from "@/utils/colors.ts";
 
 import MenuYear from "@/components/header/MenuYear.vue";
 
 const { t } = useTypedI18n();
-const { hasService, serviceId } = useProfileStore();
+const { hasService, serviceId } = useServicesStore();
 const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
 const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   "serviceId",

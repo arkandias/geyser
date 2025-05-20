@@ -1,10 +1,17 @@
-import type { z } from "zod";
+import { z } from "zod";
 
-import { AccessTokenClaimsSchema } from "./access-token-claims.dto.js";
-import { JWTPayloadSchema } from "./jwt-payload.dto.js";
+import { baseTokenPayloadSchema } from "./base-token-payload.dto.js";
+import { hasuraClaimsSchema } from "./hasura-claims.dto.js";
+import { roleTypeSchema } from "./role-type.dto.js";
 
-export const AccessTokenPayloadSchema = JWTPayloadSchema.required().and(
-  AccessTokenClaimsSchema,
+export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
+  z.object({
+    uid: z.string(),
+    displayname: z.string(),
+    active: z.boolean(),
+    roles: z.array(roleTypeSchema),
+    "https://hasura.io/jwt/claims": hasuraClaimsSchema,
+  }),
 );
 
-export type AccessTokenPayload = z.infer<typeof AccessTokenPayloadSchema>;
+export type AccessTokenPayload = z.infer<typeof accessTokenPayloadSchema>;

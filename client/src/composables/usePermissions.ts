@@ -1,14 +1,17 @@
-import { computed, readonly } from "vue";
+import { computed, inject, readonly } from "vue";
 
 import { PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
-import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { useServicesStore } from "@/stores/useServicesStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
+  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+  const { uid, activeRole } = inject<AuthManager>("authManager")!;
   const { isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
-  const { uid: myUid, activeRole, hasService } = useProfileStore();
+  const { hasService } = useServicesStore();
 
   const toAdmin = computed(() => activeRole.value === RoleTypeEnum.Admin);
 
@@ -55,7 +58,7 @@ export const usePermissions = () => {
   const toEditADescription = computed(
     () => (coordinators: string[]) =>
       activeRole.value === RoleTypeEnum.Admin ||
-      (isCurrentYearActive.value && coordinators.includes(myUid.value)),
+      (isCurrentYearActive.value && coordinators.includes(uid)),
   );
 
   const toViewAllServices = computed(
@@ -66,21 +69,21 @@ export const usePermissions = () => {
   );
 
   const toEditAService = computed(
-    () => (uid: string) =>
+    () => (service: { uid: string }) =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
-        uid === myUid.value),
+        service.uid === uid),
   );
 
   const toEditAMessage = computed(
-    () => (uid: string) =>
+    () => (message: { uid: string }) =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
-        uid === myUid.value),
+        message.uid === uid),
   );
 
   return readonly({
