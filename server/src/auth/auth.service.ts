@@ -51,7 +51,10 @@ export class AuthService {
       });
     } catch (error) {
       if (error instanceof jose.errors.JOSEError) {
-        throw new UnauthorizedException("Token verification failed");
+        throw new UnauthorizedException({
+          message: "Token verification failed",
+          error: `${error.name}: ${error.message}`,
+        });
       }
       throw error;
     }
@@ -60,7 +63,10 @@ export class AuthService {
       const payloadScopes = result.payload.scope?.split(" ");
       scope.split(" ").forEach((s) => {
         if (!payloadScopes?.includes(s)) {
-          throw new UnauthorizedException("Token verification failed");
+          throw new UnauthorizedException({
+            message: "Token verification failed",
+            error: `Missing scope: ${s}`,
+          });
         }
       });
     }
@@ -121,7 +127,10 @@ export class AuthService {
 
     const parsed = accessTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {
-      throw new UnauthorizedException("Invalid access token");
+      throw new UnauthorizedException({
+        message: "Invalid access token",
+        error: `${parsed.error.name}: ${parsed.error.message}`,
+      });
     }
 
     return parsed.data;
@@ -132,7 +141,10 @@ export class AuthService {
 
     const parsed = baseTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {
-      throw new UnauthorizedException("Invalid refresh token");
+      throw new UnauthorizedException({
+        message: "Invalid refresh token",
+        error: `${parsed.error.name}: ${parsed.error.message}`,
+      });
     }
 
     return parsed.data;
@@ -140,6 +152,7 @@ export class AuthService {
 
   private accessCookieOptions(): CookieOptions {
     return {
+      domain: "geyser.localhost",
       httpOnly: true,
       secure: this.configService.apiUrl.protocol === "https:",
       sameSite: "lax",
@@ -150,11 +163,12 @@ export class AuthService {
 
   private refreshCookieOptions(): CookieOptions {
     return {
+      domain: "geyser.localhost",
       httpOnly: true,
       secure: this.configService.apiUrl.protocol === "https:",
       sameSite: "lax",
       maxAge: this.configService.jwt.refreshTokenMaxAge,
-      path: "/api/auth/refresh",
+      path: "/auth/refresh",
     };
   }
 

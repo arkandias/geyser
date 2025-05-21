@@ -20,7 +20,10 @@ export class StateService {
 
     const url = new URL(redirect);
 
-    if (url.origin !== this.configService.apiUrl.origin) {
+    if (
+      this.configService.nodeEnv === "production" &&
+      url.origin !== this.configService.apiUrl.origin
+    ) {
       // TODO: Allow redirections to http(s)://*.${GEYSER_DOMAIN}/*
       throw new UnauthorizedException("Redirect URL not allowed");
     }
@@ -30,15 +33,19 @@ export class StateService {
 
   newState(redirect: string | undefined): string {
     const id = randomUUID();
+
     this.stateRecord.set(id, {
       expiresAt: Date.now() + this.configService.jwt.stateExpirationTime,
       redirectUrl: this.validateRedirectUrl(redirect),
     });
+
     return id;
   }
 
   getState(id: string, req: Request): State {
     const authState = this.stateRecord.get(id);
+    this.stateRecord.delete(id);
+
     if (!authState) {
       this.logger.warn({
         message: "Potential CSRF attempt: State not found",
@@ -52,9 +59,11 @@ export class StateService {
       });
       throw new UnauthorizedException("Authentication failed");
     }
+
     if (authState.expiresAt < Date.now()) {
       throw new UnauthorizedException("Authentication session expired");
     }
+
     return authState;
   }
 }

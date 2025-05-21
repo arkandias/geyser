@@ -6,7 +6,7 @@ import { Env } from "./env.dto";
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
-  readonly nodeEnv: string;
+  readonly nodeEnv: "development" | "production";
   readonly port: number;
   readonly apiUrl: URL;
   readonly databaseUrl: URL;

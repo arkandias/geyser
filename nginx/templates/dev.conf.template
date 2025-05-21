@@ -13,7 +13,7 @@ server {
 # Keycloak server
 server {
     listen 80;
-    server_name auth.localhost;
+    server_name auth.geyser.localhost;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak.conf;
@@ -22,7 +22,7 @@ server {
 # API server
 server {
     listen 80;
-    server_name api.localhost;
+    server_name api.geyser.localhost;
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
@@ -31,13 +31,19 @@ server {
     include /etc/nginx/includes/locations/hasura.conf;
 }
 
-# Main server
+# Dev client server
 server {
     listen 80;
-    server_name localhost;
+    server_name dev.geyser.localhost;
     
-    set $spa_url ${NGINX_PROXY_SPA_URL};
-    include /etc/nginx/includes/locations/spa-dev.conf;
+    set $client_url ${NGINX_PROXY_DEV_CLIENT_URL};
+    include /etc/nginx/includes/locations/dev.conf;
+}
+
+# Preview client server
+server {
+    listen 80;
+    server_name preview.geyser.localhost;
     
     location / {
         root /usr/share/nginx/html;

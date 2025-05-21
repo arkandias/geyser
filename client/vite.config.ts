@@ -7,8 +7,7 @@ import { defineConfig } from "vite";
 import { compression } from "vite-plugin-compression2";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ command }) => ({
-  base: command === "serve" ? "/spa-dev/" : "/",
+export default defineConfig(() => ({
   build: {
     target: "es2022",
     rollupOptions: {
@@ -31,7 +30,7 @@ export default defineConfig(({ command }) => ({
   },
   server: {
     host: "0.0.0.0",
-    allowedHosts: ["host.docker.internal"],
+    allowedHosts: ["dev.geyser.localhost"],
     port: 5173,
     strictPort: true,
   },

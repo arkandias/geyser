@@ -6,7 +6,7 @@ import {
   NestInterceptor,
 } from "@nestjs/common";
 import { Request, Response } from "express";
-import { Observable, finalize } from "rxjs";
+import { Observable } from "rxjs";
 
 @Injectable()
 export class LoggingInterceptor implements NestInterceptor {
@@ -19,17 +19,17 @@ export class LoggingInterceptor implements NestInterceptor {
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<Request>();
+    const response = ctx.getResponse<Response>();
+    const now = Date.now();
 
     this.logger.debug(`IN  | ${this.requestLogText(request)}`);
 
-    const now = Date.now();
-    return next.handle().pipe(
-      finalize(() => {
-        const response = ctx.getResponse<Response>();
-        this.logger.debug(
-          `OUT | ${this.requestLogText(response.req)} | Status: ${response.statusCode} | Duration: ${Date.now() - now}ms`,
-        );
-      }),
-    );
+    response.on("finish", () => {
+      this.logger.debug(
+        `OUT | ${this.requestLogText(request)} | Status: ${response.statusCode} | Duration: ${Date.now() - now}ms`,
+      );
+    });
+
+    return next.handle();
   }
 }

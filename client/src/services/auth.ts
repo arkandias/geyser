@@ -59,12 +59,12 @@ export class AuthManager {
     console.debug("[AuthManager] Logging in...");
 
     const redirectUrl = new URL(window.location.href);
-    redirectUrl.searchParams.append("post_login", "true");
+    redirectUrl.searchParams.set("post_login", "true");
 
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
-        redirectURL: window.location.href,
+        redirect_url: window.location.href,
       },
     });
 
@@ -84,8 +84,7 @@ export class AuthManager {
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
         console.error(
-          "[AuthManager] Verification failed:",
-          error.response?.data.message ?? "No response",
+          `[AuthManager] Verification failed: ${error.response?.data.message}`,
         );
       } else {
         console.error("[AuthManager] Verification failed: Unknown error");
@@ -104,8 +103,7 @@ export class AuthManager {
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
         console.error(
-          "[AuthManager] Refresh failed:",
-          error.response?.data.message ?? "No response",
+          `[AuthManager] Refresh failed: ${error.response?.data.message}`,
         );
       } else {
         console.error("[AuthManager] Refresh failed: Unknown error");
@@ -118,12 +116,12 @@ export class AuthManager {
     console.debug("[AuthManager] Logging out...");
 
     const redirectUrl = new URL(window.location.href);
-    redirectUrl.searchParams.append("post_logout", "true");
+    redirectUrl.searchParams.set("post_logout", "true");
 
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
-        redirectURL: window.location.href,
+        redirect_url: window.location.href,
       },
     });
 

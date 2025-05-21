@@ -14,8 +14,8 @@ async function bootstrap() {
 
   const allowOrigin =
     configService.nodeEnv === "production"
-      ? [configService.apiUrl.origin + "/*"]
-      : ["http://localhost", "http://localhost:5173"];
+      ? [configService.apiUrl.origin + "/*"] // todo
+      : ["http://dev.geyser.localhost", "http://preview.geyser.localhost"];
   const credentials = true;
   logger.log("CORS configuration:");
   logger.log(`- Allow origin: ${allowOrigin.join(", ")}`);

@@ -54,4 +54,7 @@ export const makeClientOptions = (authManager: AuthManager): ClientOptions => ({
     authExchange(authInit(authManager)),
     fetchExchange,
   ],
+  fetchOptions: {
+    credentials: "include",
+  },
 });

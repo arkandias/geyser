@@ -45,11 +45,11 @@ services:
       KC_DB_SCHEMA: "public"
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
-      KC_HOSTNAME: "http://auth.localhost"
-      KC_HOSTNAME_ADMIN: "http://admin.localhost"
+      KC_HOSTNAME: "http://auth.geyser.localhost"
+      KC_HOSTNAME_ADMIN: "http://localhost:8081"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
-      CLIENT_BACKEND_ROOT_URL: "http://api.localhost"
+      CLIENT_BACKEND_ROOT_URL: "http://api.geyser.localhost"
       CLIENT_BACKEND_SECRET: null
     ports:
       - "8081:8080"
@@ -103,8 +103,8 @@ services:
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"http://api.localhost","audience":"http://api.localhost"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "*"
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"http://api.geyser.localhost/","audience":"http://api.geyser.localhost/"}'
+      HASURA_GRAPHQL_CORS_DOMAIN: "http://*.geyser.localhost"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:
@@ -136,7 +136,7 @@ services:
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
       NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
-      NGINX_PROXY_SPA_URL: "http://host.docker.internal:5173"
+      NGINX_PROXY_DEV_CLIENT_URL: "http://host.docker.internal:5173"
     ports:
       - "80:80"
     networks:

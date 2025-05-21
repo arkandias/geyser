@@ -127,13 +127,11 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 1s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
       HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"https://api.${GEYSER_DOMAIN}/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://api.${GEYSER_DOMAIN}","audience":"https://api.${GEYSER_DOMAIN}"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "https://*.${GEYSER_DOMAIN}"
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_DOMAIN}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:
@@ -159,8 +157,6 @@ services:
       retries: 3
       start_period: 30s
       start_interval: 1s
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
     environment:
       GEYSER_DOMAIN: null
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"

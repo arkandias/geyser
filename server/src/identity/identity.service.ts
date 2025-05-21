@@ -39,7 +39,7 @@ export class IdentityService implements OnModuleInit {
     this.logger.log(`Identity provider metadata loaded`);
 
     this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksUrl));
-    this.logger.log("JWKS loaded");
+    this.logger.log("Identity provider JWKS loaded");
   }
 
   async verifyToken(token: string): Promise<IdentityTokenPayload> {
@@ -58,10 +58,16 @@ export class IdentityService implements OnModuleInit {
       return identityTokenPayloadSchema.parse(payload);
     } catch (error) {
       if (error instanceof jose.errors.JOSEError) {
-        throw new UnauthorizedException("Token verification failed");
+        throw new UnauthorizedException({
+          message: "Identity token verification failed",
+          error: `${error.name}: ${error.message}`,
+        });
       }
       if (error instanceof z.ZodError) {
-        throw new UnauthorizedException("Invalid identity token");
+        throw new UnauthorizedException({
+          message: "Invalid identity token",
+          error: `${error.name}: ${error.message}`,
+        });
       }
       throw error;
     }
@@ -79,10 +85,19 @@ export class IdentityService implements OnModuleInit {
 
       return identityTokenResponseSchema.parse(response.data);
     } catch (error) {
-      if (error instanceof InternalServerErrorException) {
-        throw error;
+      if (axios.isAxiosError(error)) {
+        throw new UnauthorizedException({
+          message: "Identity token request failed",
+          error: `${error.name}: ${error.message}`,
+        });
       }
-      throw new UnauthorizedException(`Identity token request failed`);
+      if (error instanceof z.ZodError) {
+        throw new UnauthorizedException({
+          message: "Invalid identity token",
+          error: `${error.name}: ${error.message}`,
+        });
+      }
+      throw error;
     }
   }
 

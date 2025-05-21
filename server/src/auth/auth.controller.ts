@@ -43,11 +43,11 @@ export class AuthController {
 
     // Building authentication URL
     const authUrl = new URL(this.identityService.metadata.authUrl);
-    authUrl.searchParams.append("client_id", this.configService.oidc.clientId);
-    authUrl.searchParams.append("response_type", "code");
-    authUrl.searchParams.append("state", stateId);
-    authUrl.searchParams.append("scope", "openid");
-    authUrl.searchParams.append("redirect_uri", this.callbackUrl.href);
+    authUrl.searchParams.set("client_id", this.configService.oidc.clientId);
+    authUrl.searchParams.set("response_type", "code");
+    authUrl.searchParams.set("state", stateId);
+    authUrl.searchParams.set("scope", "openid");
+    authUrl.searchParams.set("redirect_uri", this.callbackUrl.href);
 
     res.redirect(authUrl.toString());
   }
@@ -88,7 +88,7 @@ export class AuthController {
       }
     } catch (error) {
       if (redirectUrl) {
-        redirectUrl.searchParams.append("auth_error", errorMessage(error));
+        redirectUrl.searchParams.set("auth_error", errorMessage(error));
         res.redirect(redirectUrl.toString());
       } else {
         throw error;
@@ -98,7 +98,7 @@ export class AuthController {
 
   @Get("verify")
   async verify(
-    @Cookies() accessToken: string | undefined,
+    @Cookies("access_token") accessToken: string | undefined,
   ): Promise<AccessTokenPayload> {
     if (!accessToken) {
       throw new UnauthorizedException("Missing access token");
@@ -129,7 +129,9 @@ export class AuthController {
 
     // Building logout URL
     const logoutUrl = new URL(this.identityService.metadata.logoutUrl);
-    logoutUrl.searchParams.append("redirect_uri", redirectUrl);
+    if (redirectUrl) {
+      logoutUrl.searchParams.set("redirect_uri", redirectUrl);
+    }
 
     // Removing cookies
     this.authService.unsetAccessCookie(res);

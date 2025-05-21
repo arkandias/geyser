@@ -42,7 +42,7 @@ server {
     #ssl_verify_client on;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-    include /etc/nginx/includes/locations/admin/keycloak.conf;
+    include /etc/nginx/includes/locations/admin.keycloak.conf;
 }
 
 # Keycloak server

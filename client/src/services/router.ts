@@ -44,6 +44,6 @@ const routes: RouteRecordRaw[] = [
 ];
 
 export const router = createRouter({
-  history: createWebHistory(import.meta.env.DEV ? "/spa-dev/" : "/"),
+  history: createWebHistory(),
   routes,
 });
