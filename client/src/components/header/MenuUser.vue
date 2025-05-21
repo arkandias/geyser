@@ -3,7 +3,7 @@ import { computed, inject } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import type { RoleTypeEnum } from "@/gql/graphql.ts";
+import { RoleTypeEnum } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 
@@ -15,10 +15,12 @@ const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
 
 const roleOptions = computed(() =>
-  authManager.allowedRoles.map((role) => ({
-    value: role,
-    label: roleTypeLabel(t, role),
-  })),
+  [RoleTypeEnum.Admin, RoleTypeEnum.Commissioner, RoleTypeEnum.Teacher]
+    .filter((role) => authManager.allowedRoles.includes(role))
+    .map((role) => ({
+      value: role,
+      label: roleTypeLabel(t, role),
+    })),
 );
 
 const updateRole = async (value: RoleTypeEnum) => {
@@ -39,7 +41,7 @@ const updateRole = async (value: RoleTypeEnum) => {
         <QSeparator />
         <QItem class="q-pl-sm">
           <QOptionGroup
-            :model-value="authManager.activeRole"
+            :model-value="authManager.activeRole.value"
             :options="roleOptions"
             type="radio"
             @update:model-value="updateRole"

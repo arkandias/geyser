@@ -89,21 +89,32 @@ watch(
   { immediate: true },
 );
 
-watch(currentPhase, (phase) => {
-  if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
-    authManager.setActiveRole(RoleTypeEnum.Admin);
-  } else if (
-    authManager.allowedRoles.includes(RoleTypeEnum.Commissioner) &&
-    phase === PhaseEnum.Assignments
-  ) {
-    authManager.setActiveRole(RoleTypeEnum.Commissioner);
-  }
-});
+watch(
+  currentPhase,
+  (phase) => {
+    if (!authManager.isAuthenticated || !authManager.isActive) {
+      return;
+    }
+
+    if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
+      authManager.setActiveRole(RoleTypeEnum.Admin);
+    } else if (
+      authManager.allowedRoles.includes(RoleTypeEnum.Commissioner) &&
+      phase === PhaseEnum.Assignments
+    ) {
+      authManager.setActiveRole(RoleTypeEnum.Commissioner);
+    }
+  },
+  { immediate: true },
+);
 
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
   if (!authManager.isAuthenticated) {
-    return t("home.alert.noAuth");
+    return t("home.alert.notAuthenticated");
+  }
+  if (!authManager.isActive) {
+    return t("home.alert.notActive");
   }
   if (getAppData.fetching.value) {
     return t("home.alert.loadingAppData");

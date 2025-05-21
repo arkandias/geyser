@@ -130,7 +130,8 @@ export class AuthController {
     // Building logout URL
     const logoutUrl = new URL(this.identityService.metadata.logoutUrl);
     if (redirectUrl) {
-      logoutUrl.searchParams.set("redirect_uri", redirectUrl);
+      logoutUrl.searchParams.set("client_id", "backend");
+      logoutUrl.searchParams.set("post_logout_redirect_uri", redirectUrl);
     }
 
     // Removing cookies

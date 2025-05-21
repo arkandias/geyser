@@ -40,10 +40,8 @@ export default {
       shutdown: "",
     },
     alert: {
-      noAuth: "You are not authenticated",
-      loadingProfile: "Loading your profile…",
-      profileNotLoaded: "Your profile could not be loaded",
-      profileNotActive: "Your profile is not active",
+      notAuthenticated: "You are not authenticated",
+      notActive: "Your profile is not active",
       loadingAppData: "Loading application settings…",
       shutdown: "Geyser is currently closed",
       pageNotFound: "Page not found",

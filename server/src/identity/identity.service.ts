@@ -83,6 +83,7 @@ export class IdentityService implements OnModuleInit {
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
 
+      console.log(response.data);
       return identityTokenResponseSchema.parse(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {

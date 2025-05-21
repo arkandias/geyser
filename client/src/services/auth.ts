@@ -33,6 +33,7 @@ export class AuthManager {
     const url = new URL(window.location.href);
 
     if (url.searchParams.get("post_logout") === "true") {
+      console.debug("[AuthManager] Logged out");
       return;
     }
 
@@ -79,15 +80,15 @@ export class AuthManager {
     try {
       const response = await api.get("/auth/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
-      console.debug("[AuthManager] Verification succeeded:", this.payload);
+      console.debug("[AuthManager] Verification succeeded:", this._payload);
       return true;
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
-        console.error(
+        console.debug(
           `[AuthManager] Verification failed: ${error.response?.data.message}`,
         );
       } else {
-        console.error("[AuthManager] Verification failed: Unknown error");
+        console.debug("[AuthManager] Verification failed: Unknown error");
       }
       delete this._payload;
       return false;
@@ -102,11 +103,11 @@ export class AuthManager {
       return true;
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
-        console.error(
+        console.debug(
           `[AuthManager] Refresh failed: ${error.response?.data.message}`,
         );
       } else {
-        console.error("[AuthManager] Refresh failed: Unknown error");
+        console.debug("[AuthManager] Refresh failed: Unknown error");
       }
       return false;
     }
@@ -119,9 +120,9 @@ export class AuthManager {
     redirectUrl.searchParams.set("post_logout", "true");
 
     window.location.href = api.getUri({
-      url: "/auth/login",
+      url: "/auth/logout",
       params: {
-        redirect_url: window.location.href,
+        redirect_url: redirectUrl,
       },
     });
 
@@ -135,27 +136,22 @@ export class AuthManager {
     return !!this._payload;
   }
 
-  private get payload(): AccessTokenPayload {
-    if (!this._payload) {
-      throw new Error("Not authenticated");
-    }
-    return this._payload;
-  }
-
   get uid(): string {
-    return this.payload.uid;
+    return this._payload?.uid ?? "";
   }
 
   get displayname(): string {
-    return this.payload.displayname;
+    return this._payload?.displayname ?? "";
   }
 
   get isActive(): boolean {
-    return this.payload.active;
+    return !!this._payload?.active;
   }
 
   get allowedRoles(): RoleTypeEnum[] {
-    return this.payload.roles.map((role) => RoleTypeEnum[capitalize(role)]);
+    return (
+      this._payload?.roles.map((role) => RoleTypeEnum[capitalize(role)]) ?? []
+    );
   }
 
   setActiveRole(role: RoleTypeEnum): void {

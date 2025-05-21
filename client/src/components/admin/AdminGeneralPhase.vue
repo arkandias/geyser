@@ -12,7 +12,12 @@ const { t } = useTypedI18n();
 const { notify } = useNotify();
 const { currentPhase } = useCurrentPhaseStore();
 
-const phaseOptions = Object.values(PhaseEnum).map((phase) => ({
+const phaseOptions = [
+  PhaseEnum.Requests,
+  PhaseEnum.Assignments,
+  PhaseEnum.Results,
+  PhaseEnum.Shutdown,
+].map((phase) => ({
   value: phase,
   label: phaseLabel(t, phase),
 }));
