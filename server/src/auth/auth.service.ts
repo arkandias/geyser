@@ -32,7 +32,7 @@ export class AuthService {
   ): Promise<string> {
     return new jose.SignJWT(payload)
       .setProtectedHeader({ alg: "RS256" })
-      .setIssuer(this.configService.api.url)
+      .setIssuer(this.configService.apiUrl.href)
       .setIssuedAt()
       .setJti(randomUUID())
       .sign(this.keysService.privateKey);
@@ -45,8 +45,8 @@ export class AuthService {
     let result: jose.JWTVerifyResult<T>;
     try {
       result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
-        issuer: this.configService.api.url,
-        audience: this.configService.api.url,
+        issuer: this.configService.apiUrl.href,
+        audience: this.configService.apiUrl.href,
         requiredClaims: ["sub", "exp", "iat", "jti", "scope"],
       });
     } catch (error) {
@@ -87,7 +87,7 @@ export class AuthService {
 
     return this.makeToken({
       sub: uid,
-      aud: this.configService.api.url,
+      aud: this.configService.apiUrl.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
@@ -108,7 +108,7 @@ export class AuthService {
     const { uid } = user;
     return this.makeToken({
       sub: uid,
-      aud: this.configService.api.url,
+      aud: this.configService.apiUrl.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
@@ -141,7 +141,7 @@ export class AuthService {
   private accessCookieOptions(): CookieOptions {
     return {
       httpOnly: true,
-      secure: this.configService.api.secure,
+      secure: this.configService.apiUrl.protocol === "https:",
       sameSite: "lax",
       maxAge: this.configService.jwt.accessTokenMaxAge,
       path: "/",
@@ -151,7 +151,7 @@ export class AuthService {
   private refreshCookieOptions(): CookieOptions {
     return {
       httpOnly: true,
-      secure: this.configService.api.secure,
+      secure: this.configService.apiUrl.protocol === "https:",
       sameSite: "lax",
       maxAge: this.configService.jwt.refreshTokenMaxAge,
       path: "/api/auth/refresh",

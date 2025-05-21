@@ -18,8 +18,10 @@ export class StateService {
       return null;
     }
 
-    if (!redirect.startsWith(this.configService.api.origin + "/")) {
-      // todo: allow protocol://*.${GEYSER_DOMAIN}/*
+    const url = new URL(redirect);
+
+    if (url.origin !== this.configService.apiUrl.origin) {
+      // TODO: Allow redirections to http(s)://*.${GEYSER_DOMAIN}/*
       throw new UnauthorizedException("Redirect URL not allowed");
     }
 

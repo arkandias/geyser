@@ -21,13 +21,13 @@ server {
 # Redirect HTTP traffic to HTTPS
 server {
     listen 80;
-    server_name *.${GEYSER_DOMAIN};
+    server_name ${GEYSER_DOMAIN} *.${GEYSER_DOMAIN};
     return 301 https://$host$request_uri;
 }
 
 # Admin server
 server {
-    listen 443;
+    listen 443 ssl;
     server_name admin.${GEYSER_DOMAIN};
     
     # Configure allowed IPs (e.g., behind VPN)
@@ -37,8 +37,41 @@ server {
     ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
     
+    # Client certificate verification
+    #ssl_client_certificate /etc/nginx/certs/client/ca.crt;
+    #ssl_verify_client on;
+    
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/admin/keycloak.conf;
+}
+
+# Keycloak server
+server {
+    listen 443 ssl;
+    server_name auth.${GEYSER_DOMAIN};
+    
+    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/locations/keycloak.conf;
+}
+
+# API server
+server {
+    listen 443 ssl;
+    server_name api.${GEYSER_DOMAIN};
+    
+    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    
+    set $api_url ${NGINX_PROXY_API_URL};
+    include /etc/nginx/includes/locations/api.conf;
+    
+    set $hasura_url ${NGINX_PROXY_HASURA_URL};
+    include /etc/nginx/includes/locations/hasura.conf;
+    # Disable admin access
+    proxy_set_header X-Hasura-Admin-Secret "";
 }
 
 # Main server
@@ -51,20 +84,6 @@ server {
     
     # Enable serving pre-compressed files
     gzip_static on;
-    
-    # Disable admin access
-    proxy_set_header X-Hasura-Admin-Secret "";
-    
-    include /etc/nginx/includes/locations/health.conf;
-    
-    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-    include /etc/nginx/includes/locations/keycloak.conf;
-    
-    set $api_url ${NGINX_PROXY_API_URL};
-    include /etc/nginx/includes/locations/api.conf;
-    
-    set $hasura_url ${NGINX_PROXY_HASURA_URL};
-    include /etc/nginx/includes/locations/hasura.conf;
     
     location / {
         root /usr/share/nginx/html;

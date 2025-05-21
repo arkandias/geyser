@@ -13,7 +13,7 @@ import { User } from "../users/user.entity";
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
-        url: configService.database.url,
+        url: configService.databaseUrl.href,
         entities: [Role, User],
       }),
     }),

@@ -20,12 +20,16 @@ import { StateService } from "./state.service";
 
 @Controller("auth")
 export class AuthController {
+  private callbackUrl: URL;
+
   constructor(
     private configService: ConfigService,
     private identityService: IdentityService,
     private authService: AuthService,
     private stateService: StateService,
-  ) {}
+  ) {
+    this.callbackUrl = new URL("/auth/callback", this.configService.apiUrl);
+  }
 
   @Get("login")
   login(
@@ -43,10 +47,7 @@ export class AuthController {
     authUrl.searchParams.append("response_type", "code");
     authUrl.searchParams.append("state", stateId);
     authUrl.searchParams.append("scope", "openid");
-    authUrl.searchParams.append(
-      "redirect_uri",
-      this.configService.api.url + "/auth/callback",
-    );
+    authUrl.searchParams.append("redirect_uri", this.callbackUrl.href);
 
     res.redirect(authUrl.toString());
   }
@@ -69,7 +70,7 @@ export class AuthController {
           client_secret: this.configService.oidc.clientSecret,
           grant_type: "authorization_code",
           code,
-          redirect_uri: this.configService.api.url + "/auth/callback",
+          redirect_uri: this.callbackUrl.href,
         });
 
       const { uid } = await this.identityService.verifyToken(identityToken);

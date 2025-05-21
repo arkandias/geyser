@@ -33,7 +33,7 @@ export class IdentityService implements OnModuleInit {
   constructor(private configService: ConfigService) {}
 
   async onModuleInit() {
-    const response = await axios.get(this.configService.oidc.discoveryUrl);
+    const response = await axios.get(this.configService.oidc.discoveryUrl.href);
 
     this._metadata = identityProviderConfigurationSchema.parse(response.data);
     this.logger.log(`Identity provider metadata loaded`);

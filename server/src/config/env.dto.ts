@@ -4,12 +4,10 @@ export const envSchema = z.object({
   NODE_ENV: z.enum(["development", "production"]).default("development"),
   PORT: z.coerce.number().default(3000),
 
-  API_URL: z
-    .string()
-    .refine(
-      (url) => /^(https?):\/\//.test(url),
-      "Must start with 'http://' or 'https://'",
-    ),
+  API_URL: z.string().refine((data) => {
+    const url = new URL(data);
+    return url.protocol === "http:" || url.protocol === "https:";
+  }),
 
   API_DATABASE_URL: z.string(),
 

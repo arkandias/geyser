@@ -14,7 +14,7 @@ async function bootstrap() {
 
   const allowOrigin =
     configService.nodeEnv === "production"
-      ? [configService.api.origin]
+      ? [configService.apiUrl.origin + "/*"]
       : ["http://localhost", "http://localhost:5173"];
   const credentials = true;
   logger.log("CORS configuration:");

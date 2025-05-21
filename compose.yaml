@@ -83,7 +83,7 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
       - backups:/backups
-  #      - ./postgres/init:/initdb
+  #      - ./postgres/init:/initdb # TODO: remove?
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge
@@ -175,7 +175,7 @@ services:
       - ./nginx/certs:/etc/nginx/certs:ro
 
   duplicati:
-    image: lscr.io/linuxserver/duplicati:latest
+    image: lscr.io/linuxserver/duplicati:2.1.0
     restart: unless-stopped
     environment:
       PUID: 1000

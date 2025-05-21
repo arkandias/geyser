@@ -10,21 +10,31 @@ server {
     return 444;
 }
 
-# Main server
+# Keycloak server
 server {
     listen 80;
-    server_name ${GEYSER_DOMAIN};
-    
-    include /etc/nginx/includes/locations/health.conf;
+    server_name auth.localhost;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak.conf;
+}
+
+# API server
+server {
+    listen 80;
+    server_name api.localhost;
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
     
     set $hasura_url ${NGINX_PROXY_HASURA_URL};
     include /etc/nginx/includes/locations/hasura.conf;
+}
+
+# Main server
+server {
+    listen 80;
+    server_name localhost;
     
     set $spa_url ${NGINX_PROXY_SPA_URL};
     include /etc/nginx/includes/locations/spa-dev.conf;

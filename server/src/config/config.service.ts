@@ -1,155 +1,84 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
 
-import {
-  JwtConfig,
-  NonParsedDatabaseUrl,
-  OidcConfig,
-  ParsedApiUrl,
-  ParsedDatabaseUrl,
-} from "./config.interfaces";
-import { Env } from "./envSchema";
+import { Env } from "./env.dto";
 
 @Injectable()
 export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
   readonly nodeEnv: string;
   readonly port: number;
-  readonly api: ParsedApiUrl;
-  readonly database: ParsedDatabaseUrl | NonParsedDatabaseUrl;
-  readonly oidc: OidcConfig;
-  readonly jwt: JwtConfig;
+  readonly apiUrl: URL;
+  readonly databaseUrl: URL;
+  readonly oidc: {
+    discoveryUrl: URL;
+    clientId: string;
+    clientSecret: string;
+  };
+  readonly jwt: {
+    accessTokenMaxAge: number;
+    refreshTokenMaxAge: number;
+    stateExpirationTime: number;
+  };
 
   constructor(private configService: NestConfigService<Env, true>) {
-    this.nodeEnv = this.parseNodeEnv();
-    this.port = this.parsePort();
-    this.api = this.parseApiUrl();
-    this.database = this.parseDatabaseUrl();
-    this.oidc = this.parseOidcConfig();
-    this.jwt = this.parseJwtConfig();
+    this.nodeEnv = this.configService.getOrThrow<"development" | "production">(
+      "NODE_ENV",
+    );
+    this.logger.log(`Node environment: ${this.nodeEnv}`);
+
+    this.port = this.configService.getOrThrow<number>("PORT");
+    this.logger.log(`Port: ${this.port}`);
+
+    this.apiUrl = new URL(this.configService.getOrThrow<string>("API_URL"));
+    this.logger.log(`API URL: ${this.apiUrl.href}`);
+
+    this.databaseUrl = new URL(
+      this.configService.getOrThrow<string>("API_DATABASE_URL"),
+    );
+    this.logger.log(`Database URL: ${this.databaseUrl.href}`);
+
+    this.oidc = {
+      discoveryUrl: new URL(
+        this.configService.getOrThrow<string>("API_OIDC_DISCOVERY_URL"),
+      ),
+      clientId: this.configService.getOrThrow<string>("API_OIDC_CLIENT_ID"),
+      clientSecret: this.configService.getOrThrow<string>(
+        "API_OIDC_CLIENT_SECRET",
+      ),
+    };
+    this.logger.log("OIDC configuration:");
+    this.logger.log(`- Discovery URL: ${this.oidc.discoveryUrl.href}`);
+    this.logger.log(`- Client ID: ${this.oidc.clientId}`);
+
+    this.jwt = {
+      accessTokenMaxAge: this.configService.getOrThrow<number>(
+        "JWT_ACCESS_TOKEN_MAX_AGE_MS",
+      ),
+      refreshTokenMaxAge: this.configService.getOrThrow<number>(
+        "JWT_REFRESH_TOKEN_MAX_AGE_MS",
+      ),
+      stateExpirationTime: this.configService.getOrThrow<number>(
+        "JWT_STATE_EXPIRATION_TIME_MS",
+      ),
+    };
+    this.logger.log("JWT configuration:");
+    this.logger.log(
+      `- Access token max age (ms): ${this.jwt.accessTokenMaxAge}`,
+    );
+    this.logger.log(
+      `- Refresh token max age (ms): ${this.jwt.refreshTokenMaxAge}`,
+    );
+    this.logger.log(
+      `- State expiration time (ms): ${this.jwt.stateExpirationTime}`,
+    );
+
     this.validateEnvironment();
   }
 
   validateEnvironment() {
-    if (this.nodeEnv === "production" && !this.api.secure) {
+    if (this.nodeEnv === "production" && this.apiUrl.protocol !== "https:") {
       throw new Error("Invalid API_URL: Production environment requires HTTPS");
     }
-  }
-
-  parseNodeEnv(): "development" | "production" {
-    const nodeEnv = this.configService.getOrThrow<"development" | "production">(
-      "NODE_ENV",
-    );
-    this.logger.log(`Node environment: ${nodeEnv}`);
-    return nodeEnv;
-  }
-
-  parsePort(): number {
-    const port = this.configService.getOrThrow<number>("PORT");
-    this.logger.log(`Port: ${port}`);
-    return port;
-  }
-
-  parseApiUrl(): ParsedApiUrl {
-    // todo: use URL
-    let url = this.configService.getOrThrow<string>("API_URL");
-    if (url.endsWith("/")) {
-      url = url.slice(0, -1);
-      this.logger.warn("Invalid API_URL: Trailing slash removed");
-    }
-
-    const secure = url.startsWith("https://");
-
-    const origin = /^(https?:\/\/[^/]+)/.exec(url)?.[1];
-    if (!origin) {
-      throw new Error("Invalid API_URL: Failed to extract origin");
-    }
-
-    this.logger.log(`API URL: ${url} (origin: ${origin}, secure: ${secure})`);
-
-    return { url, secure, origin };
-  }
-
-  parseDatabaseUrl(): ParsedDatabaseUrl | NonParsedDatabaseUrl {
-    const url = this.configService.getOrThrow<string>("API_DATABASE_URL");
-    const matches =
-      /^([a-z-]+):\/\/([^:@]+):([^:@]*)@([a-z]+):(\d+)\/(.+)$/.exec(url);
-
-    if (!matches || matches.length < 7) {
-      this.logger.warn("Could not parse DATABASE_URL");
-      return { url, parsed: false };
-    }
-
-    const [
-      ,
-      protocol = "",
-      username = "",
-      password = "",
-      host = "",
-      port = "",
-      database = "",
-    ] = matches;
-
-    this.logger.log("Database configuration:");
-    this.logger.log(`- protocol: ${protocol}`);
-    this.logger.log(`- host: ${host}`);
-    this.logger.log(`- port: ${port}`);
-    this.logger.log(`- database: ${database}`);
-    this.logger.log(`- username: ${username}`);
-
-    return {
-      url,
-      parsed: true,
-      protocol,
-      username,
-      password,
-      host,
-      port: Number(port),
-      database,
-    };
-  }
-
-  parseOidcConfig(): OidcConfig {
-    const discoveryUrl = this.configService.getOrThrow<string>(
-      "API_OIDC_DISCOVERY_URL",
-    );
-    const clientId =
-      this.configService.getOrThrow<string>("API_OIDC_CLIENT_ID");
-    const clientSecret = this.configService.getOrThrow<string>(
-      "API_OIDC_CLIENT_SECRET",
-    );
-
-    this.logger.log("OIDC configuration:");
-    this.logger.log(`- Discovery URL: ${discoveryUrl}`);
-    this.logger.log(`- Client ID: ${clientId}`);
-
-    return {
-      discoveryUrl,
-      clientId,
-      clientSecret,
-    };
-  }
-
-  parseJwtConfig(): JwtConfig {
-    const accessTokenMaxAge = this.configService.getOrThrow<number>(
-      "JWT_ACCESS_TOKEN_MAX_AGE_MS",
-    );
-    const refreshTokenMaxAge = this.configService.getOrThrow<number>(
-      "JWT_REFRESH_TOKEN_MAX_AGE_MS",
-    );
-    const stateExpirationTime = this.configService.getOrThrow<number>(
-      "JWT_STATE_EXPIRATION_TIME_MS",
-    );
-
-    this.logger.log("JWT configuration:");
-    this.logger.log(`- Access token max age (ms): ${accessTokenMaxAge}`);
-    this.logger.log(`- Refresh token max age (ms): ${refreshTokenMaxAge}`);
-    this.logger.log(`- State expiration time (ms): ${stateExpirationTime}`);
-
-    return {
-      accessTokenMaxAge,
-      refreshTokenMaxAge,
-      stateExpirationTime,
-    };
   }
 }

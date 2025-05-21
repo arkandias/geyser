@@ -64,7 +64,7 @@ handle_realms_import() {
     fi
 
     info "Importing Keycloak realms..."
-    kc --restart-with import --dir "/opt/keycloak/data/backups/realsm/${SELECTED_BACKUP}"
+    kc --restart-with import --dir "/opt/keycloak/data/backups/realms/${SELECTED_BACKUP}"
 
     info "Stopping services..."
     compose down
