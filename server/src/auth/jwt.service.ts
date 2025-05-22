@@ -16,15 +16,13 @@ import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
 import { User } from "../users/user.entity";
-import { UsersService } from "../users/users.service";
 
 @Injectable()
-export class AuthService {
+export class JwtService {
   constructor(
     private configService: ConfigService,
     private keysService: KeysService,
     private rolesService: RolesService,
-    private usersService: UsersService,
   ) {}
 
   private async makeToken(
@@ -40,7 +38,7 @@ export class AuthService {
 
   private async verifyToken<T extends BaseTokenPayload>(
     token: string,
-    scope?: string,
+    typ?: string,
   ): Promise<T> {
     let result: jose.JWTVerifyResult<T>;
     try {
@@ -59,29 +57,14 @@ export class AuthService {
       throw error;
     }
 
-    if (scope) {
-      const payloadScopes = result.payload.scope?.split(" ");
-      scope.split(" ").forEach((s) => {
-        if (!payloadScopes?.includes(s)) {
-          throw new UnauthorizedException({
-            message: "Token verification failed",
-            error: `Missing scope: ${s}`,
-          });
-        }
+    if (typ && result.payload.typ !== typ) {
+      throw new UnauthorizedException({
+        message: "Token verification failed",
+        error: "Invalid token type",
       });
     }
 
     return result.payload;
-  }
-
-  async getUser(uid: string): Promise<User> {
-    const user = await this.usersService.findByUid(uid);
-
-    if (!user) {
-      throw new UnauthorizedException("User not found");
-    }
-
-    return user;
   }
 
   private async makeAccessToken(user: User): Promise<string> {
@@ -97,7 +80,7 @@ export class AuthService {
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
-      scope: "access",
+      typ: "Bearer",
       uid,
       displayname,
       active,
@@ -118,12 +101,12 @@ export class AuthService {
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
-      scope: "refresh",
+      typ: "Refresh",
     } satisfies OmitWithIndex<BaseTokenPayload, "iss" | "iat" | "jti">);
   }
 
   async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {
-    const payload = await this.verifyToken(accessToken, "access");
+    const payload = await this.verifyToken(accessToken, "Bearer");
 
     const parsed = accessTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {
@@ -137,7 +120,7 @@ export class AuthService {
   }
 
   async verifyRefreshToken(refreshToken: string): Promise<BaseTokenPayload> {
-    const payload = await this.verifyToken(refreshToken, "refresh");
+    const payload = await this.verifyToken(refreshToken, "Refresh");
 
     const parsed = baseTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {

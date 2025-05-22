@@ -10,6 +10,15 @@ server {
     return 444;
 }
 
+# Admin server
+server {
+    listen 80;
+    server_name admin.${GEYSER_DOMAIN};
+    
+    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
+    include /etc/nginx/includes/locations/admin.keycloak.conf;
+}
+
 # Keycloak server
 server {
     listen 80;

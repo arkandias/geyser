@@ -78,7 +78,7 @@ export class AuthManager {
   async verify(): Promise<boolean> {
     console.debug("[AuthManager] Verifying access token...");
     try {
-      const response = await api.get("/auth/verify");
+      const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
       console.debug("[AuthManager] Verification succeeded:", this._payload);
       return true;
@@ -98,7 +98,7 @@ export class AuthManager {
   async refresh(): Promise<boolean> {
     console.debug("[AuthManager] Refreshing access token...");
     try {
-      await api.post("/auth/refresh");
+      await api.post("/auth/token/refresh");
       console.debug("[AuthManager] Refresh succeeded");
       return true;
     } catch (error) {

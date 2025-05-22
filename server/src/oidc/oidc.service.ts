@@ -10,24 +10,21 @@ import jose from "jose";
 import { z } from "zod";
 
 import { ConfigService } from "../config/config.service";
+import { OidcEndpoints, oidcEndpointsSchema } from "./oidc-endpoints.dto";
 import {
-  IdentityProviderConfiguration,
-  identityProviderConfigurationSchema,
-} from "./identity-provider-configuration.dto";
+  OidcTokenPayload,
+  oidcTokenPayloadSchema,
+} from "./oidc-token-payload.dto";
+import { OidcTokenRequestParameters } from "./oidc-token-request-parameters.interface";
 import {
-  IdentityTokenPayload,
-  identityTokenPayloadSchema,
-} from "./identity-token-payload.dto";
-import { IdentityTokenRequestParameters } from "./identity-token-request-parameters.interface";
-import {
-  TokenResponse,
-  identityTokenResponseSchema,
-} from "./identity-token-response.dto";
+  OidcTokenResponse,
+  oidcTokenResponseSchema,
+} from "./oidc-token-response.dto";
 
 @Injectable()
-export class IdentityService implements OnModuleInit {
-  private readonly logger = new Logger(IdentityService.name);
-  private _metadata: IdentityProviderConfiguration | null = null;
+export class OidcService implements OnModuleInit {
+  private readonly logger = new Logger(OidcService.name);
+  private _metadata: OidcEndpoints | null = null;
   private _jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
 
   constructor(private configService: ConfigService) {}
@@ -35,14 +32,14 @@ export class IdentityService implements OnModuleInit {
   async onModuleInit() {
     const response = await axios.get(this.configService.oidc.discoveryUrl.href);
 
-    this._metadata = identityProviderConfigurationSchema.parse(response.data);
+    this._metadata = oidcEndpointsSchema.parse(response.data);
     this.logger.log(`Identity provider metadata loaded`);
 
     this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksUrl));
     this.logger.log("Identity provider JWKS loaded");
   }
 
-  async verifyToken(token: string): Promise<IdentityTokenPayload> {
+  async verifyToken(token: string): Promise<OidcTokenPayload> {
     try {
       // Decode the token's protected header to get the key ID
       const protectedHeaderParameters = jose.decodeProtectedHeader(token);
@@ -55,7 +52,7 @@ export class IdentityService implements OnModuleInit {
         issuer: this.metadata.issuerUrl,
       });
 
-      return identityTokenPayloadSchema.parse(payload);
+      return oidcTokenPayloadSchema.parse(payload);
     } catch (error) {
       if (error instanceof jose.errors.JOSEError) {
         throw new UnauthorizedException({
@@ -74,8 +71,8 @@ export class IdentityService implements OnModuleInit {
   }
 
   async requestToken(
-    params: IdentityTokenRequestParameters,
-  ): Promise<TokenResponse> {
+    params: OidcTokenRequestParameters,
+  ): Promise<OidcTokenResponse> {
     try {
       const response = await axios.post(
         this.metadata.tokenUrl,
@@ -84,7 +81,7 @@ export class IdentityService implements OnModuleInit {
       );
 
       console.log(response.data);
-      return identityTokenResponseSchema.parse(response.data);
+      return oidcTokenResponseSchema.parse(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new UnauthorizedException({

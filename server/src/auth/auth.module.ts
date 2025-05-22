@@ -1,17 +1,18 @@
 import { Module } from "@nestjs/common";
 
 import { ConfigModule } from "../config/config.module";
-import { IdentityModule } from "../identity/identity.module";
 import { KeysModule } from "../keys/keys.module";
+import { OidcModule } from "../oidc/oidc.module";
 import { RolesModule } from "../roles/roles.module";
 import { UsersModule } from "../users/users.module";
 import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
+import { JwtService } from "./jwt.service";
 import { StateService } from "./state.service";
+import { UrlService } from "./url.service";
 
 @Module({
-  imports: [ConfigModule, IdentityModule, KeysModule, RolesModule, UsersModule],
+  imports: [ConfigModule, KeysModule, OidcModule, RolesModule, UsersModule],
   controllers: [AuthController],
-  providers: [AuthService, StateService],
+  providers: [JwtService, StateService, UrlService],
 })
 export class AuthModule {}

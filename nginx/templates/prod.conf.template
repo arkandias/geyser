@@ -30,7 +30,7 @@ server {
     listen 443 ssl;
     server_name admin.${GEYSER_DOMAIN};
     
-    # Configure allowed IPs (e.g., behind VPN)
+    # Configure allowed IPs (e.g., behind a VPN)
     #allow 10.0.0.0/24;
     #deny all;
     
@@ -74,10 +74,10 @@ server {
     proxy_set_header X-Hasura-Admin-Secret "";
 }
 
-# Main server
+# App server
 server {
     listen 443 ssl;
-    server_name ${GEYSER_DOMAIN};
+    server_name app.${GEYSER_DOMAIN};
     
     ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;

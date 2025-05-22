@@ -13,32 +13,10 @@ export class StateService {
 
   constructor(private configService: ConfigService) {}
 
-  private validateRedirectUrl(redirect: string | null | undefined): URL | null {
-    if (!redirect) {
-      return null;
-    }
-
-    const url = new URL(redirect);
-
-    if (
-      this.configService.nodeEnv === "production" &&
-      url.origin !== this.configService.apiUrl.origin
-    ) {
-      // TODO: Allow redirections to http(s)://*.${GEYSER_DOMAIN}/*
-      throw new UnauthorizedException("Redirect URL not allowed");
-    }
-
-    return new URL(redirect);
-  }
-
-  newState(redirect: string | undefined): string {
+  newState(redirectUrl: URL | null): string {
     const id = randomUUID();
-
-    this.stateRecord.set(id, {
-      expiresAt: Date.now() + this.configService.jwt.stateExpirationTime,
-      redirectUrl: this.validateRedirectUrl(redirect),
-    });
-
+    const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
+    this.stateRecord.set(id, { expiresAt, redirectUrl });
     return id;
   }
 

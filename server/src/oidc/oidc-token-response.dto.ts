@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const identityTokenResponseSchema = z
+export const oidcTokenResponseSchema = z
   .object({
     access_token: z.string(),
     token_type: z.string(),
@@ -16,4 +16,4 @@ export const identityTokenResponseSchema = z
     refreshToken: data.refresh_token,
   }));
 
-export type TokenResponse = z.infer<typeof identityTokenResponseSchema>;
+export type OidcTokenResponse = z.infer<typeof oidcTokenResponseSchema>;

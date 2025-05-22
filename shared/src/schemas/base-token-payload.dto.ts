@@ -8,7 +8,7 @@ export const baseTokenPayloadSchema = z
     exp: z.number(),
     iat: z.number(),
     jti: z.string(),
-    scope: z.string().optional(),
+    typ: z.string(),
   })
   .passthrough();
 

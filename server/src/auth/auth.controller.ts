@@ -12,23 +12,34 @@ import type { Request, Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
-import { IdentityService } from "../identity/identity.service";
-import { AuthService } from "./auth.service";
+import { OidcService } from "../oidc/oidc.service";
+import { UsersService } from "../users/users.service";
 import { CallbackQueryDto } from "./callback-query.dto";
+import { JwtService } from "./jwt.service";
 import { RedirectUrlDto } from "./redirect-url.dto";
 import { StateService } from "./state.service";
+import { UrlService } from "./url.service";
 
 @Controller("auth")
 export class AuthController {
-  private callbackUrl: URL;
-
   constructor(
+    private authService: JwtService,
     private configService: ConfigService,
-    private identityService: IdentityService,
-    private authService: AuthService,
+    private oidcService: OidcService,
     private stateService: StateService,
-  ) {
-    this.callbackUrl = new URL("/auth/callback", this.configService.apiUrl);
+    private urlService: UrlService,
+    private usersService: UsersService,
+  ) {}
+
+  private async setUserCookies(res: Response, uid: string): Promise<void> {
+    const user = await this.usersService.findByUid(uid);
+
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    await this.authService.setAccessCookie(res, user);
+    await this.authService.setRefreshCookie(res, user);
   }
 
   @Get("login")
@@ -37,22 +48,26 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const { redirectUrl } = loginQueryDto;
+    const url = this.urlService.validateRedirectUrl(redirectUrl);
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.stateService.newState(redirectUrl);
+    const stateId = this.stateService.newState(url);
 
     // Building authentication URL
-    const authUrl = new URL(this.identityService.metadata.authUrl);
+    const authUrl = new URL(this.oidcService.metadata.authUrl);
     authUrl.searchParams.set("client_id", this.configService.oidc.clientId);
     authUrl.searchParams.set("response_type", "code");
     authUrl.searchParams.set("state", stateId);
     authUrl.searchParams.set("scope", "openid");
-    authUrl.searchParams.set("redirect_uri", this.callbackUrl.href);
+    authUrl.searchParams.set(
+      "redirect_uri",
+      this.urlService.loginCallbackUrl.href,
+    );
 
     res.redirect(authUrl.toString());
   }
 
-  @Get("callback")
+  @Get("login/callback")
   async callback(
     @Query() callbackQueryDto: CallbackQueryDto,
     @Req() req: Request,
@@ -65,18 +80,16 @@ export class AuthController {
       redirectUrl = this.stateService.getState(state, req).redirectUrl;
 
       const { accessToken: identityToken } =
-        await this.identityService.requestToken({
+        await this.oidcService.requestToken({
           client_id: this.configService.oidc.clientId,
           client_secret: this.configService.oidc.clientSecret,
           grant_type: "authorization_code",
           code,
-          redirect_uri: this.callbackUrl.href,
+          redirect_uri: this.urlService.loginCallbackUrl.href,
         });
 
-      const { uid } = await this.identityService.verifyToken(identityToken);
-      const user = await this.authService.getUser(uid);
-      await this.authService.setAccessCookie(res, user);
-      await this.authService.setRefreshCookie(res, user);
+      const { uid } = await this.oidcService.verifyToken(identityToken);
+      await this.setUserCookies(res, uid);
 
       if (redirectUrl) {
         res.redirect(redirectUrl.toString());
@@ -96,7 +109,50 @@ export class AuthController {
     }
   }
 
-  @Get("verify")
+  @Get("logout")
+  logout(
+    @Query() redirectUrlDto: RedirectUrlDto,
+    @Res({ passthrough: true }) res: Response,
+  ): void {
+    const { redirectUrl } = redirectUrlDto;
+    const url = this.urlService.validateRedirectUrl(redirectUrl);
+
+    const postLogoutRedirectUrl = this.urlService.logoutCallbackUrl;
+    if (url) {
+      postLogoutRedirectUrl.searchParams.set("redirect_url", url.href);
+    }
+
+    // Building logout URL
+    const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
+    if (url) {
+      logoutUrl.searchParams.set(
+        "post_logout_redirect_uri",
+        postLogoutRedirectUrl.href,
+      );
+      logoutUrl.searchParams.set("client_id", "backend");
+    }
+
+    // Removing cookies
+    this.authService.unsetAccessCookie(res);
+    this.authService.unsetRefreshCookie(res);
+
+    res.redirect(logoutUrl.href);
+  }
+
+  @Get("logout/callback")
+  postLogout(
+    @Query() redirectUrlDto: RedirectUrlDto,
+    @Res({ passthrough: true }) res: Response,
+  ): void {
+    const { redirectUrl } = redirectUrlDto;
+    const url = this.urlService.validateRedirectUrl(redirectUrl);
+
+    if (url) {
+      res.redirect(url.href);
+    }
+  }
+
+  @Get("token/verify")
   async verify(
     @Cookies("access_token") accessToken: string | undefined,
   ): Promise<AccessTokenPayload> {
@@ -106,7 +162,7 @@ export class AuthController {
     return this.authService.verifyAccessToken(accessToken);
   }
 
-  @Post("refresh")
+  @Post("token/refresh")
   async refresh(
     @Cookies("refresh_token") refreshToken: string | undefined,
     @Res({ passthrough: true }) res: Response,
@@ -115,29 +171,6 @@ export class AuthController {
       throw new UnauthorizedException("Missing refresh token");
     }
     const { sub } = await this.authService.verifyRefreshToken(refreshToken);
-    const user = await this.authService.getUser(sub);
-    await this.authService.setAccessCookie(res, user);
-    await this.authService.setRefreshCookie(res, user);
-  }
-
-  @Get("logout")
-  logout(
-    @Query() redirectUrlDto: RedirectUrlDto,
-    @Res({ passthrough: true }) res: Response,
-  ): void {
-    const { redirectUrl } = redirectUrlDto;
-
-    // Building logout URL
-    const logoutUrl = new URL(this.identityService.metadata.logoutUrl);
-    if (redirectUrl) {
-      logoutUrl.searchParams.set("client_id", "backend");
-      logoutUrl.searchParams.set("post_logout_redirect_uri", redirectUrl);
-    }
-
-    // Removing cookies
-    this.authService.unsetAccessCookie(res);
-    this.authService.unsetRefreshCookie(res);
-
-    res.redirect(logoutUrl.toString());
+    await this.setUserCookies(res, sub);
   }
 }

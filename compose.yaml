@@ -46,7 +46,7 @@ services:
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
       KC_HOSTNAME: "https://auth.${GEYSER_DOMAIN}"
-      KC_HOSTNAME_ADMIN: "https://admin.${GEYSER_DOMAIN}"
+      KC_HOSTNAME_ADMIN: "https://admin.${GEYSER_DOMAIN}/auth"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
       CLIENT_BACKEND_ROOT_URL: "https://api.${GEYSER_DOMAIN}"

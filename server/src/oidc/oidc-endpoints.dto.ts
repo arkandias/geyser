@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const identityProviderConfigurationSchema = z
+export const oidcEndpointsSchema = z
   .object({
     issuer: z.string(),
     authorization_endpoint: z.string(),
@@ -16,6 +16,4 @@ export const identityProviderConfigurationSchema = z
     logoutUrl: data.end_session_endpoint,
   }));
 
-export type IdentityProviderConfiguration = z.infer<
-  typeof identityProviderConfigurationSchema
->;
+export type OidcEndpoints = z.infer<typeof oidcEndpointsSchema>;

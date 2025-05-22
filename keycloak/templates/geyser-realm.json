@@ -3,12 +3,15 @@
   "displayName": "Geyser",
   "enabled": true,
   "registrationEmailAsUsername": true,
+  "internationalizationEnabled": true,
+  "supportedLocales": ["en", "fr"],
+  "defaultLocale": "fr",
   "clients": [
     {
       "clientId": "backend",
       "name": "client_backend",
       "description": "",
-      "rootUrl": "${GEYSER_URL}/api",
+      "rootUrl": "https://api.${GEYSER_DOMAIN}",
       "adminUrl": "/",
       "baseUrl": "/",
       "surrogateAuthRequired": false,
@@ -16,8 +19,8 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "${CLIENT_BACKEND_SECRET}",
-      "redirectUris": ["/auth/callback"],
-      "webOrigins": ["${GEYSER_URL}"],
+      "redirectUris": ["/auth/login/callback"],
+      "webOrigins": ["https://*.${GEYSER_DOMAIN}"],
       "notBefore": 0,
       "bearerOnly": false,
       "consentRequired": false,
@@ -35,7 +38,7 @@
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "-",
+        "post.logout.redirect.uris": "/auth/logout/callback",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
@@ -54,10 +57,27 @@
             "userinfo.token.claim": "true",
             "user.attribute": "email",
             "id.token.claim": "true",
-            "lightweight.claim": "true",
+            "lightweight.claim": "false",
             "access.token.claim": "true",
             "claim.name": "uid",
             "jsonType.label": "String"
+          }
+        },
+        {
+          "name": "audience",
+          "protocol": "openid-connect",
+          "protocolMapper": "oidc-hardcoded-claim-mapper",
+          "consentRequired": false,
+          "config": {
+            "introspection.token.claim": "true",
+            "claim.value": "https://api.${GEYSER_DOMAIN}/",
+            "userinfo.token.claim": "true",
+            "id.token.claim": "true",
+            "lightweight.claim": "false",
+            "access.token.claim": "true",
+            "claim.name": "aud",
+            "jsonType.label": "String",
+            "access.tokenResponse.claim": "false"
           }
         }
       ],

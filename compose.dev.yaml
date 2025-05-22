@@ -46,7 +46,7 @@ services:
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
       KC_HOSTNAME: "http://auth.geyser.localhost"
-      KC_HOSTNAME_ADMIN: "http://localhost:8081"
+      KC_HOSTNAME_ADMIN: "http://admin.localhost/auth"
       KC_HOSTNAME_DEBUG: "true"
       KC_HOSTNAME_STRICT: "true"
       CLIENT_BACKEND_ROOT_URL: "http://api.geyser.localhost"
