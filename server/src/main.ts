@@ -3,6 +3,7 @@ import { NestFactory } from "@nestjs/core";
 import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
+import { UrlService } from "./auth/url.service";
 import { LoggingInterceptor } from "./common/logging.interceptor";
 import { ConfigService } from "./config/config.service";
 
@@ -11,17 +12,15 @@ async function bootstrap() {
 
   const logger = new Logger("Bootstrap");
   const configService = app.get(ConfigService);
+  const urlService = app.get(UrlService);
 
-  const allowOrigin =
-    configService.nodeEnv === "production"
-      ? [configService.apiUrl.origin + "/*"] // todo
-      : ["http://dev.geyser.localhost", "http://preview.geyser.localhost"];
+  const origin = urlService.subdomains;
   const credentials = true;
   logger.log("CORS configuration:");
-  logger.log(`- Allow origin: ${allowOrigin.join(", ")}`);
+  logger.log(`- Allow origin: ${origin}`);
   logger.log(`- Credentials: ${credentials}`);
   app.enableCors({
-    origin: allowOrigin,
+    origin: origin,
     credentials,
   });
 

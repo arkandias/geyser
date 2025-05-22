@@ -83,7 +83,6 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
       - backups:/backups
-  #      - ./postgres/init:/initdb # TODO: remove?
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge
@@ -131,7 +130,7 @@ services:
       HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       HASURA_GRAPHQL_ADMIN_SECRET: null
       HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"https://api.${GEYSER_DOMAIN}/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"https://api.${GEYSER_DOMAIN}","audience":"https://api.${GEYSER_DOMAIN}"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "https://${GEYSER_DOMAIN}"
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://*.${GEYSER_DOMAIN}"
       HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
       HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
     ports:

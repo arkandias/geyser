@@ -4,11 +4,15 @@ import { ConfigService } from "../config/config.service";
 
 @Injectable()
 export class UrlService {
+  readonly protocol: string;
   readonly rootDomain: string;
+  readonly subdomains: string;
   readonly loginCallbackUrl: URL;
   readonly logoutCallbackUrl: URL;
 
   constructor(private configService: ConfigService) {
+    this.protocol = this.configService.apiUrl.protocol;
+
     const domains = this.configService.apiUrl.hostname.split(".");
     if (domains.length > 2) {
       this.rootDomain = domains.slice(1).join(".");
@@ -23,6 +27,8 @@ export class UrlService {
       "/auth/logout/callback",
       this.configService.apiUrl,
     );
+
+    this.subdomains = this.protocol + "//*." + this.rootDomain;
   }
 
   validateRedirectUrl(redirectUrl: string | null | undefined): URL | null {

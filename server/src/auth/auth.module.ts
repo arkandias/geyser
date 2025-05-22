@@ -14,5 +14,6 @@ import { UrlService } from "./url.service";
   imports: [ConfigModule, KeysModule, OidcModule, RolesModule, UsersModule],
   controllers: [AuthController],
   providers: [JwtService, StateService, UrlService],
+  exports: [UrlService],
 })
 export class AuthModule {}

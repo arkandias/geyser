@@ -2,11 +2,8 @@ dist/
 node_modules/
 
 /backups/
-# todo: remove logs et READMEs?
-/logs/*
-!/logs/README.md
+/logs/
 /nginx/certs/*
-!/nginx/certs/README.md
 !/nginx/certs/default
 /server/keys/
 
