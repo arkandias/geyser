@@ -1,12 +1,12 @@
 ###############################################################################
-# SYNC-KEYCLOAK COMMAND
+# KEYCLOAK-SYNC COMMAND
 ###############################################################################
 
-show_sync_keycloak_help() {
+show_keycloak_sync_help() {
     cat <<EOF
 Synchronize Keycloak users and groups with application data
 
-Usage: geyser sync-keycloak
+Usage: geyser keycloak-sync
   
 Update Keycloak users and groups based on Geyser main database:
 - Create or update users corresponding to active teachers
@@ -20,16 +20,16 @@ Note: Requires jq to be installed.
 EOF
 }
 
-handle_sync_keycloak() {
+handle_keycloak_sync() {
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_sync_keycloak_help
+            show_keycloak_help_sync
             exit 0
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser sync-keycloak --help')"
+            error "Unknown parameter '$1' (see 'geyser keycloak-sync --help')"
             ;;
         esac
     done

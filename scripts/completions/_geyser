@@ -28,17 +28,21 @@ _geyser() {
         'start:Start Geyser services'
         'stop:Stop Geyser services'
         'update:Update Geyser services'
+        'clean:Cleanup Geyser services'
         'reset:Reset Geyser to a fresh installation'
-        'backup:Create a backup of Geyser main database'
-        'restore:Restore Geyser main database from a backup'
+        'data-dump:Dump Geyser main database'
+        'data-restore:Restore Geyser main database'
         'realms-export:Export Keycloak realms and users'
         'realms-import:Import Keycloak realms and users'
-        'sync-keycloak:Synchronize Keycloak users and groups with app data'
+        'keycloak-sync:Synchronize Keycloak users and groups with app data'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
         'kcadm:Keycloak Admin CLI access'
         'rsync:Configured rsync wrapper'
+        'webhook-start:Start a webhook on port 9000'
+        'webhook-stop:Terminate any process listening on port 9000'
+        'deploy:Deploy Geyser from remote repository'
         'install-completion:Install zsh completion'
     )
 
@@ -109,27 +113,17 @@ _geyser_compose() {
     done
     words_after_compose=("${words[@]:$((i))}")
 
-    # Configuration
-    local MODE=development
-    local NO_AUTH=false
-    local NO_WEB=false
-
     # Load env files
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
 
-    # Resolving incompatibilities
-    [[ "${MODE}" == "production" ]] && NO_AUTH="false"
-    [[ "${MODE}" == "production" ]] && NO_WEB="false"
-    [[ "${NO_AUTH}" == "true" ]] && NO_WEB="true"
-
-    local -a compose_files=(-f "${GEYSER_HOME}"/compose.base.yaml)
-    [[ "${NO_AUTH}" == "false" ]] &&
-        compose_files+=("-f" "${GEYSER_HOME}/compose.auth.yaml")
-    [[ "${NO_WEB}" == "false" ]] &&
-        compose_files+=("-f" "${GEYSER_HOME}/compose.web.yaml")
-    [[ "${MODE}" == "production" ]] &&
+    local compose_files=(
+        "-f" "${GEYSER_HOME}/compose.yaml"
+    )
+    [[ "${GEYSER_MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
+    [[ "${GEYSER_MODE}" == "development" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
 
     words=("docker" "compose" "${compose_files[@]}" "${words_after_compose[@]}")
     ((CURRENT = CURRENT + 2 - i + 2 * ${#compose_files[@]}))

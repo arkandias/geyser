@@ -12,9 +12,6 @@
   },
   "packageManager": "pnpm@10.11.0",
   "scripts": {
-    "docker": "docker compose up -d",
-    "docker:dev": "docker compose -f compose.dev.yaml up -d",
-    "docker:prod": "docker compose -f compose.yaml -f compose.dev.yaml up -d",
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "format": "prettier . --write",

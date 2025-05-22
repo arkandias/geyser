@@ -35,7 +35,7 @@ Data Management:
   data-restore      Restore Geyser main database
   realms-export     Export Keycloak realms and users
   realms-import     Import Keycloak realms and users
-  sync-keycloak     Synchronize Keycloak users and groups with app data
+  keycloak-sync     Synchronize Keycloak users and groups with app data
 
 Development Tools:
   compose           Docker Compose wrapper
@@ -81,9 +81,9 @@ mkdir -p "${KC_BACKUP_DIR}"
 mkdir -p "${LOG_DIR}"
 
 # Global environment variables with default values
-: "${GEYSER_DOMAIN:=localhost}" # Domain at which Geyser will be accessible
-: "${GEYSER_MODE:=staging}"     # Application deployment context [staging/production]
-: "${GEYSER_LOG_LEVEL:=INFO}"   # Logging verbosity threshold [SILENT/DEBUG/INFO/WARN/ERROR]
+: "${GEYSER_DOMAIN:=geyser.localhost}"  # Domain at which Geyser will be accessible
+: "${GEYSER_MODE:=staging}"             # Application deployment context [development/staging/production]
+: "${GEYSER_LOG_LEVEL:=INFO}"           # Logging verbosity threshold [SILENT/DEBUG/INFO/WARN/ERROR]
 
 # Load env files (if they exist) -- higher precedence than shell environment
 [[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
@@ -144,9 +144,8 @@ main() {
         esac
     done
 
-    setup_logging
-    check_dependencies
     validate_configuration
+    check_dependencies
 
     # Execute command
     case "$1" in
@@ -190,9 +189,9 @@ main() {
         shift
         handle_realms_import "$@"
         ;;
-    sync-keycloak)
+    keycloak-sync)
         shift
-        handle_sync_keycloak "$@"
+        handle_keycloak_sync "$@"
         ;;
     compose | hasura | kc | kcadm | rsync)
         cmd="$1"

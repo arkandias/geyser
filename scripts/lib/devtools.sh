@@ -4,17 +4,18 @@
 
 # Runs Docker Compose with environment variables and conditional services configuration
 compose() {
-    local compose_files=(
-        "-f" "${GEYSER_HOME}/compose.yaml"
-    )
-
     [[ -f "${GEYSER_HOME}/.env" ]] &&
         env_files+=("--env-file" "${GEYSER_HOME}/.env")
     [[ -f "${GEYSER_HOME}/.env.local" ]] &&
         env_files+=("--env-file" "${GEYSER_HOME}/.env.local")
 
+    local compose_files=(
+        "-f" "${GEYSER_HOME}/compose.yaml"
+    )
     [[ "${GEYSER_MODE}" == "production" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
+    [[ "${GEYSER_MODE}" == "development" ]] &&
+        compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
 
     export GEYSER_DOMAIN
     docker compose "${env_files[@]}" "${compose_files[@]}" "$@"

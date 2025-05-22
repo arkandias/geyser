@@ -21,15 +21,27 @@ check_dependencies() {
 validate_configuration() {
     debug "Validating configuration..."
     _validate_env
-    debug "Configuration:"
-    debug "* GEYSER_HOME=${GEYSER_HOME}"
-    debug "* GEYSER_DOMAIN=${GEYSER_DOMAIN}"
+    debug "========== Configuration =========="
+    debug "GEYSER_HOME=${GEYSER_HOME}"
+    debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
+    debug "GEYSER_MODE=${GEYSER_MODE}"
+    debug "GEYSER_LOG_LEVEL=${GEYSER_LOG_LEVEL}"
+    debug "==================================="
 }
 
 _validate_env() {
+    [[ "${GEYSER_MODE}" =~ ^(production|staging|development)$ ]] || {
+        warn "Invalid GEYSER_MODE: ${GEYSER_MODE}. Defaulting to staging"
+    }
+    GEYSER_MODE="staging"
+
+    [[ "${GEYSER_LOG_LEVEL}" =~ ^(SILENT|DEBUG|INFO|WARN|ERROR)$ ]] || {
+        warn "Invalid GEYSER_LOG_LEVEL: ${GEYSER_LOG_LEVEL}. Defaulting to INFO"
+    }
+    GEYSER_LOG_LEVEL="INFO"
+
     # Required environment variables
     local required_vars=(
-        GEYSER_DOMAIN
         POSTGRES_PASSWORD
         POSTGRES_KC_PASSWORD
         HASURA_GRAPHQL_ADMIN_SECRET
@@ -41,14 +53,14 @@ _validate_env() {
             error "Missing required environment variable ${var}"
         fi
     done
-    
+
     # Optional environment variables
-    
+
     if [[ -z "${CLIENT_BACKEND_SECRET}" ]]; then
         info "Environment variable CLIENT_BACKEND_SECRET is not set. \
 It is required to initialize Geyser with 'geyser init'"
     fi
-    
+
     if [[ -z "${WEBHOOK_SECRET}" ]]; then
         info "Environment variable WEBHOOK_SECRET is not set. \
 It is required to start a webhook with 'geyser webhook-start'"
