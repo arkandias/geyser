@@ -56,7 +56,7 @@ handle_webdav_backup() {
         exit 1
     fi
 
-    timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
+    local timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
     "${SCRIPT_DIR}/geyser" data-dump --name="${timestamp}"
     "${SCRIPT_DIR}/geyser" realms-export --name="${timestamp}"
 
@@ -65,6 +65,7 @@ handle_webdav_backup() {
     fi
 
     shopt -s nullglob
+    local file filename
     for file in "${KC_BACKUPS_DIR}/${timestamp}"/*.dump; do
         filename="$(basename "${file}")"
         if ! webdav_upload "${file}" "realms/${timestamp}/${filename}"; then
