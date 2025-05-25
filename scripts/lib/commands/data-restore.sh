@@ -19,7 +19,8 @@ EOF
 }
 
 handle_data_restore() {
-    local backup backups
+    local backup
+    local -a backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -31,6 +32,7 @@ handle_data_restore() {
         --name)
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser data-restore --help')"
+                exit 1
             fi
             backup="$2"
             debug "Dump name set to ${backup} with option --name"
@@ -38,6 +40,7 @@ handle_data_restore() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser data-restore --help')"
+            exit 1
             ;;
         esac
     done
@@ -45,15 +48,16 @@ handle_data_restore() {
     # Select backup
     if [[ -z "${backup}" ]]; then
         backups=()
-        for backup in "${DB_BACKUP_DIR}"/*.dump; do
+        for backup in "${DB_BACKUPS_DIR}"/*.dump; do
             if [[ -f "${backup}" ]]; then
                 backups+=("${backup##*/}")
             fi
         done
         select_backup "${backups[@]}"
+        backup="${SELECTED_BACKUP}"
     fi
 
-    if [[ -n $(compose ps -q) ]]; then
+    if [[ -n "$(compose ps -q)" ]]; then
         warn "Running services need to be stopped for restore"
         if ! confirm "Continue?"; then
             info "Restore cancelled: stop services first with 'geyser stop'"
@@ -68,7 +72,7 @@ handle_data_restore() {
 
     info "Restoring database..."
     wait_until_healthy db
-    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/data/${SELECTED_BACKUP}"
+    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}"
 
     info "Stopping services..."
     compose down

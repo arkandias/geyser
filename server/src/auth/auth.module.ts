@@ -8,12 +8,10 @@ import { UsersModule } from "../users/users.module";
 import { AuthController } from "./auth.controller";
 import { JwtService } from "./jwt.service";
 import { StateService } from "./state.service";
-import { UrlService } from "./url.service";
 
 @Module({
   imports: [ConfigModule, KeysModule, OidcModule, RolesModule, UsersModule],
   controllers: [AuthController],
-  providers: [JwtService, StateService, UrlService],
-  exports: [UrlService],
+  providers: [JwtService, StateService],
 })
 export class AuthModule {}

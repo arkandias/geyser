@@ -29,6 +29,7 @@ handle_data_backup() {
         --name)
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser data-dump --help')"
+                exit 1
             fi
             backup="$2"
             debug "Dump name set to ${backup} with option --name"
@@ -36,13 +37,14 @@ handle_data_backup() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser data-dump --help')"
+            exit 1
             ;;
         esac
     done
 
     # Prompt backup name
     if [[ -z "${backup}" ]]; then
-        backup=$(date +%Y-%m-%d-%H-%M-%S)
+        backup="$(date +%Y-%m-%d-%H-%M-%S)"
         while true; do
             prompt "Enter a dump name [${backup}]:"
             if [[ -z "${INPUT}" ]]; then
@@ -57,9 +59,10 @@ handle_data_backup() {
     fi
 
     # Check backup does not already exist
-    backup_path="${DB_BACKUP_DIR}/${backup}.dump"
+    backup_path="${DB_BACKUPS_DIR}/${backup}.dump"
     if [[ -e "${backup_path}" ]]; then
         error "Dump ${backup_path} already exists"
+        exit 1
     fi
 
     # Check if db is healthy and start it otherwise
@@ -69,7 +72,7 @@ handle_data_backup() {
     fi
 
     info "Dumping database..."
-    compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/data/${backup}.dump"
+    compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}.dump"
 
     success "Dump created successfully in ${backup_path}"
 }

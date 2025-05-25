@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
 
-import { Env } from "./env.dto";
+import { Env } from "./env.schema";
 
 @Injectable()
 export class ConfigService {
@@ -9,6 +9,8 @@ export class ConfigService {
   readonly nodeEnv: "development" | "production";
   readonly port: number;
   readonly apiUrl: URL;
+  readonly parentDomain: string;
+  readonly origin: string;
   readonly databaseUrl: URL;
   readonly oidc: {
     discoveryUrl: URL;
@@ -32,6 +34,12 @@ export class ConfigService {
 
     this.apiUrl = new URL(this.configService.getOrThrow<string>("API_URL"));
     this.logger.log(`API URL: ${this.apiUrl.href}`);
+
+    this.parentDomain = this.apiUrl.hostname.replace(/^[^.]+\./, "");
+    this.logger.log(`Parent domain: ${this.parentDomain}`);
+
+    this.origin = `${this.apiUrl.protocol}//*.${this.parentDomain}`;
+    this.logger.log(`Wildcard origin: ${this.origin}`);
 
     this.databaseUrl = new URL(
       this.configService.getOrThrow<string>("API_DATABASE_URL"),
@@ -78,7 +86,7 @@ export class ConfigService {
 
   validateEnvironment() {
     if (this.nodeEnv === "production" && this.apiUrl.protocol !== "https:") {
-      throw new Error("Invalid API_URL: Production environment requires HTTPS");
+      throw new Error("Production environment requires HTTPS");
     }
   }
 }

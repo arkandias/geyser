@@ -27,6 +27,7 @@ handle_start() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser start --help')"
+            exit 1
             ;;
         esac
     done

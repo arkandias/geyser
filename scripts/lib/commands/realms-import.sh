@@ -19,7 +19,8 @@ EOF
 }
 
 handle_realms_import() {
-    local backup backups
+    local backup
+    local -a backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -31,6 +32,7 @@ handle_realms_import() {
         --name)
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser realms-import --help')"
+                exit 1
             fi
             backup="$2"
             debug "Export name set to ${backup} with option --name"
@@ -38,6 +40,7 @@ handle_realms_import() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser realms-import --help')"
+            exit 1
             ;;
         esac
     done
@@ -45,15 +48,16 @@ handle_realms_import() {
     # Select backup
     if [[ -z "${backup}" ]]; then
         backups=()
-        for backup in "${KC_BACKUP_DIR}"/*; do
+        for backup in "${KC_BACKUPS_DIR}"/*; do
             if [[ -d "${backup}" ]]; then
                 backups+=("${backup##*/}")
             fi
         done
         select_backup "${backups[@]}"
+        backup="${SELECTED_BACKUP}"
     fi
 
-    if [[ -n $(compose ps -q) ]]; then
+    if [[ -n "$(compose ps -q)" ]]; then
         warn "Running services need to be stopped for realms import"
         if ! confirm "Continue?"; then
             info "Realms import cancelled: stop services first with 'geyser stop'"
@@ -64,7 +68,8 @@ handle_realms_import() {
     fi
 
     info "Importing Keycloak realms..."
-    kc --restart-with import --dir "/opt/keycloak/data/backups/realms/${SELECTED_BACKUP}"
+    compose run keycloak import --dir "/opt/keycloak/data/backups/${backup}"
+    wait_until_exit keycloak
 
     info "Stopping services..."
     compose down

@@ -8,8 +8,8 @@ Start a webhook on port 9000
 
 Usage: geyser webhook-start
 
-Start a secure webhook server on port 9000 using SSL/TLS certificates.
-Requires WEBHOOK_SECRET environment variable to be set.
+Start a secure webhook server on port 9000 using SSL/TLS certificates. Requires
+WEBHOOK_SECRET environment variable to be set.
 
 Options:
   -h, --help        Show this help message
@@ -28,6 +28,7 @@ handle_webhook_start() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser webhook-start --help')"
+            exit 1
             ;;
         esac
     done
@@ -35,16 +36,17 @@ handle_webhook_start() {
     # Ensure webhook secret is provided
     if [[ -z "${WEBHOOK_SECRET}" ]]; then
         error "Missing required variable WEBHOOK_SECRET"
+        exit 1
     fi
 
     # Check if a webhook is already running
     if lsof -i :9000 -t; then
-        error "A process is already listening on port 9000. \
-Stop it first with 'geyser webhook-stop'"
+        error "A process is already listening on port 9000. Stop it first with 'geyser webhook-stop'"
+        exit 1
     fi
 
-    export WEBHOOK_SECRET
-    webhook -port 9000 -verbose -secure \
+    WEBHOOK_SECRET="${WEBHOOK_SECRET}" \
+        webhook -port 9000 -verbose -secure \
         -template "${GEYSER_HOME}/config/webhooks/${GEYSER_MODE}.json" \
         -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
         -key "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \

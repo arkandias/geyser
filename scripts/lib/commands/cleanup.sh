@@ -26,6 +26,7 @@ handle_cleanup() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser cleanup --help')"
+            exit 1
             ;;
         esac
     done

@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const oidcTokenResponseSchema = z
-  .object({
+  .looseObject({
     access_token: z.string(),
     token_type: z.string(),
     expires_in: z.number(),

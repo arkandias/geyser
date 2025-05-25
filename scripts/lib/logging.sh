@@ -18,7 +18,7 @@ readonly COLOR_RESET='\033[0m'
 
 # Log rotation settings
 readonly LOG_FILE="${LOG_DIR}/geyser.log"
-readonly LOG_MAX_SIZE=$((10 * 1024 * 1024)) # 10MB
+readonly LOG_MAX_SIZE="$((10 * 1024 * 1024))" # 10MB
 readonly LOG_BACKUP_COUNT=5
 
 rotate_logs() {
@@ -48,11 +48,11 @@ rotate_logs() {
 
 log_level() {
     case "$1" in
-    SILENT) echo "${LOG_LEVEL_SILENT}" ;;
-    ERROR) echo "${LOG_LEVEL_ERROR}" ;;
-    WARN) echo "${LOG_LEVEL_WARN}" ;;
-    INFO | SUCCESS) echo "${LOG_LEVEL_INFO}" ;;
-    DEBUG) echo "${LOG_LEVEL_DEBUG}" ;;
+    silent) echo "${LOG_LEVEL_SILENT}" ;;
+    error) echo "${LOG_LEVEL_ERROR}" ;;
+    warn) echo "${LOG_LEVEL_WARN}" ;;
+    info | success) echo "${LOG_LEVEL_INFO}" ;;
+    debug) echo "${LOG_LEVEL_DEBUG}" ;;
     *) echo "${LOG_LEVEL_INFO}" ;;
     esac
 }
@@ -61,16 +61,16 @@ log() {
     local level="$1"
     local message="$2"
     local timestamp
-    timestamp=$(date +'%Y-%m-%d %H:%M:%S')
-    local log_entry="[${timestamp}] [Geyser] [${level}] ${message}"
+    timestamp="$(date +'%Y-%m-%d %H:%M:%S')"
+    local log_entry="[${timestamp}] [Geyser] [${level^^}] ${message}"
 
     if [[ "$(log_level "${level}")" -ge "$(log_level "${GEYSER_LOG_LEVEL}")" ]]; then
         case "${level}" in
-        ERROR) echo >&2 -e "${COLOR_RED}${log_entry}${COLOR_RESET}" ;;
-        SUCCESS) echo -e "${COLOR_GREEN}${log_entry}${COLOR_RESET}" ;;
-        WARN) echo -e "${COLOR_YELLOW}${log_entry}${COLOR_RESET}" ;;
-        DEBUG) echo -e "${COLOR_BLUE}${log_entry}${COLOR_RESET}" ;;
-        INFO) echo -e "${log_entry}" ;;
+        error) echo -e "${COLOR_RED}${log_entry}${COLOR_RESET}" >&2 ;;
+        success) echo -e "${COLOR_GREEN}${log_entry}${COLOR_RESET}" ;;
+        warn) echo -e "${COLOR_YELLOW}${log_entry}${COLOR_RESET}" >&2 ;;
+        debug) echo -e "${COLOR_BLUE}${log_entry}${COLOR_RESET}" ;;
+        info) echo -e "${log_entry}" ;;
         esac
     fi
 
@@ -79,11 +79,8 @@ log() {
     echo "${log_entry}" >>"${LOG_FILE}"
 }
 
-error() {
-    log "ERROR" "$1"
-    exit 1
-}
-success() { log "SUCCESS" "$1"; }
-warn() { log "WARN" "$1"; }
-info() { log "INFO" "$1"; }
-debug() { log "DEBUG" "$1"; }
+error() { log "error" "$1"; }
+success() { log "success" "$1"; }
+warn() { log "warn" "$1"; }
+info() { log "info" "$1"; }
+debug() { log "debug" "$1"; }

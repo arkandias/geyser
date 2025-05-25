@@ -1,37 +1,34 @@
 ###############################################################################
-# STOP COMMAND
+# STATUS COMMAND
 ###############################################################################
 
-show_stop_help() {
+show_show_help() {
     cat <<EOF
-Stop Geyser services
+Show Geyser services
 
-Usage: geyser stop
+Usage: geyser show
 
-Stop services and remove containers.
+Show the status of each Geyser service.
 
 Options:
   -h, --help        Show this help message
 EOF
 }
 
-handle_stop() {
+handle_show() {
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_stop_help
+            show_show_help
             exit 0
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser stop --help')"
+            error "Unknown parameter '$1' (see 'geyser show --help')"
             exit 1
             ;;
         esac
     done
 
-    info "Stopping services..."
-    compose down
-
-    success "All services stopped successfully. Restart Geyser with 'geyser start'"
+    compose ps -a --format '{{.Service}}: {{.Status}}'
 }

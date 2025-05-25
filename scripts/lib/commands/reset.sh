@@ -30,6 +30,7 @@ handle_reset() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser reset --help')"
+            exit
             ;;
         esac
     done

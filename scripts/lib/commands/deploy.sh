@@ -24,6 +24,7 @@ handle_deploy() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser deploy --help')"
+            exit 1
             ;;
         esac
     done

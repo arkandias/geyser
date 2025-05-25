@@ -1,11 +1,11 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
-import { baseTokenPayloadSchema } from "./base-token-payload.dto.js";
-import { hasuraClaimsSchema } from "./hasura-claims.dto.js";
-import { roleTypeSchema } from "./role-type.dto.js";
+import { baseTokenPayloadSchema } from "./base-token-payload.schema.js";
+import { hasuraClaimsSchema } from "./hasura-claims.schema.js";
+import { roleTypeSchema } from "./role-type.schema.js";
 
 export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
-  z.object({
+  z.strictObject({
     uid: z.string(),
     displayname: z.string(),
     active: z.boolean(),

@@ -30,17 +30,23 @@ handle_keycloak_sync() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser keycloak-sync --help')"
+            exit 1
             ;;
         esac
     done
 
-    command -v jq &>/dev/null || error "jq is not installed. You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
+    if ! command -v jq &>/dev/null; then
+        error "jq is not installed. You can install it with 'sudo apt install jq' (Ubuntu) or 'brew install jq' (macOS)"
+        exit 1
+    fi
 
     if [[ "$(compose ps --format '{{.Health}}' keycloak)" != "healthy" ]]; then
         error "Keycloak must be up and healthy. Start services first with 'geyser start'"
+        exit 1
     fi
     if [[ "$(compose ps --format '{{.Health}}' hasura)" != "healthy" ]]; then
         error "Hasura must be up and healthy. Start services first with 'geyser start'"
+        exit 1
     fi
 
     info "Fetching active teachers with roles from Geyser database..."
@@ -63,21 +69,26 @@ handle_keycloak_sync() {
                 ORDER BY t.uid
             ) t;'")" || {
         error "Failed to fetch teachers from Geyser database"
+        exit 1
     }
     if [[ -z "${active_teachers}" ]]; then
         active_teachers="[]"
     fi
 
     info "Authenticating with Keycloak..."
-    kcadm --login || error "Failed to authenticate with Keycloak"
+    if ! kcadm --login; then
+        error "Failed to authenticate with Keycloak"
+        exit 1
+    fi
 
     info "Fetching Keycloak users..."
     kc_users="$(kcadm get users -r geyser --limit -1)" || {
         error "Failed to fetch Keycloak users"
+        exit 1
     }
 
     info "Creating or updating Keycloak users corresponding to active teachers in Geyser database..."
-    local teachers_array
+    local -a teachers_array
     mapfile -t teachers_array < <(echo "${active_teachers}" | jq -c '.[]')
     for teacher in "${teachers_array[@]}"; do
         _upsert_user "${teacher}"
@@ -86,11 +97,13 @@ handle_keycloak_sync() {
     info "Fetching again Keycloak users..."
     kc_users="$(kcadm get users -r geyser --limit -1)" || {
         error "Failed to fetch Keycloak users"
+        exit 1
     }
 
     info "Fetching Keycloak groups..."
     kc_groups="$(kcadm get groups -r geyser --limit -1)" || {
         error "Failed to fetch Keycloak groups"
+        exit 1
     }
 
     _sync_group "$(echo "${active_teachers}" | jq -r '[.[].uid]')" "Teacher"
@@ -123,7 +136,8 @@ _upsert_user() {
             return
         }
     else
-        local kc_firstname kc_lastname kc_enabled update_fields=()
+        local kc_firstname kc_lastname kc_enabled
+        local -a update_fields=()
         kc_firstname="$(echo "${kc_user}" | jq -r '.firstName')"
         kc_lastname="$(echo "${kc_user}" | jq -r '.lastName')"
         kc_enabled="$(echo "${kc_user}" | jq -r '.enabled')"

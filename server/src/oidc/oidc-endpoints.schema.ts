@@ -1,7 +1,7 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
 export const oidcEndpointsSchema = z
-  .object({
+  .looseObject({
     issuer: z.string(),
     authorization_endpoint: z.string(),
     token_endpoint: z.string(),

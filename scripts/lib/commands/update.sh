@@ -28,11 +28,12 @@ handle_update() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser update --help')"
+            exit 1
             ;;
         esac
     done
 
-    if [[ -n $(compose ps -q) ]]; then
+    if [[ -n "$(compose ps -q)" ]]; then
         warn "Running services need to be stopped for update"
         if ! confirm "Continue?"; then
             info "Update cancelled: stop services first with 'geyser stop'"

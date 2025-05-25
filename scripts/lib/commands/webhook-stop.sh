@@ -24,6 +24,7 @@ handle_webhook_stop() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser webhook-stop --help')"
+            exit 1
             ;;
         esac
     done

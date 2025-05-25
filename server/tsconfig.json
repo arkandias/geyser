@@ -6,8 +6,6 @@
     "experimentalDecorators": true,
 
     /* Module */
-    "module": "CommonJS",
-    "moduleResolution": "node",
     "rootDir": "./src",
 
     /* Emit */

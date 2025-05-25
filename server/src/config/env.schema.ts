@@ -1,15 +1,12 @@
-import { z } from "zod";
+import { z } from "zod/v4";
 
-export const envSchema = z.object({
+export const envSchema = z.looseObject({
   NODE_ENV: z.enum(["development", "production"]).default("development"),
   PORT: z.coerce.number().default(3000),
 
-  API_URL: z.string().refine((data) => {
-    const url = new URL(data);
-    return url.protocol === "http:" || url.protocol === "https:";
-  }),
+  API_URL: z.url({ protocol: /^https?$/, hostname: /^[^.]+\.[^.]+\.[^.]+/ }),
 
-  API_DATABASE_URL: z.string(),
+  API_DATABASE_URL: z.url(),
 
   API_OIDC_DISCOVERY_URL: z.string(),
   API_OIDC_CLIENT_ID: z.string(),

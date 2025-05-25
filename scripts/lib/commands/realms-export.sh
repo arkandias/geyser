@@ -31,6 +31,7 @@ handle_realms_export() {
         --name)
             if [[ -z "$2" ]]; then
                 error "Missing parameter for option --name (see 'geyser realms-export --help')"
+                exit 1
             fi
             backup="$2"
             debug "Export name set to ${backup} with option --name"
@@ -38,11 +39,12 @@ handle_realms_export() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser realms-export --help')"
+            exit 1
             ;;
         esac
     done
 
-    if [[ -n $(compose ps -q) ]]; then
+    if [[ -n "$(compose ps -q)" ]]; then
         warn "Running services need to be stopped for realms export"
         if ! confirm "Continue?"; then
             info "Realms export cancelled: stop services first with 'geyser stop'"
@@ -54,7 +56,7 @@ handle_realms_export() {
 
     # Prompt backup name
     if [[ -z "${backup}" ]]; then
-        backup=$(date +%Y-%m-%d-%H-%M-%S)
+        backup="$(date +%Y-%m-%d-%H-%M-%S)"
         while true; do
             prompt "Enter an export name [${backup}]:"
 
@@ -72,14 +74,16 @@ handle_realms_export() {
     fi
 
     # Create backup directory
-    backup_path="${KC_BACKUP_DIR}/${backup}"
+    backup_path="${KC_BACKUPS_DIR}/${backup}"
     if [[ -e "${backup_path}" ]]; then
         error "Export ${backup_path} already exists"
+        exit 1
     fi
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms..."
-    kc --restart-with export --dir "/opt/keycloak/data/backups/realms/${backup}"
+    compose run keycloak export --dir "/opt/keycloak/data/backups/${backup}"
+    wait_until_exit keycloak
 
     info "Stopping services..."
     compose down

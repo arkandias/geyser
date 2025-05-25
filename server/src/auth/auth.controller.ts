@@ -14,22 +14,30 @@ import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
 import { OidcService } from "../oidc/oidc.service";
 import { UsersService } from "../users/users.service";
-import { CallbackQueryDto } from "./callback-query.dto";
 import { JwtService } from "./jwt.service";
-import { RedirectUrlDto } from "./redirect-url.dto";
 import { StateService } from "./state.service";
-import { UrlService } from "./url.service";
 
 @Controller("auth")
 export class AuthController {
+  loginCallbackUrl: URL;
+  logoutCallbackUrl: URL;
+
   constructor(
     private authService: JwtService,
     private configService: ConfigService,
     private oidcService: OidcService,
     private stateService: StateService,
-    private urlService: UrlService,
     private usersService: UsersService,
-  ) {}
+  ) {
+    this.loginCallbackUrl = new URL(
+      "/auth/login/callback",
+      this.configService.apiUrl,
+    );
+    this.logoutCallbackUrl = new URL(
+      "/auth/logout/callback",
+      this.configService.apiUrl,
+    );
+  }
 
   private async setUserCookies(res: Response, uid: string): Promise<void> {
     const user = await this.usersService.findByUid(uid);
@@ -44,11 +52,10 @@ export class AuthController {
 
   @Get("login")
   login(
-    @Query() loginQueryDto: RedirectUrlDto,
+    @Query("redirect_url") redirectUrl: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ) {
-    const { redirectUrl } = loginQueryDto;
-    const url = this.urlService.validateRedirectUrl(redirectUrl);
+    const url = this.validateRedirectUrl(redirectUrl);
 
     // Use state parameter to prevent CSRF attacks
     const stateId = this.stateService.newState(url);
@@ -59,21 +66,24 @@ export class AuthController {
     authUrl.searchParams.set("response_type", "code");
     authUrl.searchParams.set("state", stateId);
     authUrl.searchParams.set("scope", "openid");
-    authUrl.searchParams.set(
-      "redirect_uri",
-      this.urlService.loginCallbackUrl.href,
-    );
+    authUrl.searchParams.set("redirect_uri", this.loginCallbackUrl.href);
 
     res.redirect(authUrl.toString());
   }
 
   @Get("login/callback")
   async callback(
-    @Query() callbackQueryDto: CallbackQueryDto,
+    @Query("state") state: string | undefined,
+    @Query("code") code: string | undefined,
     @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
-    const { state, code } = callbackQueryDto;
+    if (!state) {
+      throw new UnauthorizedException("Missing state");
+    }
+    if (!code) {
+      throw new UnauthorizedException("Missing code");
+    }
 
     let redirectUrl: URL | null = null;
     try {
@@ -85,7 +95,7 @@ export class AuthController {
           client_secret: this.configService.oidc.clientSecret,
           grant_type: "authorization_code",
           code,
-          redirect_uri: this.urlService.loginCallbackUrl.href,
+          redirect_uri: this.loginCallbackUrl.href,
         });
 
       const { uid } = await this.oidcService.verifyToken(identityToken);
@@ -111,13 +121,12 @@ export class AuthController {
 
   @Get("logout")
   logout(
-    @Query() redirectUrlDto: RedirectUrlDto,
+    @Query("redirect_url") redirectUrl: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ): void {
-    const { redirectUrl } = redirectUrlDto;
-    const url = this.urlService.validateRedirectUrl(redirectUrl);
+    const url = this.validateRedirectUrl(redirectUrl);
 
-    const postLogoutRedirectUrl = this.urlService.logoutCallbackUrl;
+    const postLogoutRedirectUrl = this.logoutCallbackUrl;
     if (url) {
       postLogoutRedirectUrl.searchParams.set("redirect_url", url.href);
     }
@@ -141,11 +150,10 @@ export class AuthController {
 
   @Get("logout/callback")
   postLogout(
-    @Query() redirectUrlDto: RedirectUrlDto,
+    @Query("redirect_url") redirectUrl: string | undefined,
     @Res({ passthrough: true }) res: Response,
   ): void {
-    const { redirectUrl } = redirectUrlDto;
-    const url = this.urlService.validateRedirectUrl(redirectUrl);
+    const url = this.validateRedirectUrl(redirectUrl);
 
     if (url) {
       res.redirect(url.href);
@@ -172,5 +180,27 @@ export class AuthController {
     }
     const { sub } = await this.authService.verifyRefreshToken(refreshToken);
     await this.setUserCookies(res, sub);
+  }
+
+  validateRedirectUrl(redirectUrl: string | undefined): URL | null {
+    if (!redirectUrl) {
+      return null;
+    }
+
+    let url: URL;
+    try {
+      url = new URL(redirectUrl);
+    } catch (_) {
+      throw new UnauthorizedException("Invalid redirect URL");
+    }
+
+    if (
+      url.protocol === this.configService.apiUrl.protocol &&
+      url.hostname.endsWith(this.configService.parentDomain)
+    ) {
+      return url;
+    }
+
+    throw new UnauthorizedException("Redirect URL not allowed");
   }
 }

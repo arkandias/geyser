@@ -49,7 +49,7 @@ server {
     include /etc/nginx/includes/locations/dev.conf;
 }
 
-# Preview client server
+# App preview server
 server {
     listen 80;
     server_name preview.geyser.localhost;

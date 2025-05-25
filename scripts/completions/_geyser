@@ -27,6 +27,7 @@ _geyser() {
         'init:Initialize a fresh Geyser installation'
         'start:Start Geyser services'
         'stop:Stop Geyser services'
+        'show:Show Geyser services'
         'update:Update Geyser services'
         'clean:Cleanup Geyser services'
         'reset:Reset Geyser to a fresh installation'
@@ -62,15 +63,15 @@ _geyser() {
         ;;
     args)
         case "${words[1]}" in
-        backup)
+        data-dump)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the backup]:name'
+                '--name[Set the name of the dump]:name'
             ;;
-        restore)
+        data-restore)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the backup]:name'
+                '--name[Set the name of the dump]:name'
             ;;
         realms-export)
             _arguments \
@@ -81,9 +82,6 @@ _geyser() {
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--name[Set the name of the export]:name'
-            ;;
-        kc)
-            _arguments '--restart-with[Restart container and run command]:command'
             ;;
         kcadm)
             _arguments '--login[Start an authenticated session]'
@@ -99,7 +97,7 @@ _geyser() {
 # shellcheck disable=SC2120
 _geyser_compose() {
     if [[ -z "${GEYSER_HOME}" ]]; then
-        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        echo "Error: GEYSER_HOME environment variable is not set" >&2
         return 1
     fi
 
@@ -117,7 +115,7 @@ _geyser_compose() {
     . "${GEYSER_HOME}/.env" || true
     . "${GEYSER_HOME}/.env.local" || true
 
-    local compose_files=(
+    local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
     [[ "${GEYSER_MODE}" == "production" ]] &&
@@ -134,7 +132,7 @@ _geyser_compose() {
 # shellcheck disable=SC2120
 _geyser_hasura() {
     if [[ -z "${GEYSER_HOME}" ]]; then
-        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        echo "Error: GEYSER_HOME environment variable is not set" >&2
         return 1
     fi
 
@@ -164,10 +162,6 @@ _geyser_kc() {
         *) return 1 ;;
         esac
     done
-    # Remove option --restart-with
-    if [[ "${words[i]}" == "--restart-with" ]]; then
-        ((i++))
-    fi
     words_after_kc=("${words[@]:$((i))}")
 
     words=("kc.sh" "${words_after_kc[@]}")
@@ -201,7 +195,7 @@ _geyser_kcadm() {
 # shellcheck disable=SC2120
 _geyser_rsync() {
     if [[ -z "${GEYSER_HOME}" ]]; then
-        echo >&2 "Error: GEYSER_HOME environment variable is not set"
+        echo "Error: GEYSER_HOME environment variable is not set" >&2
         return 1
     fi
 

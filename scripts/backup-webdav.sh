@@ -23,8 +23,9 @@
 set -e
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
-: "${GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 readonly SCRIPT_DIR
+
+: "${GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
 readonly GEYSER_HOME
 
 . "${GEYSER_HOME}"/.env
@@ -32,7 +33,6 @@ readonly GEYSER_HOME
 
 error() {
     echo "Error: $1" >&2
-    exit 1
 }
 
 warn() {
@@ -47,27 +47,29 @@ required_vars=(
 for var in "${required_vars[@]}"; do
     if [[ -z "${!var}" ]]; then
         error "Missing required environment variable ${var}"
+        exit 1
     fi
 done
 
 readonly LOCAL_BACKUPS_DIR="${GEYSER_HOME}/backups"
 readonly REMOTE_BACKUPS_DIR="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/geyser/backups"
 
-timestamp=$(date +%Y-%m-%d-%H-%M-%S)
+timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
 readonly local_backup_dir="${LOCAL_BACKUPS_DIR}/${timestamp}"
 readonly remote_backup_dir="${REMOTE_BACKUPS_DIR}/${timestamp}"
 echo "Local backup directory: ${local_backup_dir}"
 echo "Remote backup directory: ${remote_backup_dir}"
 
 # Backup Geyser
-"${SCRIPT_DIR}/geyser" backup --name="${timestamp}"
+"${SCRIPT_DIR}/geyser" data-dump --name="${timestamp}"
+"${SCRIPT_DIR}/geyser" realms-export --name="${timestamp}"
 
 shopt -s nullglob
 for file in "${local_backup_dir}"/*.dump; do
     if [[ -f "${file}" ]]; then
         filename="$(basename "${file}")"
         echo "Processing ${filename}..."
-        hash=$(sha256sum "${local_backup_dir}/${filename}" | cut -c 1-8)
+        hash="$(sha256sum "${local_backup_dir}/${filename}" | cut -c 1-8)"
         echo "Computed checksum: ${hash}"
         filename_hash="${filename%.dump}_${hash}.dump"
         echo "Uploading ${filename_hash}..."

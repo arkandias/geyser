@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import {
   AccessTokenPayload,
   type BaseTokenPayload,
+  type OmitWithIndex,
   accessTokenPayloadSchema,
   baseTokenPayloadSchema,
   roleTypeSchema,
@@ -11,7 +12,6 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CookieOptions, Response } from "express";
 import jose from "jose";
 
-import { OmitWithIndex } from "../common/types";
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";

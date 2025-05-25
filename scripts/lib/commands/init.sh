@@ -28,16 +28,18 @@ handle_init() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser init --help')"
+            exit 1
             ;;
         esac
     done
 
+    # TODO
     # Ensure client secret is provided
-    if [[ -z "${CLIENT_BACKEND_SECRET}" ]]; then
-        error "Missing required variable CLIENT_BACKEND_SECRET"
+    if [[ -z "${CLIENT_SECRET}" ]]; then
+        error "Missing required variable CLIENT_SECRET"
+        exit 1
     fi
 
-    # Check if data volume already exists
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
         warn "Existing Geyser data volume found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
         if ! confirm "Initialize anyway?"; then
@@ -46,20 +48,22 @@ handle_init() {
         fi
     fi
 
+    if [[ -n "$(compose ps -q)" ]]; then
+        info "Stopping services..."
+        compose down
+    fi
+
     info "Pulling and building Docker images..."
     compose pull
     compose build --pull --no-cache
 
-    info "Starting services..."
-    compose up -d
-
-    #    TODO
-    #    info "Initializing Geyser database..."
-    #    wait_until_healthy db
-    #    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/schema.sql"
-    #    compose exec -T db bash -c "psql -U postgres -d geyser -f /initdb/seed.sql"
+    info "Initializing Keycloak..."
+    compose run -e GEYSER_ORIGIN -e API_URL -e CLIENT_SECRET keycloak \
+        import --dir /opt/keycloak/data/import/geyser-realm.json
+    wait_until_exit keycloak
 
     info "Initializing Geyser database and Hasura configuration..."
+    compose up -d hasura
     wait_until_healthy hasura
     hasura migrate apply
     hasura seed apply

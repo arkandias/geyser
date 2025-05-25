@@ -38,11 +38,12 @@ confirm() {
 
 # Prompts user to select a backup directory and stores result in SELECTED_BACKUP
 select_backup() {
-    local backups=("$@")
+    local -a backups=("$@")
     SELECTED_BACKUP= # global
 
     if ((${#backups[@]} == 0)); then
         error "No backups found"
+        exit 1
     fi
 
     info "Backups found:"
@@ -77,12 +78,13 @@ wait_until_healthy() {
     local health
 
     info "Waiting for service ${service} to become healthy..."
-    start_time=$(date +%s)
+    start_time="$(date +%s)"
 
     while true; do
-        elapsed_time=$(($(date +%s) - start_time))
+        elapsed_time="$(("$(date +%s)" - start_time))"
         if [[ "${elapsed_time}" -ge "${timeout}" ]]; then
             error "Timeout reached (${timeout}s) while waiting for service ${service} to become healthy"
+            exit 1
         fi
 
         health="$(compose ps -a "${service}" --format '{{.Health}}')"
@@ -93,12 +95,15 @@ wait_until_healthy() {
             ;;
         "unhealthy")
             error "Service ${service} is unhealthy"
+            exit 1
             ;;
         "exited")
             error "Service ${service} stopped unexpectedly"
+            exit 1
             ;;
         "")
             error "Service ${service} not found"
+            exit 1
             ;;
         esac
 
@@ -115,13 +120,14 @@ wait_until_exit() {
     local state
     local exit_code
 
-    echo "Waiting for service ${service} to exit (timeout: ${timeout}s)..."
-    start_time=$(date +%s)
+    info "Waiting for service ${service} to exit (timeout: ${timeout}s)..."
+    start_time="$(date +%s)"
 
     while true; do
-        elapsed_time=$(($(date +%s) - start_time))
+        elapsed_time="$(("$(date +%s)" - start_time))"
         if [[ "${elapsed_time}" -ge "${timeout}" ]]; then
             error "Timeout reached (${timeout}s) while waiting for service ${service} to exit"
+            exit 1
         fi
 
         state="$(compose ps -a "${service}" --format '{{.State}}')"
@@ -133,6 +139,7 @@ wait_until_exit() {
             ;;
         "")
             error "Service ${service} not found"
+            exit 1
             ;;
         esac
 
