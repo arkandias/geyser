@@ -43,25 +43,25 @@ handle_init() {
 
     if [[ -n "$(compose ps -q)" ]]; then
         info "Stopping services..."
-        compose down
+        _compose down
     fi
 
     info "Pulling and building Docker images..."
-    compose pull
-    compose build --pull --no-cache
+    _compose pull
+    _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    compose run --rm keycloak import --dir /opt/keycloak/data/import/geyser-realm.json
+    _compose run --rm keycloak import --dir /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing Geyser database and Hasura configuration..."
-    compose up -d hasura
+    _compose up -d hasura
     wait_until_healthy hasura
-    hasura migrate apply
-    hasura seed apply
-    hasura metadata apply
+    _hasura migrate apply
+    _hasura seed apply
+    _hasura metadata apply
 
     info "Stopping services..."
-    compose down
+    _compose down
 
     info "Cleaning up..."
     docker system prune -a -f

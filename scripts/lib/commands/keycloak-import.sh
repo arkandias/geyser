@@ -12,7 +12,7 @@ Import Keycloak realms and users from a previous export in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the export (prompt otherwise)
+  --name            Set the name of the backup directory (prompt otherwise)
 
 Note: Keycloak must be stopped before import.
 EOF
@@ -34,7 +34,7 @@ handle_keycloak_import() {
                 exit 1
             fi
             backup="$2"
-            debug "Export name set to ${backup} with option --name"
+            debug "Backup directory name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -44,11 +44,11 @@ handle_keycloak_import() {
         esac
     done
 
-    # Select backup name
+    # Select backup directory
     if [[ -z "${backup}" ]]; then
         # shellcheck disable=SC2046
-        select_backup $(basename -a "${BACKUPS_DIR}"/*/)
-        backup="${SELECTED_BACKUP}"
+        select_backup_dir $(basename -a "${BACKUPS_DIR}"/*/)
+        backup="${SELECTED_BACKUP_DIR}"
     fi
 
     if [[ -n "$(compose ps keycloak --format '{{.Status}}')" ]]; then
@@ -58,10 +58,10 @@ handle_keycloak_import() {
             return
         fi
         info "Stopping Keycloak..."
-        compose rm -s keycloak
+        _compose rm -s keycloak
     fi
 
     info "Importing Keycloak realms and users..."
-    compose run --rm keycloak import --dir "/opt/keycloak/data/backups/${backup}"
+    _compose run --rm keycloak import --dir "/opt/keycloak/data/backups/${backup}"
     success "Keycloak realms and users imported successfully"
 }

@@ -179,8 +179,8 @@ main() {
         shift
         handle_webdav_upload "$@"
         ;;
-    compose | hasura | kc | kcadm | rsync)
-        cmd="$1"
+    compose | hasura | kc | kcadm | rsync | webhook)
+        cmd="_$1"
         shift
         "${cmd}" "$@"
         ;;

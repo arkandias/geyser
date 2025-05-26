@@ -12,7 +12,7 @@ Restore Geyser main database from a previous dump in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup (prompt otherwise)
+  --name            Set the name of the backup directory (prompt otherwise)
 EOF
 }
 
@@ -32,7 +32,7 @@ handle_data_restore() {
                 exit 1
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Backup directory name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -42,11 +42,11 @@ handle_data_restore() {
         esac
     done
 
-    # Select backup name
+    # Select backup directory
     if [[ -z "${backup}" ]]; then
         # shellcheck disable=SC2046
-        select_backup $(basename -a "${BACKUPS_DIR}"/*/)
-        backup="${SELECTED_BACKUP}"
+        select_backup_dir $(basename -a "${BACKUPS_DIR}"/*/)
+        backup="${SELECTED_BACKUP_DIR}"
     fi
 
     info "Restoring database..."
@@ -55,14 +55,14 @@ handle_data_restore() {
         wait_until_healthy db
         ;&
     "healthy")
-        compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
+        _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
         ;;
     "unhealthy")
         error "Service db is unhealthy"
         exit 1
         ;;
     "")
-        compose run --rm db pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
+        _compose run --rm db pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
         ;;
     esac
     success "Backup restored successfully"

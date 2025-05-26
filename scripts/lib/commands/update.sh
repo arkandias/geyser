@@ -40,15 +40,15 @@ handle_update() {
             return
         fi
         info "Stopping services..."
-        compose down
+        _compose down
     fi
 
     info "Updating Docker images..."
-    compose pull
-    compose build --pull --no-cache
+    _compose pull
+    _compose build --pull --no-cache
 
     info "Starting services with updated images..."
-    compose up -d
+    _compose up -d
 
     info "Cleaning up..."
     docker system prune -a -f

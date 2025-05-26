@@ -30,7 +30,7 @@ handle_purge() {
             ;;
         *)
             error "Unknown parameter '$1' (see 'geyser purge --help')"
-            exit
+            exit 1
             ;;
         esac
     done
@@ -44,10 +44,10 @@ handle_purge() {
     fi
 
     info "Stopping services..."
-    compose down --volumes --rmi all --remove-orphans
+    _compose down --volumes --rmi all --remove-orphans
 
     info "Removing logs..."
     rm -rf "${LOG_DIR:?}"/*
 
-    success "Purge completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser data-restore' and 'geyser realms-import'"
+    success "Purge completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser data-restore' and 'geyser keycloak-import'"
 }

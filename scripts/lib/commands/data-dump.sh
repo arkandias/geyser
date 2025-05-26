@@ -12,7 +12,7 @@ Dump Geyser main database in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup (prompt otherwise)
+  --name            Set the name of the backup directory (prompt otherwise)
 EOF
 }
 
@@ -32,7 +32,7 @@ handle_data_dump() {
                 exit 1
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Backup directory name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -42,11 +42,11 @@ handle_data_dump() {
         esac
     done
 
-    # Prompt backup name
+    # Prompt backup directory name
     if [[ -z "${backup}" ]]; then
         backup="$(date +%Y-%m-%d-%H-%M-%S)"
         while true; do
-            prompt "Enter a backup name [${backup}]:"
+            prompt "Enter a backup directory name [${backup}]:"
             if [[ -z "${INPUT}" ]]; then
                 break
             fi
@@ -54,7 +54,7 @@ handle_data_dump() {
                 backup="${INPUT}"
                 break
             fi
-            warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup directory name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
@@ -68,14 +68,14 @@ handle_data_dump() {
         wait_until_healthy db
         ;&
     "healthy")
-        compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}/db.dump"
+        _compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}/db.dump"
         ;;
     "unhealthy")
         error "Service db is unhealthy"
         exit 1
         ;;
     "")
-        compose run --rm db pg_dump -U postgres -d geyser -Fc >"/backups/${backup}/db.dump"
+        _compose run --rm db pg_dump -U postgres -d geyser -Fc >"/backups/${backup}/db.dump"
         ;;
     esac
     success "Dump created successfully in ${backup_path}"

@@ -12,7 +12,7 @@ Export Keycloak realms and users in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the export (prompt otherwise)
+  --name            Set the name of the backup directory (prompt otherwise)
 
 Note: Keycloak must be stopped before export.
 EOF
@@ -34,7 +34,7 @@ handle_keycloak_export() {
                 exit 1
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Backup directory name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -51,14 +51,14 @@ handle_keycloak_export() {
             return
         fi
         info "Stopping Keycloak..."
-        compose rm -s keycloak
+        _compose rm -s keycloak
     fi
 
-    # Prompt backup name
+    # Prompt backup directory name
     if [[ -z "${backup}" ]]; then
         backup="$(date +%Y-%m-%d-%H-%M-%S)"
         while true; do
-            prompt "Enter an export name [${backup}]:"
+            prompt "Enter a backup directory name [${backup}]:"
 
             if [[ -z "${INPUT}" ]]; then
                 break
@@ -69,7 +69,7 @@ handle_keycloak_export() {
                 break
             fi
 
-            warn "Invalid input: enter an export name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup directory name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
@@ -78,6 +78,6 @@ handle_keycloak_export() {
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms and users..."
-    compose run --rm keycloak export --dir "/opt/keycloak/data/backups/${backup}"
+    _compose run --rm keycloak export --dir "/opt/keycloak/data/backups/${backup}"
     success "Keycloak realms and users exported successfully in ${backup_path}"
 }

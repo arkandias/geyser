@@ -38,6 +38,7 @@ handle_webhook_start() {
         error "Missing required variable WEBHOOK_SECRET"
         exit 1
     fi
+    export WEBHOOK_SECRET
 
     # Check if a webhook is already running
     if lsof -i :9000 -t; then
@@ -45,11 +46,6 @@ handle_webhook_start() {
         exit 1
     fi
 
-    WEBHOOK_SECRET="${WEBHOOK_SECRET}" \
-        webhook -port 9000 -verbose -secure \
-        -template "${GEYSER_HOME}/config/webhooks/${GEYSER_MODE}.json" \
-        -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
-        -key "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
-        &>>"${LOG_DIR}/webhook.log" &
+    _webhook -verbose &>>"${LOG_DIR}/webhook.log" &
     info "Webhook listening on port 9000. Run 'geyser webhook-stop' to stop it"
 }

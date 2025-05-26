@@ -13,10 +13,13 @@
 #
 # Example crontab usage:
 #   # Hourly backups in June and July
-#   0 * * 6,7 * /path/to/scripts/backup-webdav
+#   0 * * 6,7 * /path/to/scripts/backup.sh
 #
 #   # Daily at 3:00 AM every month except June and July
-#   0 3 * 1-5,8-12 * /path/to/scripts/backup-webdav
+#   0 3 * 1-5,8-12 * /path/to/scripts/backup.sh
+
+# Exit the script immediately if any command fails
+set -e
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 readonly SCRIPT_DIR

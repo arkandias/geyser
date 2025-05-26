@@ -36,23 +36,23 @@ confirm() {
 # Backup Management
 #------------------------------------------------------------------------------
 
-# Prompts user to select a backup directory and stores result in SELECTED_BACKUP
-select_backup() {
+# Prompts user to select a backup directory and stores result in SELECTED_BACKUP_DIR
+select_backup_dir() {
     local -a backups=("$@")
-    SELECTED_BACKUP= # global
+    SELECTED_BACKUP_DIR= # global
 
     if ((${#backups[@]} == 0)); then
-        error "No backups found"
+        error "No backup directories found"
         exit 1
     fi
 
-    info "Backups found:"
+    info "Backup directories found:"
     for ((i = 1; i <= ${#backups[@]}; i++)); do
         info "${i}) ${backups[i - 1]}"
     done
 
     while true; do
-        prompt "Select a backup (1-${#backups[@]}):"
+        prompt "Select a backup directory (1-${#backups[@]}):"
 
         if [[ ! "${INPUT}" =~ ^[0-9]+$ ]] || ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
             warn "Invalid input: enter a number between 1 and ${#backups[@]}"
@@ -60,7 +60,7 @@ select_backup() {
         fi
 
         # shellcheck disable=SC2034
-        SELECTED_BACKUP="${backups[INPUT - 1]}"
+        SELECTED_BACKUP_DIR="${backups[INPUT - 1]}"
         break
     done
 }

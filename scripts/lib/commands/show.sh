@@ -30,5 +30,5 @@ handle_show() {
         esac
     done
 
-    compose ps -a --format '{{.Service}}: {{.Status}}'
+    _compose ps -a --format '{{.Service}}: {{.Status}}'
 }

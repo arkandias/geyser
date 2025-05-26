@@ -2,7 +2,7 @@
 # INSTALL-COMPLETION COMMAND
 ###############################################################################
 
-show_completion_help() {
+show_install_completion_help() {
     cat <<EOF
 Install zsh completion (using oh-my-zsh)
 
@@ -19,6 +19,20 @@ EOF
 }
 
 handle_install_completion() {
+    # Parse options
+    while [[ "$#" -gt 0 ]]; do
+        case "$1" in
+        -h | --help)
+            show_install_completion_help
+            exit 0
+            ;;
+        *)
+            error "Unknown parameter '$1' (see 'geyser install-completion --help')"
+            exit 1
+            ;;
+        esac
+    done
+    
     if [[ -z "${ZSH}" ]]; then
         error "Oh My Zsh is not installed. You can install it with \
 'sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"'"

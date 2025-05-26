@@ -36,7 +36,7 @@ handle_webdav_upload() {
                 exit 1
             fi
             backup="$2"
-            debug "Backup name set to ${backup} with option --name"
+            debug "Backup directory name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -45,7 +45,7 @@ handle_webdav_upload() {
             ;;
         esac
     done
-    
+
     info "Starting WebDAV upload..."
 
     _webdav_check_env
@@ -54,14 +54,14 @@ handle_webdav_upload() {
 
     if [[ -n "${backup}" ]]; then
         _webdav_handle_backup "${backup}"
+    else
+        shopt -s nullglob
+        for backup in "${BACKUPS_DIR}"/*/; do
+            _webdav_handle_backup "$(basename "${backup}")"
+        done
+        shopt -u nullglob
     fi
 
-    shopt -s nullglob
-    for backup in "${BACKUPS_DIR}"/*/; do
-        _webdav_handle_backup "$(basename "${backup}")"
-    done
-    shopt -u nullglob
-    
     success "WebDAV upload completed successfully"
 }
 
@@ -181,7 +181,7 @@ _webdav_handle_backup() {
     elif [[ "${response_code}" == "404" ]]; then
         info "Creating archive /tmp/${backup}.tar.gz..."
         tar -czf "/tmp/${backup}.tar.gz" -C "${BACKUPS_DIR}" "$(basename "${backup}")"
-        
+
         _webdav_upload_file "/tmp/${backup}.tar.gz" "${backup}.tar.gz"
     else
         error "Unexpected response code ${response_code} when checking backup ${backup}"

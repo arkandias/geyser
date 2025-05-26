@@ -24,7 +24,6 @@ REQUIRED_ENV_VARS=(
     "POSTGRES_PASSWORD"
     "HASURA_GRAPHQL_ADMIN_SECRET"
     "CLIENT_SECRET"
-    "WEBHOOK_SECRET"
 )
 
 ENV_FILES=(
@@ -164,7 +163,7 @@ check_dependencies() {
         exit 1
     fi
 
-    if ! command -v hasura &>/dev/null; then
+    if ! hasura &>/dev/null; then
         error "Hasura CLI is not installed. You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
         exit 1
     fi
