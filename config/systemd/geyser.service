@@ -7,9 +7,9 @@ Requires=docker.service
 Type=oneshot
 User=arkandias
 RemainAfterExit=yes
-WorkingDirectory=${GEYSER_HOME}
-ExecStart=${GEYSER_HOME}/scripts/geyser start
-ExecStop=${GEYSER_HOME}/scripts/geyser stop
+WorkingDirectory=/home/arkandias/geyser-monorepo
+ExecStart=/home/arkandias/geyser-monorepo/scripts/geyser start
+ExecStop=/home/arkandias/geyser-monorepo/scripts/geyser stop
 Restart=on-failure
 RestartSec=10
 
