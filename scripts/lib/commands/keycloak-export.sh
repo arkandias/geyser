@@ -1,57 +1,57 @@
 ###############################################################################
-# REALMS-EXPORT COMMAND
+# KEYCLOAK-EXPORT COMMAND
 ###############################################################################
 
-show_realms_export_help() {
+show_keycloak_export_help() {
     cat <<EOF
 Export Keycloak realms and users
 
-Usage: geyser realms-export
+Usage: geyser keycloak-export
 
-Export Keycloak realms and users.
+Export Keycloak realms and users in a backup directory.
 
 Options:
   -h, --help        Show this help message
   --name            Set the name of the export (prompt otherwise)
 
-Note: Services must be stopped before export.
+Note: Keycloak must be stopped before export.
 EOF
 }
 
-handle_realms_export() {
+handle_keycloak_export() {
     local backup backup_path
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_realms_export_help
+            show_keycloak_export_help
             exit 0
             ;;
         --name)
             if [[ -z "$2" ]]; then
-                error "Missing parameter for option --name (see 'geyser realms-export --help')"
+                error "Missing parameter for option --name (see 'geyser keycloak-export --help')"
                 exit 1
             fi
             backup="$2"
-            debug "Export name set to ${backup} with option --name"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser realms-export --help')"
+            error "Unknown parameter '$1' (see 'geyser keycloak-export --help')"
             exit 1
             ;;
         esac
     done
 
-    if [[ -n "$(compose ps -q)" ]]; then
-        warn "Running services need to be stopped for realms export"
+    if [[ -n "$(compose ps keycloak --format '{{.Status}}')" ]]; then
+        warn "Keycloak must be stopped before export"
         if ! confirm "Continue?"; then
-            info "Realms export cancelled: stop services first with 'geyser stop'"
+            info "Keycloak export cancelled"
             return
         fi
-        info "Stopping services..."
-        compose down
+        info "Stopping Keycloak..."
+        compose rm -s keycloak
     fi
 
     # Prompt backup name
@@ -74,19 +74,10 @@ handle_realms_export() {
     fi
 
     # Create backup directory
-    backup_path="${KC_BACKUPS_DIR}/${backup}"
-    if [[ -e "${backup_path}" ]]; then
-        error "Export ${backup_path} already exists"
-        exit 1
-    fi
+    backup_path="${BACKUPS_DIR}/${backup}"
     mkdir -p "${backup_path}"
 
-    info "Exporting Keycloak realms..."
-    compose run keycloak export --dir "/opt/keycloak/data/backups/${backup}"
-    wait_until_exit keycloak
-
-    info "Stopping services..."
-    compose down
-
-    success "Realms exported successfully in ${backup_path}. Restart Geyser with 'geyser start'"
+    info "Exporting Keycloak realms and users..."
+    compose run --rm keycloak export --dir "/opt/keycloak/data/backups/${backup}"
+    success "Keycloak realms and users exported successfully in ${backup_path}"
 }

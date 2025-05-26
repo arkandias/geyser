@@ -35,9 +35,9 @@ Core Commands:
 Data Management:
   data-dump         Dump Geyser main database
   data-restore      Restore Geyser main database
-  realms-export     Export Keycloak realms and users
-  realms-import     Import Keycloak realms and users
-  webdav-backup     Backup to a WebDAV server
+  keycloak-export   Export Keycloak realms and users
+  keycloak-import   Import Keycloak realms and users
+  webdav-upload     Upload backup directories to a WebDAV server
   keycloak-sync     Synchronize Keycloak users and groups with app data
 
 Development Tools:
@@ -46,7 +46,6 @@ Development Tools:
   kc                Keycloak CLI access
   kcadm             Keycloak Admin CLI access
   rsync             Configured rsync wrapper
-  webdav-upload     Upload a file via WebDAV
   webhook-start     Start a webhook on port 9000
   webhook-stop      Terminate any process listening on port 9000
   deploy            Deploy Geyser from remote repository
@@ -57,7 +56,6 @@ Setup:
 Options:
   -h, --help        Show this help message
   -v, --version     Show version information
-  -s, --status      Show current status
   -q, --quiet       Disable log messages
 
 Run 'geyser COMMAND --help' for more information on a command.
@@ -78,13 +76,10 @@ readonly GEYSER_HOME
 
 # Directories paths
 readonly BACKUPS_DIR="${GEYSER_HOME}/backups"
-readonly DB_BACKUPS_DIR="${BACKUPS_DIR}/data"
-readonly KC_BACKUPS_DIR="${BACKUPS_DIR}/realms"
 readonly LOG_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
-mkdir -p "${DB_BACKUPS_DIR}"
-mkdir -p "${KC_BACKUPS_DIR}"
+mkdir -p "${BACKUPS_DIR}"
 mkdir -p "${LOG_DIR}"
 
 ###############################################################################
@@ -120,14 +115,6 @@ main() {
             ;;
         -v | --version)
             echo "Geyser Administration Script v${VERSION}"
-            exit 0
-            ;;
-        -s | --status)
-            echo "Checking status..."
-            if ! compose ps -a --format '{{.Service}}: {{.Status}}' 2>/dev/null; then
-                error "Failed to check Geyser status. Is Docker daemon running?" >&2
-                exit 1
-            fi
             exit 0
             ;;
         -q | --quiet)
@@ -181,13 +168,17 @@ main() {
         shift
         handle_data_restore "$@"
         ;;
-    realms-export)
+    keycloak-export)
         shift
-        handle_realms_export "$@"
+        handle_keycloak_export "$@"
         ;;
-    realms-import)
+    keycloak-import)
         shift
-        handle_realms_import "$@"
+        handle_keycloak_import "$@"
+        ;;
+    webdav-upload)
+        shift
+        handle_webdav_upload "$@"
         ;;
     keycloak-sync)
         shift

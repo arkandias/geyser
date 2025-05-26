@@ -8,19 +8,16 @@ Restore Geyser main database
 
 Usage: geyser data-restore
 
-Restore a dump of Geyser main database.
+Restore Geyser main database from a previous dump in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the dump (prompt otherwise)
-
-Note: Services will be stopped during restore.
+  --name            Set the name of the backup (prompt otherwise)
 EOF
 }
 
 handle_data_restore() {
     local backup
-    local -a backups
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -35,7 +32,7 @@ handle_data_restore() {
                 exit 1
             fi
             backup="$2"
-            debug "Dump name set to ${backup} with option --name"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -45,37 +42,28 @@ handle_data_restore() {
         esac
     done
 
-    # Select backup
+    # Select backup name
     if [[ -z "${backup}" ]]; then
-        backups=()
-        for backup in "${DB_BACKUPS_DIR}"/*.dump; do
-            if [[ -f "${backup}" ]]; then
-                backups+=("${backup##*/}")
-            fi
-        done
-        select_backup "${backups[@]}"
+        # shellcheck disable=SC2046
+        select_backup $(basename -a "${BACKUPS_DIR}"/*/)
         backup="${SELECTED_BACKUP}"
     fi
 
-    if [[ -n "$(compose ps -q)" ]]; then
-        warn "Running services need to be stopped for restore"
-        if ! confirm "Continue?"; then
-            info "Restore cancelled: stop services first with 'geyser stop'"
-            return
-        fi
-        info "Stopping services..."
-        compose down
-    fi
-
-    info "Starting database..."
-    compose up -d db
-
     info "Restoring database..."
-    wait_until_healthy db
-    compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}"
-
-    info "Stopping services..."
-    compose down
-
-    success "Backup restored successfully. Restart Geyser with 'geyser start'"
+    case "$(compose ps -a db --format '{{.Health}}' 2>/dev/null)" in
+    "starting")
+        wait_until_healthy db
+        ;&
+    "healthy")
+        compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
+        ;;
+    "unhealthy")
+        error "Service db is unhealthy"
+        exit 1
+        ;;
+    "")
+        compose run --rm db pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
+        ;;
+    esac
+    success "Backup restored successfully"
 }

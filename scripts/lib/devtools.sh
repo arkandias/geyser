@@ -54,9 +54,3 @@ rsync() {
         "${GEYSER_HOME}/" \
         "$@"
 }
-
-# Upload a file via WebDAV
-webdav_upload() {
-    curl -fsS -u "${WEBDAV_USER}:${WEBDAV_PASS}" -T "$1" \
-        "${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/$2"
-}

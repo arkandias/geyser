@@ -55,7 +55,7 @@ services:
       - private-kc-db
       - public
     volumes:
-      - ./backups/realms:/opt/keycloak/data/backups
+      - ./backups:/opt/keycloak/data/backups
     command: start --optimized
 
   db:
@@ -80,7 +80,7 @@ services:
       - private-db
     volumes:
       - data:/var/lib/postgresql/data
-      - ./backups/data:/backups
+      - ./backups:/backups
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge

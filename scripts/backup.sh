@@ -21,4 +21,4 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 readonly SCRIPT_DIR
 
-"${SCRIPT_DIR}/geyser" webdav-backup
+"${SCRIPT_DIR}/geyser" webdav-upload

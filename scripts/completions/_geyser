@@ -33,8 +33,9 @@ _geyser() {
         'reset:Reset Geyser to a fresh installation'
         'data-dump:Dump Geyser main database'
         'data-restore:Restore Geyser main database'
-        'realms-export:Export Keycloak realms and users'
-        'realms-import:Import Keycloak realms and users'
+        'keycloak-export:Export Keycloak realms and users'
+        'keycloak-import:Import Keycloak realms and users'
+        'webdav-upload:Upload backup directories to a WebDAV server'
         'keycloak-sync:Synchronize Keycloak users and groups with app data'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
@@ -73,20 +74,25 @@ _geyser() {
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--name[Set the name of the dump]:name'
             ;;
-        realms-export)
+        keycloak-export)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]:name' \
                 '--name[Set the name of the export]'
             ;;
-        realms-import)
+        keycloak-import)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--name[Set the name of the export]:name'
             ;;
+        webdav-upload)
+            _arguments \
+                '(-h --help)'{-h,--help}'[Show help message]' \
+                '--name[Set the name of the backup]:name'
+            ;;
         kcadm)
             _arguments '--login[Start an authenticated session]'
             ;;
-        *)
+        init|start|stop|show|update|cleanup|reset)
             _arguments '(-h --help)'{-h,--help}'[Show help message]'
             ;;
         esac

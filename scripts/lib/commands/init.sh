@@ -58,7 +58,7 @@ handle_init() {
     compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    compose run -e GEYSER_ORIGIN -e API_URL -e CLIENT_SECRET keycloak \
+    compose run --rm -e GEYSER_ORIGIN -e API_URL -e CLIENT_SECRET keycloak \
         import --dir /opt/keycloak/data/import/geyser-realm.json
     wait_until_exit keycloak
 

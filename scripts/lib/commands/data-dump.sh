@@ -8,15 +8,15 @@ Dump Geyser main database
 
 Usage: geyser data-dump
 
-Dump Geyser main database.
+Dump Geyser main database in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the dump (prompt otherwise)
+  --name            Set the name of the backup (prompt otherwise)
 EOF
 }
 
-handle_data_backup() {
+handle_data_dump() {
     local backup backup_path
 
     # Parse options
@@ -32,7 +32,7 @@ handle_data_backup() {
                 exit 1
             fi
             backup="$2"
-            debug "Dump name set to ${backup} with option --name"
+            debug "Backup name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -46,7 +46,7 @@ handle_data_backup() {
     if [[ -z "${backup}" ]]; then
         backup="$(date +%Y-%m-%d-%H-%M-%S)"
         while true; do
-            prompt "Enter a dump name [${backup}]:"
+            prompt "Enter a backup name [${backup}]:"
             if [[ -z "${INPUT}" ]]; then
                 break
             fi
@@ -54,25 +54,29 @@ handle_data_backup() {
                 backup="${INPUT}"
                 break
             fi
-            warn "Invalid input: enter a dump name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
-    # Check backup does not already exist
-    backup_path="${DB_BACKUPS_DIR}/${backup}.dump"
-    if [[ -e "${backup_path}" ]]; then
-        error "Dump ${backup_path} already exists"
-        exit 1
-    fi
-
-    # Check if db is healthy and start it otherwise
-    if [[ "$(compose ps -a db --format '{{.Health}}' 2>/dev/null)" != "healthy" ]]; then
-        compose up -d db
-        wait_until_healthy db
-    fi
+    # Create backup directory
+    backup_path="${BACKUPS_DIR}/${backup}/"
+    mkdir -p "${backup_path}"
 
     info "Dumping database..."
-    compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}.dump"
-
+    case "$(compose ps db --format '{{.Health}}' 2>/dev/null)" in
+    "starting")
+        wait_until_healthy db
+        ;&
+    "healthy")
+        compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}/db.dump"
+        ;;
+    "unhealthy")
+        error "Service db is unhealthy"
+        exit 1
+        ;;
+    "")
+        compose run --rm db pg_dump -U postgres -d geyser -Fc >"/backups/${backup}/db.dump"
+        ;;
+    esac
     success "Dump created successfully in ${backup_path}"
 }
