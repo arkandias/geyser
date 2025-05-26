@@ -30,7 +30,7 @@ Core Commands:
   show              Show Geyser services
   update            Update Geyser services
   cleanup           Cleanup Geyser services
-  reset             Reset Geyser to a fresh installation
+  purge             Completely remove Geyser installation and all data
 
 Data Management:
   data-dump         Dump Geyser main database
@@ -38,7 +38,6 @@ Data Management:
   keycloak-export   Export Keycloak realms and users
   keycloak-import   Import Keycloak realms and users
   webdav-upload     Upload backup directories to a WebDAV server
-  keycloak-sync     Synchronize Keycloak users and groups with app data
 
 Development Tools:
   compose           Docker Compose wrapper
@@ -156,9 +155,9 @@ main() {
         shift
         handle_cleanup "$@"
         ;;
-    reset)
+    purge)
         shift
-        handle_reset "$@"
+        handle_purge "$@"
         ;;
     data-dump)
         shift
@@ -179,10 +178,6 @@ main() {
     webdav-upload)
         shift
         handle_webdav_upload "$@"
-        ;;
-    keycloak-sync)
-        shift
-        handle_keycloak_sync "$@"
         ;;
     compose | hasura | kc | kcadm | rsync)
         cmd="$1"

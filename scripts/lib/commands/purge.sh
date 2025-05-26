@@ -1,12 +1,12 @@
 ###############################################################################
-# RESET COMMAND
+# PURGE COMMAND
 ###############################################################################
 
-show_reset_help() {
+show_purge_help() {
     cat <<EOF
-Reset Geyser to a fresh installation
+Completely remove Geyser installation and all data
 
-Usage: geyser reset
+Usage: geyser purge
 
 Stop services, remove containers, delete volumes, remove images, and clean
 up logs.
@@ -20,26 +20,26 @@ Warning: This will delete all data. You should first run:
 EOF
 }
 
-handle_reset() {
+handle_purge() {
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_reset_help
+            show_purge_help
             exit 0
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser reset --help')"
+            error "Unknown parameter '$1' (see 'geyser purge --help')"
             exit
             ;;
         esac
     done
 
-    warn "This will completely reset your Geyser installation"
+    warn "This will completely purge your Geyser installation"
     warn "You should backup Geyser first with 'geyser data-dump' and 'geyser keycloak-export'"
     warn "Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Reset cancelled: backup Geyser first with 'geyser data-dump' and 'geyser keycloak-export'"
+        info "Purge cancelled: backup Geyser first with 'geyser data-dump' and 'geyser keycloak-export'"
         return
     fi
 
@@ -49,5 +49,5 @@ handle_reset() {
     info "Removing logs..."
     rm -rf "${LOG_DIR:?}"/*
 
-    success "Reset completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser data-restore' and 'geyser realms-import'"
+    success "Purge completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser data-restore' and 'geyser realms-import'"
 }

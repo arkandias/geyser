@@ -30,13 +30,12 @@ _geyser() {
         'show:Show Geyser services'
         'update:Update Geyser services'
         'clean:Cleanup Geyser services'
-        'reset:Reset Geyser to a fresh installation'
+        'purge:Completely remove Geyser installation and all data'
         'data-dump:Dump Geyser main database'
         'data-restore:Restore Geyser main database'
         'keycloak-export:Export Keycloak realms and users'
         'keycloak-import:Import Keycloak realms and users'
         'webdav-upload:Upload backup directories to a WebDAV server'
-        'keycloak-sync:Synchronize Keycloak users and groups with app data'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
@@ -92,7 +91,7 @@ _geyser() {
         kcadm)
             _arguments '--login[Start an authenticated session]'
             ;;
-        init|start|stop|show|update|cleanup|reset)
+        init|start|stop|show|update|cleanup|purge)
             _arguments '(-h --help)'{-h,--help}'[Show help message]'
             ;;
         esac

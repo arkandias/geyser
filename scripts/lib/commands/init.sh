@@ -14,7 +14,7 @@ apply Hasura metadata, stop services, and clean up.
 Options:
   -h, --help        Show this help message
 
-Note: Run 'geyser reset' first if you need to start fresh.
+Note: Run 'geyser purge' first if you need to start fresh.
 EOF
 }
 
@@ -41,9 +41,9 @@ handle_init() {
     fi
 
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
-        warn "Existing Geyser data volume found (this may cause conflicts). You should reset Geyser first with 'geyser reset'"
+        warn "Existing Geyser data volume found (this may cause conflicts). You should purge Geyser first with 'geyser purge'"
         if ! confirm "Initialize anyway?"; then
-            info "Initialization cancelled: reset Geyser first with 'geyser reset'"
+            info "Initialization cancelled: purge Geyser first with 'geyser purge'"
             return
         fi
     fi

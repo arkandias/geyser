@@ -21,4 +21,10 @@
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 readonly SCRIPT_DIR
 
-"${SCRIPT_DIR}/geyser" webdav-upload
+timestamp="$(date +'%Y-%m-%d %H:%M:%S')"
+
+"${SCRIPT_DIR}/geyser" stop
+"${SCRIPT_DIR}/geyser" data-dump --name "${timestamp}"
+"${SCRIPT_DIR}/geyser" keycloak-export --name "${timestamp}"
+"${SCRIPT_DIR}/geyser" webdav-upload --name "${timestamp}"
+"${SCRIPT_DIR}/geyser" start
