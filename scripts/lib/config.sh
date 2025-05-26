@@ -2,7 +2,11 @@
 # CONFIGURATION MANAGEMENT
 ###############################################################################
 
-ENV_VARS=(
+# Indicates if running as systemd service (affects logging; should not be modified)
+# shellcheck disable=SC2034
+readonly GEYSER_RUNNING_AS_SERVICE
+
+readonly ENV_VARS=(
     "GEYSER_DOMAIN"
     "GEYSER_MODE"
     "GEYSER_LOG_LEVEL"
@@ -18,7 +22,7 @@ ENV_VARS=(
     "WEBDAV_DIR"
 )
 
-REQUIRED_ENV_VARS=(
+readonly REQUIRED_ENV_VARS=(
     "KC_BOOTSTRAP_ADMIN_PASSWORD"
     "POSTGRES_KC_PASSWORD"
     "POSTGRES_PASSWORD"
@@ -26,7 +30,7 @@ REQUIRED_ENV_VARS=(
     "CLIENT_SECRET"
 )
 
-ENV_FILES=(
+readonly ENV_FILES=(
     "${GEYSER_HOME}/.env"
     "${GEYSER_HOME}/.env.local"
 )

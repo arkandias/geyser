@@ -13,5 +13,14 @@ ExecStop=${GEYSER_HOME}/scripts/geyser stop
 Restart=on-failure
 RestartSec=10
 
+# Logging configuration
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=geyser
+
+# Environment
+Environment=GEYSER_RUNNING_AS_SERVICE=true
+Environment=GEYSER_LOG_LEVEL=debug
+
 [Install]
 WantedBy=multi-user.target

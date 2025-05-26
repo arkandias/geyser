@@ -28,26 +28,34 @@ log_level() {
 log() {
     local level="$1"
     local message="$2"
-    local timestamp
-    timestamp="$(date +'%Y-%m-%d %H:%M:%S')"
-    local log_entry="[${timestamp}] [Geyser] [${level^^}] ${message}"
+    local level_num
+    level_num="$(log_level "${level}")"
 
-    # Console output (colored, respects log level)
-    if [[ "$(log_level "${level}")" -le "$(log_level "${GEYSER_LOG_LEVEL}")" ]]; then
-        case "${level}" in
-        error) echo -e "${COLOR_RED}${log_entry}${COLOR_RESET}" >&2 ;;
-        success) echo -e "${COLOR_GREEN}${log_entry}${COLOR_RESET}" ;;
-        warn) echo -e "${COLOR_YELLOW}${log_entry}${COLOR_RESET}" >&2 ;;
-        debug) echo -e "${COLOR_BLUE}${log_entry}${COLOR_RESET}" ;;
-        info) echo -e "${log_entry}" ;;
-        esac
-    fi
-
-    # Journal output (always logged, structured)
-    if systemd-cat &>/dev/null; then
-        echo "${message}" | systemd-cat \
-            --identifier="geyser" \
-            --priority="$(log_level "${level}")"
+    if [[ "${GEYSER_RUNNING_AS_SERVICE}" == "true" ]]; then
+        # Running as service: simple output, no colors, no timestamp systemd
+        # will add timestamps and parse <N> for journal priority levels
+        if [[ "${level_num}" -le "$(log_level "${GEYSER_LOG_LEVEL}")" ]]; then
+            echo "<${level_num}>[${level^^}] ${message}"
+        fi
+    else
+        # Console output (colored, respects log level)
+        if [[ "${level_num}" -le "$(log_level "${GEYSER_LOG_LEVEL}")" ]]; then
+            local log_entry
+            log_entry="[$(date +'%Y-%m-%d %H:%M:%S')] [Geyser] [${level^^}] ${message}"
+            case "${level}" in
+            error) echo -e "${COLOR_RED}${log_entry}${COLOR_RESET}" >&2 ;;
+            success) echo -e "${COLOR_GREEN}${log_entry}${COLOR_RESET}" ;;
+            warn) echo -e "${COLOR_YELLOW}${log_entry}${COLOR_RESET}" >&2 ;;
+            debug) echo -e "${COLOR_BLUE}${log_entry}${COLOR_RESET}" ;;
+            info) echo -e "${log_entry}" ;;
+            esac
+        fi
+        # Journal output (always logged, structured)
+        if command -v systemd-cat &>/dev/null; then
+            echo "[${level^^}] ${message}" | systemd-cat \
+                --identifier="geyser" \
+                --priority="$(log_level "${level}")"
+        fi
     fi
 }
 
