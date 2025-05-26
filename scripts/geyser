@@ -75,11 +75,9 @@ readonly GEYSER_HOME
 
 # Directories paths
 readonly BACKUPS_DIR="${GEYSER_HOME}/backups"
-readonly LOG_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
 mkdir -p "${BACKUPS_DIR}"
-mkdir -p "${LOG_DIR}"
 
 ###############################################################################
 # LOAD LIBRARIES

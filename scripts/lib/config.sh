@@ -27,8 +27,8 @@ REQUIRED_ENV_VARS=(
 )
 
 ENV_FILES=(
-    ".env"
-    ".env.local"
+    "${GEYSER_HOME}/.env"
+    "${GEYSER_HOME}/.env.local"
 )
 
 load_environment() {
@@ -40,24 +40,27 @@ load_environment() {
 }
 
 _load_env_files() {
-    local file
+    local -a lines
+    local line env_file
 
-    for file in "${ENV_FILES[@]}"; do
-        if [[ -f "${file}" ]]; then
-            debug "Loading environment variables from ${file}..."
-
-            mapfile -t matches < <(grep -E "^($(
+    for env_file in "${ENV_FILES[@]}"; do
+        if [[ -f "${env_file}" ]]; then
+            mapfile -t lines < <(grep -E "^($(
                 IFS='|'
                 echo "${ENV_VARS[*]}"
-            ))=" "${file}")
+            ))=" "${env_file}")
 
-            for match in "${matches[@]}"; do
-                debug "* ${match}"
-                eval "${match}"
+            for line in "${lines[@]}"; do
+                eval "${line}"
             done
-        else
-            debug "File ${file} not found"
+
+            loaded_env_files+=("${env_file}")
         fi
+    done
+
+    debug "Env files loaded:"
+    for env_file in "${loaded_env_files[@]}"; do
+        debug "* ${env_file}"
     done
 }
 
@@ -112,23 +115,23 @@ _validate_optional_env_vars() {
 
 _compute_additional_env_vars() {
     local protocol
-    
+
     if [[ "${GEYSER_MODE}" == "development" ]]; then
         protocol="http"
     else
         protocol="https"
     fi
-    
+
     readonly GEYSER_ORIGIN="${protocol}://*.${GEYSER_DOMAIN}"
     readonly API_URL="${protocol}://api.${GEYSER_DOMAIN}"
     readonly AUTH_URL="${protocol}://auth.${GEYSER_DOMAIN}"
     readonly ADMIN_URL="${protocol}://admin.${GEYSER_DOMAIN}"
-    
+
     export GEYSER_ORIGIN API_URL AUTH_URL ADMIN_URL
 }
 
 _env_summary() {
-    debug "========== Configuration =========="
+    debug "============ Configuration ============"
     # shellcheck disable=SC2153
     debug "GEYSER_HOME=${GEYSER_HOME}"
     debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
@@ -138,12 +141,11 @@ _env_summary() {
     debug "API_URL=${API_URL}"
     debug "AUTH_URL=${AUTH_URL}"
     debug "ADMIN_URL=${ADMIN_URL}"
-    debug "==================================="
+    debug "======================================="
 }
 
 check_dependencies() {
-    debug "Checking dependencies..."
-    if ! command -v docker &>/dev/null; then
+    if ! docker &>/dev/null; then
         error "Docker is not installed"
         exit 1
     fi
@@ -164,7 +166,8 @@ check_dependencies() {
     fi
 
     if ! hasura &>/dev/null; then
-        error "Hasura CLI is not installed. You can install it with 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
+        error "Hasura CLI is not installed. You can install it with \
+'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
         exit 1
     fi
 }
