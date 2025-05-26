@@ -117,25 +117,13 @@ export default {
             >
             le 03/03/2024.
           </p>
-          Le code source de Geyser est disponible sur GitHub&nbsp;:
-          <ol>
-            <li>
-              <a
-                href="https://github.com/arkandias/geyser"
-                target="_blank"
-                rel="noopener noreferrer"
-                >https://github.com/arkandias/geyser</a
-              >
-            </li>
-            <li>
-              <a
-                href="https://github.com/arkandias/geyser-client"
-                target="_blank"
-                rel="noopener noreferrer"
-                >https://github.com/arkandias/geyser-client</a
-              >
-            </li>
-          </ol>`,
+          Le code source de Geyser est disponible sur
+          <a
+            href="https://github.com/arkandias/geyser-monorepo"
+            target="_blank"
+            rel="noopener noreferrer"
+            >https://github.com/arkandias/geyser-monorepo</a
+          >`,
       },
     },
     user: {

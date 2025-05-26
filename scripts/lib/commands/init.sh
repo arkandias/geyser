@@ -33,13 +33,6 @@ handle_init() {
         esac
     done
 
-    # TODO
-    # Ensure client secret is provided
-    if [[ -z "${CLIENT_SECRET}" ]]; then
-        error "Missing required variable CLIENT_SECRET"
-        exit 1
-    fi
-
     if docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
         warn "Existing Geyser data volume found (this may cause conflicts). You should purge Geyser first with 'geyser purge'"
         if ! confirm "Initialize anyway?"; then
@@ -58,9 +51,7 @@ handle_init() {
     compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    compose run --rm -e GEYSER_ORIGIN -e API_URL -e CLIENT_SECRET keycloak \
-        import --dir /opt/keycloak/data/import/geyser-realm.json
-    wait_until_exit keycloak
+    compose run --rm keycloak import --dir /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing Geyser database and Hasura configuration..."
     compose up -d hasura
