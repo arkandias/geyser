@@ -22,9 +22,9 @@ acme.sh --issue -d "${GEYSER_DOMAIN}" -d "*.${GEYSER_DOMAIN}" --dns dns_ovh --se
 
 ```shell
 acme.sh --install-cert -d "${GEYSER_DOMAIN}" \
---fullchain-file "/home/${USER}/geyser-monorepo/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
---key-file "/home/${USER}/geyser-monorepo/nginx/certs/${GEYSER_DOMAIN}/private.key" \
---reloadcmd "/home/${USER}/geyser-monorepo/scripts/geyser compose exec frontend nginx -s reload"
+--fullchain-file "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
+--key-file "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
+--reloadcmd "${GEYSER_HOME}/scripts/geyser compose exec frontend nginx -s reload"
 ```
 
 ## Renew certificates
