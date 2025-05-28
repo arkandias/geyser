@@ -79,8 +79,6 @@ export class OidcService implements OnModuleInit {
         new URLSearchParams({ ...params }).toString(),
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
-
-      console.log(response.data);
       return oidcTokenResponseSchema.parse(response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {

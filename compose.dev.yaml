@@ -4,6 +4,10 @@ services:
   hasura:
     depends_on:
       backend: !reset []
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    environment:
+      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"${API_URL}/","audience":"${API_URL}/"}'
 
   frontend:
     image: nginx:1.27

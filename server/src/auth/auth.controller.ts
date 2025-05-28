@@ -39,17 +39,6 @@ export class AuthController {
     );
   }
 
-  private async setUserCookies(res: Response, uid: string): Promise<void> {
-    const user = await this.usersService.findByUid(uid);
-
-    if (!user) {
-      throw new UnauthorizedException("User not found");
-    }
-
-    await this.authService.setAccessCookie(res, user);
-    await this.authService.setRefreshCookie(res, user);
-  }
-
   @Get("login")
   login(
     @Query("redirect_url") redirectUrl: string | undefined,
@@ -202,5 +191,16 @@ export class AuthController {
     }
 
     throw new UnauthorizedException("Redirect URL not allowed");
+  }
+
+  private async setUserCookies(res: Response, uid: string): Promise<void> {
+    const user = await this.usersService.findByUid(uid);
+
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
+    await this.authService.setAccessCookie(res, user);
+    await this.authService.setRefreshCookie(res, user);
   }
 }

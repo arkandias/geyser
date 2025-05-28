@@ -5,7 +5,7 @@ import { hasuraClaimsSchema } from "./hasura-claims.schema.js";
 import { roleTypeSchema } from "./role-type.schema.js";
 
 export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
-  z.strictObject({
+  z.looseObject({
     uid: z.string(),
     displayname: z.string(),
     active: z.boolean(),

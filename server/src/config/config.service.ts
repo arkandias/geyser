@@ -10,7 +10,7 @@ export class ConfigService {
   readonly port: number;
   readonly apiUrl: URL;
   readonly parentDomain: string;
-  readonly origin: string;
+  readonly originRegex: RegExp;
   readonly databaseUrl: URL;
   readonly oidc: {
     discoveryUrl: URL;
@@ -38,8 +38,10 @@ export class ConfigService {
     this.parentDomain = this.apiUrl.hostname.replace(/^[^.]+\./, "");
     this.logger.log(`Parent domain: ${this.parentDomain}`);
 
-    this.origin = `${this.apiUrl.protocol}//*.${this.parentDomain}`;
-    this.logger.log(`Wildcard origin: ${this.origin}`);
+    this.originRegex = new RegExp(
+      `^${this.apiUrl.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
+    );
+    this.logger.log(`Origin regex: ${this.originRegex}`);
 
     this.databaseUrl = new URL(
       this.configService.getOrThrow<string>("API_DATABASE_URL"),

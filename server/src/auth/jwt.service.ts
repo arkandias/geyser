@@ -45,7 +45,7 @@ export class JwtService {
       result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
         issuer: this.configService.apiUrl.href,
         audience: this.configService.apiUrl.href,
-        requiredClaims: ["sub", "exp", "iat", "jti", "scope"],
+        requiredClaims: ["sub", "exp", "iat", "jti"],
       });
     } catch (error) {
       if (error instanceof jose.errors.JOSEError) {
