@@ -87,7 +87,7 @@ wait_until_healthy() {
             exit 1
         fi
 
-        health="$(compose ps -a "${service}" --format '{{.Health}}')"
+        health="$(_compose ps -a "${service}" --format '{{.Health}}')"
         case "${health}" in
         "healthy")
             info "Service ${service} is healthy"
@@ -100,42 +100,6 @@ wait_until_healthy() {
         "exited")
             error "Service ${service} stopped unexpectedly"
             exit 1
-            ;;
-        "")
-            error "Service ${service} not found"
-            exit 1
-            ;;
-        esac
-
-        sleep 1
-    done
-}
-
-# Wait for a service to exit
-wait_until_exit() {
-    local service="$1"
-    local timeout="${2:-300}"
-    local start_time
-    local elapsed_time
-    local state
-    local exit_code
-
-    info "Waiting for service ${service} to exit (timeout: ${timeout}s)..."
-    start_time="$(date +%s)"
-
-    while true; do
-        elapsed_time="$(("$(date +%s)" - start_time))"
-        if [[ "${elapsed_time}" -ge "${timeout}" ]]; then
-            error "Timeout reached (${timeout}s) while waiting for service ${service} to exit"
-            exit 1
-        fi
-
-        state="$(compose ps -a "${service}" --format '{{.State}}')"
-        case "${state}" in
-        "exited")
-            exit_code="$(compose ps -a "${service}" --format '{{.ExitCode}}')"
-            info "Service ${service} exited with code ${exit_code}"
-            return "${exit_code}"
             ;;
         "")
             error "Service ${service} not found"

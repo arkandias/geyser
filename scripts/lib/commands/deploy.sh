@@ -33,9 +33,9 @@ handle_deploy() {
     git pull
     
     # Deploy application
-    docker compose pull
-    docker compose build --pull --no-cache
-    docker compose up -d
+    _compose pull
+    _compose build --pull --no-cache
+    _compose up -d
     
     # Cleanup
     docker system prune -a -f

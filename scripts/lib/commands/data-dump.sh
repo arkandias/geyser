@@ -63,7 +63,7 @@ handle_data_dump() {
     mkdir -p "${backup_path}"
 
     info "Dumping database..."
-    case "$(compose ps db --format '{{.Health}}' 2>/dev/null)" in
+    case "$(_compose ps db --format '{{.Health}}' 2>/dev/null)" in
     "starting")
         wait_until_healthy db
         ;&

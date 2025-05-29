@@ -44,7 +44,7 @@ handle_keycloak_export() {
         esac
     done
 
-    if [[ -n "$(compose ps keycloak --format '{{.Status}}')" ]]; then
+    if [[ -n "$(_compose ps keycloak --format '{{.Status}}')" ]]; then
         warn "Keycloak must be stopped before export"
         if ! confirm "Continue?"; then
             info "Keycloak export cancelled"

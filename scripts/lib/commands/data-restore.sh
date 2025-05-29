@@ -49,12 +49,26 @@ handle_data_restore() {
         backup="${SELECTED_BACKUP_DIR}"
     fi
 
+    # Check if backup directory exists
+    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
+        error "Backup directory ${backup} does not exist"
+        exit 1
+    fi
+
+    # Check if dump file exists
+    if [[ ! -f "${BACKUPS_DIR}/${backup}/db.dump" ]]; then
+        error "Backup directory ${backup} does not contain a db.dump file"
+        exit 1
+    fi
+
     info "Restoring database..."
-    case "$(compose ps -a db --format '{{.Health}}' 2>/dev/null)" in
+    case "$(_compose ps -a db --format '{{.Health}}' 2>/dev/null)" in
     "starting")
         wait_until_healthy db
         ;&
     "healthy")
+        _compose exec -T db bash -c "dropdb -U postgres --if-exists --force geyser"
+        _compose exec -T db bash -c "createdb -U postgres geyser"
         _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
         ;;
     "unhealthy")
@@ -62,7 +76,10 @@ handle_data_restore() {
         exit 1
         ;;
     "")
-        _compose run --rm db pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
+        _compose run --rm db \
+            dropdb -U postgres --if-exists --force geyser &&
+            createdb -U postgres geyser &&
+            pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
         ;;
     esac
     success "Backup restored successfully"

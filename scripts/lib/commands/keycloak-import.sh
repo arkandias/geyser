@@ -51,7 +51,13 @@ handle_keycloak_import() {
         backup="${SELECTED_BACKUP_DIR}"
     fi
 
-    if [[ -n "$(compose ps keycloak --format '{{.Status}}')" ]]; then
+    # Check if backup directory exists
+    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
+        error "Backup directory ${backup} does not exist"
+        exit 1
+    fi
+
+    if [[ -n "$(_compose ps keycloak --format '{{.Status}}')" ]]; then
         warn "Keycloak must be stopped before import"
         if ! confirm "Continue?"; then
             info "Keycloak import cancelled"

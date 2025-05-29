@@ -1,6 +1,7 @@
 #compdef geyser
 
 # shellcheck disable=SC2120
+# shellcheck disable=SC2153
 #compdef geyser
 
 _geyser() {

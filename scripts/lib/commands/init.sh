@@ -41,7 +41,7 @@ handle_init() {
         fi
     fi
 
-    if [[ -n "$(compose ps -q)" ]]; then
+    if [[ -n "$(_compose ps -q)" ]]; then
         info "Stopping services..."
         _compose down
     fi
