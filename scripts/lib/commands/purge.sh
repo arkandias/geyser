@@ -47,7 +47,7 @@ handle_purge() {
     _compose down --volumes --rmi all --remove-orphans
 
     info "Removing logs..."
-    rm -rf "${LOG_DIR:?}"/*
+    rm -rf "${LOGS_DIR:?}"/*
 
     success "Purge completed successfully. Initialize Geyser with 'geyser init' or restore a previous backup with 'geyser data-restore' and 'geyser keycloak-import'"
 }

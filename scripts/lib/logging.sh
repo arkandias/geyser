@@ -55,6 +55,9 @@ log() {
             echo "[${level^^}] ${message}" | systemd-cat \
                 --identifier="geyser" \
                 --priority="$(log_level "${level}")"
+        else
+            # Add entry to log file
+            echo "${log_entry}" >>"${LOGS_DIR}/geyser.log"
         fi
     fi
 }

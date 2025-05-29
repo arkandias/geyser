@@ -2,6 +2,7 @@ dist/
 node_modules/
 
 /backups/
+/logs/
 /nginx/certs/*
 !/nginx/certs/default
 /server/keys/

@@ -46,6 +46,15 @@ handle_webhook_start() {
         exit 1
     fi
 
-    _webhook -verbose &>>"${LOG_DIR}/webhook.log" &
+    if [[ "${GEYSER_RUNNING_AS_SERVICE}" == "true" ]]; then
+        _webhook -verbose
+    else
+        if command -v systemd-cat &>/dev/null; then
+            systemd-cat -t webhook _webhook -verbose &
+        else
+            _webhook -verbose &>>"${LOGS_DIR}/webhook.log" &
+        fi
+    fi
+    
     info "Webhook listening on port 9000. Run 'geyser webhook-stop' to stop it"
 }

@@ -1,7 +1,7 @@
 name: geyser
 services:
   kc-db:
-    image: postgres:16
+    image: postgres:17
     restart: unless-stopped
     healthcheck:
       test: "pg_isready -U postgres -d keycloak || exit 1"
@@ -59,7 +59,7 @@ services:
     command: start --optimized
 
   db:
-    image: postgres:16
+    image: postgres:17
     restart: unless-stopped
     healthcheck:
       test: "pg_isready -U postgres -d geyser || exit 1"
