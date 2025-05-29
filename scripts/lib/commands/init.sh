@@ -51,20 +51,25 @@ handle_init() {
     _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    _compose run --rm keycloak import --dir /opt/keycloak/data/import/geyser-realm.json
+    _compose run --rm -e API_URL -e GEYSER_ORIGIN -e CLIENT_SECRET keycloak \
+        import --file /opt/keycloak/data/import/geyser-realm.json
 
-    info "Initializing Geyser database and Hasura configuration..."
+    info "Initializing database..."
+    _compose up -d db
+    wait_until_healthy db
+
+    info "Initializing Hasura..."
     _compose up -d hasura
     wait_until_healthy hasura
-    _hasura migrate apply
-    _hasura seed apply
+    # Wait a few more seconds
+    sleep 3
     _hasura metadata apply
 
     info "Stopping services..."
     _compose down
 
-    info "Cleaning up..."
-    docker system prune -a -f
+    info "Cleaning up Docker..."
+    docker system prune -f
 
     success "Initialization completed successfully. Start Geyser with 'geyser start'"
 }

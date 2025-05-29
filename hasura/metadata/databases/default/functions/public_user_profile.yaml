@@ -1,6 +1,0 @@
-function:
-  name: user_profile
-  schema: public
-configuration:
-  custom_root_fields: {}
-  session_argument: hasura_session
