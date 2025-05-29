@@ -64,7 +64,7 @@ handle_keycloak_import() {
             return
         fi
         info "Stopping Keycloak..."
-        _compose rm -s keycloak
+        _compose rm -s -f keycloak
     fi
 
     info "Importing Keycloak realms and users..."

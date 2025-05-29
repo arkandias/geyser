@@ -51,7 +51,7 @@ handle_keycloak_export() {
             return
         fi
         info "Stopping Keycloak..."
-        _compose rm -s keycloak
+        _compose rm -s -f keycloak
     fi
 
     # Prompt backup directory name
