@@ -41,20 +41,6 @@ _kcadm() {
     fi
 }
 
-# Sync files using rsync with predefined include/exclude patterns from rsync-files and rsync-exclude
-_rsync() {
-    if ! rsync &>/dev/null; then
-        error "rsync is not installed. You can install it with 'sudo apt install rsync' (Ubuntu) or 'brew install rsync' (macOS)"
-        exit 1
-    fi
-
-    rsync -rlv --delete \
-        --files-from="${GEYSER_HOME}"/rsync-files \
-        --exclude-from="${GEYSER_HOME}"/rsync-exclude \
-        "${GEYSER_HOME}/" \
-        "$@"
-}
-
 # Run a secure webhook with predefined configuration
 _webhook() {
     if ! webhook &>/dev/null; then

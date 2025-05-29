@@ -17,9 +17,6 @@ _geyser() {
     elif [[ " ${words[*]} " == *" kcadm "* ]]; then
         _geyser_kcadm
         return
-    elif [[ " ${words[*]} " == *" rsync "* ]]; then
-        _geyser_rsync
-        return
     fi
 
     # shellcheck disable=SC2034
@@ -40,7 +37,6 @@ _geyser() {
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
         'kcadm:Keycloak Admin CLI access'
-        'rsync:Configured rsync wrapper'
         'webhook-start:Start a webhook on port 9000'
         'webhook-stop:Terminate any process listening on port 9000'
         'deploy:Deploy Geyser from remote repository'
@@ -91,7 +87,7 @@ _geyser() {
         kcadm)
             _arguments '--login[Start an authenticated session]'
             ;;
-        init|start|stop|show|update|cleanup|purge)
+        init | start | stop | show | update | cleanup | purge)
             _arguments '(-h --help)'{-h,--help}'[Show help message]'
             ;;
         esac
@@ -195,35 +191,6 @@ _geyser_kcadm() {
     ((CURRENT = CURRENT + 1 - i))
 
     _kcadm
-}
-
-# shellcheck disable=SC2120
-_geyser_rsync() {
-    if [[ -z "${GEYSER_HOME}" ]]; then
-        echo "Error: GEYSER_HOME environment variable is not set" >&2
-        return 1
-    fi
-
-    # Parse options before rsync and store words after
-    for ((i = 2; i <= ${#words}; i++)); do
-        case "${words[i]}" in
-        rsync) break ;;
-        --*) continue ;;
-        *) return 1 ;;
-        esac
-    done
-    words_after_rsync=("${words[@]:$((i))}")
-
-    words=(
-        "rsync" "-rlv" "--delete"
-        "--files-from=${GEYSER_HOME}/rsync-files"
-        "--exclude-from=${GEYSER_HOME}/rsync-exclude"
-        "${GEYSER_HOME}/"
-        "${words_after_rsync[@]}"
-    )
-    ((CURRENT = CURRENT + 6 - i))
-
-    _rsync
 }
 
 _geyser

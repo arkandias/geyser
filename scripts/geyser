@@ -44,7 +44,6 @@ Development Tools:
   hasura            Hasura CLI wrapper
   kc                Keycloak CLI access
   kcadm             Keycloak Admin CLI access
-  rsync             Configured rsync wrapper
   webhook-start     Start a webhook on port 9000
   webhook-stop      Terminate any process listening on port 9000
   deploy            Deploy Geyser from remote repository
@@ -177,7 +176,7 @@ main() {
         shift
         handle_webdav_upload "$@"
         ;;
-    compose | hasura | kc | kcadm | rsync | webhook)
+    compose | hasura | kc | kcadm | webhook)
         cmd="_$1"
         shift
         "${cmd}" "$@"
