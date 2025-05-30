@@ -460,6 +460,8 @@ const formOptions = computed(() => ({
   })),
   type: courseTypes.value.map((ct) => ct.label),
 }));
+
+const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed(() => ({
   program: programs.value.map((p) => p.name),
   track: tracks.value.map((t) => t.name),
@@ -469,6 +471,7 @@ const filterOptions = computed(() => ({
 <template>
   <AdminData
     v-model:form-values="formValues"
+    v-model:filter-values="filterValues"
     section="courses"
     name="courses"
     :id-key

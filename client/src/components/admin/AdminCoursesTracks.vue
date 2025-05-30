@@ -220,6 +220,8 @@ const formOptions = computed(() => ({
       .find((d) => d.name === formValues.value["degree"])
       ?.programs.map((p) => p.name) ?? [],
 }));
+
+const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed(() => ({
   program: programs.value.map((p) => p.name),
 }));
@@ -228,6 +230,7 @@ const filterOptions = computed(() => ({
 <template>
   <AdminData
     v-model:form-values="formValues"
+    v-model:filter-values="filterValues"
     section="courses"
     name="tracks"
     :id-key

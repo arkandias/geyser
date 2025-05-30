@@ -462,6 +462,8 @@ const formOptions = computed(() => ({
     .map((c) => c.type.label),
   type: Object.values(RequestTypeEnum).map((type) => requestTypeLabel(t, type)),
 }));
+
+const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed(() => ({
   uid: teachers.value.map((t) => t.uid),
   degree: degrees.value.map((d) => d.name),
@@ -476,6 +478,7 @@ const filterOptions = computed(() => ({
 <template>
   <AdminData
     v-model:form-values="formValues"
+    v-model:filter-values="filterValues"
     section="requests"
     name="requests"
     :id-key

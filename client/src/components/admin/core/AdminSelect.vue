@@ -31,7 +31,7 @@ const disable = computed(
 <template>
   <QSelect
     v-model="modelValue"
-    :options="options"
+    :options
     :label="t(`${keyPrefix}.column.${name}.label`)"
     :disable
     :multiple

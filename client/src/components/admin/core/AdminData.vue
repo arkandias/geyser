@@ -47,10 +47,10 @@ type CustomMutationResponse<
 >;
 
 const formValues = defineModel<Record<string, Scalar>>("formValues", {
-  default: {},
+  required: true,
 });
 const filterValues = defineModel<Record<string, Scalar[]>>("filterValues", {
-  default: {},
+  required: true,
 });
 const {
   section,

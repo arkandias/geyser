@@ -4,7 +4,7 @@ export type ColName = "uid" | "type" | "comment";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -22,7 +22,11 @@ import {
   UpsertRolesDocument,
 } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
-import type { NullableParsedRow, RowDescriptorExtra } from "@/types/data.ts";
+import type {
+  NullableParsedRow,
+  RowDescriptorExtra,
+  Scalar,
+} from "@/types/data.ts";
 import { isRole } from "@/utils/enum-guards.ts";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -148,14 +152,19 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   return object;
 };
 
+const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   uid: teachers.value.map((t) => ({ value: t.uid, label: t.displayname })),
   type: Object.values(RoleTypeEnum).map((type) => roleTypeLabel(t, type)),
 }));
+
+const filterValues = ref<Record<string, Scalar[]>>({});
 </script>
 
 <template>
   <AdminData
+    v-model:form-values="formValues"
+    v-model:filter-values="filterValues"
     section="general"
     name="roles"
     :id-key

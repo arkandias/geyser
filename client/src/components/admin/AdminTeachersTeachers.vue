@@ -12,7 +12,7 @@ export type ColName =
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed } from "vue";
+import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -28,7 +28,11 @@ import {
   UpdateTeachersDocument,
   UpsertTeachersDocument,
 } from "@/gql/graphql.ts";
-import type { NullableParsedRow, RowDescriptorExtra } from "@/types/data.ts";
+import type {
+  NullableParsedRow,
+  RowDescriptorExtra,
+  Scalar,
+} from "@/types/data.ts";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
@@ -217,13 +221,18 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   return object;
 };
 
+const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   position: positions.value.map((p) => p.label),
 }));
+
+const filterValues = ref<Record<string, Scalar[]>>({});
 </script>
 
 <template>
   <AdminData
+    v-model:form-values="formValues"
+    v-model:filter-values="filterValues"
     section="teachers"
     name="teachers"
     :id-key
