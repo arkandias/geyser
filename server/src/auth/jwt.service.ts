@@ -151,7 +151,7 @@ export class JwtService {
       secure: this.configService.apiUrl.protocol === "https:",
       sameSite: "lax",
       maxAge: this.configService.jwt.refreshTokenMaxAge,
-      path: "/auth/refresh",
+      path: "/auth/token/refresh",
     };
   }
 
