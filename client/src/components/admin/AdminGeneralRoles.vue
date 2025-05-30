@@ -155,7 +155,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   uid: teachers.value.map((t) => ({ value: t.uid, label: t.displayname })),
-  type: Object.values(RoleTypeEnum).map((type) => roleTypeLabel(t, type)),
+  type: Object.values(RoleTypeEnum).map((type) => ({
+    value: type,
+    label: roleTypeLabel(t, type),
+  })),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});

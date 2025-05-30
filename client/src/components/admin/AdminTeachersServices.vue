@@ -51,7 +51,7 @@ const rowDescriptor = {
     type: "string",
     format: (val: string) =>
       teachers.value.find((t) => t.uid === val)?.displayname,
-    formType: "input",
+    formType: "select",
   },
   hours: {
     type: "number",
