@@ -45,7 +45,7 @@ handle_update() {
 
     info "Updating Docker images..."
     _compose pull
-    _compose build --pull --no-cache
+    COMPOSE_BAKE=true _compose build --pull --no-cache
 
     info "Starting services with updated images..."
     _compose up -d

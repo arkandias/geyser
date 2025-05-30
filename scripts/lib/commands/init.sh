@@ -48,7 +48,7 @@ handle_init() {
 
     info "Pulling and building Docker images..."
     _compose pull
-    _compose build --pull --no-cache
+    COMPOSE_BAKE=true _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
     _compose run --rm -e API_URL -e GEYSER_ORIGIN -e CLIENT_SECRET keycloak \

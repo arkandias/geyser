@@ -149,23 +149,30 @@ _env_summary() {
 }
 
 check_dependencies() {
-    if ! docker &>/dev/null; then
+    if ! command -v docker &>/dev/null; then
         error "Docker is not installed"
         exit 1
     fi
 
     local docker_version
-    docker_version="$(docker version --format '{{.Server.Version}}' 2>/dev/null | cut -d'.' -f1)"
+    docker_version="$(docker version --format '{{.Server.Version}}' 2>/dev/null)"
     if [[ -z "${docker_version}" ]]; then
         error "Failed to get Docker version. Is Docker daemon running?"
         exit 1
-    elif [[ "${docker_version}" -lt 25 ]]; then
-        error "Docker Engine version 25.0 or higher is required (current: ${docker_version})"
+    fi
+
+    if [[ "${docker_version%%.*}" -lt 23 ]]; then
+        error "Docker Engine version 23+ required (current: ${docker_version})"
         exit 1
     fi
 
     if ! docker compose version &>/dev/null; then
         error "Docker Compose V2 is required"
+        exit 1
+    fi
+
+    if ! docker buildx version &>/dev/null; then
+        error "Docker buildx is required"
         exit 1
     fi
 
