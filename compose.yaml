@@ -81,7 +81,6 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
       - ./backups:/backups
-      - ./db/init:/docker-entrypoint-initdb.d
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge

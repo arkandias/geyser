@@ -55,13 +55,12 @@ handle_init() {
         import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."
-    _compose up -d db
-    wait_until_healthy db
+    _compose run --rm -v ./db/init:/docker-entrypoint-initdb.d db postgres --version
 
     info "Initializing Hasura..."
     _compose up -d hasura
     wait_until_healthy hasura
-    # Wait a few more seconds
+    # Wait a few more seconds...
     sleep 3
     _hasura metadata apply
 
