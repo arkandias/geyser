@@ -55,7 +55,7 @@ handle_init() {
         import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."
-    _compose run --rm -v ./db/init:/docker-entrypoint-initdb.d db postgres --version
+    _compose run --rm -v "${GEYSER_HOME}"/db/init:/docker-entrypoint-initdb.d db postgres --version
 
     info "Initializing Hasura..."
     _compose up -d hasura
