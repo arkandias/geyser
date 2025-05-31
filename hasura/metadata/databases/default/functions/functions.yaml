@@ -1,5 +1,5 @@
 - "!include public_compute_service_priorities.yaml"
 - "!include public_compute_year_priorities.yaml"
 - "!include public_copy_year_courses.yaml"
-- "!include public_create_service.yaml"
+- "!include public_create_teacher_service.yaml"
 - "!include public_create_year_services.yaml"

@@ -446,7 +446,7 @@ COMMENT ON FUNCTION public.is_priority(request) IS 'Determines the priority stat
 -- Functions
 --
 
-CREATE FUNCTION public.create_service(p_year integer, p_uid text) RETURNS setof public.service AS
+CREATE FUNCTION public.create_teacher_service(p_year integer, p_uid text) RETURNS setof public.service AS
 $$
 INSERT INTO public.service (year, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
@@ -456,7 +456,7 @@ WHERE t.uid = p_uid
 ON CONFLICT (year, uid) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.create_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
+COMMENT ON FUNCTION public.create_teacher_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
 
 CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof public.priority AS
 $$
@@ -522,7 +522,7 @@ CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof public
 $$
 SELECT s.*
 FROM public.teacher t
-         CROSS JOIN LATERAL public.create_service(p_year, t.uid) s
+         CROSS JOIN LATERAL public.create_teacher_service(p_year, t.uid) s
 WHERE t.active IS TRUE;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
