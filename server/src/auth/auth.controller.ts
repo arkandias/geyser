@@ -23,7 +23,7 @@ export class AuthController {
   logoutCallbackUrl: URL;
 
   constructor(
-    private authService: JwtService,
+    private jwtService: JwtService,
     private configService: ConfigService,
     private oidcService: OidcService,
     private stateService: StateService,
@@ -131,8 +131,8 @@ export class AuthController {
     }
 
     // Removing cookies
-    this.authService.unsetAccessCookie(res);
-    this.authService.unsetRefreshCookie(res);
+    this.jwtService.unsetAccessCookie(res);
+    this.jwtService.unsetRefreshCookie(res);
 
     res.redirect(logoutUrl.href);
   }
@@ -156,7 +156,7 @@ export class AuthController {
     if (!accessToken) {
       throw new UnauthorizedException("Missing access token");
     }
-    return this.authService.verifyAccessToken(accessToken);
+    return this.jwtService.verifyAccessToken(accessToken);
   }
 
   @Post("token/refresh")
@@ -167,7 +167,7 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");
     }
-    const { sub } = await this.authService.verifyRefreshToken(refreshToken);
+    const { sub } = await this.jwtService.verifyRefreshToken(refreshToken);
     await this.setUserCookies(res, sub);
   }
 
@@ -200,7 +200,7 @@ export class AuthController {
       throw new UnauthorizedException("User not found");
     }
 
-    await this.authService.setAccessCookie(res, user);
-    await this.authService.setRefreshCookie(res, user);
+    await this.jwtService.setAccessCookie(res, user);
+    await this.jwtService.setRefreshCookie(res, user);
   }
 }
