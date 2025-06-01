@@ -10,6 +10,8 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dataplan/json": "0.0.1-beta.30",
+    "@dataplan/pg": "0.0.1-beta.32",
     "@geyser/shared": "workspace:*",
     "@nestjs/axios": "^4.0.0",
     "@nestjs/common": "^11.1.1",
@@ -21,9 +23,13 @@
     "axios": "^1.9.0",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
+    "grafast": "0.1.1-beta.21",
+    "graphile-build": "5.0.0-beta.33",
+    "graphile-build-pg": "5.0.0-beta.38",
+    "graphile-config": "0.0.1-beta.15",
     "jose": "^6.0.11",
-    "nestjs-zod": "^4.3.1",
     "pg": "^8.16.0",
+    "postgraphile": "5.0.0-beta.40",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typeorm": "^0.3.24",
