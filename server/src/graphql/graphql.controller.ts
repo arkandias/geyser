@@ -19,14 +19,14 @@ import { ZodValidationPipe } from "../common/zod-validation.pipe";
 import { GraphqlRequest, graphqlRequestSchema } from "./graphql-request.schema";
 import { GraphqlService } from "./graphql.service";
 
-@Controller("graphql")
+@Controller()
 export class GraphqlController {
   constructor(
     private readonly postgraphileService: GraphqlService,
     private readonly jwtService: JwtService,
   ) {}
 
-  @Post()
+  @Post("graphql")
   async graphql(
     @Body(new ZodValidationPipe(graphqlRequestSchema)) request: GraphqlRequest,
     @Cookies("access_token") accessToken: string | undefined,
