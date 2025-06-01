@@ -12,9 +12,9 @@ import type { Request, Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
-import { OidcService } from "../oidc/oidc.service";
 import { UsersService } from "../users/users.service";
 import { JwtService } from "./jwt.service";
+import { OidcService } from "./oidc.service";
 import { StateService } from "./state.service";
 
 @Controller("auth")

@@ -3,13 +3,14 @@ import {
   Injectable,
   InternalServerErrorException,
   Logger,
+  OnModuleInit,
 } from "@nestjs/common";
 import fs from "fs";
 import jose from "jose";
 import path from "path";
 
 @Injectable()
-export class KeysService {
+export class KeysService implements OnModuleInit {
   private readonly logger = new Logger(KeysService.name);
   private readonly keysDir = path.join(process.cwd(), "keys");
   private readonly privateKeyPath = path.join(this.keysDir, "private.key");
@@ -20,7 +21,7 @@ export class KeysService {
   };
   private _jwk?: jose.JWK;
 
-  async init(): Promise<void> {
+  async onModuleInit() {
     // Ensure keys directory exists
     if (!fs.existsSync(this.keysDir)) {
       fs.mkdirSync(this.keysDir, { recursive: true });
