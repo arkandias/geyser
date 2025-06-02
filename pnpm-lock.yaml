@@ -207,8 +207,8 @@ importers:
         specifier: 5.0.0-beta.33
         version: 5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)
       graphile-build-pg:
-        specifier: 5.0.0-beta.38
-        version: 5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)(tamedevil@0.0.0-beta.7)
+        specifier: 5.0.0-1.3
+        version: 5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0)
       graphile-config:
         specifier: 0.0.1-beta.15
         version: 0.0.1-beta.15
@@ -220,7 +220,7 @@ importers:
         version: 8.16.0
       postgraphile:
         specifier: 5.0.0-beta.40
-        version: 5.0.0-beta.40(5287d148e07e83ca6923448262014806)
+        version: 5.0.0-beta.40(f3db9e76aad03712899895abbb15c2f8)
       reflect-metadata:
         specifier: ^0.2.2
         version: 0.2.2
@@ -232,7 +232,7 @@ importers:
         version: 0.3.24(pg@8.16.0)(reflect-metadata@0.2.2)
       zod:
         specifier: ^3.25.23
-        version: 3.25.46
+        version: 3.25.47
     devDependencies:
       '@nestjs/cli':
         specifier: ^11.0.7
@@ -251,7 +251,7 @@ importers:
     dependencies:
       zod:
         specifier: ^3.25.23
-        version: 3.25.46
+        version: 3.25.47
 
 packages:
 
@@ -1397,6 +1397,9 @@ packages:
   '@types/mime@1.3.5':
     resolution: {integrity: sha512-/pyBZWSLD2n0dcHE3hq8s8ZvcETHtEuF+3E7XVt0Ig2nvsVQXdghHVcEkIWjy9A0wKfTn97a/PSDYohKIlnP/w==}
 
+  '@types/node@18.19.110':
+    resolution: {integrity: sha512-WW2o4gTmREtSnqKty9nhqF/vA0GKd0V/rbC0OyjSk9Bz6bzlsXKT+i7WDdS/a0z74rfT2PO4dArVCSnapNLA5Q==}
+
   '@types/node@20.17.57':
     resolution: {integrity: sha512-f3T4y6VU4fVQDKVqJV4Uppy8c1p/sVvS3peyqxyWnzkqXFJLRU7Y1Bl7rMS1Qe9z0v4M6McY0Fp9yBsgHJUsWQ==}
 
@@ -1408,6 +1411,9 @@ packages:
 
   '@types/pg@8.15.2':
     resolution: {integrity: sha512-+BKxo5mM6+/A1soSHBI7ufUglqYXntChLDyTbvcAn1Lawi9J7J9Ok3jt6w7I0+T/UDJ4CyhHk66+GZbwmkYxSg==}
+
+  '@types/pluralize@0.0.29':
+    resolution: {integrity: sha512-BYOID+l2Aco2nBik+iYS4SZX0Lf20KPILP5RGmM1IgzdwNdTs0eebiFriOPcej1sX9mLnSoiNte5zcFxssgpGA==}
 
   '@types/pluralize@0.0.30':
     resolution: {integrity: sha512-kVww6xZrW/db5BR9OqiT71J9huRdQ+z/r+LbDuT7/EK50mCmj5FoaIARnVv0rvjUS/YpDox0cDU9lpQT011VBA==}
@@ -2549,6 +2555,20 @@ packages:
   graceful-fs@4.2.11:
     resolution: {integrity: sha512-RbJ5/jmFcNNCcDV5o9eTnBLJ/HszWV0P73bc+Ff4nS/rJj+YaS6IGyiOL0VoBYX+l1Wrl3k63h/KrH+nhJ0XvQ==}
 
+  grafast@0.0.1-beta.8:
+    resolution: {integrity: sha512-dfDM7uB8Zl4yX2kvCKkVmfruPHrhveyhdMfiqVX2cesWawmG/yZRphuGA4UyRHcl9J5+kVdOmt4XebU3H8+i4w==}
+    engines: {node: '>=14.17'}
+    peerDependencies:
+      '@envelop/core': ^3.0.4
+      graphile-config: ^0.0.1-beta.3
+      graphql: ^16.1.0-experimental-stream-defer.6
+      tamedevil: ^0.0.0-beta.3
+    peerDependenciesMeta:
+      '@envelop/core':
+        optional: true
+      graphile-config:
+        optional: true
+
   grafast@0.1.1-beta.21:
     resolution: {integrity: sha512-uyq16JIpfzlTAKDwd1dsVPPGmMdnb4LTq6B7CS3cEzPwklV3rkqySbKEzQKD/JIAOG8BykXUgZUkRCdMFTLRpQ==}
     engines: {node: '>=14.17'}
@@ -2584,21 +2604,15 @@ packages:
   graphemer@1.4.0:
     resolution: {integrity: sha512-EtKwoO6kxCL9WO5xipiHTZlSzBm7WLT627TqC/uVRd0HKmq8NXyebnNYxDoBi7wt8eTWrUrKXCOVaFq9x1kgag==}
 
-  graphile-build-pg@5.0.0-beta.38:
-    resolution: {integrity: sha512-fOFSonm5Sz/A1ZkVH9yLVmbrRZlAV+yWtb3xbkH4E3XwA7CqIF2Skd8gOe8E/npzN965thWMfi6YQOROlxCmZg==}
+  graphile-build-pg@5.0.0-1.3:
+    resolution: {integrity: sha512-zfki45+QeXuBSAFMvwCKz0TSp7l3eA/9U4wXPK7LF4CXn6UCrwn/aS4Xn1iWTvSmyP6hUpggK6mqzXQD1glOVA==}
+    engines: {node: '>=16'}
+
+  graphile-build@5.0.0-1.3:
+    resolution: {integrity: sha512-yVJD5+Feaz+qTJeIJKFfNU66InySgHb+FmHO4qD38iQSA+8lQpiDz5tY6IbXcfTZe85u1vQ/J+wy6wistohQ0Q==}
     engines: {node: '>=16'}
     peerDependencies:
-      '@dataplan/pg': ^0.0.1-beta.32
-      grafast: ^0.1.1-beta.21
-      graphile-build: 5.0.0-beta.33
-      graphile-config: ^0.0.1-beta.15
       graphql: ^16.1.0-experimental-stream-defer.6
-      pg: ^8.7.1
-      pg-sql2: ^5.0.0-beta.8
-      tamedevil: ^0.0.0-beta.7
-    peerDependenciesMeta:
-      pg:
-        optional: true
 
   graphile-build@5.0.0-beta.33:
     resolution: {integrity: sha512-c3tNSXrfx6jJNYqqyJVDGo9oIuPCkBit3/AfmmA1fcc7WFKYGe1g2lEyzZuU1eztsa7XSPu158asr8M0CAX15Q==}
@@ -2611,6 +2625,19 @@ packages:
   graphile-config@0.0.1-beta.15:
     resolution: {integrity: sha512-J+hYqhZlx5yY7XdU7XjOAqNCAUZU33fEx3PdkNc1cfAAbo1TNMWiib4DFH5XkT8BagJtTyFrMnDCuKxnphCu+g==}
     engines: {node: '>=16'}
+
+  graphile-export@0.0.2-beta.26:
+    resolution: {integrity: sha512-F/VwojFj+UWKUcL5kiLeeYNLTKJzK19rC9rZO1Ga/4NVCAAx2azscocDKlpJE7W+LYcPwtZkYhESKwfLOts8zw==}
+    engines: {node: '>=16'}
+    peerDependencies:
+      eslint: ^8.48.0
+      grafast: ^0.1.1-beta.21
+      pg-sql2: ^5.0.0-beta.8
+    peerDependenciesMeta:
+      eslint:
+        optional: true
+      pg-sql2:
+        optional: true
 
   graphile-utils@5.0.0-beta.38:
     resolution: {integrity: sha512-XKOq/mhMWwPTB/yenMvcozW+tX47ChCEc7BT9KKmFlh77PVx6XKi8UMnGZx2vEvy/RxExf/ii5jPomwUtQBIGg==}
@@ -2937,6 +2964,10 @@ packages:
 
   jsonfile@6.1.0:
     resolution: {integrity: sha512-5dgndWOriYSm5cnYaJNhalLNDKOqFwyDB/rr1E9ZsGciGvKPs8R2xYGCacuf3z6K1YKDz182fd+fY3cn3pMqXQ==}
+
+  jsonwebtoken@8.5.1:
+    resolution: {integrity: sha512-XjwVfRS6jTMsqYs0EsuJ4LGxXV14zQybNd4L2r0UvbVnSF9Af8x7p5MzbJ90Ioz/9TI41/hTCvznF/loiSzn8w==}
+    engines: {node: '>=4', npm: '>=1.4.28'}
 
   jsonwebtoken@9.0.2:
     resolution: {integrity: sha512-PRp66vJ865SSqOlgqS8hujT5U4AOgMfhrwYIuIhfKaoSCZcirrmASQr8CX7cUg+RMih+hgznrjp99o+W4pJLHQ==}
@@ -3738,6 +3769,10 @@ packages:
   scuid@1.1.0:
     resolution: {integrity: sha512-MuCAyrGZcTLfQoH2XoBlQ8C6bzwN88XT/0slOGz0pn8+gIP85BOAfYa44ZXQUTOwRwPU0QvgU+V+OSajl/59Xg==}
 
+  semver@5.7.2:
+    resolution: {integrity: sha512-cBznnQ9KjJqU67B52RMC65CMarK2600WFnbkcaiwWq3xy/5haFJlshgnpjovMVJ+Hff49d8GEn0b87C5pDQ10g==}
+    hasBin: true
+
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
     hasBin: true
@@ -4156,6 +4191,9 @@ packages:
     resolution: {integrity: sha512-eXL4nmJT7oCpkZsHZUOJo8hcX3GbsiDOa0Qu9F646fi8dT3XuSVopVqAcEiVzSKKH7UoDti23wNX3qGFxcW5Qg==}
     engines: {node: '>=0.10.0'}
 
+  undici-types@5.26.5:
+    resolution: {integrity: sha512-JlCMO+ehdEIKqlFxk6IfVoAUVmgz7cU7zD/h9XZ0qzeosSHmUJVOzSQvvYSYWXkFXC+IfLKSIffhv0sVZup6pA==}
+
   undici-types@6.19.8:
     resolution: {integrity: sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw==}
 
@@ -4455,8 +4493,8 @@ packages:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
 
-  zod@3.25.46:
-    resolution: {integrity: sha512-IqRxcHEIjqLd4LNS/zKffB3Jzg3NwqJxQQ0Ns7pdrvgGkwQsEBdEQcOHaBVqvvZArShRzI39+aMST3FBGmTrLQ==}
+  zod@3.25.47:
+    resolution: {integrity: sha512-+f8+agSYoT9niC0VUL60IuXnr81FJeJ27Lf5YPrmcxTWmygcpGBeEuAAovDDEjkyQ36KyqNswwbhISZ1Z7yY+A==}
 
 snapshots:
 
@@ -4656,6 +4694,25 @@ snapshots:
       chalk: 4.1.2
       grafast: 0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
       tslib: 2.8.1
+
+  '@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)':
+    dependencies:
+      '@dataplan/json': 0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))
+      '@graphile/lru': 5.0.0-beta.3
+      '@types/node': 20.17.57
+      chalk: 4.1.2
+      debug: 4.4.1
+      eventemitter3: 5.0.1
+      grafast: 0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
+      pg-sql2: 5.0.0-beta.8
+      postgres-array: 3.0.4
+      postgres-range: 1.1.4
+      tslib: 2.8.1
+    optionalDependencies:
+      graphile-config: 0.0.1-beta.15
+      pg: 8.16.0
+    transitivePeerDependencies:
+      - supports-color
 
   '@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)':
     dependencies:
@@ -5738,13 +5795,17 @@ snapshots:
 
   '@types/interpret@1.1.3':
     dependencies:
-      '@types/node': 20.17.57
+      '@types/node': 22.15.29
 
   '@types/js-yaml@4.0.9': {}
 
   '@types/json-schema@7.0.15': {}
 
   '@types/mime@1.3.5': {}
+
+  '@types/node@18.19.110':
+    dependencies:
+      undici-types: 5.26.5
 
   '@types/node@20.17.57':
     dependencies:
@@ -5760,9 +5821,11 @@ snapshots:
 
   '@types/pg@8.15.2':
     dependencies:
-      '@types/node': 20.17.57
+      '@types/node': 22.15.29
       pg-protocol: 1.10.0
       pg-types: 4.0.2
+
+  '@types/pluralize@0.0.29': {}
 
   '@types/pluralize@0.0.30': {}
 
@@ -7094,6 +7157,18 @@ snapshots:
 
   graceful-fs@4.2.11: {}
 
+  grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7):
+    dependencies:
+      '@graphile/lru': 5.0.0-beta.3
+      debug: 4.4.1
+      graphql: 16.11.0
+      tamedevil: 0.0.0-beta.7
+    optionalDependencies:
+      '@envelop/core': 5.2.3
+      graphile-config: 0.0.1-beta.15
+    transitivePeerDependencies:
+      - supports-color
+
   grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7):
     dependencies:
       '@graphile/lru': 5.0.0-beta.3
@@ -7129,24 +7204,49 @@ snapshots:
 
   graphemer@1.4.0: {}
 
-  graphile-build-pg@5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)(tamedevil@0.0.0-beta.7):
+  graphile-build-pg@5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0):
     dependencies:
-      '@dataplan/pg': 0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)
-      '@types/node': 20.17.57
+      '@dataplan/pg': 0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)
+      '@types/node': 18.19.110
       debug: 4.4.1
-      grafast: 0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
-      graphile-build: 5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)
+      grafast: 0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
+      graphile-build: 5.0.0-1.3(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(tamedevil@0.0.0-beta.7)
       graphile-config: 0.0.1-beta.15
-      graphql: 16.11.0
-      jsonwebtoken: 9.0.2
+      graphile-export: 0.0.2-beta.26(eslint@9.28.0(jiti@2.4.2))(grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(pg-sql2@5.0.0-beta.8)
+      jsonwebtoken: 8.5.1
       pg-introspection: 0.0.1-beta.10
       pg-sql2: 5.0.0-beta.8
       tamedevil: 0.0.0-beta.7
       tslib: 2.8.1
-    optionalDependencies:
-      pg: 8.16.0
     transitivePeerDependencies:
+      - '@dataplan/json'
+      - '@envelop/core'
+      - eslint
+      - graphql
+      - pg
       - supports-color
+
+  graphile-build@5.0.0-1.3(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(tamedevil@0.0.0-beta.7):
+    dependencies:
+      '@types/node': 18.19.110
+      '@types/pluralize': 0.0.29
+      '@types/semver': 7.7.0
+      chalk: 4.1.2
+      debug: 4.4.1
+      grafast: 0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
+      graphile-config: 0.0.1-beta.15
+      graphile-export: 0.0.2-beta.26(eslint@9.28.0(jiti@2.4.2))(grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(pg-sql2@5.0.0-beta.8)
+      graphql: 16.11.0
+      lodash: 4.17.21
+      pluralize: 7.0.0
+      semver: 7.7.2
+      tslib: 2.8.1
+    transitivePeerDependencies:
+      - '@envelop/core'
+      - eslint
+      - pg-sql2
+      - supports-color
+      - tamedevil
 
   graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0):
     dependencies:
@@ -7180,7 +7280,24 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  graphile-utils@5.0.0-beta.38(524ccd2d3f113ebf853658e1fcf77810):
+  graphile-export@0.0.2-beta.26(eslint@9.28.0(jiti@2.4.2))(grafast@0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(pg-sql2@5.0.0-beta.8):
+    dependencies:
+      '@babel/generator': 7.27.3
+      '@babel/parser': 7.27.4
+      '@babel/template': 7.27.2
+      '@babel/traverse': 7.27.4
+      '@babel/types': 7.27.3
+      '@types/node': 20.17.57
+      grafast: 0.0.1-beta.8(@envelop/core@5.2.3)(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
+      prettier: 3.5.3
+      tslib: 2.8.1
+    optionalDependencies:
+      eslint: 9.28.0(jiti@2.4.2)
+      pg-sql2: 5.0.0-beta.8
+    transitivePeerDependencies:
+      - supports-color
+
+  graphile-utils@5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build-pg@5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7):
     dependencies:
       debug: 4.4.1
       grafast: 0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
@@ -7192,7 +7309,7 @@ snapshots:
       tslib: 2.8.1
     optionalDependencies:
       '@dataplan/pg': 0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)
-      graphile-build-pg: 5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)(tamedevil@0.0.0-beta.7)
+      graphile-build-pg: 5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0)
     transitivePeerDependencies:
       - supports-color
 
@@ -7480,6 +7597,19 @@ snapshots:
       universalify: 2.0.1
     optionalDependencies:
       graceful-fs: 4.2.11
+
+  jsonwebtoken@8.5.1:
+    dependencies:
+      jws: 3.2.2
+      lodash.includes: 4.3.0
+      lodash.isboolean: 3.0.3
+      lodash.isinteger: 4.0.4
+      lodash.isnumber: 3.0.3
+      lodash.isplainobject: 4.0.6
+      lodash.isstring: 4.0.1
+      lodash.once: 4.1.1
+      ms: 2.1.3
+      semver: 5.7.2
 
   jsonwebtoken@9.0.2:
     dependencies:
@@ -7931,7 +8061,7 @@ snapshots:
       picocolors: 1.1.1
       source-map-js: 1.2.1
 
-  postgraphile@5.0.0-beta.40(5287d148e07e83ca6923448262014806):
+  postgraphile@5.0.0-beta.40(f3db9e76aad03712899895abbb15c2f8):
     dependencies:
       '@dataplan/json': 0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))
       '@dataplan/pg': 0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)
@@ -7942,9 +8072,9 @@ snapshots:
       grafast: 0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
       grafserv: 0.1.1-beta.24(@envelop/core@5.2.3)(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(ws@8.18.2)
       graphile-build: 5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)
-      graphile-build-pg: 5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(pg-sql2@5.0.0-beta.8)(pg@8.16.0)(tamedevil@0.0.0-beta.7)
+      graphile-build-pg: 5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0)
       graphile-config: 0.0.1-beta.15
-      graphile-utils: 5.0.0-beta.38(524ccd2d3f113ebf853658e1fcf77810)
+      graphile-utils: 5.0.0-beta.38(@dataplan/pg@0.0.1-beta.32(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(pg-sql2@5.0.0-beta.8)(pg@8.16.0))(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-build-pg@5.0.0-1.3(@dataplan/json@0.0.1-beta.30(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)))(@envelop/core@5.2.3)(eslint@9.28.0(jiti@2.4.2))(graphql@16.11.0)(pg@8.16.0))(graphile-build@5.0.0-beta.33(grafast@0.1.1-beta.21(@envelop/core@5.2.3)(graphql@16.11.0)(tamedevil@0.0.0-beta.7))(graphile-config@0.0.1-beta.15)(graphql@16.11.0))(graphile-config@0.0.1-beta.15)(graphql@16.11.0)(tamedevil@0.0.0-beta.7)
       graphql: 16.11.0
       iterall: 1.3.0
       jsonwebtoken: 9.0.2
@@ -8238,6 +8368,8 @@ snapshots:
       ajv-keywords: 5.1.0(ajv@8.17.1)
 
   scuid@1.1.0: {}
+
+  semver@5.7.2: {}
 
   semver@6.3.1: {}
 
@@ -8605,6 +8737,8 @@ snapshots:
 
   unc-path-regex@0.1.2: {}
 
+  undici-types@5.26.5: {}
+
   undici-types@6.19.8: {}
 
   undici-types@6.21.0: {}
@@ -8901,4 +9035,4 @@ snapshots:
 
   yoctocolors-cjs@2.1.2: {}
 
-  zod@3.25.46: {}
+  zod@3.25.47: {}
