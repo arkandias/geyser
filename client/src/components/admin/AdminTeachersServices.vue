@@ -69,7 +69,7 @@ const rowDescriptor = {
 graphql(`
   fragment AdminService on Service {
     id
-    year
+    year: yearValue
     uid
     hours
     message

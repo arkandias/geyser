@@ -157,7 +157,7 @@ const rowDescriptor = {
 graphql(`
   fragment AdminCourse on Course {
     id
-    year
+    year: yearValue
     program {
       id
       name

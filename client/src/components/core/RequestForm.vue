@@ -23,7 +23,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment RequestFormData on Course {
-    year
+    year: yearValue
     courseId: id
     hoursPerGroup: hoursEffective
   }
@@ -37,7 +37,7 @@ graphql(`
   ) {
     request: insertRequestOne(
       object: {
-        year: $year
+        yearValue: $year
         serviceId: $serviceId
         courseId: $courseId
         type: $requestType

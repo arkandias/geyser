@@ -88,7 +88,7 @@ graphql(`
   fragment AdminServiceModification on ServiceModification {
     id
     service {
-      year
+      year: yearValue
       uid
     }
     type {
@@ -105,7 +105,7 @@ graphql(`
 
   fragment AdminServiceModificationsService on Service {
     id
-    year
+    year: yearValue
     uid
   }
 

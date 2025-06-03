@@ -146,7 +146,7 @@ const rowDescriptor = {
 graphql(`
   fragment AdminRequest on Request {
     id
-    year
+    year: yearValue
     service {
       id
       uid
@@ -181,7 +181,7 @@ graphql(`
 
   fragment AdminRequestsService on Service {
     id
-    year
+    year: yearValue
     teacher {
       uid
       displayname
@@ -195,7 +195,7 @@ graphql(`
 
   fragment AdminRequestsCourse on Course {
     id
-    year
+    year: yearValue
     program {
       name
       degree {

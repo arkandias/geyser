@@ -15,7 +15,7 @@ graphql(`
     assignments: request(
       where: {
         _and: [
-          { service: { year: { _eq: $year } } }
+          { service: { yearValue: { _eq: $year } } }
           { type: { _eq: ASSIGNMENT } }
           $where
         ]

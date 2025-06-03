@@ -25,7 +25,7 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment RequestCardData on Request {
     id
-    year
+    year: yearValue
     service: vService {
       id
       teacher: vTeacher {
@@ -65,7 +65,7 @@ graphql(`
   ) {
     assignment: insertRequestOne(
       object: {
-        year: $year
+        yearValue: $year
         serviceId: $serviceId
         courseId: $courseId
         type: ASSIGNMENT

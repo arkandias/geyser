@@ -28,7 +28,7 @@ graphql(`
     }
     services: service(
       orderBy: [
-        { year: DESC }
+        { yearValue: DESC }
         { teacher: { lastname: ASC } }
         { teacher: { firstname: ASC } }
       ]
@@ -38,7 +38,7 @@ graphql(`
     }
     serviceModifications: serviceModification(
       orderBy: [
-        { service: { year: DESC } }
+        { service: { yearValue: DESC } }
         { service: { teacher: { lastname: ASC } } }
         { service: { teacher: { firstname: ASC } } }
         { type: { label: ASC } }

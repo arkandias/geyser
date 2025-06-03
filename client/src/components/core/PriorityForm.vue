@@ -19,7 +19,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment PriorityFormData on Course {
-    year
+    year: yearValue
     courseId: id
   }
 
@@ -32,7 +32,7 @@ graphql(`
   ) {
     priority: insertPriorityOne(
       object: {
-        year: $year
+        yearValue: $year
         serviceId: $serviceId
         courseId: $courseId
         seniority: $seniority

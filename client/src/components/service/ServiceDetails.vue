@@ -40,7 +40,7 @@ graphql(`
 
   mutation UpdateService($year: Int!, $uid: String!, $hours: Float!) {
     services: updateService(
-      where: { year: { _eq: $year }, uid: { _eq: $uid } }
+      where: { yearValue: { _eq: $year }, uid: { _eq: $uid } }
       _set: { hours: $hours }
     ) {
       returning {

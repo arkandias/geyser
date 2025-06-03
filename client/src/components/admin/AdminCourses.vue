@@ -40,7 +40,7 @@ graphql(`
     }
     courses: course(
       orderBy: [
-        { year: DESC }
+        { yearValue: DESC }
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
         { track: { name: ASC } }

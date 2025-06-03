@@ -27,7 +27,7 @@ graphql(`
     courses: course(
       where: {
         _and: [
-          { year: { _eq: $year } }
+          { yearValue: { _eq: $year } }
           { hoursEffective: { _gt: 0 } }
           { groupsEffective: { _gt: 0 } }
         ]
@@ -47,14 +47,14 @@ graphql(`
 
   query GetServiceRows($year: Int!) {
     services: service(
-      where: { year: { _eq: $year } }
+      where: { yearValue: { _eq: $year } }
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...ServiceRow
     }
 
     vServices: vService(
-      where: { year: { _eq: $year } }
+      where: { yearValue: { _eq: $year } }
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...TableCoursesVService
