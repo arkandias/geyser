@@ -18,7 +18,7 @@ CREATE TABLE public.phase
     description text
 );
 
-COMMENT ON TABLE public.phase IS '@enum System phases controlling the course assignment workflow';
+COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
 COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
@@ -107,6 +107,7 @@ COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for 
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
 
+-- View exposing only non-sensitive service data for general user access
 CREATE VIEW public.v_teacher AS
 SELECT uid,
        firstname,
@@ -114,12 +115,6 @@ SELECT uid,
        alias,
        displayname
 FROM public.teacher;
-
-COMMENT ON VIEW public.v_teacher IS 'Non-sensitive teacher data for general user access';
-COMMENT ON COLUMN public.v_teacher.uid IS '@notNull';
-COMMENT ON COLUMN public.v_teacher.firstname IS '@notNull';
-COMMENT ON COLUMN public.v_teacher.lastname IS '@notNull';
-COMMENT ON COLUMN public.v_teacher.displayname IS '@notNull';
 
 CREATE TABLE public.service
 (
@@ -141,18 +136,12 @@ COMMENT ON COLUMN public.service.uid IS 'Teacher identifier linking to teacher t
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours for the year before modifications';
 COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to course assignment committee';
 
+-- View exposing only non-sensitive service data for general user access
 CREATE VIEW public.v_service AS
 SELECT id,
        year_value,
        uid
 FROM public.service;
-
-COMMENT ON VIEW public.v_service IS '
-@foreignKey (year_value) references year (value)
-@foreignKey (uid) references v_teacher (uid)
-Non-sensitive service data for general user access';
-COMMENT ON COLUMN public.v_service.year_value IS '@notNull';
-COMMENT ON COLUMN public.v_service.uid IS '@notNull';
 
 CREATE TABLE public.service_modification_type
 (
@@ -188,7 +177,7 @@ CREATE TABLE public.role_type
     description text
 );
 
-COMMENT ON TABLE public.role_type IS '@enum System roles for privileged access';
+COMMENT ON TABLE public.role_type IS 'System roles for privileged access';
 COMMENT ON COLUMN public.role_type.value IS 'Role identifier';
 COMMENT ON COLUMN public.role_type.description IS 'Description of the role privileges and responsibilities';
 
@@ -401,7 +390,7 @@ CREATE TABLE public.request_type
     description text
 );
 
-COMMENT ON TABLE public.request_type IS '@enum Types of teaching assignment requests in workflow';
+COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
 COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
 COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
 
@@ -423,9 +412,7 @@ CREATE INDEX idx_request_year_service_id ON public.request (year_value, service_
 CREATE INDEX idx_request_year_course_id ON public.request (year_value, course_id);
 CREATE INDEX idx_request_type ON public.request (type);
 
-COMMENT ON TABLE public.request IS '
-@foreignKey (service_id) references v_service (id)
-Teacher requests and assignments for courses';
+COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
 COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
 COMMENT ON COLUMN public.request.year_value IS 'Year of the request (must match service''s and course''s year)';
 COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
