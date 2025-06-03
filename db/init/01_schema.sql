@@ -445,12 +445,11 @@ COMMENT ON FUNCTION public.request_is_priority(request) IS 'Determines the prior
 -- Functions
 --
 
-CREATE FUNCTION public.dummy_mutation() RETURNS boolean AS
+CREATE FUNCTION public.dummy_function() RETURNS setof public.app_setting AS
 $$
-SELECT TRUE;
+SELECT * FROM public.app_setting WHERE FALSE;
 $$ LANGUAGE sql VOLATILE;
-
-COMMENT ON FUNCTION public.dummy_mutation() IS 'Dummy mutation that does nothing';
+COMMENT ON FUNCTION public.dummy_function() IS 'Dummy function that does nothing (useful for GraphQL clients)';
 
 CREATE FUNCTION public.create_teacher_service(p_year integer, p_uid text) RETURNS setof public.service AS
 $$

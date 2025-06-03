@@ -3,3 +3,4 @@
 - "!include public_copy_year_courses.yaml"
 - "!include public_create_teacher_service.yaml"
 - "!include public_create_year_services.yaml"
+- "!include public_dummy_function.yaml"

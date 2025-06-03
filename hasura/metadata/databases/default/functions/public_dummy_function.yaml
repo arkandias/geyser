@@ -1,0 +1,6 @@
+function:
+  name: dummy_function
+  schema: public
+configuration:
+  custom_root_fields: {}
+  exposed_as: mutation
