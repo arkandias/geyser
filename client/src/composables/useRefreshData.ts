@@ -6,8 +6,8 @@ import { DummyMutationDocument } from "@/gql/graphql.ts";
 
 graphql(`
   mutation DummyMutation {
-    dummyMutation(input: {}) {
-      clientMutationId
+    dummyFunction {
+      __typename
     }
   }
 `);
