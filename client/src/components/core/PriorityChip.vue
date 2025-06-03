@@ -12,7 +12,7 @@ import {
   DeletePriorityDocument,
   PriorityChipDataFragmentDoc,
 } from "@/gql/graphql.ts";
-import { priorityColor } from "@/utils/colors.ts";
+import { priorityColor } from "@/utils";
 
 const { dataFragment } = defineProps<{
   dataFragment: FragmentType<typeof PriorityChipDataFragmentDoc>;

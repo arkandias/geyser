@@ -5,7 +5,7 @@ import { usePermissions } from "@/composables/usePermissions.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import { TeacherServiceRequestsFragmentDoc } from "@/gql/graphql.ts";
-import { totalValue } from "@/utils/misc.ts";
+import { totalValue } from "@/utils";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
 import ServiceTable from "@/components/service/ServiceTable.vue";

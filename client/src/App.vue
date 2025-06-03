@@ -17,9 +17,7 @@ import PageHome from "@/pages/PageHome.vue";
 
 graphql(`
   query GetAppData($uid: String!) {
-    phase: currentPhase(
-      limit: 1 # unique
-    ) {
+    currentPhase: currentPhaseByPk(id: 1) {
       value
     }
     years: year(orderBy: { value: DESC }) {
@@ -33,7 +31,7 @@ graphql(`
     }
     services: service(where: { uid: { _eq: $uid } }) {
       id
-      year
+      year: yearValue
     }
   }
 `);
@@ -67,11 +65,12 @@ watch(
       });
       return;
     }
-    if (data?.phase[0]?.value) {
-      setCurrentPhase(data.phase[0].value);
+    if (data?.currentPhase?.value) {
+      setCurrentPhase(data.currentPhase.value);
     }
     if (data?.years) {
       setYears(
+        // TODO: simplify
         data.years.map((year) => ({
           value: year.value,
           current: year.current,

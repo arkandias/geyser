@@ -21,7 +21,7 @@ import {
   localeCompare,
   normalizeForSearch,
   uniqueValue,
-} from "@/utils/misc.ts";
+} from "@/utils";
 
 import PageService from "@/pages/PageService.vue";
 

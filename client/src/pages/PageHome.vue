@@ -5,7 +5,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { phaseMessage, phaseSubtitle } from "@/locales/helpers.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
-import { capitalize, toLowerCase } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils";
 
 defineProps<{ alert?: string }>();
 

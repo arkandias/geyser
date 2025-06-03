@@ -8,7 +8,7 @@ import {
   GetAssignmentsDocument,
   type GetAssignmentsQueryVariables,
 } from "@/gql/graphql.ts";
-import { downloadCSV } from "@/utils/csv-export.ts";
+import { downloadCSV } from "@/utils";
 
 graphql(`
   query GetAssignments($year: Int!, $where: RequestBoolExp = {}) {
@@ -32,6 +32,7 @@ graphql(`
       ]
     ) {
       course {
+        name: nameDisplay
         program {
           name: nameDisplay
           degree {
@@ -47,7 +48,6 @@ graphql(`
             }
           }
         }
-        name: nameDisplay
         semester
         type {
           label

@@ -171,7 +171,7 @@ export class AuthController {
     await this.setUserCookies(res, sub);
   }
 
-  validateRedirectUrl(redirectUrl: string | undefined): URL | null {
+  private validateRedirectUrl(redirectUrl: string | undefined): URL | null {
     if (!redirectUrl) {
       return null;
     }

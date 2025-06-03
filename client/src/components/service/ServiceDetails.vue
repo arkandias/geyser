@@ -27,7 +27,7 @@ graphql(`
   fragment TeacherServiceDetails on Service {
     id
     uid
-    year
+    yearValue
     hours
     modifications(orderBy: [{ type: { label: ASC } }, { hours: ASC }]) {
       id
@@ -118,7 +118,7 @@ const submitBaseServiceForm = async (): Promise<void> => {
     });
   } else {
     const { data, error } = await updateService.executeMutation({
-      year: service.value.year,
+      year: service.value.yearValue,
       uid: service.value.uid,
       hours: baseServiceHours.value,
     });

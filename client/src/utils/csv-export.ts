@@ -1,7 +1,7 @@
 import { unparse } from "papaparse";
 
 import type { Scalar, SimpleObject } from "@/types/data.ts";
-import { toSlug } from "@/utils/misc.ts";
+import { toSlug } from "@/utils";
 
 const flattenSimpleObjectEntries = <T extends Scalar>(
   obj: T | SimpleObject<T> | undefined,
@@ -36,7 +36,7 @@ export const processSimpleObject = <T extends Scalar>(
   return flattenSimpleObject(obj, fields);
 };
 
-const exportCSV = (
+export const exportCSV = (
   objects: SimpleObject[],
   fields?: SimpleObject<string> | string[] | null,
 ) =>

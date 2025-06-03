@@ -1,5 +1,5 @@
 import { PhaseEnum } from "@/gql/graphql.ts";
-import { capitalize, toLowerCase } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils";
 
 export const CUSTOM_TEXT_KEYS = [
   "homeTitle",

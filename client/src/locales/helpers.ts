@@ -3,7 +3,7 @@ import type { ComposerTranslation } from "vue-i18n";
 import type { CustomTextKey } from "@/config/custom-text-keys.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
 import { PhaseEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
-import { capitalize, toLowerCase } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils";
 
 export const phaseSubtitle = (t: ComposerTranslation, phase: PhaseEnum) => {
   switch (phase) {

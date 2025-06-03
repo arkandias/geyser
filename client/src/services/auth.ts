@@ -12,7 +12,7 @@ import {
 } from "@/config/constants.ts";
 import { apiUrl } from "@/config/env.ts";
 import { RoleTypeEnum } from "@/gql/graphql.ts";
-import { capitalize, toLowerCase } from "@/utils/misc.ts";
+import { capitalize, toLowerCase } from "@/utils";
 
 const api = axios.create({
   baseURL: apiUrl.href,
@@ -65,7 +65,7 @@ export class AuthManager {
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
-        redirect_url: window.location.href,
+        redirect_url: redirectUrl,
       },
     });
 
@@ -164,7 +164,7 @@ export class AuthManager {
 
   getRoleHeader(): Record<string, string> {
     return {
-      "X-Hasura-Role": this._role.value,
+      "X-User-Role": this._role.value,
     };
   }
 

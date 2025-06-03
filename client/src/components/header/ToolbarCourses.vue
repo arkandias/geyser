@@ -3,7 +3,7 @@ import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
 import { useServicesStore } from "@/stores/useServicesStore.ts";
-import { buttonColor } from "@/utils/colors.ts";
+import { buttonColor } from "@/utils";
 
 import MenuYear from "@/components/header/MenuYear.vue";
 

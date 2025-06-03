@@ -43,7 +43,7 @@ import type {
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
-import { unique } from "@/utils/misc.ts";
+import { unique } from "@/utils";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 

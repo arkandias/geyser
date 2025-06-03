@@ -12,7 +12,7 @@ import {
   ServiceRowFragmentDoc,
 } from "@/gql/graphql.ts";
 import type { Column } from "@/types/column.ts";
-import { getField, localeCompare, normalizeForSearch } from "@/utils/misc.ts";
+import { getField, localeCompare, normalizeForSearch } from "@/utils";
 
 const { serviceRowFragments } = defineProps<{
   serviceRowFragments: FragmentType<typeof ServiceRowFragmentDoc>[];

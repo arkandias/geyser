@@ -67,11 +67,8 @@ server {
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
-    
-    set $hasura_url ${NGINX_PROXY_HASURA_URL};
-    include /etc/nginx/includes/locations/hasura.conf;
     # Disable admin access
-    proxy_set_header X-Hasura-Admin-Secret "";
+    proxy_set_header X-Admin-Secret "";
 }
 
 # App server

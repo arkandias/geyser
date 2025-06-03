@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { inputToNumber } from "@/utils/misc.ts";
+import { inputToNumber } from "@/utils";
 
 const modelValue = defineModel<number | null>();
 

@@ -82,6 +82,30 @@ services:
       - data:/var/lib/postgresql/data
       - ./backups:/backups
 
+  hasura:
+    image: hasura/graphql-engine:v2.48.0.ubuntu
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    healthcheck:
+      test: "curl -fsS http://localhost:8080/healthz || exit 1"
+      interval: 30s
+      timeout: 30s
+      retries: 3
+      start_period: 30s
+      start_interval: 1s
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
+      HASURA_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
+    ports:
+      - "8080:8080"
+    networks:
+      - private-db
+
   backend:
     image: ghcr.io/arkandias/geyser-backend:edge
     restart: unless-stopped
@@ -109,35 +133,6 @@ services:
       - private-db
       - public
 
-  hasura:
-    image: hasura/graphql-engine:v2.48.0.ubuntu
-    restart: unless-stopped
-    depends_on:
-      db:
-        condition: service_healthy
-      backend:
-        condition: service_healthy
-    healthcheck:
-      test: "curl -fsS http://localhost:8080/healthz || exit 1"
-      interval: 30s
-      timeout: 30s
-      retries: 3
-      start_period: 30s
-      start_interval: 1s
-    environment:
-      HASURA_GRAPHQL_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
-      HASURA_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://backend:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"${API_URL}/","audience":"${API_URL}/"}'
-      HASURA_GRAPHQL_CORS_DOMAIN: "${GEYSER_ORIGIN}"
-      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
-      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
-      HASURA_GRAPHQL_EXPERIMENTAL_FEATURES: "naming_convention"
-    ports:
-      - "8080:8080"
-    networks:
-      - private-db
-      - public
-
   frontend:
     image: ghcr.io/arkandias/geyser-frontend:edge
     restart: unless-stopped
@@ -145,8 +140,6 @@ services:
       keycloak:
         condition: service_healthy
       backend:
-        condition: service_healthy
-      hasura:
         condition: service_healthy
     healthcheck:
       test: "service nginx status || exit 1"
@@ -159,7 +152,6 @@ services:
       GEYSER_DOMAIN: "${GEYSER_DOMAIN}"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://backend:3000"
-      NGINX_PROXY_HASURA_URL: "http://hasura:8080/v1/graphql"
     ports:
       - "80:80"
       - "443:443"

@@ -18,7 +18,7 @@ CREATE TABLE public.phase
     description text
 );
 
-COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
+COMMENT ON TABLE public.phase IS '@enum System phases controlling the course assignment workflow';
 COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
 COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
 
@@ -107,42 +107,52 @@ COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for 
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
 
--- View exposing only non-sensitive service data for general user access
 CREATE VIEW public.v_teacher AS
 SELECT uid,
        firstname,
        lastname,
        alias,
-       displayname,
-       visible
+       displayname
 FROM public.teacher;
+
+COMMENT ON VIEW public.v_teacher IS 'Non-sensitive teacher data for general user access';
+COMMENT ON COLUMN public.v_teacher.uid IS '@notNull';
+COMMENT ON COLUMN public.v_teacher.firstname IS '@notNull';
+COMMENT ON COLUMN public.v_teacher.lastname IS '@notNull';
+COMMENT ON COLUMN public.v_teacher.displayname IS '@notNull';
 
 CREATE TABLE public.service
 (
-    id      integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year    integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
-    uid     text    NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
-    hours   real    NOT NULL,
-    message text,
-    UNIQUE (year, uid),
-    UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
+    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    year_value integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    uid        text    NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
+    hours      real    NOT NULL,
+    message    text,
+    UNIQUE (year_value, uid),
+    UNIQUE (id, year_value) -- referenced in requests and priorities to ensure data consistency
 );
-CREATE INDEX idx_service_year ON public.service (year);
+CREATE INDEX idx_service_year ON public.service (year_value);
 CREATE INDEX idx_service_uid ON public.service (uid);
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
 COMMENT ON COLUMN public.service.id IS 'Unique service identifier';
-COMMENT ON COLUMN public.service.year IS 'Academic year for this service record';
+COMMENT ON COLUMN public.service.year_value IS 'Academic year for this service record';
 COMMENT ON COLUMN public.service.uid IS 'Teacher identifier linking to teacher table';
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours for the year before modifications';
 COMMENT ON COLUMN public.service.message IS 'Optional message from teacher to course assignment committee';
 
--- View exposing only non-sensitive service data for general user access
 CREATE VIEW public.v_service AS
 SELECT id,
-       year,
+       year_value,
        uid
 FROM public.service;
+
+COMMENT ON VIEW public.v_service IS '
+@foreignKey (year_value) references year (value)
+@foreignKey (uid) references v_teacher (uid)
+Non-sensitive service data for general user access';
+COMMENT ON COLUMN public.v_service.year_value IS '@notNull';
+COMMENT ON COLUMN public.v_service.uid IS '@notNull';
 
 CREATE TABLE public.service_modification_type
 (
@@ -178,7 +188,7 @@ CREATE TABLE public.role_type
     description text
 );
 
-COMMENT ON TABLE public.role_type IS 'System roles for privileged access';
+COMMENT ON TABLE public.role_type IS '@enum System roles for privileged access';
 COMMENT ON COLUMN public.role_type.value IS 'Role identifier';
 COMMENT ON COLUMN public.role_type.description IS 'Description of the role privileges and responsibilities';
 
@@ -278,7 +288,7 @@ COMMENT ON COLUMN public.course_type.description IS 'Description of the course t
 CREATE TABLE public.course
 (
     id               integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year             integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year_value       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     program_id       integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
     track_id         integer,
     name             text    NOT NULL,
@@ -297,20 +307,20 @@ CREATE TABLE public.course
     priority_rule    integer, -- 0=: Infinity; NULL: No rule
     visible          boolean NOT NULL DEFAULT TRUE,
     FOREIGN KEY (track_id, program_id) REFERENCES public.track (id, program_id) ON UPDATE CASCADE,
-    UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id),
-    UNIQUE (id, year),        -- referenced in requests and priorities to ensure data consistency
+    UNIQUE NULLS NOT DISTINCT (year_value, program_id, track_id, name, semester, type_id),
+    UNIQUE (id, year_value),  -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
     CONSTRAINT course_priority_rule_non_negative_check CHECK (priority_rule >= 0)
 );
-CREATE INDEX idx_course_year ON public.course (year);
+CREATE INDEX idx_course_year ON public.course (year_value);
 CREATE INDEX idx_course_program_id ON public.course (program_id);
 CREATE INDEX idx_course_type_id ON public.course (type_id);
 CREATE INDEX idx_course_track_id_program_id ON public.course (track_id, program_id);
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
 COMMENT ON COLUMN public.course.id IS 'Unique course identifier';
-COMMENT ON COLUMN public.course.year IS 'Academic year when the course is offered';
+COMMENT ON COLUMN public.course.year_value IS 'Academic year when the course is offered';
 COMMENT ON COLUMN public.course.program_id IS 'Program offering this course';
 COMMENT ON COLUMN public.course.track_id IS 'Optional track specialization for this course';
 COMMENT ON COLUMN public.course.name IS 'Full course name';
@@ -361,24 +371,24 @@ COMMENT ON COLUMN public.coordination.comment IS 'Additional coordination detail
 CREATE TABLE public.priority
 (
     id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year        integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year_value  integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id  integer NOT NULL,
     course_id   integer NOT NULL,
     seniority   integer,
     is_priority boolean,
     computed    boolean NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
-    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year_value, service_id) REFERENCES public.service (year_value, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year_value, course_id) REFERENCES public.course (year_value, id) ON UPDATE CASCADE,
     UNIQUE (service_id, course_id),
     CONSTRAINT priority_seniority_non_negative_check CHECK (seniority >= 0)
 );
-CREATE INDEX idx_priority_year ON public.priority (year);
-CREATE INDEX idx_priority_year_service_id ON public.priority (year, service_id);
-CREATE INDEX idx_priority_year_course_id ON public.priority (year, course_id);
+CREATE INDEX idx_priority_year ON public.priority (year_value);
+CREATE INDEX idx_priority_year_service_id ON public.priority (year_value, service_id);
+CREATE INDEX idx_priority_year_course_id ON public.priority (year_value, course_id);
 
 COMMENT ON TABLE public.priority IS 'Teacher course assignment history and priority status';
 COMMENT ON COLUMN public.priority.id IS 'Unique priority record identifier';
-COMMENT ON COLUMN public.priority.year IS 'Year of the priority (must match service''s and course''s year)';
+COMMENT ON COLUMN public.priority.year_value IS 'Year of the priority (must match service''s and course''s year)';
 COMMENT ON COLUMN public.priority.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.priority.course_id IS 'Course for which priority is tracked';
 COMMENT ON COLUMN public.priority.seniority IS 'Consecutive years teaching this course before current year';
@@ -391,69 +401,78 @@ CREATE TABLE public.request_type
     description text
 );
 
-COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
+COMMENT ON TABLE public.request_type IS '@enum Types of teaching assignment requests in workflow';
 COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
 COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
 
 CREATE TABLE public.request
 (
     id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year_value integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id integer NOT NULL,
     course_id  integer NOT NULL,
     type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
     hours      real    NOT NULL,
-    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
-    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year_value, service_id) REFERENCES public.service (year_value, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year_value, course_id) REFERENCES public.course (year_value, id) ON UPDATE CASCADE,
     UNIQUE (service_id, course_id, type),
     CONSTRAINT request_hours_positive_check CHECK (hours > 0)
 );
-CREATE INDEX idx_request_year ON public.request (year);
-CREATE INDEX idx_request_year_service_id ON public.request (year, service_id);
-CREATE INDEX idx_request_year_course_id ON public.request (year, course_id);
+CREATE INDEX idx_request_year ON public.request (year_value);
+CREATE INDEX idx_request_year_service_id ON public.request (year_value, service_id);
+CREATE INDEX idx_request_year_course_id ON public.request (year_value, course_id);
 CREATE INDEX idx_request_type ON public.request (type);
 
-COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
+COMMENT ON TABLE public.request IS '
+@foreignKey (service_id) references v_service (id)
+Teacher requests and assignments for courses';
 COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
-COMMENT ON COLUMN public.request.year IS 'Year of the request (must match service''s and course''s year)';
+COMMENT ON COLUMN public.request.year_value IS 'Year of the request (must match service''s and course''s year)';
 COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
 COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';
 COMMENT ON COLUMN public.request.hours IS 'Requested or assigned teaching hours';
 
 -- Computed field
-CREATE FUNCTION public.hours_weighted(request_row request) RETURNS real AS
+CREATE FUNCTION public.request_hours_weighted(request_row request) RETURNS real AS
 $$
 SELECT request_row.hours * ct.coefficient
 FROM public.course c
          JOIN public.course_type ct ON ct.id = c.type_id
 WHERE c.id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION public.hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
+COMMENT ON FUNCTION public.request_hours_weighted(request) IS 'Calculates weighted hours for a request by multiplying the requested hours by the course type coefficient';
 
 -- Computed field
-CREATE FUNCTION public.is_priority(request_row request) RETURNS boolean AS
+CREATE FUNCTION public.request_is_priority(request_row request) RETURNS boolean AS
 $$
 SELECT is_priority
 FROM public.priority
 WHERE service_id = request_row.service_id
   AND course_id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
-COMMENT ON FUNCTION public.is_priority(request) IS 'Determines the priority status of a request based on teaching history and course priority rules';
+COMMENT ON FUNCTION public.request_is_priority(request) IS 'Determines the priority status of a request based on teaching history and course priority rules';
 
 
 --
 -- Functions
 --
 
+CREATE FUNCTION public.dummy_mutation() RETURNS boolean AS
+$$
+SELECT TRUE;
+$$ LANGUAGE sql VOLATILE;
+
+COMMENT ON FUNCTION public.dummy_mutation() IS 'Dummy mutation that does nothing';
+
 CREATE FUNCTION public.create_teacher_service(p_year integer, p_uid text) RETURNS setof public.service AS
 $$
-INSERT INTO public.service (year, uid, hours)
+INSERT INTO public.service (year_value, uid, hours)
 SELECT p_year, p_uid, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
          LEFT JOIN public.position p ON p.id = t.position_id
 WHERE t.uid = p_uid
-ON CONFLICT (year, uid) DO NOTHING
+ON CONFLICT (year_value, uid) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_teacher_service(integer, text) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
@@ -465,21 +484,21 @@ FROM public.priority
 WHERE service_id = service_row.id
   AND computed IS TRUE;
 
-INSERT INTO public.priority (year, service_id, course_id, seniority, computed)
-SELECT service_row.year, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
+INSERT INTO public.priority (year_value, service_id, course_id, seniority, computed)
+SELECT service_row.year_value, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
 FROM public.service s
          JOIN public.request r ON r.service_id = s.id AND r.type = 'assignment'
          LEFT JOIN public.priority p
                    ON p.service_id = r.service_id AND p.course_id = r.course_id
          JOIN public.course c ON c.id = r.course_id
          JOIN public.course child
-              ON child.year = c.year + 1
+              ON child.year_value = c.year_value + 1
                   AND child.program_id = c.program_id
                   AND child.track_id = c.track_id
                   AND child.name = c.name
                   AND child.semester = c.semester
                   AND child.type_id = c.type_id
-WHERE s.year = service_row.year - 1
+WHERE s.year_value = service_row.year_value - 1
   AND s.uid = service_row.uid
 ON CONFLICT (service_id, course_id)
     DO UPDATE SET seniority = excluded.seniority
@@ -529,7 +548,7 @@ COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service ent
 
 CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof public.course AS
 $$
-INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
+INSERT INTO public.course (year_value, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
                            groups, groups_adjusted, description, priority_rule, visible)
 SELECT p_year,
        c.program_id,
@@ -546,7 +565,7 @@ SELECT p_year,
        c.priority_rule,
        c.visible
 FROM public.course c
-WHERE c.year = p_year - 1
+WHERE c.year_value = p_year - 1
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
@@ -557,7 +576,7 @@ $$
 SELECT p.*
 FROM public.service s
          CROSS JOIN LATERAL public.compute_service_priorities(s) p
-WHERE s.year = p_year;
+WHERE s.year_value = p_year;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniority and priority status for all services in a given year';
 

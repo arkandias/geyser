@@ -17,6 +17,9 @@ export class ConfigService {
     clientId: string;
     clientSecret: string;
   };
+  readonly graphql: {
+    adminSecret?: string;
+  };
   readonly jwt: {
     accessTokenMaxAge: number;
     refreshTokenMaxAge: number;
@@ -60,6 +63,12 @@ export class ConfigService {
     this.logger.log("OIDC configuration:");
     this.logger.log(`- Discovery URL: ${this.oidc.discoveryUrl.href}`);
     this.logger.log(`- Client ID: ${this.oidc.clientId}`);
+
+    this.graphql = {
+      adminSecret: this.configService.get<string | undefined>(
+        "API_GRAPHQL_ADMIN_SECRET",
+      ),
+    };
 
     this.jwt = {
       accessTokenMaxAge: this.configService.getOrThrow<number>(

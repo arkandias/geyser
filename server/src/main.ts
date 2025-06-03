@@ -1,5 +1,6 @@
 import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
+import compression from "compression";
 import cookieParser from "cookie-parser";
 
 import { AppModule } from "./app.module";
@@ -24,6 +25,8 @@ async function bootstrap() {
   if (configService.nodeEnv === "development") {
     app.useGlobalInterceptors(new LoggingInterceptor());
   }
+
+  app.use(compression());
 
   await app.listen(configService.port);
   logger.log(

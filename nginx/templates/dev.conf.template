@@ -35,9 +35,6 @@ server {
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
-    
-    set $hasura_url ${NGINX_PROXY_HASURA_URL};
-    include /etc/nginx/includes/locations/hasura.conf;
 }
 
 # Dev client server

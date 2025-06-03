@@ -2,7 +2,7 @@
 import { computed } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { inputToNumber } from "@/utils/misc.ts";
+import { inputToNumber } from "@/utils";
 
 const modelValue = defineModel<string | number | null>();
 const selectedFields = defineModel<string[]>("selectedFields");

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { useRouter } from "vue-router";
 
-import { buttonColor } from "@/utils/colors.ts";
+import { buttonColor } from "@/utils";
 
 defineProps<{
   name: string;

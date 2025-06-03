@@ -44,8 +44,7 @@ import type {
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
-import { isRequestType } from "@/utils/enum-guards.ts";
-import { unique } from "@/utils/misc.ts";
+import { isRequestType, unique } from "@/utils";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 

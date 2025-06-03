@@ -27,7 +27,7 @@ import type {
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
-import { isRole } from "@/utils/enum-guards.ts";
+import { isRoleType } from "@/utils";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
@@ -139,7 +139,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   if (flatRow.type !== undefined) {
-    if (!isRole(flatRow.type)) {
+    if (!isRoleType(flatRow.type)) {
       throw new Error(t("admin.general.roles.form.error.invalidRole"));
     }
     object.type = flatRow.type;

@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 
-import { buttonColor } from "@/utils/colors.ts";
+import { buttonColor } from "@/utils";
 
 defineProps<{
   label: string;

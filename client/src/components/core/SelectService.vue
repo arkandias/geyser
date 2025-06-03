@@ -6,7 +6,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetServicesDocument } from "@/gql/graphql.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
-import { normalizeForSearch } from "@/utils/misc.ts";
+import { normalizeForSearch } from "@/utils";
 
 const id = defineModel<number | null>();
 

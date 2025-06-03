@@ -6,16 +6,11 @@ services:
       backend: !reset []
     extra_hosts:
       - "host.docker.internal:host-gateway"
-    environment:
-      HASURA_GRAPHQL_JWT_SECRET: '{"jwk_url":"http://host.docker.internal:3000/.well-known/jwks.json","header":{"type":"Cookie","name":"access_token"},"issuer":"${API_URL}/","audience":"${API_URL}/"}'
 
   frontend:
     image: nginx:1.27
     depends_on:
       backend: !reset []
-      hasura:
-        # Hasura cannot be healthy until API is started
-        condition: service_started
     environment:
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
       NGINX_PROXY_DEV_CLIENT_URL: "http://host.docker.internal:5173"
