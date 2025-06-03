@@ -1,12 +1,6 @@
 services:
   backend: !reset []
 
-  hasura:
-    depends_on:
-      backend: !reset []
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-
   frontend:
     image: nginx:1.27
     depends_on:
