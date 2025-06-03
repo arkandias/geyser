@@ -279,9 +279,9 @@ const updateCourses = useMutation(UpdateCoursesDocument);
 const deleteCourses = useMutation(DeleteCoursesDocument);
 
 const importConstraint =
-  CourseConstraint.CourseYearProgramIdTrackIdNameSemesterTypeIdKey;
+  CourseConstraint.CourseYearValueProgramIdTrackIdNameSemesterTypeIdKey;
 const importUpdateColumns = [
-  CourseUpdateColumn.Year,
+  CourseUpdateColumn.YearValue,
   CourseUpdateColumn.ProgramId,
   CourseUpdateColumn.TrackId,
   CourseUpdateColumn.Name,
@@ -306,7 +306,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.year = flatRow.year;
+    object.yearValue = flatRow.year;
   }
 
   // programId

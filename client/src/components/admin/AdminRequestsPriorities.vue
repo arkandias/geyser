@@ -334,7 +334,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.year = flatRow.year;
+    object.yearValue = flatRow.year;
   }
 
   // serviceId

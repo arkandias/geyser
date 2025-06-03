@@ -127,9 +127,9 @@ const upsertServices = useMutation(UpsertServicesDocument);
 const updateServices = useMutation(UpdateServicesDocument);
 const deleteServices = useMutation(DeleteServicesDocument);
 
-const importConstraint = ServiceConstraint.ServiceYearUidKey;
+const importConstraint = ServiceConstraint.ServiceYearValueUidKey;
 const importUpdateColumns = [
-  ServiceUpdateColumn.Year,
+  ServiceUpdateColumn.YearValue,
   ServiceUpdateColumn.Uid,
   ServiceUpdateColumn.Hours,
   ServiceUpdateColumn.Message,
@@ -141,7 +141,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.year = flatRow.year;
+    object.yearValue = flatRow.year;
   }
 
   if (flatRow.uid !== undefined) {
