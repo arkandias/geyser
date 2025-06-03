@@ -13,9 +13,9 @@ object_relationships:
   - name: type
     using:
       foreign_key_constraint_on: type_id
-  - name: yearByYear
+  - name: year
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on: year_value
 array_relationships:
   - name: coordinations
     using:
@@ -29,7 +29,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - course_id
-          - year
+          - year_value
         table:
           name: priority
           schema: public
@@ -38,7 +38,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - course_id
-          - year
+          - year_value
         table:
           name: request
           schema: public
@@ -64,7 +64,7 @@ select_permissions:
         - track_id
         - type_id
         - visible
-        - year
+        - year_value
       filter:
         _exists:
           _table:
@@ -95,7 +95,7 @@ select_permissions:
         - track_id
         - type_id
         - visible
-        - year
+        - year_value
       filter:
         _and:
           - _exists:
@@ -109,7 +109,7 @@ select_permissions:
               - _and:
                   - visible:
                       _eq: true
-                  - yearByYear:
+                  - year:
                       visible:
                         _eq: true
                   - program:

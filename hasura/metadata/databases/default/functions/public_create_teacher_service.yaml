@@ -1,5 +1,5 @@
 function:
-  name: create_service
+  name: create_teacher_service
   schema: public
 configuration:
   custom_root_fields: {}

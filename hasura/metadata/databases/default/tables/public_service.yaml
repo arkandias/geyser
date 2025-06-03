@@ -14,9 +14,9 @@ object_relationships:
         remote_table:
           name: v_teacher
           schema: public
-  - name: yearByYear
+  - name: year
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on: year_value
 array_relationships:
   - name: modifications
     using:
@@ -30,7 +30,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - service_id
-          - year
+          - year_value
         table:
           name: priority
           schema: public
@@ -39,7 +39,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - service_id
-          - year
+          - year_value
         table:
           name: request
           schema: public
@@ -51,7 +51,7 @@ select_permissions:
         - id
         - message
         - uid
-        - year
+        - year_value
       filter:
         _exists:
           _table:
@@ -69,7 +69,7 @@ select_permissions:
         - id
         - message
         - uid
-        - year
+        - year_value
       filter:
         _and:
           - _exists:
@@ -79,7 +79,7 @@ select_permissions:
               _where:
                 value:
                   _neq: shutdown
-          - yearByYear:
+          - year:
               visible:
                 _eq: true
           - uid:
@@ -101,7 +101,7 @@ update_permissions:
               _where:
                 value:
                   _eq: requests
-          - yearByYear:
+          - year:
               current:
                 _eq: true
           - uid:

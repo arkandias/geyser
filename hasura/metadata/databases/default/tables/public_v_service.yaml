@@ -20,11 +20,11 @@ object_relationships:
         remote_table:
           name: teacher
           schema: public
-  - name: yearByYear
+  - name: year
     using:
       manual_configuration:
         column_mapping:
-          year: value
+          year_value: value
         insertion_order: null
         remote_table:
           name: year
@@ -44,7 +44,7 @@ array_relationships:
       manual_configuration:
         column_mapping:
           id: service_id
-          year: year
+          year_value: year_value
         insertion_order: null
         remote_table:
           name: priority
@@ -54,7 +54,7 @@ array_relationships:
       manual_configuration:
         column_mapping:
           id: service_id
-          year: year
+          year_value: year_value
         insertion_order: null
         remote_table:
           name: request
@@ -65,7 +65,7 @@ select_permissions:
       columns:
         - id
         - uid
-        - year
+        - year_value
       filter:
         _exists:
           _table:
@@ -81,7 +81,7 @@ select_permissions:
       columns:
         - id
         - uid
-        - year
+        - year_value
       filter:
         _and:
           - _exists:
@@ -91,7 +91,7 @@ select_permissions:
               _where:
                 value:
                   _neq: shutdown
-          - yearByYear:
+          - year:
               visible:
                 _eq: true
           - _or:
