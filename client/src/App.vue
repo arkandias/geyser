@@ -51,7 +51,7 @@ if (!authManager) {
 // Fetch app data
 const getAppData = useQuery({
   query: GetAppDataDocument,
-  variables: { uid: authManager.uid },
+  variables: { uid: authManager.userId },
   pause: () => !authManager.isAuthenticated || !authManager.isActive,
   context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
 });

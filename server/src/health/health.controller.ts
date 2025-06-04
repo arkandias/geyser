@@ -29,6 +29,8 @@ export class HealthController {
       // Database connection health check
       () => this.db.pingCheck("database"),
 
+      // TODO: graphql
+
       // OIDC issuer health check
       () =>
         this.http.pingCheck("oidc", this.configService.oidc.discoveryUrl.href),

@@ -4,20 +4,20 @@ import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 
 const graphqlUrl = process.env["VITE_GRAPHQL_URL"];
-const graphqlAdminSecret = process.env["GRAPHQL_ADMIN_SECRET"];
+const apiAdminSecret = process.env["API_ADMIN_SECRET"];
 
 if (!graphqlUrl) {
   throw new Error("Missing VITE_GRAPHQL_URL environment variable");
 }
-if (!graphqlAdminSecret) {
-  throw new Error("Missing GRAPHQL_ADMIN_SECRET environment variable");
+if (!apiAdminSecret) {
+  throw new Error("Missing API_ADMIN_SECRET environment variable");
 }
 
 const config: CodegenConfig = {
   schema: {
     [graphqlUrl]: {
       headers: {
-        "X-Admin-Secret": graphqlAdminSecret,
+        "X-Admin-Secret": apiAdminSecret,
       },
     },
   },

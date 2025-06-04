@@ -8,7 +8,7 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { uid, activeRole } = inject<AuthManager>("authManager")!;
+  const { userId, activeRole } = inject<AuthManager>("authManager")!;
   const { isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
   const { hasService } = useServicesStore();
@@ -58,7 +58,7 @@ export const usePermissions = () => {
   const toEditADescription = computed(
     () => (coordinators: string[]) =>
       activeRole.value === RoleTypeEnum.Admin ||
-      (isCurrentYearActive.value && coordinators.includes(uid)),
+      (isCurrentYearActive.value && coordinators.includes(userId)),
   );
 
   const toViewAllServices = computed(
@@ -74,7 +74,7 @@ export const usePermissions = () => {
       (activeRole.value === RoleTypeEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
-        service.uid === uid),
+        service.uid === userId),
   );
 
   const toEditAMessage = computed(
@@ -83,7 +83,7 @@ export const usePermissions = () => {
       (activeRole.value === RoleTypeEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
-        message.uid === uid),
+        message.uid === userId),
   );
 
   return readonly({

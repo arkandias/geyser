@@ -8,17 +8,22 @@ export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
   readonly nodeEnv: "development" | "production";
   readonly port: number;
-  readonly apiUrl: URL;
+  readonly api: {
+    url: URL;
+    adminSecret: string;
+  };
   readonly parentDomain: string;
   readonly originRegex: RegExp;
   readonly databaseUrl: URL;
+  readonly graphql: {
+    url: URL;
+    adminSecret: string;
+    timeout: number;
+  };
   readonly oidc: {
     discoveryUrl: URL;
     clientId: string;
     clientSecret: string;
-  };
-  readonly graphql: {
-    adminSecret?: string;
   };
   readonly jwt: {
     accessTokenMaxAge: number;
@@ -35,14 +40,17 @@ export class ConfigService {
     this.port = this.configService.getOrThrow<number>("PORT");
     this.logger.log(`Port: ${this.port}`);
 
-    this.apiUrl = new URL(this.configService.getOrThrow<string>("API_URL"));
-    this.logger.log(`API URL: ${this.apiUrl.href}`);
+    this.api = {
+      url: new URL(this.configService.getOrThrow<string>("API_URL")),
+      adminSecret: this.configService.getOrThrow<string>("API_ADMIN_SECRET"),
+    };
+    this.logger.log(`API URL: ${this.api.url.href}`);
 
-    this.parentDomain = this.apiUrl.hostname.replace(/^[^.]+\./, "");
+    this.parentDomain = this.api.url.hostname.replace(/^[^.]+\./, "");
     this.logger.log(`Parent domain: ${this.parentDomain}`);
 
     this.originRegex = new RegExp(
-      `^${this.apiUrl.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
+      `^${this.api.url.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
     );
     this.logger.log(`Origin regex: ${this.originRegex}`);
 
@@ -50,6 +58,14 @@ export class ConfigService {
       this.configService.getOrThrow<string>("API_DATABASE_URL"),
     );
     this.logger.log(`Database URL: ${this.databaseUrl.href}`);
+
+    this.graphql = {
+      url: new URL(this.configService.getOrThrow<string>("API_GRAPHQL_URL")),
+      adminSecret: this.configService.getOrThrow<string>(
+        "API_GRAPHQL_ADMIN_SECRET",
+      ),
+      timeout: this.configService.getOrThrow<number>("API_GRAPHQL_TIMEOUT"),
+    };
 
     this.oidc = {
       discoveryUrl: new URL(
@@ -63,12 +79,6 @@ export class ConfigService {
     this.logger.log("OIDC configuration:");
     this.logger.log(`- Discovery URL: ${this.oidc.discoveryUrl.href}`);
     this.logger.log(`- Client ID: ${this.oidc.clientId}`);
-
-    this.graphql = {
-      adminSecret: this.configService.get<string | undefined>(
-        "API_GRAPHQL_ADMIN_SECRET",
-      ),
-    };
 
     this.jwt = {
       accessTokenMaxAge: this.configService.getOrThrow<number>(
@@ -96,7 +106,7 @@ export class ConfigService {
   }
 
   validateEnvironment() {
-    if (this.nodeEnv === "production" && this.apiUrl.protocol !== "https:") {
+    if (this.nodeEnv === "production" && this.api.url.protocol !== "https:") {
       throw new Error("Production environment requires HTTPS");
     }
   }

@@ -4,14 +4,40 @@ import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
 import type { Request } from "express";
 
 import { ConfigService } from "../config/config.service";
-import { State } from "./state.interface";
+
+interface State {
+  expiresAt: number;
+  redirectUrl: URL | null;
+}
 
 @Injectable()
-export class StateService {
+export class AuthService {
   private stateRecord = new Map<string, State>();
-  private readonly logger = new Logger(StateService.name);
+  private readonly logger = new Logger(AuthService.name);
 
   constructor(private configService: ConfigService) {}
+
+  validateRedirectUrl(redirectUrl: string | undefined): URL | null {
+    if (!redirectUrl) {
+      return null;
+    }
+
+    let url: URL;
+    try {
+      url = new URL(redirectUrl);
+    } catch (_) {
+      throw new UnauthorizedException("Invalid redirect URL");
+    }
+
+    if (
+      url.protocol === this.configService.api.url.protocol &&
+      url.hostname.endsWith(this.configService.parentDomain)
+    ) {
+      return url;
+    }
+
+    throw new UnauthorizedException("Redirect URL not allowed");
+  }
 
   newState(redirectUrl: URL | null): string {
     const id = randomUUID();

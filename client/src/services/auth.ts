@@ -5,6 +5,7 @@ import {
 } from "@geyser/shared";
 import axios from "axios";
 import { type ComputedRef, type Ref, computed, ref } from "vue";
+import { z } from "zod/v4";
 
 import {
   API_REQUEST_TIMEOUT,
@@ -80,15 +81,25 @@ export class AuthManager {
     try {
       const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
+      this._role.value = this._payload.defaultRole;
       console.debug("[AuthManager] Verification succeeded:", this._payload);
       return true;
     } catch (error) {
-      if (axios.isAxiosError<{ message?: string }>(error)) {
-        console.debug(
-          `[AuthManager] Verification failed: ${error.response?.data.message}`,
-        );
+      if (error instanceof z.ZodError) {
+        console.debug("[AuthManager] Verification failed: Invalid token");
+        console.debug(error.issues);
+      }
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.debug(
+            `[AuthManager] Verification failed: ${error.response.status} ${error.response.statusText}`,
+          );
+        } else {
+          console.debug("[AuthManager] Verification failed: Network error");
+        }
       } else {
         console.debug("[AuthManager] Verification failed: Unknown error");
+        console.debug(error);
       }
       delete this._payload;
       return false;
@@ -103,9 +114,13 @@ export class AuthManager {
       return true;
     } catch (error) {
       if (axios.isAxiosError<{ message?: string }>(error)) {
-        console.debug(
-          `[AuthManager] Refresh failed: ${error.response?.data.message}`,
-        );
+        if (error.response) {
+          console.debug(
+            `[AuthManager] Refresh failed: ${error.response.status} ${error.response.statusText}`,
+          );
+        } else {
+          console.debug("[AuthManager] Refresh failed: Network error");
+        }
       } else {
         console.debug("[AuthManager] Refresh failed: Unknown error");
       }
@@ -136,8 +151,16 @@ export class AuthManager {
     return !!this._payload;
   }
 
-  get uid(): string {
-    return this._payload?.uid ?? "";
+  get userId(): string {
+    return this._payload?.userId ?? "";
+  }
+
+  get allowedRoles(): RoleTypeEnum[] {
+    return (
+      this._payload?.allowedRoles.map(
+        (role) => RoleTypeEnum[capitalize(role)],
+      ) ?? []
+    );
   }
 
   get displayname(): string {
@@ -148,18 +171,12 @@ export class AuthManager {
     return !!this._payload?.active;
   }
 
-  get allowedRoles(): RoleTypeEnum[] {
-    return (
-      this._payload?.roles.map((role) => RoleTypeEnum[capitalize(role)]) ?? []
-    );
-  }
-
   setActiveRole(role: RoleTypeEnum): void {
-    if (!this.allowedRoles.includes(role)) {
+    if (this.allowedRoles.includes(role)) {
+      this._role.value = toLowerCase(role);
+    } else {
       console.warn("[AuthManager] Role not allowed");
-      return;
     }
-    this._role.value = toLowerCase(role);
   }
 
   getRoleHeader(): Record<string, string> {

@@ -5,14 +5,15 @@ import { KeysModule } from "../keys/keys.module";
 import { RolesModule } from "../roles/roles.module";
 import { UsersModule } from "../users/users.module";
 import { AuthController } from "./auth.controller";
+import { AuthService } from "./auth.service";
+import { CookiesService } from "./cookies.service";
 import { JwtService } from "./jwt.service";
 import { OidcService } from "./oidc.service";
-import { StateService } from "./state.service";
 
 @Module({
   imports: [ConfigModule, KeysModule, RolesModule, UsersModule],
   controllers: [AuthController],
-  providers: [JwtService, OidcService, StateService],
+  providers: [AuthService, CookiesService, JwtService, OidcService],
   exports: [JwtService],
 })
 export class AuthModule {}

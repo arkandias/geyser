@@ -5,14 +5,17 @@ export const envSchema = z.looseObject({
   PORT: z.coerce.number().default(3000),
 
   API_URL: z.url({ protocol: /^https?$/, hostname: /^[^.]+\.[^.]+\.[^.]+/ }),
+  API_ADMIN_SECRET: z.string(),
 
   API_DATABASE_URL: z.url(),
+
+  API_GRAPHQL_URL: z.url(),
+  API_GRAPHQL_ADMIN_SECRET: z.string(),
+  API_GRAPHQL_TIMEOUT: z.number().default(30 * 1000), // 30s
 
   API_OIDC_DISCOVERY_URL: z.string(),
   API_OIDC_CLIENT_ID: z.string(),
   API_OIDC_CLIENT_SECRET: z.string(),
-
-  API_GRAPHQL_ADMIN_SECRET: z.string().optional(),
 
   JWT_STATE_EXPIRATION_TIME_MS: z.number().default(5 * 60 * 1000), // 5m
   JWT_ACCESS_TOKEN_MAX_AGE_MS: z.number().default(60 * 60 * 1000), // 1h

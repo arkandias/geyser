@@ -3,7 +3,7 @@ import { z } from "zod/v4";
 
 export const oidcTokenPayloadSchema = baseTokenPayloadSchema.partial().and(
   z.looseObject({
-    uid: z.string(),
+    email: z.string(),
   }),
 );
 

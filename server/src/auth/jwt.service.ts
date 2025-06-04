@@ -9,13 +9,12 @@ import {
   roleTypeSchema,
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
-import { CookieOptions, Response } from "express";
 import jose from "jose";
 
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
-import { User } from "../users/user.entity";
+import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class JwtService {
@@ -23,6 +22,7 @@ export class JwtService {
     private configService: ConfigService,
     private keysService: KeysService,
     private rolesService: RolesService,
+    private usersService: UsersService,
   ) {}
 
   private async makeToken(
@@ -30,7 +30,7 @@ export class JwtService {
   ): Promise<string> {
     return new jose.SignJWT(payload)
       .setProtectedHeader({ alg: "RS256" })
-      .setIssuer(this.configService.apiUrl.href)
+      .setIssuer(this.configService.api.url.href)
       .setIssuedAt()
       .setJti(randomUUID())
       .sign(this.keysService.privateKey);
@@ -43,8 +43,8 @@ export class JwtService {
     let result: jose.JWTVerifyResult<T>;
     try {
       result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
-        issuer: this.configService.apiUrl.href,
-        audience: this.configService.apiUrl.href,
+        issuer: this.configService.api.url.href,
+        audience: this.configService.api.url.href,
         requiredClaims: ["sub", "exp", "iat", "jti"],
       });
     } catch (error) {
@@ -67,37 +67,37 @@ export class JwtService {
     return result.payload;
   }
 
-  private async makeAccessToken(user: User): Promise<string> {
-    const { uid, displayname, active } = user;
+  async makeAccessToken(uid: string): Promise<string> {
+    const user = await this.usersService.findByUid(uid);
+    if (!user) {
+      throw new UnauthorizedException("User not found");
+    }
+
     const roles = await this.rolesService.findByUid(uid);
     const roleTypes = roles
       .map((role) => roleTypeSchema.parse(role.type))
-      .concat("teacher");
+      .concat("teacher")
+      .sort();
 
     return this.makeToken({
       sub: uid,
-      aud: this.configService.apiUrl.href,
+      aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
       typ: "Bearer",
-      uid,
-      displayname,
-      active,
-      roles: roleTypes,
-      "https://hasura.io/jwt/claims": {
-        "X-Hasura-User-Id": uid,
-        "X-Hasura-Allowed-Roles": roleTypes,
-        "X-Hasura-Default-Role": "teacher",
-      },
+      userId: uid,
+      allowedRoles: roleTypes,
+      defaultRole: "teacher",
+      displayname: user.displayname,
+      active: user.active,
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  private async makeRefreshToken(user: User): Promise<string> {
-    const { uid } = user;
+  async makeRefreshToken(uid: string): Promise<string> {
     return this.makeToken({
       sub: uid,
-      aud: this.configService.apiUrl.href,
+      aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
@@ -131,45 +131,5 @@ export class JwtService {
     }
 
     return parsed.data;
-  }
-
-  private accessCookieOptions(): CookieOptions {
-    return {
-      domain: "geyser.localhost",
-      httpOnly: true,
-      secure: this.configService.apiUrl.protocol === "https:",
-      sameSite: "lax",
-      maxAge: this.configService.jwt.accessTokenMaxAge,
-      path: "/",
-    };
-  }
-
-  private refreshCookieOptions(): CookieOptions {
-    return {
-      domain: "geyser.localhost",
-      httpOnly: true,
-      secure: this.configService.apiUrl.protocol === "https:",
-      sameSite: "lax",
-      maxAge: this.configService.jwt.refreshTokenMaxAge,
-      path: "/auth/token/refresh",
-    };
-  }
-
-  async setAccessCookie(res: Response, user: User): Promise<void> {
-    const accessToken = await this.makeAccessToken(user);
-    res.cookie("access_token", accessToken, this.accessCookieOptions());
-  }
-
-  async setRefreshCookie(res: Response, user: User): Promise<void> {
-    const refreshToken = await this.makeRefreshToken(user);
-    res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
-  }
-
-  unsetAccessCookie(res: Response): void {
-    res.clearCookie("access_token", this.accessCookieOptions());
-  }
-
-  unsetRefreshCookie(res: Response): void {
-    res.clearCookie("refresh_token", this.refreshCookieOptions());
   }
 }
