@@ -1,4 +1,4 @@
-FROM nginx:1.26-alpine
+FROM nginx:1.27
 
 ARG CLIENT_VERSION=1.1.0
 ENV GEYSER_HOSTNAME=localhost

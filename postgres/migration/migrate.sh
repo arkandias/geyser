@@ -12,9 +12,8 @@ LEGACY_DUMP="${DUMPS_DIR}/legacy.sql"
 MIGRATED_DUMP="${DUMPS_DIR}/migrated.sql"
 INIT_DUMP="${DUMPS_DIR}/init.dump"
 INIT_FILES=(
-    "${SCRIPT_DIR}/../init/schema.sql"
-    "${SCRIPT_DIR}/../init/seed.sql"
-    "${SCRIPT_DIR}/lpp.sql"
+    "${SCRIPT_DIR}"/../init/*.sql
+    "${SCRIPT_DIR}"/lpp.sql
 )
 
 mkdir -p "${DUMPS_DIR}"
@@ -31,7 +30,7 @@ pg_start() {
         -e POSTGRES_DB=geyser \
         -e POSTGRES_USER=postgres \
         -e POSTGRES_PASSWORD=postgres_pwd \
-        -d postgres:16 \
+        -d postgres:17 \
         >/dev/null
 
     echo "Waiting for ${CONTAINER_NAME} to be ready..."
