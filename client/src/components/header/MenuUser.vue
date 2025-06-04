@@ -11,6 +11,7 @@ import MenuBase from "@/components/header/MenuBase.vue";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const authManager = inject<AuthManager>("authManager")!;
+
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
 
@@ -32,17 +33,7 @@ const updateRole = async (value: RoleTypeEnum) => {
 <template>
   <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
     <QList>
-      <template v-if="authManager.isLoggedOut">
-        <QItem v-close-popup clickable @click="authManager.login()">
-          <QItemSection side>
-            <QIcon name="sym_s_login" color="primary" />
-          </QItemSection>
-          <QItemSection>
-            {{ t("header.user.login") }}
-          </QItemSection>
-        </QItem>
-      </template>
-      <template v-else>
+      <template v-if="authManager.isAuthenticated">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
             {{ authManager.displayname }}
@@ -58,6 +49,18 @@ const updateRole = async (value: RoleTypeEnum) => {
           />
         </QItem>
         <QSeparator />
+      </template>
+      <template v-if="authManager.isLoggedOut">
+        <QItem v-close-popup clickable @click="authManager.login()">
+          <QItemSection side>
+            <QIcon name="sym_s_login" color="primary" />
+          </QItemSection>
+          <QItemSection>
+            {{ t("header.user.login") }}
+          </QItemSection>
+        </QItem>
+      </template>
+      <template v-else>
         <QItem v-close-popup clickable @click="authManager.logout()">
           <QItemSection side>
             <QIcon name="sym_s_logout" color="primary" />
