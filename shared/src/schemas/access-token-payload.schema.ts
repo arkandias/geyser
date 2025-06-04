@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
-import { baseTokenPayloadSchema } from "./base-token-payload.schema.js";
-import { roleTypeSchema } from "./role-type.schema.js";
+import { baseTokenPayloadSchema } from "./base-token-payload.schema.ts";
+import { roleTypeSchema } from "./role-type.schema.ts";
 
 export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
   z.looseObject({
