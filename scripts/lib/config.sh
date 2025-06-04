@@ -127,11 +127,11 @@ _compute_additional_env_vars() {
     fi
 
     readonly GEYSER_ORIGIN="${protocol}://*.${GEYSER_DOMAIN}"
+    readonly KC_HOSTNAME="${protocol}://auth.${GEYSER_DOMAIN}"
+    readonly KC_HOSTNAME_ADMIN="${protocol}://auth-admin.${GEYSER_DOMAIN}"
     readonly API_URL="${protocol}://api.${GEYSER_DOMAIN}"
-    readonly AUTH_URL="${protocol}://auth.${GEYSER_DOMAIN}"
-    readonly ADMIN_URL="${protocol}://admin.${GEYSER_DOMAIN}"
 
-    export GEYSER_ORIGIN API_URL AUTH_URL ADMIN_URL
+    export GEYSER_ORIGIN KC_HOSTNAME KC_HOSTNAME_ADMIN API_URL
 }
 
 _env_summary() {
@@ -143,8 +143,8 @@ _env_summary() {
     debug "GEYSER_LOG_LEVEL=${GEYSER_LOG_LEVEL}"
     debug "GEYSER_ORIGIN=${GEYSER_ORIGIN}"
     debug "API_URL=${API_URL}"
-    debug "AUTH_URL=${AUTH_URL}"
-    debug "ADMIN_URL=${ADMIN_URL}"
+    debug "KC_HOSTNAME=${KC_HOSTNAME}"
+    debug "KC_HOSTNAME_ADMIN=${KC_HOSTNAME_ADMIN}"
     debug "======================================="
 }
 
