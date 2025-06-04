@@ -13,7 +13,7 @@ server {
 # Keycloak admin server
 server {
     listen 80;
-    server_name auth-admin.${GEYSER_DOMAIN};
+    server_name auth-admin.geyser.localhost;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak-admin.conf;

@@ -21,21 +21,21 @@ server {
 # Redirect HTTP traffic to HTTPS
 server {
     listen 80;
-    server_name ${GEYSER_DOMAIN} *.${GEYSER_DOMAIN};
+    server_name ${NGINX_DOMAIN} *.${NGINX_DOMAIN};
     return 301 https://$host$request_uri;
 }
 
 # Keycloak admin server
 server {
     listen 443 ssl;
-    server_name auth-admin.${GEYSER_DOMAIN};
+    server_name auth-admin.${NGINX_DOMAIN};
     
     # Configure allowed IPs (e.g., behind a VPN)
     #allow 10.0.0.0/24;
     #deny all;
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
     
     # Client certificate verification
     #ssl_client_certificate /etc/nginx/certs/client/ca.crt;
@@ -48,10 +48,10 @@ server {
 # Keycloak server
 server {
     listen 443 ssl;
-    server_name auth.${GEYSER_DOMAIN};
+    server_name auth.${NGINX_DOMAIN};
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak.conf;
@@ -60,10 +60,10 @@ server {
 # API server
 server {
     listen 443 ssl;
-    server_name api.${GEYSER_DOMAIN};
+    server_name api.${NGINX_DOMAIN};
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
@@ -74,10 +74,10 @@ server {
 # App server
 server {
     listen 443 ssl;
-    server_name app.${GEYSER_DOMAIN};
+    server_name app.${NGINX_DOMAIN};
     
-    ssl_certificate /etc/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${GEYSER_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
     
     # Enable serving pre-compressed files
     gzip_static on;

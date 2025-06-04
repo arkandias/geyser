@@ -154,7 +154,7 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      GEYSER_DOMAIN: "${GEYSER_DOMAIN}"
+      NGINX_DOMAIN: "${GEYSER_DOMAIN}"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://backend:3000"
     ports:

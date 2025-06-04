@@ -74,7 +74,7 @@ const service = computed(() => data.value?.service ?? null);
     </QCard>
     <QCard v-else flat square>
       <QCardSection class="text-h4 q-pa-xl">
-        {{ t("service.noService") }}
+        {{ t("service.serviceNotFound") }}
       </QCardSection>
     </QCard>
   </QPage>

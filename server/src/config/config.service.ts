@@ -1,7 +1,7 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
 
-import { Env } from "./env.schema";
+import type { Env } from "./env.schema";
 
 @Injectable()
 export class ConfigService {
@@ -33,11 +33,11 @@ export class ConfigService {
 
   constructor(private configService: NestConfigService<Env, true>) {
     this.nodeEnv = this.configService.getOrThrow<"development" | "production">(
-      "NODE_ENV",
+      "API_NODE_ENV",
     );
     this.logger.log(`Node environment: ${this.nodeEnv}`);
 
-    this.port = this.configService.getOrThrow<number>("PORT");
+    this.port = this.configService.getOrThrow<number>("API_PORT");
     this.logger.log(`Port: ${this.port}`);
 
     this.api = {
@@ -82,13 +82,13 @@ export class ConfigService {
 
     this.jwt = {
       accessTokenMaxAge: this.configService.getOrThrow<number>(
-        "JWT_ACCESS_TOKEN_MAX_AGE_MS",
+        "API_JWT_ACCESS_TOKEN_MAX_AGE_MS",
       ),
       refreshTokenMaxAge: this.configService.getOrThrow<number>(
-        "JWT_REFRESH_TOKEN_MAX_AGE_MS",
+        "API_JWT_REFRESH_TOKEN_MAX_AGE_MS",
       ),
       stateExpirationTime: this.configService.getOrThrow<number>(
-        "JWT_STATE_EXPIRATION_TIME_MS",
+        "API_JWT_STATE_EXPIRATION_TIME_MS",
       ),
     };
     this.logger.log("JWT configuration:");

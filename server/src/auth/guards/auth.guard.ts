@@ -59,7 +59,7 @@ export class AuthGuard implements CanActivate {
     const payload = await this.jwtService.verifyAccessToken(accessToken);
 
     // Validate X-User-Id header against JWT uid
-    if (userId !== payload.userId) {
+    if (userId && userId !== payload.userId) {
       throw new UnauthorizedException(
         `X-User-Id header '${userId}' does not match user id '${payload.userId}'`,
       );
@@ -75,8 +75,8 @@ export class AuthGuard implements CanActivate {
 
     // JWT validation successful
     request.auth = {
-      userId: userId,
-      userRole: userRole,
+      userId: payload.userId,
+      userRole: userRoleWithDefault,
       jwtPayload: payload,
       isSuperAdmin: false,
     };
