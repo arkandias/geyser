@@ -1,7 +1,7 @@
 import type { CodegenConfig } from "@graphql-codegen/cli";
 import dotenv from "dotenv";
 
-dotenv.config({ path: ".env" });
+dotenv.config({ path: ".env.development" });
 
 const graphqlUrl = process.env["VITE_GRAPHQL_URL"];
 const apiAdminSecret = process.env["API_ADMIN_SECRET"];
