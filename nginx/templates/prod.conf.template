@@ -25,10 +25,10 @@ server {
     return 301 https://$host$request_uri;
 }
 
-# Admin server
+# Keycloak admin server
 server {
     listen 443 ssl;
-    server_name admin.${GEYSER_DOMAIN};
+    server_name auth-admin.${GEYSER_DOMAIN};
     
     # Configure allowed IPs (e.g., behind a VPN)
     #allow 10.0.0.0/24;
@@ -42,7 +42,7 @@ server {
     #ssl_verify_client on;
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-    include /etc/nginx/includes/locations/admin.keycloak.conf;
+    include /etc/nginx/includes/locations/keycloak-admin.conf;
 }
 
 # Keycloak server
