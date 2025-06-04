@@ -40,6 +40,7 @@ export default {
       shutdown: "",
     },
     alert: {
+      loggedOut: "You are logged out",
       notAuthenticated: "You are not authenticated",
       notActive: "Your profile is not active",
       loadingAppData: "Loading application settings…",

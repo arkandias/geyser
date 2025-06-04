@@ -101,6 +101,9 @@ watch(
 
 // Access check and information messages
 const accessDeniedMessage = computed(() => {
+  if (authManager.isLoggedOut) {
+    return t("home.alert.loggedOut");
+  }
   if (!authManager.isAuthenticated) {
     return t("home.alert.notAuthenticated");
   }

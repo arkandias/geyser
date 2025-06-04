@@ -32,7 +32,17 @@ const updateRole = async (value: RoleTypeEnum) => {
 <template>
   <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
     <QList>
-      <template v-if="authManager.isAuthenticated">
+      <template v-if="authManager.isLoggedOut">
+        <QItem v-close-popup clickable @click="authManager.login()">
+          <QItemSection side>
+            <QIcon name="sym_s_login" color="primary" />
+          </QItemSection>
+          <QItemSection>
+            {{ t("header.user.login") }}
+          </QItemSection>
+        </QItem>
+      </template>
+      <template v-else>
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
             {{ authManager.displayname }}
@@ -54,16 +64,6 @@ const updateRole = async (value: RoleTypeEnum) => {
           </QItemSection>
           <QItemSection>
             {{ t("header.user.logout") }}
-          </QItemSection>
-        </QItem>
-      </template>
-      <template v-else>
-        <QItem v-close-popup clickable @click="authManager.login()">
-          <QItemSection side>
-            <QIcon name="sym_s_login" color="primary" />
-          </QItemSection>
-          <QItemSection>
-            {{ t("header.user.login") }}
           </QItemSection>
         </QItem>
       </template>
