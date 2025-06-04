@@ -1,4 +1,3 @@
-// src/health/health.controller.ts
 import { Controller, Get } from "@nestjs/common";
 import {
   DiskHealthIndicator,
@@ -26,20 +25,31 @@ export class HealthController {
   @HealthCheck()
   check() {
     return this.health.check([
-      // Database connection health check
+      // Database healthcheck
       () => this.db.pingCheck("database"),
 
-      // TODO: graphql
+      // GraphQL healthcheck
+      () =>
+        this.http.pingCheck("graphql", this.configService.graphql.url.href, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-Hasura-Admin-Secret": this.configService.graphql.adminSecret,
+          },
+          data: JSON.stringify({
+            query: "{ __typename }",
+          }),
+        }),
 
-      // OIDC issuer health check
+      // OIDC issuer healthcheck
       () =>
         this.http.pingCheck("oidc", this.configService.oidc.discoveryUrl.href),
 
-      // Disk storage health check
+      // Disk storage healthcheck
       () =>
         this.disk.checkStorage("storage", { path: "/", thresholdPercent: 80 }),
 
-      // Memory health check
+      // Memory healthcheck
       () => this.memory.checkHeap("memory_heap", 250 * 1024 * 1024),
     ]);
   }
