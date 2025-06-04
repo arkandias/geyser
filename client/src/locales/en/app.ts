@@ -1,7 +1,7 @@
 export default {
   app: {
-    userProfile: {
-      error: "Failed to load user profile",
+    auth: {
+      error: "Authentication failed with error",
     },
     data: {
       error: "Failed to load application settings",

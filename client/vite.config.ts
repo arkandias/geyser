@@ -22,6 +22,7 @@ export default defineConfig(() => ({
             "dompurify",
             "graphql",
             "papaparse",
+            "zod",
           ],
         },
       },

@@ -1,4 +1,4 @@
-import { unparse } from "papaparse";
+import Papa from "papaparse";
 
 import type { Scalar, SimpleObject } from "@/types/data.ts";
 import { toSlug } from "@/utils";
@@ -40,7 +40,7 @@ export const exportCSV = (
   objects: SimpleObject[],
   fields?: SimpleObject<string> | string[] | null,
 ) =>
-  unparse(
+  Papa.unparse(
     objects.map((obj) => processSimpleObject(obj, fields)),
     { newline: "\n" },
   );

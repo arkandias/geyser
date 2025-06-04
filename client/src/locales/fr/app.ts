@@ -1,7 +1,7 @@
 export default {
   app: {
-    userProfile: {
-      error: "Échec du chargement du profil de l'utilisateur",
+    auth: {
+      error: "Une erreur s'est produite durant l'authentification",
     },
     data: {
       error: "Échec du chargement des paramètres de l'application",

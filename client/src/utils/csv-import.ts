@@ -1,5 +1,5 @@
 import { errorMessage } from "@geyser/shared";
-import { type ParseConfig, parse } from "papaparse";
+import Papa from "papaparse";
 
 import type {
   FieldDescriptor,
@@ -53,7 +53,7 @@ export const parseField = <T extends FieldDescriptor>(
  * including the field name in the error.
  */
 const transform =
-  (rowDescriptor: RowDescriptor): ParseConfig["transform"] =>
+  (rowDescriptor: RowDescriptor): Papa.ParseConfig["transform"] =>
   (value: string, field: string | number) => {
     const descriptor = rowDescriptor[field];
     if (!descriptor) {
@@ -74,7 +74,7 @@ export const importCSV = <T extends RowDescriptor>(
   text: string,
   rowDescriptor: T,
 ): ParsedRow<T>[] => {
-  const parseResult = parse<ParsedRow<T>>(text, {
+  const parseResult = Papa.parse<ParsedRow<T>>(text, {
     delimiter: ",",
     header: true,
     skipEmptyLines: true,

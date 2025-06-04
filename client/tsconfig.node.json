@@ -7,6 +7,9 @@
     /* Module */
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* Emit */
     "noEmit": true,

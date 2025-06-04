@@ -47,6 +47,12 @@ const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
   throw new Error("Authentication manager is not provided to the app");
 }
+if (authManager.authError) {
+  notify(NotifyType.Error, {
+    message: t("app.auth.error"),
+    caption: authManager.authError,
+  });
+}
 
 // Fetch app data
 const getAppData = useQuery({
