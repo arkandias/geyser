@@ -69,14 +69,7 @@ watch(
       setCurrentPhase(data.currentPhase.value);
     }
     if (data?.years) {
-      setYears(
-        // TODO: simplify
-        data.years.map((year) => ({
-          value: year.value,
-          current: year.current,
-          visible: year.visible,
-        })),
-      );
+      setYears(data.years);
     }
     if (data?.customTexts) {
       setCustomTexts(data.customTexts);
@@ -94,7 +87,6 @@ watch(
     if (!authManager.isAuthenticated || !authManager.isActive) {
       return;
     }
-
     if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
       authManager.setActiveRole(RoleTypeEnum.Admin);
     } else if (
