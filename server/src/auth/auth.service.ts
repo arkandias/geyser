@@ -1,7 +1,10 @@
 import { randomUUID } from "node:crypto";
 
-import { Injectable, Logger, UnauthorizedException } from "@nestjs/common";
-import type { Request } from "express";
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from "@nestjs/common";
 
 import { ConfigService } from "../config/config.service";
 
@@ -13,7 +16,6 @@ interface State {
 @Injectable()
 export class AuthService {
   private stateRecord = new Map<string, State>();
-  private readonly logger = new Logger(AuthService.name);
 
   constructor(private configService: ConfigService) {}
 
@@ -26,7 +28,7 @@ export class AuthService {
     try {
       url = new URL(redirectUrl);
     } catch (_) {
-      throw new UnauthorizedException("Invalid redirect URL");
+      throw new BadRequestException("Invalid redirect URL");
     }
 
     if (
@@ -36,32 +38,23 @@ export class AuthService {
       return url;
     }
 
-    throw new UnauthorizedException("Redirect URL not allowed");
+    throw new BadRequestException("Redirect URL not allowed");
   }
 
-  newState(redirectUrl: URL | null): string {
+  newState(url?: string): string {
     const id = randomUUID();
     const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
+    const redirectUrl = this.validateRedirectUrl(url);
     this.stateRecord.set(id, { expiresAt, redirectUrl });
     return id;
   }
 
-  getState(id: string, req: Request): State {
+  getState(id: string): State {
     const authState = this.stateRecord.get(id);
     this.stateRecord.delete(id);
 
     if (!authState) {
-      this.logger.warn({
-        message: "Potential CSRF attempt: State not found",
-        stateId: id,
-        request: {
-          ip: req.ip,
-          method: req.method,
-          path: req.url,
-          headers: req.headers,
-        },
-      });
-      throw new UnauthorizedException("Authentication failed");
+      throw new UnauthorizedException("State not found");
     }
 
     if (authState.expiresAt < Date.now()) {

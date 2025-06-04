@@ -1,14 +1,14 @@
 import { AccessTokenPayload, errorMessage } from "@geyser/shared";
 import {
+  BadRequestException,
   Controller,
   Get,
   Post,
   Query,
-  Req,
   Res,
   UnauthorizedException,
 } from "@nestjs/common";
-import type { Request, Response } from "express";
+import type { Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
@@ -19,8 +19,8 @@ import { OidcService } from "./oidc.service";
 
 @Controller("auth")
 export class AuthController {
-  loginCallbackUrl: URL;
-  logoutCallbackUrl: URL;
+  readonly loginCallbackUrl: URL;
+  readonly logoutCallbackUrl: URL;
 
   constructor(
     private authService: AuthService,
@@ -42,12 +42,10 @@ export class AuthController {
   @Get("login")
   login(
     @Query("redirect_url") redirectUrl: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ) {
-    const url = this.authService.validateRedirectUrl(redirectUrl);
-
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.newState(url);
+    const stateId = this.authService.newState(redirectUrl);
 
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
@@ -57,26 +55,25 @@ export class AuthController {
     authUrl.searchParams.set("scope", "openid");
     authUrl.searchParams.set("redirect_uri", this.loginCallbackUrl.href);
 
-    res.redirect(authUrl.toString());
+    res.redirect(authUrl.href);
   }
 
   @Get("login/callback")
   async callback(
     @Query("state") state: string | undefined,
     @Query("code") code: string | undefined,
-    @Req() req: Request,
     @Res() res: Response,
   ): Promise<void> {
     if (!state) {
-      throw new UnauthorizedException("Missing state");
+      throw new BadRequestException("Missing state");
     }
     if (!code) {
-      throw new UnauthorizedException("Missing code");
+      throw new BadRequestException("Missing code");
     }
 
     let redirectUrl: URL | null = null;
     try {
-      redirectUrl = this.authService.getState(state, req).redirectUrl;
+      redirectUrl = this.authService.getState(state).redirectUrl;
 
       const { accessToken: identityToken } =
         await this.oidcService.requestToken({
@@ -111,24 +108,19 @@ export class AuthController {
   @Get("logout")
   logout(
     @Query("redirect_url") redirectUrl: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ): void {
-    const url = this.authService.validateRedirectUrl(redirectUrl);
-
-    const postLogoutRedirectUrl = this.logoutCallbackUrl;
-    if (url) {
-      postLogoutRedirectUrl.searchParams.set("redirect_url", url.href);
-    }
+    // Use state parameter to prevent CSRF attacks
+    const stateId = this.authService.newState(redirectUrl);
 
     // Building logout URL
     const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
-    if (url) {
-      logoutUrl.searchParams.set(
-        "post_logout_redirect_uri",
-        postLogoutRedirectUrl.href,
-      );
-      logoutUrl.searchParams.set("client_id", "backend");
-    }
+    logoutUrl.searchParams.set("client_id", this.configService.oidc.clientId);
+    logoutUrl.searchParams.set("state", stateId);
+    logoutUrl.searchParams.set(
+      "post_logout_redirect_uri",
+      this.logoutCallbackUrl.href,
+    );
 
     // Removing cookies
     this.cookiesService.unsetAuthCookies(res);
@@ -138,13 +130,16 @@ export class AuthController {
 
   @Get("logout/callback")
   postLogout(
-    @Query("redirect_url") redirectUrl: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Query("state") state: string | undefined,
+    @Res() res: Response,
   ): void {
-    const url = this.authService.validateRedirectUrl(redirectUrl);
+    if (!state) {
+      throw new BadRequestException("Missing state");
+    }
 
-    if (url) {
-      res.redirect(url.href);
+    const redirectUrl = this.authService.getState(state).redirectUrl;
+    if (redirectUrl) {
+      res.redirect(redirectUrl.href);
     }
   }
 
@@ -161,7 +156,7 @@ export class AuthController {
   @Post("token/refresh")
   async refresh(
     @Cookies("refresh_token") refreshToken: string | undefined,
-    @Res({ passthrough: true }) res: Response,
+    @Res() res: Response,
   ): Promise<void> {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");

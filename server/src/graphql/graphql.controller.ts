@@ -43,7 +43,7 @@ export class GraphqlController {
       },
     );
 
-    // Return Hasura's response with its status code
-    return res.status(response.status).json(response.data);
+    // Set Hasura's response code and data
+    res.status(response.status).json(response.data);
   }
 }
