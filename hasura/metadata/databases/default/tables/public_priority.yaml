@@ -6,25 +6,15 @@ object_relationships:
     using:
       foreign_key_constraint_on:
         - course_id
-        - year_value
+        - year
   - name: service
     using:
       foreign_key_constraint_on:
         - service_id
-        - year_value
-  - name: vService
+        - year
+  - name: yearByYear
     using:
-      manual_configuration:
-        column_mapping:
-          service_id: id
-          year_value: year_value
-        insertion_order: null
-        remote_table:
-          name: v_service
-          schema: public
-  - name: year
-    using:
-      foreign_key_constraint_on: year_value
+      foreign_key_constraint_on: year
 select_permissions:
   - role: commissioner
     permission:
@@ -35,7 +25,7 @@ select_permissions:
         - is_priority
         - seniority
         - service_id
-        - year_value
+        - year
       filter:
         _exists:
           _table:
@@ -54,7 +44,7 @@ select_permissions:
         - is_priority
         - seniority
         - service_id
-        - year_value
+        - year
       filter:
         _and:
           - _exists:
@@ -66,20 +56,20 @@ select_permissions:
                   _neq: shutdown
           - _or:
               - service:
-                  uid:
+                  teacher_id:
                     _eq: X-Hasura-User-Id
               - course:
                   _or:
                     - coordinations:
-                        uid:
+                        teacher_id:
                           _eq: X-Hasura-User-Id
                     - track:
                         coordinations:
-                          uid:
+                          teacher_id:
                             _eq: X-Hasura-User-Id
                     - program:
                         coordinations:
-                          uid:
+                          teacher_id:
                             _eq: X-Hasura-User-Id
               - _and:
                   - service:
@@ -91,7 +81,7 @@ select_permissions:
                         - _and:
                             - visible:
                                 _eq: true
-                            - year:
+                            - yearByYear:
                                 visible:
                                   _eq: true
                             - program:
@@ -106,10 +96,10 @@ select_permissions:
                                   _eq: true
                         - requests:
                             service:
-                              uid:
+                              teacher_id:
                                 _eq: X-Hasura-User-Id
                         - priorities:
                             service:
-                              uid:
+                              teacher_id:
                                 _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"
+    comment: 'Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities'

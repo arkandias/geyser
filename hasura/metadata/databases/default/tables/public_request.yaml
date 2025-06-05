@@ -6,7 +6,7 @@ object_relationships:
     using:
       foreign_key_constraint_on:
         - course_id
-        - year_value
+        - year
   - name: requestType
     using:
       foreign_key_constraint_on: type
@@ -14,20 +14,10 @@ object_relationships:
     using:
       foreign_key_constraint_on:
         - service_id
-        - year_value
-  - name: vService
+        - year
+  - name: yearByYear
     using:
-      manual_configuration:
-        column_mapping:
-          service_id: id
-          year_value: year_value
-        insertion_order: null
-        remote_table:
-          name: v_service
-          schema: public
-  - name: year
-    using:
-      foreign_key_constraint_on: year_value
+      foreign_key_constraint_on: year
 computed_fields:
   - name: hoursWeighted
     definition:
@@ -52,7 +42,7 @@ insert_permissions:
                 value:
                   _eq: assignments
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -62,7 +52,7 @@ insert_permissions:
         - hours
         - service_id
         - type
-        - year_value
+        - year
     comment: Can create assignments for current year courses [during assignments phase only]
   - role: teacher
     permission:
@@ -76,10 +66,10 @@ insert_permissions:
                 value:
                   _eq: requests
           - service:
-              uid:
+              teacher_id:
                 _eq: X-Hasura-User-Id
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -89,7 +79,7 @@ insert_permissions:
                 - _and:
                     - visible:
                         _eq: true
-                    - year:
+                    - yearByYear:
                         visible:
                           _eq: true
                     - program:
@@ -103,31 +93,31 @@ insert_permissions:
                         visible:
                           _eq: true
                 - coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
                 - track:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - program:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - requests:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - priorities:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
       columns:
         - course_id
         - hours
         - service_id
         - type
-        - year_value
-    comment: "During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities"
+        - year
+    comment: 'During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities'
 select_permissions:
   - role: commissioner
     permission:
@@ -137,7 +127,7 @@ select_permissions:
         - id
         - service_id
         - type
-        - year_value
+        - year
       computed_fields:
         - hoursWeighted
         - isPriority
@@ -159,7 +149,7 @@ select_permissions:
         - id
         - service_id
         - type
-        - year_value
+        - year
       computed_fields:
         - hoursWeighted
         - isPriority
@@ -174,20 +164,20 @@ select_permissions:
                   _neq: shutdown
           - _or:
               - service:
-                  uid:
+                  teacher_id:
                     _eq: X-Hasura-User-Id
               - course:
                   _or:
                     - coordinations:
-                        uid:
+                        teacher_id:
                           _eq: X-Hasura-User-Id
                     - track:
                         coordinations:
-                          uid:
+                          teacher_id:
                             _eq: X-Hasura-User-Id
                     - program:
                         coordinations:
-                          uid:
+                          teacher_id:
                             _eq: X-Hasura-User-Id
               - _and:
                   - service:
@@ -199,7 +189,7 @@ select_permissions:
                         - _and:
                             - visible:
                                 _eq: true
-                            - year:
+                            - yearByYear:
                                 visible:
                                   _eq: true
                             - program:
@@ -214,11 +204,11 @@ select_permissions:
                                   _eq: true
                         - requests:
                             service:
-                              uid:
+                              teacher_id:
                                 _eq: X-Hasura-User-Id
                         - priorities:
                             service:
-                              uid:
+                              teacher_id:
                                 _eq: X-Hasura-User-Id
           - _or:
               - _exists:
@@ -229,13 +219,13 @@ select_permissions:
                     value:
                       _eq: results
               - course:
-                  year:
+                  yearByYear:
                     current:
                       _eq: false
               - type:
                   _neq: assignment
       allow_aggregations: true
-    comment: "Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase"
+    comment: 'Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase'
 update_permissions:
   - role: commissioner
     permission:
@@ -251,7 +241,7 @@ update_permissions:
                 value:
                   _eq: assignments
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -272,10 +262,10 @@ update_permissions:
                 value:
                   _eq: requests
           - service:
-              uid:
+              teacher_id:
                 _eq: X-Hasura-User-Id
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -285,7 +275,7 @@ update_permissions:
                 - _and:
                     - visible:
                         _eq: true
-                    - year:
+                    - yearByYear:
                         visible:
                           _eq: true
                     - program:
@@ -299,23 +289,23 @@ update_permissions:
                         visible:
                           _eq: true
                 - coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
                 - track:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - program:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - requests:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - priorities:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
       check: null
     comment: During requests phase, can update their own primary and secondary requests hours for courses for which they can create requests
@@ -332,7 +322,7 @@ delete_permissions:
                 value:
                   _eq: assignments
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -350,10 +340,10 @@ delete_permissions:
                 value:
                   _eq: requests
           - service:
-              uid:
+              teacher_id:
                 _eq: X-Hasura-User-Id
           - course:
-              year:
+              yearByYear:
                 current:
                   _eq: true
           - type:
@@ -363,7 +353,7 @@ delete_permissions:
                 - _and:
                     - visible:
                         _eq: true
-                    - year:
+                    - yearByYear:
                         visible:
                           _eq: true
                     - program:
@@ -377,22 +367,22 @@ delete_permissions:
                         visible:
                           _eq: true
                 - coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
                 - track:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - program:
                     coordinations:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - requests:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
                 - priorities:
                     service:
-                      uid:
+                      teacher_id:
                         _eq: X-Hasura-User-Id
     comment: During requests phase, can delete their own primary and secondary requests for courses for which they can create requests

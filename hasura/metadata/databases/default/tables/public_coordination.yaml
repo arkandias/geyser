@@ -10,19 +10,10 @@ object_relationships:
       foreign_key_constraint_on: program_id
   - name: teacher
     using:
-      foreign_key_constraint_on: uid
+      foreign_key_constraint_on: teacher_id
   - name: track
     using:
       foreign_key_constraint_on: track_id
-  - name: vTeacher
-    using:
-      manual_configuration:
-        column_mapping:
-          uid: uid
-        insertion_order: null
-        remote_table:
-          name: v_teacher
-          schema: public
 select_permissions:
   - role: commissioner
     permission:
@@ -32,7 +23,7 @@ select_permissions:
         - id
         - program_id
         - track_id
-        - uid
+        - teacher_id
       filter:
         _exists:
           _table:
@@ -50,7 +41,7 @@ select_permissions:
         - id
         - program_id
         - track_id
-        - uid
+        - teacher_id
       filter:
         _and:
           - _exists:

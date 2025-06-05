@@ -5,39 +5,30 @@ array_relationships:
   - name: courses
     using:
       foreign_key_constraint_on:
-        column: year_value
+        column: year
         table:
           name: course
           schema: public
   - name: priorities
     using:
       foreign_key_constraint_on:
-        column: year_value
+        column: year
         table:
           name: priority
           schema: public
   - name: requests
     using:
       foreign_key_constraint_on:
-        column: year_value
+        column: year
         table:
           name: request
           schema: public
   - name: services
     using:
       foreign_key_constraint_on:
-        column: year_value
+        column: year
         table:
           name: service
-          schema: public
-  - name: vServices
-    using:
-      manual_configuration:
-        column_mapping:
-          value: year_value
-        insertion_order: null
-        remote_table:
-          name: v_service
           schema: public
 select_permissions:
   - role: commissioner

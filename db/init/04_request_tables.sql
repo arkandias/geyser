@@ -1,24 +1,24 @@
 CREATE TABLE public.priority
 (
     id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year_value  integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year  integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id  integer NOT NULL,
     course_id   integer NOT NULL,
     seniority   integer,
     is_priority boolean,
     computed    boolean NOT NULL DEFAULT FALSE,
-    FOREIGN KEY (year_value, service_id) REFERENCES public.service (year_value, id) ON UPDATE CASCADE,
-    FOREIGN KEY (year_value, course_id) REFERENCES public.course (year_value, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     UNIQUE (service_id, course_id),
     CONSTRAINT priority_seniority_non_negative_check CHECK (seniority >= 0)
 );
-CREATE INDEX idx_priority_year ON public.priority (year_value);
-CREATE INDEX idx_priority_year_service_id ON public.priority (year_value, service_id);
-CREATE INDEX idx_priority_year_course_id ON public.priority (year_value, course_id);
+CREATE INDEX idx_priority_year ON public.priority (year);
+CREATE INDEX idx_priority_year_service_id ON public.priority (year, service_id);
+CREATE INDEX idx_priority_year_course_id ON public.priority (year, course_id);
 
 COMMENT ON TABLE public.priority IS 'Teacher course assignment history and priority status';
 COMMENT ON COLUMN public.priority.id IS 'Unique priority record identifier';
-COMMENT ON COLUMN public.priority.year_value IS 'Year of the priority (must match service''s and course''s year)';
+COMMENT ON COLUMN public.priority.year IS 'Year of the priority (must match service''s and course''s year)';
 COMMENT ON COLUMN public.priority.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.priority.course_id IS 'Course for which priority is tracked';
 COMMENT ON COLUMN public.priority.seniority IS 'Consecutive years teaching this course before current year';
@@ -38,24 +38,24 @@ COMMENT ON COLUMN public.request_type.description IS 'Description of the request
 CREATE TABLE public.request
 (
     id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year_value integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     service_id integer NOT NULL,
     course_id  integer NOT NULL,
     type       text    NOT NULL REFERENCES public.request_type ON UPDATE CASCADE,
     hours      real    NOT NULL,
-    FOREIGN KEY (year_value, service_id) REFERENCES public.service (year_value, id) ON UPDATE CASCADE,
-    FOREIGN KEY (year_value, course_id) REFERENCES public.course (year_value, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, service_id) REFERENCES public.service (year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (year, course_id) REFERENCES public.course (year, id) ON UPDATE CASCADE,
     UNIQUE (service_id, course_id, type),
     CONSTRAINT request_hours_positive_check CHECK (hours > 0)
 );
-CREATE INDEX idx_request_year ON public.request (year_value);
-CREATE INDEX idx_request_year_service_id ON public.request (year_value, service_id);
-CREATE INDEX idx_request_year_course_id ON public.request (year_value, course_id);
+CREATE INDEX idx_request_year ON public.request (year);
+CREATE INDEX idx_request_year_service_id ON public.request (year, service_id);
+CREATE INDEX idx_request_year_course_id ON public.request (year, course_id);
 CREATE INDEX idx_request_type ON public.request (type);
 
 COMMENT ON TABLE public.request IS 'Teacher requests and assignments for courses';
 COMMENT ON COLUMN public.request.id IS 'Unique request identifier';
-COMMENT ON COLUMN public.request.year_value IS 'Year of the request (must match service''s and course''s year)';
+COMMENT ON COLUMN public.request.year IS 'Year of the request (must match service''s and course''s year)';
 COMMENT ON COLUMN public.request.service_id IS 'Associated teacher service record';
 COMMENT ON COLUMN public.request.course_id IS 'Requested or assigned course';
 COMMENT ON COLUMN public.request.type IS 'Type of request (primary choice, backup, or final assignment)';

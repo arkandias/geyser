@@ -2,21 +2,19 @@ table:
   name: service
   schema: public
 object_relationships:
+  - name: message
+    using:
+      foreign_key_constraint_on:
+        column: service_id
+        table:
+          name: message
+          schema: public
   - name: teacher
     using:
-      foreign_key_constraint_on: uid
-  - name: vTeacher
+      foreign_key_constraint_on: teacher_id
+  - name: yearByYear
     using:
-      manual_configuration:
-        column_mapping:
-          uid: uid
-        insertion_order: null
-        remote_table:
-          name: v_teacher
-          schema: public
-  - name: year
-    using:
-      foreign_key_constraint_on: year_value
+      foreign_key_constraint_on: year
 array_relationships:
   - name: modifications
     using:
@@ -30,7 +28,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - service_id
-          - year_value
+          - year
         table:
           name: priority
           schema: public
@@ -39,7 +37,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - service_id
-          - year_value
+          - year
         table:
           name: request
           schema: public
@@ -49,9 +47,8 @@ select_permissions:
       columns:
         - hours
         - id
-        - message
-        - uid
-        - year_value
+        - teacher_id
+        - year
       filter:
         _exists:
           _table:
@@ -67,9 +64,8 @@ select_permissions:
       columns:
         - hours
         - id
-        - message
-        - uid
-        - year_value
+        - teacher_id
+        - year
       filter:
         _and:
           - _exists:
@@ -79,10 +75,10 @@ select_permissions:
               _where:
                 value:
                   _neq: shutdown
-          - year:
+          - yearByYear:
               visible:
                 _eq: true
-          - uid:
+          - teacher_id:
               _eq: X-Hasura-User-Id
       allow_aggregations: true
     comment: Can view their own services for visible years [except during shutdown phase]
@@ -91,7 +87,6 @@ update_permissions:
     permission:
       columns:
         - hours
-        - message
       filter:
         _and:
           - _exists:
@@ -101,10 +96,10 @@ update_permissions:
               _where:
                 value:
                   _eq: requests
-          - year:
+          - yearByYear:
               current:
                 _eq: true
-          - uid:
+          - teacher_id:
               _eq: X-Hasura-User-Id
       check: null
-    comment: During requests phase, can update their own service hours and message for the current year
+    comment: During requests phase, can update their own service hours for the current year

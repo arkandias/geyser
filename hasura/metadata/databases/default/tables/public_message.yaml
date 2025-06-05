@@ -1,13 +1,10 @@
 table:
-  name: service_modification
+  name: message
   schema: public
 object_relationships:
   - name: service
     using:
       foreign_key_constraint_on: service_id
-  - name: type
-    using:
-      foreign_key_constraint_on: type_id
 insert_permissions:
   - role: teacher
     permission:
@@ -28,18 +25,15 @@ insert_permissions:
               teacher_id:
                 _eq: X-Hasura-User-Id
       columns:
-        - hours
-        - service_id
-        - type_id
-    comment: During requests phase, can create service modifications for their own service for the current year
+        - content
+    comment: During requests phase, can insert a message for the current year
 select_permissions:
   - role: commissioner
     permission:
       columns:
         - id
-        - hours
         - service_id
-        - type_id
+        - content
       filter:
         _exists:
           _table:
@@ -48,14 +42,14 @@ select_permissions:
           _where:
             value:
               _eq: assignments
-    comment: Can view all service modifications [during assignments phase only]
+      allow_aggregations: true
+    comment: Can view all messages [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - id
-        - hours
         - service_id
-        - type_id
+        - content
       filter:
         _and:
           - _exists:
@@ -72,13 +66,13 @@ select_permissions:
           - service:
               teacher_id:
                 _eq: X-Hasura-User-Id
-    comment: Can view their own service modifications for visible years [except during shutdown phase]
+      allow_aggregations: true
+    comment: Can view their own messages for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
     permission:
       columns:
-        - hours
-        - type_id
+        - content
       filter:
         _and:
           - _exists:
@@ -90,13 +84,13 @@ update_permissions:
                   _eq: requests
           - service:
               yearByYear:
-                current:
+                visible:
                   _eq: true
           - service:
               teacher_id:
                 _eq: X-Hasura-User-Id
       check: null
-    comment: During requests phase, can update their own service modifications hours and type for the current year
+    comment: During requests phase, can update their message for the current year
 delete_permissions:
   - role: teacher
     permission:
@@ -116,4 +110,4 @@ delete_permissions:
           - service:
               teacher_id:
                 _eq: X-Hasura-User-Id
-    comment: During requests phase, can delete their own service modifications for the current year
+    comment: During requests phase, can delete their message for the current year

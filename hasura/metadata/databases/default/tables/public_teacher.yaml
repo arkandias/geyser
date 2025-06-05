@@ -9,32 +9,23 @@ array_relationships:
   - name: coordinations
     using:
       foreign_key_constraint_on:
-        column: uid
+        column: teacher_id
         table:
           name: coordination
           schema: public
   - name: roles
     using:
       foreign_key_constraint_on:
-        column: uid
+        column: teacher_id
         table:
           name: role
           schema: public
   - name: services
     using:
       foreign_key_constraint_on:
-        column: uid
+        column: teacher_id
         table:
           name: service
-          schema: public
-  - name: vServices
-    using:
-      manual_configuration:
-        column_mapping:
-          uid: uid
-        insertion_order: null
-        remote_table:
-          name: v_service
           schema: public
 select_permissions:
   - role: commissioner
@@ -45,9 +36,9 @@ select_permissions:
         - base_service_hours
         - displayname
         - firstname
+        - id
         - lastname
         - position_id
-        - uid
         - visible
       filter:
         _exists:
@@ -66,13 +57,13 @@ select_permissions:
         - base_service_hours
         - displayname
         - firstname
+        - id
         - lastname
         - position_id
-        - uid
         - visible
       filter:
         _or:
-          - uid:
+          - id:
               _eq: X-Hasura-User-Id
           - _and:
               - _exists:

@@ -13,9 +13,9 @@ object_relationships:
   - name: type
     using:
       foreign_key_constraint_on: type_id
-  - name: year
+  - name: yearByYear
     using:
-      foreign_key_constraint_on: year_value
+      foreign_key_constraint_on: year
 array_relationships:
   - name: coordinations
     using:
@@ -29,7 +29,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - course_id
-          - year_value
+          - year
         table:
           name: priority
           schema: public
@@ -38,7 +38,7 @@ array_relationships:
       foreign_key_constraint_on:
         columns:
           - course_id
-          - year_value
+          - year
         table:
           name: request
           schema: public
@@ -64,7 +64,7 @@ select_permissions:
         - track_id
         - type_id
         - visible
-        - year_value
+        - year
       filter:
         _exists:
           _table:
@@ -95,7 +95,7 @@ select_permissions:
         - track_id
         - type_id
         - visible
-        - year_value
+        - year
       filter:
         _and:
           - _exists:
@@ -109,7 +109,7 @@ select_permissions:
               - _and:
                   - visible:
                       _eq: true
-                  - year:
+                  - yearByYear:
                       visible:
                         _eq: true
                   - program:
@@ -123,25 +123,25 @@ select_permissions:
                       visible:
                         _eq: true
               - coordinations:
-                  uid:
+                  teacher_id:
                     _eq: X-Hasura-User-Id
               - track:
                   coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
               - program:
                   coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
               - requests:
                   service:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
               - priorities:
                   service:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities"
+    comment: 'Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities'
 update_permissions:
   - role: teacher
     permission:
@@ -158,15 +158,15 @@ update_permissions:
                   _neq: shutdown
           - _or:
               - coordinations:
-                  uid:
+                  teacher_id:
                     _eq: X-Hasura-User-Id
               - track:
                   coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
               - program:
                   coordinations:
-                    uid:
+                    teacher_id:
                       _eq: X-Hasura-User-Id
       check: null
     comment: Can update course description of courses that they coordinate (directly or via program/track) [except during shutdown phase]
