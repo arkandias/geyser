@@ -1,11 +1,15 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import { GetServiceDetailsDocument } from "@/gql/graphql.ts";
+import {
+  GetServiceDetailsDocument,
+  GetTeacherDetailsDocument,
+} from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useServicesStore } from "@/stores/useServicesStore.ts";
 
 import ServiceDetails from "@/components/service/ServiceDetails.vue";
@@ -15,6 +19,12 @@ import ServiceRequests from "@/components/service/ServiceRequests.vue";
 import ServiceTeacher from "@/components/service/ServiceTeacher.vue";
 
 graphql(`
+  query GetTeacherDetails($uid: String!) {
+    teacher: teacherByPk(uid: $uid) {
+      ...ServiceTeacher
+    }
+  }
+
   query GetServiceDetails($id: Int!) {
     service: serviceByPk(id: $id) {
       teacher {
@@ -28,13 +38,16 @@ graphql(`
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
+
 const { t } = useTypedI18n();
 const { serviceId: myServiceId } = useServicesStore();
 const { getValue: selectedService } = useQueryParam("serviceId", true);
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);
 
-const { data, fetching } = useQuery({
+const getServiceDetails = useQuery({
   query: GetServiceDetailsDocument,
   variables: () => ({ id: serviceId.value ?? -1 }),
   pause: () => serviceId.value === null,
@@ -49,32 +62,44 @@ const { data, fetching } = useQuery({
     ],
   },
 });
+const service = computed(() => getServiceDetails.data.value?.service ?? null);
 
-const service = computed(() => data.value?.service ?? null);
+const getTeacherDetails = useQuery({
+  query: GetTeacherDetailsDocument,
+  variables: () => ({ uid: authManager.userId }),
+  pause: () => serviceId.value !== null,
+  context: {
+    additionalTypenames: ["All", "Coordination"],
+  },
+});
+
+const fetching = computed(
+  () => getServiceDetails.fetching.value || getTeacherDetails.fetching.value,
+);
+const teacher = computed(
+  () => service.value?.teacher ?? getTeacherDetails.data.value?.teacher ?? null,
+);
 </script>
 
 <template>
   <QPage class="column items-center">
-    <QCard v-if="serviceId === null" flat square>
+    <QCard v-if="fetching" flat square>
       <QCardSection class="text-h4 q-pa-xl">
-        {{ t("service.noService") }}
+        {{ t("service.fetching") }}
       </QCardSection>
     </QCard>
-    <QCard v-else-if="fetching" flat square>
-      <QCardSection class="text-h4 q-pa-xl">
-        {{ t("service.fetchingService") }}
-      </QCardSection>
-    </QCard>
-    <QCard v-else-if="service" flat square>
-      <ServiceTeacher :data-fragment="service.teacher" />
-      <ServiceDetails :data-fragment="service" />
-      <ServiceRequests :data-fragment="service" />
-      <ServicePriorities :data-fragment="service" />
-      <ServiceMessage :data-fragment="service" />
+    <QCard v-else-if="teacher" flat square>
+      <ServiceTeacher :data-fragment="teacher" />
+      <template v-if="service">
+        <ServiceDetails :data-fragment="service" />
+        <ServiceRequests :data-fragment="service" />
+        <ServicePriorities :data-fragment="service" />
+        <ServiceMessage :data-fragment="service" />
+      </template>
     </QCard>
     <QCard v-else flat square>
       <QCardSection class="text-h4 q-pa-xl">
-        {{ t("service.serviceNotFound") }}
+        {{ t("service.notFound") }}
       </QCardSection>
     </QCard>
   </QPage>

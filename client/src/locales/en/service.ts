@@ -1,8 +1,7 @@
 export default {
   service: {
-    noService: "No service",
-    fetchingService: "Loading service...",
-    serviceNotFound: "Service not found",
+    fetching: "Loading service...",
+    notFound: "Service not found",
     coordinations: {
       title: "Responsibilities",
       type: {

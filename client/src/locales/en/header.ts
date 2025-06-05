@@ -4,7 +4,7 @@ export default {
       label: "Home",
     },
     service: {
-      label: "My Information",
+      label: "My Service",
     },
     courses: {
       label: "Courses",
