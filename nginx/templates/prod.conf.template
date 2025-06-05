@@ -87,3 +87,14 @@ server {
         try_files $uri $uri/ /index.html =404;
     }
 }
+
+# Redirect main domain to app (temporary)
+server {
+    listen 443 ssl;
+    server_name ${NGINX_DOMAIN};
+    
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    
+    return 302 https://app.${NGINX_DOMAIN}$request_uri;
+}
