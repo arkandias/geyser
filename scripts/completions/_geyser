@@ -114,10 +114,8 @@ _geyser_compose() {
     words_after_compose=("${words[@]:$((i))}")
 
     # Load env files
-    [[ -f "${GEYSER_HOME}/.env" ]] &&
-        . "${GEYSER_HOME}/.env"
-    [[ -f "${GEYSER_HOME}/.env.local" ]] &&
-        . "${GEYSER_HOME}/.env.local"
+    [[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
+    [[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
 
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
