@@ -113,9 +113,14 @@ _geyser_compose() {
     done
     words_after_compose=("${words[@]:$((i))}")
 
-    # Load env files
-    [[ -f "${GEYSER_HOME}/.env" ]] && . "${GEYSER_HOME}/.env"
-    [[ -f "${GEYSER_HOME}/.env.local" ]] && . "${GEYSER_HOME}/.env.local"
+    # Load GEYSER_MODE from env files
+    local -a env_files=("${GEYSER_HOME}/.env" "${GEYSER_HOME}/.env.local")
+    for env_file in "${env_files[@]}"; do
+        if [[ -f "${env_file}" ]]; then
+            line=$(grep '^GEYSER_MODE=' "${env_file}" 2>/dev/null)
+            [[ -n "${line}" ]] && eval "${line}"
+        fi
+    done
 
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
