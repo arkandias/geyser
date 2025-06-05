@@ -59,7 +59,7 @@ export class AuthController {
   }
 
   @Get("login/callback")
-  async callback(
+  async loginCallback(
     @Query("state") state: string | undefined,
     @Query("code") code: string | undefined,
     @Res() res: Response,
@@ -90,10 +90,7 @@ export class AuthController {
       if (redirectUrl) {
         res.redirect(redirectUrl.toString());
       } else {
-        res
-          .status(200)
-          .contentType("text/plain")
-          .send("Authentication successful");
+        res.status(200).json({ message: "Logged in" });
       }
     } catch (error) {
       if (redirectUrl) {
@@ -129,7 +126,7 @@ export class AuthController {
   }
 
   @Get("logout/callback")
-  postLogout(
+  logoutCallback(
     @Query("state") state: string | undefined,
     @Res() res: Response,
   ): void {
@@ -140,6 +137,8 @@ export class AuthController {
     const redirectUrl = this.authService.getState(state).redirectUrl;
     if (redirectUrl) {
       res.redirect(redirectUrl.href);
+    } else {
+      res.status(200).json({ message: "Logged out" });
     }
   }
 
@@ -163,5 +162,7 @@ export class AuthController {
     }
     const { sub } = await this.jwtService.verifyRefreshToken(refreshToken);
     await this.cookiesService.setAuthCookies(res, sub);
+
+    res.status(200).json({ message: "Token refreshed successfully" });
   }
 }
