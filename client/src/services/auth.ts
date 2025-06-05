@@ -202,14 +202,6 @@ export class AuthManager {
     );
   }
 
-  get displayname(): string {
-    return this._payload?.displayname ?? "";
-  }
-
-  get isActive(): boolean {
-    return !!this._payload?.active;
-  }
-
   setActiveRole(role: RoleTypeEnum): void {
     if (this.allowedRoles.includes(role)) {
       this._role.value = toLowerCase(role);

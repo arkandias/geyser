@@ -12,7 +12,7 @@ import {
   RequestTypeEnum,
   UpsertRequestDocument,
 } from "@/gql/graphql.ts";
-import { useServicesStore } from "@/stores/useServicesStore.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import NumInput from "@/components/core/NumInput.vue";
 import SelectService from "@/components/core/SelectService.vue";
@@ -75,7 +75,7 @@ graphql(`
 
 const { t } = useTypedI18n();
 const { notify } = useNotify();
-const { serviceId: myServiceId } = useServicesStore();
+const { serviceId: myServiceId } = useProfileStore();
 const perm = usePermissions();
 
 const upsertRequest = useMutation(UpsertRequestDocument);

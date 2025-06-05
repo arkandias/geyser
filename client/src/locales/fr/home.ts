@@ -42,8 +42,8 @@ export default {
     alert: {
       loggedOut: "Vous êtes déconnecté",
       notAuthenticated: "Vous n'êtes pas authentifié",
-      notActive: "Votre profil n'est pas actif",
       loadingAppData: "Chargement des paramètres de l'application…",
+      profileNotLoaded: "Votre profil n'a pas pu être chargé",
       shutdown: "Geyser est actuellement fermé",
       pageNotFound: "Page non trouvée",
     },

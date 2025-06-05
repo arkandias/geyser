@@ -9,7 +9,7 @@ import { GetAppDataDocument, PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
-import { useServicesStore } from "@/stores/useServicesStore.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import TheHeader from "@/components/TheHeader.vue";
@@ -29,9 +29,13 @@ graphql(`
       key
       value
     }
-    services: service(where: { uid: { _eq: $uid } }) {
-      id
-      year: yearValue
+    profile: teacherByPk(uid: $uid) {
+      uid
+      displayname
+      services {
+        id
+        year: yearValue
+      }
     }
   }
 `);
@@ -41,7 +45,7 @@ const { notify } = useNotify();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
-const { setServices } = useServicesStore();
+const { isLoaded, setProfile } = useProfileStore();
 
 const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
@@ -58,7 +62,7 @@ if (authManager.authError) {
 const getAppData = useQuery({
   query: GetAppDataDocument,
   variables: { uid: authManager.userId },
-  pause: () => !authManager.isAuthenticated || !authManager.isActive,
+  pause: () => !authManager.isAuthenticated,
   context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
 });
 watch(
@@ -80,8 +84,8 @@ watch(
     if (data?.customTexts) {
       setCustomTexts(data.customTexts);
     }
-    if (data?.services) {
-      setServices(data.services);
+    if (data?.profile) {
+      setProfile(data.profile);
     }
   },
   { immediate: true },
@@ -90,7 +94,7 @@ watch(
 watch(
   currentPhase,
   (phase) => {
-    if (!authManager.isAuthenticated || !authManager.isActive) {
+    if (!authManager.isAuthenticated) {
       return;
     }
     if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
@@ -105,7 +109,7 @@ watch(
   { immediate: true },
 );
 
-// Access check and information messages
+// Access check and information message
 const accessDeniedMessage = computed(() => {
   if (authManager.isLoggedOut) {
     return t("home.alert.loggedOut");
@@ -113,11 +117,11 @@ const accessDeniedMessage = computed(() => {
   if (!authManager.isAuthenticated) {
     return t("home.alert.notAuthenticated");
   }
-  if (!authManager.isActive) {
-    return t("home.alert.notActive");
-  }
   if (getAppData.fetching.value) {
     return t("home.alert.loadingAppData");
+  }
+  if (!isLoaded.value) {
+    return t("home.alert.profileNotLoaded");
   }
   if (
     currentPhase.value === PhaseEnum.Shutdown &&

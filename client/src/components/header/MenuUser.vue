@@ -6,14 +6,15 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { RoleTypeEnum } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const authManager = inject<AuthManager>("authManager")!;
-
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
+const { displayname } = useProfileStore();
 
 const roleOptions = computed(() =>
   [RoleTypeEnum.Admin, RoleTypeEnum.Commissioner, RoleTypeEnum.Teacher]
@@ -36,7 +37,7 @@ const updateRole = async (value: RoleTypeEnum) => {
       <template v-if="authManager.isAuthenticated">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
-            {{ authManager.displayname }}
+            {{ displayname }}
           </QItemLabel>
         </QItem>
         <QSeparator />

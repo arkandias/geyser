@@ -72,6 +72,9 @@ export class JwtService {
     if (!user) {
       throw new UnauthorizedException("User not found");
     }
+    if (!user.active) {
+      throw new UnauthorizedException("User not active");
+    }
 
     const roles = await this.rolesService.findByUid(uid);
     const roleTypes = roles
@@ -89,8 +92,6 @@ export class JwtService {
       userId: uid,
       allowedRoles: roleTypes,
       defaultRole: "teacher",
-      displayname: user.displayname,
-      active: user.active,
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 

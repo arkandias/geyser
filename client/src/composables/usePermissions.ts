@@ -3,7 +3,7 @@ import { computed, inject, readonly } from "vue";
 import { PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
-import { useServicesStore } from "@/stores/useServicesStore.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
@@ -11,7 +11,7 @@ export const usePermissions = () => {
   const { userId, activeRole } = inject<AuthManager>("authManager")!;
   const { isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
-  const { hasService } = useServicesStore();
+  const { hasService } = useProfileStore();
 
   const toAdmin = computed(() => activeRole.value === RoleTypeEnum.Admin);
 

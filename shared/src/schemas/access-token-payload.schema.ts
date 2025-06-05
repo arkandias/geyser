@@ -8,8 +8,6 @@ export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
     userId: z.string(),
     allowedRoles: z.array(roleTypeSchema),
     defaultRole: roleTypeSchema,
-    displayname: z.string(),
-    active: z.boolean(),
   }),
 );
 
