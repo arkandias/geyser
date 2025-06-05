@@ -148,6 +148,7 @@ export class AuthManager {
           );
         } else {
           console.debug("[AuthManager] Verification failed: Network error");
+          console.debug(error.message);
         }
       } else {
         console.debug("[AuthManager] Verification failed: Unknown error");
@@ -172,6 +173,7 @@ export class AuthManager {
           );
         } else {
           console.debug("[AuthManager] Refresh failed: Network error");
+          console.debug(error.message);
         }
       } else {
         console.debug("[AuthManager] Refresh failed: Unknown error");

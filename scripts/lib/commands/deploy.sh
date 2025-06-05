@@ -38,5 +38,5 @@ handle_deploy() {
     _compose up -d
     
     # Cleanup
-    docker system prune -a -f
+    docker system prune -f
 }

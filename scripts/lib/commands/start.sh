@@ -32,9 +32,10 @@ handle_start() {
         esac
     done
 
-    # Check if data volume exist
-    if ! docker volume ls --format '{{.Name}}' | grep -q '^geyser_data$'; then
-        warn "Geyser data volume not found. You should initialize Geyser first with 'geyser init'"
+    # Check if data volumes already exist
+    if ! docker volume ls --format '{{.Name}}' | grep -qE '^geyser_kc-data$' ||
+        ! docker volume ls --format '{{.Name}}' | grep -qE '^geyser_data$'; then
+        warn "Data volumes not found. You should initialize Geyser first with 'geyser init'"
         if ! confirm "Start anyway?"; then
             info "Startup cancelled: init Geyser first with 'geyser init'"
             return

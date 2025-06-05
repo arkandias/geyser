@@ -2,7 +2,24 @@
   "realm": "geyser",
   "displayName": "Geyser",
   "enabled": true,
+  "registrationAllowed": false,
   "registrationEmailAsUsername": true,
+  "rememberMe": false,
+  "verifyEmail": true,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": false,
+  "editUsernameAllowed": false,
+  "bruteForceProtected": true,
+  "permanentLockout": false,
+  "maxTemporaryLockouts": 0,
+  "bruteForceStrategy": "MULTIPLE",
+  "maxFailureWaitSeconds": 900,
+  "minimumQuickLoginWaitSeconds": 60,
+  "waitIncrementSeconds": 60,
+  "quickLoginCheckMilliSeconds": 1000,
+  "maxDeltaTimeSeconds": 43200,
+  "failureFactor": 30,
   "internationalizationEnabled": true,
   "supportedLocales": ["en", "fr"],
   "defaultLocale": "fr",
@@ -48,18 +65,20 @@
       "nodeReRegistrationTimeout": -1,
       "protocolMappers": [
         {
-          "name": "email as uid",
+          "name": "email",
           "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-property-mapper",
+          "protocolMapper": "oidc-usermodel-attribute-mapper",
           "consentRequired": false,
           "config": {
-            "introspection.token.claim": "true",
-            "userinfo.token.claim": "true",
+            "aggregate.attrs": "false",
+            "introspection.token.claim": "false",
+            "multivalued": "false",
+            "userinfo.token.claim": "false",
             "user.attribute": "email",
-            "id.token.claim": "true",
+            "id.token.claim": "false",
             "lightweight.claim": "false",
             "access.token.claim": "true",
-            "claim.name": "uid",
+            "claim.name": "email",
             "jsonType.label": "String"
           }
         },
@@ -69,10 +88,10 @@
           "protocolMapper": "oidc-hardcoded-claim-mapper",
           "consentRequired": false,
           "config": {
-            "introspection.token.claim": "true",
+            "introspection.token.claim": "false",
             "claim.value": "${API_URL}/",
-            "userinfo.token.claim": "true",
-            "id.token.claim": "true",
+            "userinfo.token.claim": "false",
+            "id.token.claim": "false",
             "lightweight.claim": "false",
             "access.token.claim": "true",
             "claim.name": "aud",
@@ -89,17 +108,5 @@
         "manage": true
       }
     }
-  ],
-  "components": {
-    "org.keycloak.userprofile.UserProfileProvider": [
-      {
-        "providerId": "declarative-user-profile",
-        "config": {
-          "kc.user.profile.config": [
-            "{\"attributes\":[{\"name\":\"username\",\"displayName\":\"${username}\",\"validations\":{\"length\":{\"min\":3,\"max\":255},\"username-prohibited-characters\":{},\"up-username-not-idn-homograph\":{}},\"annotations\":{},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"email\",\"displayName\":\"${email}\",\"validations\":{\"email\":{},\"length\":{\"max\":255}},\"annotations\":{},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"firstName\",\"displayName\":\"${firstName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"annotations\":{},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false},{\"name\":\"lastName\",\"displayName\":\"${lastName}\",\"validations\":{\"length\":{\"max\":255},\"person-name-prohibited-characters\":{}},\"annotations\":{},\"required\":{\"roles\":[\"user\"]},\"permissions\":{\"view\":[\"admin\",\"user\"],\"edit\":[\"admin\"]},\"multivalued\":false}],\"groups\":[{\"name\":\"user-metadata\",\"displayHeader\":\"User metadata\",\"displayDescription\":\"Attributes, which refer to user metadata\"}]}"
-          ]
-        }
-      }
-    ]
-  }
+  ]
 }

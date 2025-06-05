@@ -44,10 +44,10 @@ handle_purge() {
     fi
 
     info "Stopping services..."
-    _compose down -v --rmi all --remove-orphans
+    _compose down --volumes --rmi all --remove-orphans
 
     info "Cleaning up Docker..."
-    docker system prune -a -f
+    docker system prune -f
 
     info "Removing logs..."
     rm -rf "${LOGS_DIR:?}"/*
