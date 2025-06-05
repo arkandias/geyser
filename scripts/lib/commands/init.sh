@@ -60,7 +60,7 @@ handle_init() {
     info "Initializing Hasura..."
     _compose up -d hasura
     wait_until_healthy hasura
-    # Wait a few more seconds...
+    info "Waiting a few more seconds..."
     sleep 3
     _hasura metadata apply
 
