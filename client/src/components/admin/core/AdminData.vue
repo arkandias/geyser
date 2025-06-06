@@ -26,6 +26,7 @@ import type {
   Option,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
   SimpleObject,
 } from "@/types/data.ts";
 import { downloadCSV, getField, importCSV, normalizeForSearch } from "@/utils";
@@ -74,8 +75,8 @@ const {
   rows: Row[];
   formatRow: (row: Row) => string;
   validateFlatRow: (flatRow: FlatRow) => InsertInput;
-  formOptions?: Record<string, Scalar[] | Option[]>;
-  filterOptions?: Record<string, Scalar[] | Option[]>;
+  formOptions?: SelectOptions<string, Row, T>;
+  filterOptions?: SelectOptions<string, Row, T>;
   insertData: CustomMutationResponse<
     "insertData",
     { objects: InsertInput | InsertInput[] }

@@ -54,7 +54,7 @@ If courses or services are associated with this year, you will not be able to de
     roles: {
       label: "Roles",
       column: {
-        uid: {
+        teacherEmail: {
           label: "Teacher",
           tooltip: "",
         },
@@ -74,6 +74,7 @@ If courses or services are associated with this year, you will not be able to de
           multiple: "{count} roles selected",
         },
         error: {
+          teacherNotFound: `No teacher with email '{email}'`,
           invalidRole: `Role type must be ${RoleTypeEnum.Admin} or ${RoleTypeEnum.Commissioner}`,
         },
       },

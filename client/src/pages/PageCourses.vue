@@ -27,7 +27,7 @@ graphql(`
     courses: course(
       where: {
         _and: [
-          { yearValue: { _eq: $year } }
+          { year: { _eq: $year } }
           { hoursEffective: { _gt: 0 } }
           { groupsEffective: { _gt: 0 } }
         ]
@@ -47,17 +47,11 @@ graphql(`
 
   query GetServiceRows($year: Int!) {
     services: service(
-      where: { yearValue: { _eq: $year } }
+      where: { year: { _eq: $year } }
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...ServiceRow
-    }
-
-    vServices: vService(
-      where: { yearValue: { _eq: $year } }
-      orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
-    ) {
-      ...TableCoursesVService
+      ...TableCoursesService
     }
   }
 
@@ -102,7 +96,6 @@ const getServiceRows = useQuery({
 });
 const fetchingServiceRows = computed(() => getServiceRows.fetching.value);
 const serviceRows = computed(() => getServiceRows.data.value?.services ?? []);
-const vServiceRows = computed(() => getServiceRows.data.value?.vServices ?? []);
 
 // Selected course details
 const { getValue: selectedCourse } = useQueryParam("courseId", true);
@@ -176,7 +169,7 @@ const warningMessage = computed(() =>
             <TableCourses
               :course-row-fragments="courseRows"
               :fetching="fetchingCourseRows"
-              :v-service-fragments="vServiceRows"
+              :service-fragments="serviceRows"
             />
           </template>
           <template #after>

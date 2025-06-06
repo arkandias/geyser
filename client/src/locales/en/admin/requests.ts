@@ -22,27 +22,27 @@ export default {
           label: "Hours",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Teacher",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Degree",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Program",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Track",
           tooltip: "",
         },
-        course: {
+        courseName: {
           label: "Course",
           tooltip: "",
         },
-        semester: {
+        courseSemester: {
           label: "Semester",
           tooltip: "",
         },
@@ -58,10 +58,10 @@ export default {
           multiple: "{count} requests selected",
         },
         error: {
-          updateUidWithoutYear:
+          updateTeacherWithoutYear:
             "You cannot modify the teacher without selecting a year",
           serviceNotFound:
-            "No service exists for teacher {uid} for year {year}",
+            "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
             "To update the course, you must select a year, degree, program, track (possibly empty), course, semester, and course type",
           courseNotFound:
@@ -111,27 +111,27 @@ export default {
           label: "Computed",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Teacher",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Degree",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Program",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Track",
           tooltip: "",
         },
-        course: {
+        courseName: {
           label: "Course",
           tooltip: "",
         },
-        semester: {
+        courseSemester: {
           label: "Semester",
           tooltip: "",
         },
@@ -147,10 +147,10 @@ export default {
           multiple: "{count} priorities selected",
         },
         error: {
-          updateUidWithoutYear:
+          updateTeacherWithoutYear:
             "You cannot modify the teacher without selecting a year",
           serviceNotFound:
-            "No service exists for teacher {uid} for year {year}",
+            "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
             "To update the course, you must select a year, degree, program, track (possibly empty), course, semester, and course type",
           courseNotFound:

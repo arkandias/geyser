@@ -57,7 +57,7 @@ Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
     programs: {
       label: "Mentions",
       column: {
-        degree: {
+        degreeName: {
           label: "Diplôme",
           tooltip: "",
         },
@@ -110,11 +110,11 @@ S'il existe des parcours, des cours ou des responsables pour ces mentions, vous 
     tracks: {
       label: "Parcours",
       column: {
-        degree: {
+        degreeName: {
           label: "Diplôme",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Mention",
           tooltip: "",
         },
@@ -177,15 +177,15 @@ S'il existe des cours ou des responsables pour ces parcours, vous ne pourrez pas
           label: "Année",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Diplôme",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Mention",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Parcours",
           tooltip: "",
         },
@@ -201,7 +201,7 @@ S'il existe des cours ou des responsables pour ces parcours, vous ne pourrez pas
           label: "Semestre",
           tooltip: "",
         },
-        type: {
+        typeLabel: {
           label: "Type d'enseignement",
           tooltip: "",
         },

@@ -1,5 +1,5 @@
 <script lang="ts">
-export type ColName = "degree" | "name" | "nameShort" | "visible";
+export type ColName = "degreeName" | "name" | "nameShort" | "visible";
 </script>
 
 <script setup lang="ts">
@@ -41,7 +41,7 @@ const { t } = useTypedI18n();
 
 const idKey: keyof Row = "id";
 const rowDescriptor = {
-  degree: {
+  degreeName: {
     type: "string",
     field: (row) => row.degree.name,
     format: (val: string) =>
@@ -67,7 +67,6 @@ graphql(`
   fragment AdminProgram on Program {
     id
     degree {
-      id
       name
       nameDisplay
     }
@@ -144,8 +143,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   // degreeId
-  if (flatRow.degree !== undefined) {
-    const degree = degrees.value.find((d) => d.name === flatRow.degree);
+  if (flatRow.degreeName !== undefined) {
+    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
     if (degree === undefined) {
       throw new Error(
         t("admin.courses.programs.form.error.degreeNotFound", flatRow),
@@ -171,7 +170,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
-  degree: degrees.value.map((d) => d.name),
+  degreeName: degrees.value.map((d) => d.name),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});

@@ -1,12 +1,12 @@
 <script lang="ts">
 export type ColName =
   | "year"
-  | "uid"
-  | "degree"
-  | "program"
-  | "track"
-  | "course"
-  | "semester"
+  | "teacherEmail"
+  | "degreeName"
+  | "programName"
+  | "trackName"
+  | "courseName"
+  | "courseSemester"
   | "courseType"
   | "seniority"
   | "isPriority"
@@ -82,28 +82,28 @@ const rowDescriptor = {
     type: "number",
     formType: "select",
   },
-  uid: {
+  teacherEmail: {
     type: "string",
-    field: (row) => row.service.uid,
+    field: (row) => row.service.teacher.email,
     format: (val: string) =>
-      teachers.value.find((t) => t.uid === val)?.displayname,
+      teachers.value.find((t) => t.email === val)?.displayname,
     formType: "select",
   },
-  degree: {
+  degreeName: {
     type: "string",
     field: (row) => row.course.program.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
     formType: "select",
   },
-  program: {
+  programName: {
     type: "string",
     field: (row) => row.course.program.name,
     format: (val: string) =>
       programs.value.find((p) => p.name === val)?.nameDisplay,
     formType: "select",
   },
-  track: {
+  trackName: {
     type: "string",
     nullable: true,
     field: (row) => row.course.track?.name,
@@ -111,14 +111,14 @@ const rowDescriptor = {
       tracks.value.find((t) => t.name === val)?.nameDisplay,
     formType: "select",
   },
-  course: {
+  courseName: {
     type: "string",
     field: (row) => row.course.name,
     format: (val: string) =>
       courses.value.find((c) => c.name === val)?.nameDisplay,
     formType: "select",
   },
-  semester: {
+  courseSemester: {
     type: "number",
     field: (row) => row.course.semester,
     format: (val: number) => t("semester", { semester: val }),
@@ -148,32 +148,30 @@ const rowDescriptor = {
 graphql(`
   fragment AdminPriority on Priority {
     id
-    year: yearValue
+    year
     service {
-      id
-      uid
+      teacher {
+        email
+        displayname
+      }
     }
     course {
-      id
+      name
+      nameDisplay
       program {
-        id
         name
         nameDisplay
         degree {
-          id
           name
           nameDisplay
         }
       }
       track {
-        id
         name
+        nameDisplay
       }
-      name
-      nameDisplay
       semester
       type {
-        id
         label
       }
     }
@@ -184,21 +182,21 @@ graphql(`
 
   fragment AdminPrioritiesService on Service {
     id
-    year: yearValue
+    year
     teacher {
-      uid
+      email
       displayname
     }
   }
 
   fragment AdminPrioritiesTeacher on Teacher {
-    uid
+    email
     displayname
   }
 
   fragment AdminPrioritiesCourse on Course {
     id
-    year: yearValue
+    year
     program {
       name
       degree {
@@ -328,52 +326,53 @@ const importUpdateColumns = [
 ];
 
 const formatRow = (row: Row) =>
-  `${row.year} — ${row.service.uid} — ${row.course.name}`;
+  `${row.year} — ${row.service.teacher.displayname} — ` +
+  `${row.course.program.degree.name} — ${row.course.program.name} ` +
+  (row.course.track ? `— ${row.course.track.name}` : "") +
+  `— ${row.course.name} — ${row.course.semester} — ${row.course.type}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.yearValue = flatRow.year;
+    object.year = flatRow.year;
   }
 
   // serviceId
-  if (flatRow.uid !== undefined) {
+  if (flatRow.teacherEmail !== undefined) {
     if (flatRow.year === undefined) {
       throw new Error(
-        t("admin.requests.priorities.form.error.updateUidWithoutYear"),
+        t("admin.requests.priorities.form.error.updateTeacherWithoutYear"),
       );
     }
-
     const service = services.value.find(
-      (s) => s.year === flatRow.year && s.teacher.uid === flatRow.uid,
+      (s) =>
+        s.year === flatRow.year && s.teacher.email === flatRow.teacherEmail,
     );
-
     if (service === undefined) {
       throw new Error(
         t("admin.requests.priorities.form.error.serviceNotFound", flatRow),
       );
     }
-
     object.serviceId = service.id;
   }
 
   // courseId
   if (
-    flatRow.degree !== undefined ||
-    flatRow.program !== undefined ||
-    flatRow.track !== undefined ||
-    flatRow.course !== undefined ||
-    flatRow.semester !== undefined ||
+    flatRow.degreeName !== undefined ||
+    flatRow.programName !== undefined ||
+    flatRow.trackName !== undefined ||
+    flatRow.courseName !== undefined ||
+    flatRow.courseSemester !== undefined ||
     flatRow.courseType !== undefined
   ) {
     if (
       flatRow.year === undefined ||
-      flatRow.degree === undefined ||
-      flatRow.program === undefined ||
-      flatRow.track === undefined ||
-      flatRow.course === undefined ||
-      flatRow.semester === undefined ||
+      flatRow.degreeName === undefined ||
+      flatRow.programName === undefined ||
+      flatRow.trackName === undefined ||
+      flatRow.courseName === undefined ||
+      flatRow.courseSemester === undefined ||
       flatRow.courseType === undefined
     ) {
       throw new Error(
@@ -384,11 +383,11 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     const course = courses.value.find(
       (c) =>
         c.year === flatRow.year &&
-        c.program.degree.name === flatRow.degree &&
-        c.program.name === flatRow.program &&
-        (c.track?.name ?? null) === flatRow.track &&
-        c.name === flatRow.course &&
-        c.semester === flatRow.semester &&
+        c.program.degree.name === flatRow.degreeName &&
+        c.program.name === flatRow.programName &&
+        (c.track?.name ?? null) === flatRow.trackName &&
+        c.name === flatRow.courseName &&
+        c.semester === flatRow.courseSemester &&
         c.type.label === flatRow.courseType,
     );
 
@@ -419,39 +418,39 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   year: years.value.map((y) => y.value),
-  uid: services.value
+  teacherEmail: services.value
     .filter((s) => s.year === formValues.value["year"])
-    .map((s) => ({ value: s.teacher.uid, label: s.teacher.displayname })),
-  degree: courses.value.map((c) => c.program.degree.name).filter(unique),
-  program: courses.value
-    .filter((c) => c.program.degree.name === formValues.value["degree"])
+    .map((s) => ({ value: s.teacher.email, label: s.teacher.displayname })),
+  degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
+  programName: courses.value
+    .filter((c) => c.program.degree.name === formValues.value["degreeName"])
     .map((c) => c.program.name)
     .filter(unique),
-  track: courses.value
+  trackName: courses.value
     .filter(
       (c) =>
-        c.program.degree.name === formValues.value["degree"] &&
-        c.program.name === formValues.value["program"] &&
+        c.program.degree.name === formValues.value["degreeName"] &&
+        c.program.name === formValues.value["programName"] &&
         c.track?.name,
     )
     .map((c) => c.track?.name)
     .filter(unique),
-  course: courses.value
+  courseName: courses.value
     .filter(
       (c) =>
-        c.program.degree.name === formValues.value["degree"] &&
-        c.program.name === formValues.value["program"] &&
-        (c.track?.name ?? null) === (formValues.value["track"] ?? null),
+        c.program.degree.name === formValues.value["degreeName"] &&
+        c.program.name === formValues.value["programName"] &&
+        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null),
     )
     .map((c) => c.name)
     .filter(unique),
-  semester: courses.value
+  courseSemester: courses.value
     .filter(
       (c) =>
-        c.program.degree.name === formValues.value["degree"] &&
-        c.program.name === formValues.value["program"] &&
-        (c.track?.name ?? null) === (formValues.value["track"] ?? null) &&
-        c.name === formValues.value["course"],
+        c.program.degree.name === formValues.value["degreeName"] &&
+        c.program.name === formValues.value["programName"] &&
+        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
+        c.name === formValues.value["courseName"],
     )
     .map((c) => ({
       value: c.semester,
@@ -460,23 +459,23 @@ const formOptions = computed(() => ({
   courseType: courses.value
     .filter(
       (c) =>
-        c.program.degree.name === formValues.value["degree"] &&
-        c.program.name === formValues.value["program"] &&
-        (c.track?.name ?? null) === (formValues.value["track"] ?? null) &&
-        c.name === formValues.value["course"] &&
-        c.semester === formValues.value["semester"],
+        c.program.degree.name === formValues.value["degreeName"] &&
+        c.program.name === formValues.value["programName"] &&
+        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
+        c.name === formValues.value["courseName"] &&
+        c.semester === formValues.value["courseSemester"],
     )
     .map((c) => c.type.label),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed(() => ({
-  uid: teachers.value.map((t) => t.uid),
-  degree: degrees.value.map((d) => d.name),
-  program: programs.value.map((p) => p.name),
-  track: tracks.value.map((t) => t.name),
-  course: courses.value.map((c) => c.name),
-  semester: [1, 2, 3, 4, 5, 6],
+  teacherEmail: teachers.value.map((t) => t.email),
+  degreeName: degrees.value.map((d) => d.name),
+  programName: programs.value.map((p) => p.name),
+  trackName: tracks.value.map((t) => t.name),
+  courseName: courses.value.map((c) => c.name),
+  courseSemester: [1, 2, 3, 4, 5, 6],
   courseType: courseTypes.value.map((ct) => ct.label),
 }));
 </script>

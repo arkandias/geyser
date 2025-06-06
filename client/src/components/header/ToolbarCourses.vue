@@ -8,7 +8,7 @@ import { buttonColor } from "@/utils";
 import MenuYear from "@/components/header/MenuYear.vue";
 
 const { t } = useTypedI18n();
-const { hasService, serviceId } = useProfileStore();
+const { hasService, currentServiceId } = useProfileStore();
 const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
 const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   "serviceId",
@@ -32,11 +32,11 @@ const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   </QBtn>
   <QBtn
     icon="sym_s_assignment"
-    :color="buttonColor(selectedService === serviceId)"
+    :color="buttonColor(selectedService === currentServiceId)"
     :disable="!hasService"
     flat
     square
-    @click="toggleService(serviceId)"
+    @click="toggleService(currentServiceId)"
   >
     <QTooltip>
       {{ t("header.courses.myService") }}

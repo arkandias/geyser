@@ -58,7 +58,7 @@ export class AuthGuard implements CanActivate {
     // Verify JWT token
     const payload = await this.jwtService.verifyAccessToken(accessToken);
 
-    // Validate X-User-Id header against JWT uid
+    // Validate X-User-Id header against JWT
     if (userId && userId !== payload.userId) {
       throw new UnauthorizedException(
         `X-User-Id header '${userId}' does not match user id '${payload.userId}'`,

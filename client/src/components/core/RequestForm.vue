@@ -23,7 +23,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment RequestFormData on Course {
-    year: yearValue
+    year
     courseId: id
     hoursPerGroup: hoursEffective
   }
@@ -35,9 +35,9 @@ graphql(`
     $requestType: RequestTypeEnum!
     $hours: Float!
   ) {
-    request: insertRequestOne(
+    insertRequestOne(
       object: {
-        yearValue: $year
+        year: $year
         serviceId: $serviceId
         courseId: $courseId
         type: $requestType
@@ -57,7 +57,7 @@ graphql(`
     $courseId: Int!
     $requestType: RequestTypeEnum!
   ) {
-    requests: deleteRequest(
+    deleteRequest(
       where: {
         _and: [
           { serviceId: { _eq: $serviceId } }
@@ -75,7 +75,7 @@ graphql(`
 
 const { t } = useTypedI18n();
 const { notify } = useNotify();
-const { serviceId: myServiceId } = useProfileStore();
+const { currentServiceId: myServiceId } = useProfileStore();
 const perm = usePermissions();
 
 const upsertRequest = useMutation(UpsertRequestDocument);
@@ -193,7 +193,7 @@ const submitForm = async (): Promise<void> => {
       requestType: requestType.value,
     });
 
-    if (result.data?.requests?.returning && !result.error) {
+    if (result.data?.deleteRequest?.returning && !result.error) {
       notify(NotifyType.Success, {
         message: t("requestForm.success"),
       });
@@ -212,7 +212,7 @@ const submitForm = async (): Promise<void> => {
       hours: hours.value,
     });
 
-    if (result.data?.request && !result.error) {
+    if (result.data?.insertRequestOne && !result.error) {
       notify(NotifyType.Success, {
         message: t("requestForm.success"),
       });

@@ -15,7 +15,7 @@ graphql(`
     assignments: request(
       where: {
         _and: [
-          { service: { yearValue: { _eq: $year } } }
+          { service: { year: { _eq: $year } } }
           { type: { _eq: ASSIGNMENT } }
           $where
         ]
@@ -53,10 +53,10 @@ graphql(`
           label
         }
       }
-      service: vService {
-        teacher: vTeacher {
-          uid
+      service {
+        teacher {
           displayname
+          email
         }
       }
     }
@@ -98,7 +98,7 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.semester")]: a.course.semester,
       [t("downloadAssignments.type")]: a.course.type.label,
       [t("downloadAssignments.teacher")]: a.service?.teacher?.displayname,
-      [t("downloadAssignments.email")]: a.service?.teacher?.uid,
+      [t("downloadAssignments.email")]: a.service?.teacher?.email,
     }));
 
     try {

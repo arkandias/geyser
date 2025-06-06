@@ -1,13 +1,13 @@
 <script lang="ts">
 export type ColName =
   | "year"
-  | "degree"
-  | "program"
-  | "track"
+  | "degreeName"
+  | "programName"
+  | "trackName"
   | "name"
   | "nameShort"
   | "semester"
-  | "type"
+  | "typeLabel"
   | "hours"
   | "hoursAdjusted"
   | "groups"
@@ -19,7 +19,7 @@ export type ColName =
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { type ComputedRef, computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -43,6 +43,7 @@ import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
 } from "@/types/data.ts";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -74,21 +75,21 @@ const rowDescriptor = {
     type: "number",
     formType: "select",
   },
-  degree: {
+  degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
     formType: "select",
   },
-  program: {
+  programName: {
     type: "string",
     field: (row) => row.program.name,
     format: (val: string) =>
       programs.value.find((p) => p.name === val)?.nameDisplay,
     formType: "select",
   },
-  track: {
+  trackName: {
     type: "string",
     nullable: true,
     field: (row) => row.track?.name,
@@ -110,7 +111,7 @@ const rowDescriptor = {
     format: (val: number) => t("semester", { semester: val }),
     formType: "input",
   },
-  type: {
+  typeLabel: {
     type: "string",
     field: (row) => row.type.label,
     formType: "select",
@@ -157,9 +158,8 @@ const rowDescriptor = {
 graphql(`
   fragment AdminCourse on Course {
     id
-    year: yearValue
+    year
     program {
-      id
       name
       nameDisplay
       degree {
@@ -168,7 +168,6 @@ graphql(`
       }
     }
     track {
-      id
       name
       nameDisplay
     }
@@ -177,7 +176,6 @@ graphql(`
     nameDisplay
     semester
     type {
-      id
       label
     }
     hours
@@ -279,9 +277,9 @@ const updateCourses = useMutation(UpdateCoursesDocument);
 const deleteCourses = useMutation(DeleteCoursesDocument);
 
 const importConstraint =
-  CourseConstraint.CourseYearValueProgramIdTrackIdNameSemesterTypeIdKey;
+  CourseConstraint.CourseYearProgramIdTrackIdNameSemesterTypeIdKey;
 const importUpdateColumns = [
-  CourseUpdateColumn.YearValue,
+  CourseUpdateColumn.Year,
   CourseUpdateColumn.ProgramId,
   CourseUpdateColumn.TrackId,
   CourseUpdateColumn.Name,
@@ -306,32 +304,32 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.yearValue = flatRow.year;
+    object.year = flatRow.year;
   }
 
   // programId
   if (
-    flatRow.degree !== undefined ||
-    flatRow.program !== undefined ||
-    flatRow.track !== undefined
+    flatRow.degreeName !== undefined ||
+    flatRow.programName !== undefined ||
+    flatRow.trackName !== undefined
   ) {
-    if (flatRow.degree !== undefined && flatRow.program === undefined) {
+    if (flatRow.degreeName !== undefined && flatRow.programName === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.updateDegreeWithoutProgram"),
       );
     }
-    if (flatRow.program !== undefined && flatRow.degree === undefined) {
+    if (flatRow.programName !== undefined && flatRow.degreeName === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.updateProgramWithoutDegree"),
       );
     }
-    const degree = degrees.value.find((d) => d.name === flatRow.degree);
+    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
     if (degree === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.degreeNotFound", flatRow),
       );
     }
-    const program = degree.programs.find((p) => p.name === flatRow.program);
+    const program = degree.programs.find((p) => p.name === flatRow.programName);
     if (program === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.programNotFound", flatRow),
@@ -340,21 +338,21 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.programId = program.id;
 
     // trackId
-    if (flatRow.track !== undefined) {
-      if (flatRow.degree === undefined) {
+    if (flatRow.trackName !== undefined) {
+      if (flatRow.degreeName === undefined) {
         throw new Error(
           t("admin.courses.courses.form.error.updateTrackWithoutDegree"),
         );
       }
-      if (flatRow.program === undefined) {
+      if (flatRow.programName === undefined) {
         throw new Error(
           t("admin.courses.courses.form.error.updateTrackWithoutProgram"),
         );
       }
-      if (flatRow.track === null) {
+      if (flatRow.trackName === null) {
         object.trackId = null;
       } else {
-        const track = program.tracks.find((t) => t.name === flatRow.track);
+        const track = program.tracks.find((t) => t.name === flatRow.trackName);
         if (track === undefined) {
           throw new Error(
             t("admin.courses.courses.form.error.trackNotFound", flatRow),
@@ -374,8 +372,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   // typeId
-  if (flatRow.type !== undefined) {
-    const type = courseTypes.value.find((ct) => ct.label === flatRow.type);
+  if (flatRow.typeLabel !== undefined) {
+    const type = courseTypes.value.find((ct) => ct.label === flatRow.typeLabel);
     if (type === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.courseTypeNotFound", flatRow),
@@ -444,26 +442,28 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   year: years.value.map((y) => y.value),
-  degree: degrees.value.map((d) => d.name),
-  program:
+  degreeName: degrees.value.map((d) => d.name),
+  programName:
     degrees.value
-      .find((d) => d.name === formValues.value["degree"])
+      .find((d) => d.name === formValues.value["degreeName"])
       ?.programs.map((p) => p.name) ?? [],
-  track:
+  trackName:
     degrees.value
-      .find((d) => d.name === formValues.value["degree"])
-      ?.programs.find((p) => p.name === formValues.value["program"])
+      .find((d) => d.name === formValues.value["degreeName"])
+      ?.programs.find((p) => p.name === formValues.value["programName"])
       ?.tracks.map((t) => t.name) ?? [],
   semester: [1, 2, 3, 4, 5, 6].map((s) => ({
     value: s,
     label: t("semester", { semester: s }),
   })),
-  type: courseTypes.value.map((ct) => ct.label),
+  typeLabel: courseTypes.value.map((ct) => ct.label),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed(() => ({
-  program: programs.value.map((p) => p.name),
+const filterOptions: ComputedRef<
+  SelectOptions<string, Row, typeof rowDescriptor>
+> = computed(() => ({
+  programName: programs.value.map((p) => p.name),
   track: tracks.value.map((t) => t.name),
 }));
 </script>

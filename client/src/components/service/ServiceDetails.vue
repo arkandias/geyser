@@ -26,8 +26,8 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment TeacherServiceDetails on Service {
     id
-    uid
-    yearValue
+    year
+    teacherId
     hours
     modifications(orderBy: [{ type: { label: ASC } }, { hours: ASC }]) {
       id
@@ -38,9 +38,9 @@ graphql(`
     }
   }
 
-  mutation UpdateService($year: Int!, $uid: String!, $hours: Float!) {
-    services: updateService(
-      where: { yearValue: { _eq: $year }, uid: { _eq: $uid } }
+  mutation UpdateService($year: Int!, $teacherId: Int!, $hours: Float!) {
+    updateService(
+      where: { year: { _eq: $year }, id: { _eq: $teacherId } }
       _set: { hours: $hours }
     ) {
       returning {
@@ -62,7 +62,7 @@ graphql(`
     $modificationTypeId: Int!
     $hours: Float!
   ) {
-    serviceModification: insertServiceModificationOne(
+    insertServiceModificationOne(
       object: {
         serviceId: $serviceId
         typeId: $modificationTypeId
@@ -74,7 +74,7 @@ graphql(`
   }
 
   mutation DeleteModification($id: Int!) {
-    serviceModification: deleteServiceModificationByPk(id: $id) {
+    deleteServiceModificationByPk(id: $id) {
       id
     }
   }
@@ -118,11 +118,11 @@ const submitBaseServiceForm = async (): Promise<void> => {
     });
   } else {
     const { data, error } = await updateService.executeMutation({
-      year: service.value.yearValue,
-      uid: service.value.uid,
+      year: service.value.year,
+      teacherId: service.value.teacherId,
       hours: baseServiceHours.value,
     });
-    if (data?.services?.returning[0] && !error) {
+    if (data?.updateService?.returning[0] && !error) {
       notify(NotifyType.Success, {
         message: t("service.details.baseServiceForm.success"),
       });
@@ -175,7 +175,7 @@ const submitModificationForm = async (): Promise<void> => {
     modificationTypeId: modificationTypeId.value,
     hours: modificationHours.value,
   });
-  if (data?.serviceModification && !error) {
+  if (data?.insertServiceModificationOne && !error) {
     notify(NotifyType.Success, {
       message: t("service.details.modificationForm.success.create"),
     });
@@ -190,7 +190,7 @@ const submitModificationForm = async (): Promise<void> => {
 
 const handleModificationDeletion = async (id: number): Promise<void> => {
   const { data, error } = await deleteModification.executeMutation({ id });
-  if (data?.serviceModification && !error) {
+  if (data?.deleteServiceModificationByPk && !error) {
     notify(NotifyType.Success, {
       message: t("service.details.modificationForm.success.delete"),
     });

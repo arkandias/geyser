@@ -16,7 +16,7 @@ graphql(`
   query GetAdminRequests {
     requests: request(
       orderBy: [
-        { yearValue: DESC }
+        { year: DESC }
         { type: ASC }
         { service: { teacher: { lastname: ASC } } }
         { service: { teacher: { firstname: ASC } } }
@@ -32,7 +32,7 @@ graphql(`
     }
     priorities: priority(
       orderBy: [
-        { yearValue: DESC }
+        { year: DESC }
         { service: { teacher: { lastname: ASC } } }
         { service: { teacher: { firstname: ASC } } }
         { course: { program: { degree: { name: ASC } } } }
@@ -47,7 +47,7 @@ graphql(`
     }
     services: service(
       orderBy: [
-        { yearValue: DESC }
+        { year: DESC }
         { teacher: { lastname: ASC } }
         { teacher: { firstname: ASC } }
       ]
@@ -61,7 +61,7 @@ graphql(`
     }
     courses: course(
       orderBy: [
-        { yearValue: DESC }
+        { year: DESC }
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
         { track: { name: ASC } }

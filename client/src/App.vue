@@ -16,7 +16,7 @@ import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
 graphql(`
-  query GetAppData($uid: String!) {
+  query GetAppData($userId: Int!) {
     currentPhase: currentPhaseByPk(id: 1) {
       value
     }
@@ -29,12 +29,12 @@ graphql(`
       key
       value
     }
-    profile: teacherByPk(uid: $uid) {
-      uid
+    profile: teacherByPk(id: $userId) {
+      id
       displayname
       services {
         id
-        year: yearValue
+        year
       }
     }
   }
@@ -61,7 +61,7 @@ if (authManager.authError) {
 // Fetch app data
 const getAppData = useQuery({
   query: GetAppDataDocument,
-  variables: { uid: authManager.userId },
+  variables: { userId: authManager.userId },
   pause: () => !authManager.isAuthenticated,
   context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
 });

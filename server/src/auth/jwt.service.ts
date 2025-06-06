@@ -14,7 +14,6 @@ import jose from "jose";
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RolesService } from "../roles/roles.service";
-import { UsersService } from "../users/users.service";
 
 @Injectable()
 export class JwtService {
@@ -22,7 +21,6 @@ export class JwtService {
     private configService: ConfigService,
     private keysService: KeysService,
     private rolesService: RolesService,
-    private usersService: UsersService,
   ) {}
 
   private async makeToken(
@@ -67,37 +65,29 @@ export class JwtService {
     return result.payload;
   }
 
-  async makeAccessToken(uid: string): Promise<string> {
-    const user = await this.usersService.findByUid(uid);
-    if (!user) {
-      throw new UnauthorizedException("User not found");
-    }
-    if (!user.active) {
-      throw new UnauthorizedException("User not active");
-    }
-
-    const roles = await this.rolesService.findByUid(uid);
+  async makeAccessToken(userId: number): Promise<string> {
+    const roles = await this.rolesService.findByUserId(userId);
     const roleTypes = roles
       .map((role) => roleTypeSchema.parse(role.type))
       .concat("teacher")
       .sort();
 
     return this.makeToken({
-      sub: uid,
+      sub: userId,
       aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
       typ: "Bearer",
-      userId: uid,
+      userId,
       allowedRoles: roleTypes,
       defaultRole: "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  async makeRefreshToken(uid: string): Promise<string> {
+  async makeRefreshToken(userId: number): Promise<string> {
     return this.makeToken({
-      sub: uid,
+      sub: userId,
       aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,

@@ -24,32 +24,29 @@ const { years, currentYear } = useYearsStore();
 
 const selectedYear = ref<number | null>(null);
 const isFormOpen = ref(false);
-const yearValue = ref<number | null>(null);
+const year = ref<number | null>(null);
 
 graphql(`
   mutation SetCurrentYear($value: Int!) {
-    year: updateYearByPk(
-      pkColumns: { value: $value }
-      _set: { current: true }
-    ) {
+    updateYearByPk(pkColumns: { value: $value }, _set: { current: true }) {
       value
     }
   }
 
   mutation InsertYear($value: Int!, $visible: Boolean!) {
-    year: insertYearOne(object: { value: $value, visible: $visible }) {
+    insertYearOne(object: { value: $value, visible: $visible }) {
       value
     }
   }
 
   mutation UpdateYear($value: Int!, $changes: YearSetInput!) {
-    year: updateYearByPk(pkColumns: { value: $value }, _set: $changes) {
+    updateYearByPk(pkColumns: { value: $value }, _set: $changes) {
       value
     }
   }
 
   mutation DeleteYear($value: Int!) {
-    year: deleteYearByPk(value: $value) {
+    deleteYearByPk(value: $value) {
       value
     }
   }
@@ -99,7 +96,7 @@ const setCurrentYearHandle = async (year: number): Promise<void> => {
 };
 
 const insertYearHandle = async () => {
-  if (yearValue.value === null) {
+  if (year.value === null) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
       caption: t("admin.general.years.error.emptyValue"),
@@ -108,13 +105,13 @@ const insertYearHandle = async () => {
   }
 
   const { data, error } = await insertYear.executeMutation({
-    value: yearValue.value,
+    value: year.value,
     visible: false,
   });
 
   isFormOpen.value = false;
 
-  if (error || data?.year?.value === undefined) {
+  if (error || data?.insertYearOne?.value === undefined) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.insertFailed"),
       caption: error?.message ?? t("admin.data.error.noReturnData"),
@@ -122,7 +119,7 @@ const insertYearHandle = async () => {
   } else {
     notify(NotifyType.Success, {
       message: t("admin.general.years.success.insert", {
-        value: data.year.value,
+        value: data.insertYearOne.value,
       }),
     });
   }
@@ -142,7 +139,7 @@ const updateYearHandle = async (
 
   isFormOpen.value = false;
 
-  if (error || data?.year?.value === undefined) {
+  if (error || data?.updateYearByPk?.value === undefined) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.updateFailed"),
       caption: error?.message ?? t("admin.data.error.noReturnData"),
@@ -150,7 +147,7 @@ const updateYearHandle = async (
   } else {
     notify(NotifyType.Success, {
       message: t("admin.general.years.success.update", {
-        value: data.year.value,
+        value: data.updateYearByPk.value,
       }),
     });
   }
@@ -161,7 +158,7 @@ const updateYearValueHandle = async () => {
     return;
   }
 
-  if (yearValue.value === null) {
+  if (year.value === null) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
       caption: t("admin.general.years.error.emptyValue"),
@@ -169,7 +166,7 @@ const updateYearValueHandle = async () => {
     return;
   }
 
-  await updateYearHandle(selectedYear.value, { value: yearValue.value });
+  await updateYearHandle(selectedYear.value, { value: year.value });
 };
 
 const updateYearVisibilityHandle = async (value: number, visible: boolean) => {
@@ -182,7 +179,7 @@ const deleteYearHandle = async (value: number) => {
   }
 
   const { data, error } = await deleteYear.executeMutation({ value });
-  if (error || data?.year?.value === undefined) {
+  if (error || data?.deleteYearByPk?.value === undefined) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.deleteFailed"),
       caption: error?.message ?? t("admin.data.error.noReturnData"),
@@ -267,13 +264,13 @@ const computePrioritiesHandle = async () => {
 
 const create = () => {
   selectedYear.value = null;
-  yearValue.value = null;
+  year.value = null;
   isFormOpen.value = true;
 };
 
-const edit = (year: number) => {
-  selectedYear.value = year;
-  yearValue.value = year;
+const edit = (newYear: number) => {
+  selectedYear.value = newYear;
+  year.value = newYear;
   isFormOpen.value = true;
 };
 </script>
@@ -385,10 +382,7 @@ const edit = (year: number) => {
           class="q-gutter-md"
           @submit="selectedYear ? updateYearValueHandle() : insertYearHandle()"
         >
-          <NumInput
-            v-model="yearValue"
-            :label="t('admin.general.years.year')"
-          />
+          <NumInput v-model="year" :label="t('admin.general.years.year')" />
         </QForm>
       </QCardSection>
       <QSeparator />
@@ -402,7 +396,7 @@ const edit = (year: number) => {
               : t('admin.general.years.button.create')
           "
           color="primary"
-          :disable="yearValue === null"
+          :disable="year === null"
           flat
           square
         />

@@ -8,10 +8,10 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
   // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { userId, activeRole } = inject<AuthManager>("authManager")!;
-  const { isCurrentYearActive } = useYearsStore();
+  const { activeRole } = inject<AuthManager>("authManager")!;
+  const { currentYear, isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
-  const { hasService } = useProfileStore();
+  const { profile, hasService } = useProfileStore();
 
   const toAdmin = computed(() => activeRole.value === RoleTypeEnum.Admin);
 
@@ -56,9 +56,9 @@ export const usePermissions = () => {
   );
 
   const toEditADescription = computed(
-    () => (coordinators: string[]) =>
+    () => (coordinators: number[]) =>
       activeRole.value === RoleTypeEnum.Admin ||
-      (isCurrentYearActive.value && coordinators.includes(userId)),
+      (isCurrentYearActive.value && coordinators.includes(profile.value.id)),
   );
 
   const toViewAllServices = computed(
@@ -69,21 +69,17 @@ export const usePermissions = () => {
   );
 
   const toEditAService = computed(
-    () => (service: { uid: string }) =>
+    () => (service: { year: number; teacherId: number }) =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
-        isCurrentYearActive.value &&
-        service.uid === userId),
+        service.year === currentYear.value &&
+        service.teacherId === profile.value.id),
   );
 
   const toEditAMessage = computed(
-    () => (message: { uid: string }) =>
-      activeRole.value === RoleTypeEnum.Admin ||
-      (activeRole.value === RoleTypeEnum.Teacher &&
-        currentPhase.value === PhaseEnum.Requests &&
-        isCurrentYearActive.value &&
-        message.uid === userId),
+    () => (service: { year: number; teacherId: number }) =>
+      toEditAService.value(service),
   );
 
   return readonly({

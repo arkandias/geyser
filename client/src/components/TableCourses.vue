@@ -11,7 +11,7 @@ import {
   type CourseRowFragment,
   CourseRowFragmentDoc,
   RequestTypeEnum,
-  TableCoursesVServiceFragmentDoc,
+  TableCoursesServiceFragmentDoc,
 } from "@/gql/graphql.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type { Column } from "@/types/column.ts";
@@ -25,9 +25,9 @@ import {
 
 import PageService from "@/pages/PageService.vue";
 
-const { courseRowFragments, vServiceFragments } = defineProps<{
+const { courseRowFragments, serviceFragments } = defineProps<{
   courseRowFragments: FragmentType<typeof CourseRowFragmentDoc>[];
-  vServiceFragments: FragmentType<typeof TableCoursesVServiceFragmentDoc>[];
+  serviceFragments: FragmentType<typeof TableCoursesServiceFragmentDoc>[];
   fetching?: boolean;
 }>();
 
@@ -64,9 +64,9 @@ graphql(`
     }
   }
 
-  fragment TableCoursesVService on VService {
+  fragment TableCoursesService on Service {
     id
-    teacher: vTeacher {
+    teacher {
       displayname
     }
   }
@@ -83,7 +83,7 @@ const { getValue: selectedService, setValue: selectService } = useQueryParam(
   true,
 );
 const services = computed(() =>
-  vServiceFragments.map((f) => useFragment(TableCoursesVServiceFragmentDoc, f)),
+  serviceFragments.map((f) => useFragment(TableCoursesServiceFragmentDoc, f)),
 );
 const teacher = computed(
   () =>

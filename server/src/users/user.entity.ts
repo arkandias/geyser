@@ -1,10 +1,21 @@
-import { Column, Entity, Index, PrimaryColumn } from "typeorm";
+import {
+  Column,
+  Entity,
+  Index,
+  PrimaryColumn,
+  PrimaryGeneratedColumn,
+  Unique,
+} from "typeorm";
 
 @Entity({ name: "teacher", schema: "public" })
+@Unique(["email"])
 @Index("idx_teacher_position_id", ["position_id"])
 export class User {
+  @PrimaryGeneratedColumn("identity")
+  id!: number;
+
   @PrimaryColumn("text")
-  uid!: string;
+  email!: string;
 
   @Column("text")
   firstname!: string;

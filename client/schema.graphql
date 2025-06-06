@@ -291,6 +291,9 @@ type Coordination {
   """An object relationship"""
   teacher: Teacher!
 
+  """Coordinating teacher"""
+  teacherId: Int!
+
   """An object relationship"""
   track: Track
 
@@ -299,16 +302,10 @@ type Coordination {
   """
   trackId: Int
 
-  """Coordinating teacher"""
-  uid: String!
-
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz!
-
-  """An object relationship"""
-  vTeacher: VTeacher
 }
 
 """
@@ -382,6 +379,9 @@ type CoordinationAvgFields {
   """
   programId: Float
 
+  """Coordinating teacher"""
+  teacherId: Float
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -405,6 +405,9 @@ input CoordinationAvgOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -426,11 +429,10 @@ input CoordinationBoolExp {
   program: ProgramBoolExp
   programId: IntComparisonExp
   teacher: TeacherBoolExp
+  teacherId: IntComparisonExp
   track: TrackBoolExp
   trackId: IntComparisonExp
-  uid: StringComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vTeacher: VTeacherBoolExp
 }
 
 """
@@ -443,9 +445,9 @@ enum CoordinationConstraint {
   coordination_pkey
 
   """
-  unique or primary key constraint on columns "track_id", "uid", "course_id", "program_id"
+  unique or primary key constraint on columns "teacher_id", "track_id", "course_id", "program_id"
   """
-  coordination_uid_course_id_track_id_program_id_key
+  coordination_teacher_id_course_id_track_id_program_id_key
 }
 
 """
@@ -461,6 +463,9 @@ input CoordinationIncInput {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Int
+
+  """Coordinating teacher"""
+  teacherId: Int
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -490,6 +495,9 @@ input CoordinationInsertInput {
   """
   programId: Int
   teacher: TeacherObjRelInsertInput
+
+  """Coordinating teacher"""
+  teacherId: Int
   track: TrackObjRelInsertInput
 
   """
@@ -497,14 +505,10 @@ input CoordinationInsertInput {
   """
   trackId: Int
 
-  """Coordinating teacher"""
-  uid: String
-
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vTeacher: VTeacherObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -528,13 +532,13 @@ type CoordinationMaxFields {
   """
   programId: Int
 
+  """Coordinating teacher"""
+  teacherId: Int
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: Int
-
-  """Coordinating teacher"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -565,13 +569,13 @@ input CoordinationMaxOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: OrderBy
-
-  """Coordinating teacher"""
-  uid: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -600,13 +604,13 @@ type CoordinationMinFields {
   """
   programId: Int
 
+  """Coordinating teacher"""
+  teacherId: Int
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: Int
-
-  """Coordinating teacher"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -637,13 +641,13 @@ input CoordinationMinOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: OrderBy
-
-  """Coordinating teacher"""
-  uid: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -681,11 +685,10 @@ input CoordinationOrderBy {
   program: ProgramOrderBy
   programId: OrderBy
   teacher: TeacherOrderBy
+  teacherId: OrderBy
   track: TrackOrderBy
   trackId: OrderBy
-  uid: OrderBy
   updatedAt: OrderBy
-  vTeacher: VTeacherOrderBy
 }
 
 """primary key columns input for table: coordination"""
@@ -714,10 +717,10 @@ enum CoordinationSelectColumn {
   programId
 
   """column name"""
-  trackId
+  teacherId
 
   """column name"""
-  uid
+  trackId
 
   """column name"""
   updatedAt
@@ -743,13 +746,13 @@ input CoordinationSetInput {
   """
   programId: Int
 
+  """Coordinating teacher"""
+  teacherId: Int
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: Int
-
-  """Coordinating teacher"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -771,6 +774,9 @@ type CoordinationStddevFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Float
+
+  """Coordinating teacher"""
+  teacherId: Float
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -795,6 +801,9 @@ input CoordinationStddevOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -815,6 +824,9 @@ type CoordinationStddevPopFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Float
+
+  """Coordinating teacher"""
+  teacherId: Float
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -839,6 +851,9 @@ input CoordinationStddevPopOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -859,6 +874,9 @@ type CoordinationStddevSampFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Float
+
+  """Coordinating teacher"""
+  teacherId: Float
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -882,6 +900,9 @@ input CoordinationStddevSampOrderBy {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: OrderBy
+
+  """Coordinating teacher"""
+  teacherId: OrderBy
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -921,13 +942,13 @@ input CoordinationStreamCursorValueInput {
   """
   programId: Int
 
+  """Coordinating teacher"""
+  teacherId: Int
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
   trackId: Int
-
-  """Coordinating teacher"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -949,6 +970,9 @@ type CoordinationSumFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Int
+
+  """Coordinating teacher"""
+  teacherId: Int
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -973,6 +997,9 @@ input CoordinationSumOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -996,10 +1023,10 @@ enum CoordinationUpdateColumn {
   programId
 
   """column name"""
-  trackId
+  teacherId
 
   """column name"""
-  uid
+  trackId
 
   """column name"""
   updatedAt
@@ -1031,6 +1058,9 @@ type CoordinationVarPopFields {
   """
   programId: Float
 
+  """Coordinating teacher"""
+  teacherId: Float
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -1054,6 +1084,9 @@ input CoordinationVarPopOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -1074,6 +1107,9 @@ type CoordinationVarSampFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Float
+
+  """Coordinating teacher"""
+  teacherId: Float
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -1098,6 +1134,9 @@ input CoordinationVarSampOrderBy {
   """
   programId: OrderBy
 
+  """Coordinating teacher"""
+  teacherId: OrderBy
+
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
   """
@@ -1118,6 +1157,9 @@ type CoordinationVarianceFields {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: Float
+
+  """Coordinating teacher"""
+  teacherId: Float
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -1141,6 +1183,9 @@ input CoordinationVarianceOrderBy {
   Program being coordinated (mutually exclusive with track_id and course_id)
   """
   programId: OrderBy
+
+  """Coordinating teacher"""
+  teacherId: OrderBy
 
   """
   Track being coordinated (mutually exclusive with program_id and course_id)
@@ -1194,6 +1239,8 @@ type Course {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int!
@@ -1226,6 +1273,7 @@ type Course {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
 
   """An array relationship"""
   priorities(
@@ -1331,11 +1379,11 @@ type Course {
   """Controls course visibility in the user interface and queries"""
   visible: Boolean!
 
-  """An object relationship"""
-  year: Year!
-
   """Academic year when the course is offered"""
-  yearValue: Int!
+  year: Int!
+
+  """An object relationship"""
+  yearByYear: Year!
 }
 
 """
@@ -1438,7 +1486,7 @@ type CourseAvgFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -1485,7 +1533,7 @@ input CourseAvgOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -1500,6 +1548,8 @@ input CourseBoolExp {
   createdAt: TimestamptzComparisonExp
   cycleYear: IntComparisonExp
   description: StringComparisonExp
+  ensIdImport: StringComparisonExp
+  formationIdImport: StringComparisonExp
   groups: IntComparisonExp
   groupsAdjusted: IntComparisonExp
   groupsEffective: IntComparisonExp
@@ -1510,6 +1560,7 @@ input CourseBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   priorities: PriorityBoolExp
   prioritiesAggregate: PriorityAggregateBoolExp
   priorityRule: IntComparisonExp
@@ -1524,8 +1575,8 @@ input CourseBoolExp {
   typeId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
   visible: BooleanComparisonExp
-  year: YearBoolExp
-  yearValue: IntComparisonExp
+  year: IntComparisonExp
+  yearByYear: YearBoolExp
 }
 
 """
@@ -1533,9 +1584,14 @@ unique or primary key constraints on table "course"
 """
 enum CourseConstraint {
   """
-  unique or primary key constraint on columns "year_value", "id"
+  unique or primary key constraint on columns "ens_id_import"
   """
-  course_id_year_value_key
+  course_ens_id_import_key
+
+  """
+  unique or primary key constraint on columns "id", "year"
+  """
+  course_id_year_key
 
   """
   unique or primary key constraint on columns "id"
@@ -1543,9 +1599,9 @@ enum CourseConstraint {
   course_pkey
 
   """
-  unique or primary key constraint on columns "year_value", "track_id", "semester", "program_id", "name", "type_id"
+  unique or primary key constraint on columns "track_id", "semester", "program_id", "name", "year", "type_id"
   """
-  course_year_value_program_id_track_id_name_semester_type_id_key
+  course_year_program_id_track_id_name_semester_type_id_key
 }
 
 """
@@ -1580,7 +1636,7 @@ input CourseIncInput {
   typeId: Int
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -1594,6 +1650,8 @@ input CourseInsertInput {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int
@@ -1612,6 +1670,7 @@ input CourseInsertInput {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
   priorities: PriorityArrRelInsertInput
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
@@ -1640,10 +1699,10 @@ input CourseInsertInput {
 
   """Controls course visibility in the user interface and queries"""
   visible: Boolean
-  year: YearObjRelInsertInput
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
+  yearByYear: YearObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -1656,6 +1715,8 @@ type CourseMaxFields {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int
@@ -1688,6 +1749,7 @@ type CourseMaxFields {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: Int
@@ -1710,7 +1772,7 @@ type CourseMaxFields {
   updatedAt: timestamptz
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -1725,6 +1787,8 @@ input CourseMaxOrderBy {
 
   """Course description"""
   description: OrderBy
+  ensIdImport: OrderBy
+  formationIdImport: OrderBy
 
   """Standard number of student groups"""
   groups: OrderBy
@@ -1757,6 +1821,7 @@ input CourseMaxOrderBy {
 
   """Abbreviated course name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: OrderBy
@@ -1779,7 +1844,7 @@ input CourseMaxOrderBy {
   updatedAt: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate min on columns"""
@@ -1792,6 +1857,8 @@ type CourseMinFields {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int
@@ -1824,6 +1891,7 @@ type CourseMinFields {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: Int
@@ -1846,7 +1914,7 @@ type CourseMinFields {
   updatedAt: timestamptz
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -1861,6 +1929,8 @@ input CourseMinOrderBy {
 
   """Course description"""
   description: OrderBy
+  ensIdImport: OrderBy
+  formationIdImport: OrderBy
 
   """Standard number of student groups"""
   groups: OrderBy
@@ -1893,6 +1963,7 @@ input CourseMinOrderBy {
 
   """Abbreviated course name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: OrderBy
@@ -1915,7 +1986,7 @@ input CourseMinOrderBy {
   updatedAt: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -1954,6 +2025,8 @@ input CourseOrderBy {
   createdAt: OrderBy
   cycleYear: OrderBy
   description: OrderBy
+  ensIdImport: OrderBy
+  formationIdImport: OrderBy
   groups: OrderBy
   groupsAdjusted: OrderBy
   groupsEffective: OrderBy
@@ -1964,6 +2037,7 @@ input CourseOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
   priorityRule: OrderBy
   program: ProgramOrderBy
@@ -1976,8 +2050,8 @@ input CourseOrderBy {
   typeId: OrderBy
   updatedAt: OrderBy
   visible: OrderBy
-  year: YearOrderBy
-  yearValue: OrderBy
+  year: OrderBy
+  yearByYear: YearOrderBy
 }
 
 """primary key columns input for table: course"""
@@ -1998,6 +2072,12 @@ enum CourseSelectColumn {
 
   """column name"""
   description
+
+  """column name"""
+  ensIdImport
+
+  """column name"""
+  formationIdImport
 
   """column name"""
   groups
@@ -2030,6 +2110,9 @@ enum CourseSelectColumn {
   nameShort
 
   """column name"""
+  nomImport
+
+  """column name"""
   priorityRule
 
   """column name"""
@@ -2051,7 +2134,7 @@ enum CourseSelectColumn {
   visible
 
   """column name"""
-  yearValue
+  year
 }
 
 """
@@ -2079,6 +2162,8 @@ input CourseSetInput {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int
@@ -2097,6 +2182,7 @@ input CourseSetInput {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: Int
@@ -2122,7 +2208,7 @@ input CourseSetInput {
   visible: Boolean
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate stddev on columns"""
@@ -2167,7 +2253,7 @@ type CourseStddevFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -2214,7 +2300,7 @@ input CourseStddevOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevPop on columns"""
@@ -2259,7 +2345,7 @@ type CourseStddevPopFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -2306,7 +2392,7 @@ input CourseStddevPopOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
@@ -2351,7 +2437,7 @@ type CourseStddevSampFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -2398,7 +2484,7 @@ input CourseStddevSampOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -2422,6 +2508,8 @@ input CourseStreamCursorValueInput {
 
   """Course description"""
   description: String
+  ensIdImport: String
+  formationIdImport: String
 
   """Standard number of student groups"""
   groups: Int
@@ -2454,6 +2542,7 @@ input CourseStreamCursorValueInput {
 
   """Abbreviated course name"""
   nameShort: String
+  nomImport: String
 
   """Priority duration in years (1=none, 0=permanent, NULL=disabled)"""
   priorityRule: Int
@@ -2479,7 +2568,7 @@ input CourseStreamCursorValueInput {
   visible: Boolean
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate sum on columns"""
@@ -2524,7 +2613,7 @@ type CourseSumFields {
   typeId: Int
 
   """Academic year when the course is offered"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -2571,7 +2660,7 @@ input CourseSumOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Types of course delivery with associated workload coefficients"""
@@ -3007,6 +3096,12 @@ enum CourseUpdateColumn {
   description
 
   """column name"""
+  ensIdImport
+
+  """column name"""
+  formationIdImport
+
+  """column name"""
   groups
 
   """column name"""
@@ -3023,6 +3118,9 @@ enum CourseUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   priorityRule
@@ -3046,7 +3144,7 @@ enum CourseUpdateColumn {
   visible
 
   """column name"""
-  yearValue
+  year
 }
 
 input CourseUpdates {
@@ -3102,7 +3200,7 @@ type CourseVarPopFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -3149,7 +3247,7 @@ input CourseVarPopOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate varSamp on columns"""
@@ -3194,7 +3292,7 @@ type CourseVarSampFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -3241,7 +3339,7 @@ input CourseVarSampOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate variance on columns"""
@@ -3286,7 +3384,7 @@ type CourseVarianceFields {
   typeId: Float
 
   """Academic year when the course is offered"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -3333,7 +3431,7 @@ input CourseVarianceOrderBy {
   typeId: OrderBy
 
   """Academic year when the course is offered"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Singleton table that stores the active system phase reference"""
@@ -4208,6 +4306,368 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
+"""Message to the assignment committee attached to a service"""
+type Message {
+  """Content of the message"""
+  content: String!
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
+
+  """Unique message identifier"""
+  id: Int!
+
+  """An object relationship"""
+  service: Service!
+
+  """Identifier of the corresponding service"""
+  serviceId: Int!
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
+}
+
+"""
+aggregated selection of "message"
+"""
+type MessageAggregate {
+  aggregate: MessageAggregateFields
+  nodes: [Message!]!
+}
+
+"""
+aggregate fields of "message"
+"""
+type MessageAggregateFields {
+  avg: MessageAvgFields
+  count(columns: [MessageSelectColumn!], distinct: Boolean): Int!
+  max: MessageMaxFields
+  min: MessageMinFields
+  stddev: MessageStddevFields
+  stddevPop: MessageStddevPopFields
+  stddevSamp: MessageStddevSampFields
+  sum: MessageSumFields
+  varPop: MessageVarPopFields
+  varSamp: MessageVarSampFields
+  variance: MessageVarianceFields
+}
+
+"""aggregate avg on columns"""
+type MessageAvgFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""
+Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'.
+"""
+input MessageBoolExp {
+  _and: [MessageBoolExp!]
+  _not: MessageBoolExp
+  _or: [MessageBoolExp!]
+  content: StringComparisonExp
+  createdAt: TimestamptzComparisonExp
+  id: IntComparisonExp
+  service: ServiceBoolExp
+  serviceId: IntComparisonExp
+  updatedAt: TimestamptzComparisonExp
+}
+
+"""
+unique or primary key constraints on table "message"
+"""
+enum MessageConstraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  message_pkey
+
+  """
+  unique or primary key constraint on columns "service_id"
+  """
+  message_service_id_key
+}
+
+"""
+input type for incrementing numeric columns in table "message"
+"""
+input MessageIncInput {
+  """Identifier of the corresponding service"""
+  serviceId: Int
+}
+
+"""
+input type for inserting data into table "message"
+"""
+input MessageInsertInput {
+  """Content of the message"""
+  content: String
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+  service: ServiceObjRelInsertInput
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate max on columns"""
+type MessageMaxFields {
+  """Content of the message"""
+  content: String
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique message identifier"""
+  id: Int
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate min on columns"""
+type MessageMinFields {
+  """Content of the message"""
+  content: String
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique message identifier"""
+  id: Int
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""
+response of any mutation on the table "message"
+"""
+type MessageMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [Message!]!
+}
+
+"""
+input type for inserting object relation for remote table "message"
+"""
+input MessageObjRelInsertInput {
+  data: MessageInsertInput!
+
+  """upsert condition"""
+  onConflict: MessageOnConflict
+}
+
+"""
+on_conflict condition type for table "message"
+"""
+input MessageOnConflict {
+  constraint: MessageConstraint!
+  updateColumns: [MessageUpdateColumn!]! = []
+  where: MessageBoolExp
+}
+
+"""Ordering options when selecting data from "message"."""
+input MessageOrderBy {
+  content: OrderBy
+  createdAt: OrderBy
+  id: OrderBy
+  service: ServiceOrderBy
+  serviceId: OrderBy
+  updatedAt: OrderBy
+}
+
+"""primary key columns input for table: message"""
+input MessagePkColumnsInput {
+  """Unique message identifier"""
+  id: Int!
+}
+
+"""
+select columns of table "message"
+"""
+enum MessageSelectColumn {
+  """column name"""
+  content
+
+  """column name"""
+  createdAt
+
+  """column name"""
+  id
+
+  """column name"""
+  serviceId
+
+  """column name"""
+  updatedAt
+}
+
+"""
+input type for updating data in table "message"
+"""
+input MessageSetInput {
+  """Content of the message"""
+  content: String
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate stddev on columns"""
+type MessageStddevFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""aggregate stddevPop on columns"""
+type MessageStddevPopFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""aggregate stddevSamp on columns"""
+type MessageStddevSampFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""
+Streaming cursor of the table "message"
+"""
+input MessageStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: MessageStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input MessageStreamCursorValueInput {
+  """Content of the message"""
+  content: String
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique message identifier"""
+  id: Int
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate sum on columns"""
+type MessageSumFields {
+  """Unique message identifier"""
+  id: Int
+
+  """Identifier of the corresponding service"""
+  serviceId: Int
+}
+
+"""
+update columns of table "message"
+"""
+enum MessageUpdateColumn {
+  """column name"""
+  content
+
+  """column name"""
+  createdAt
+
+  """column name"""
+  serviceId
+
+  """column name"""
+  updatedAt
+}
+
+input MessageUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: MessageIncInput
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: MessageSetInput
+
+  """filter the rows which have to be updated"""
+  where: MessageBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type MessageVarPopFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""aggregate varSamp on columns"""
+type MessageVarSampFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
+"""aggregate variance on columns"""
+type MessageVarianceFields {
+  """Unique message identifier"""
+  id: Float
+
+  """Identifier of the corresponding service"""
+  serviceId: Float
+}
+
 """column ordering options"""
 enum OrderBy {
   """in ascending order, nulls last"""
@@ -4970,14 +5430,11 @@ type Priority {
   """
   updatedAt: timestamptz!
 
-  """An object relationship"""
-  vService: VService
-
-  """An object relationship"""
-  year: Year!
-
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int!
+  year: Int!
+
+  """An object relationship"""
+  yearByYear: Year!
 }
 
 """
@@ -5053,7 +5510,7 @@ type PriorityAvgFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5073,7 +5530,7 @@ input PriorityAvgOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -5093,9 +5550,8 @@ input PriorityBoolExp {
   service: ServiceBoolExp
   serviceId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vService: VServiceBoolExp
-  year: YearBoolExp
-  yearValue: IntComparisonExp
+  year: IntComparisonExp
+  yearByYear: YearBoolExp
 }
 
 """
@@ -5127,7 +5583,7 @@ input PriorityIncInput {
   serviceId: Int
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -5160,11 +5616,10 @@ input PriorityInsertInput {
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vService: VServiceObjRelInsertInput
-  year: YearObjRelInsertInput
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
+  yearByYear: YearObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -5190,7 +5645,7 @@ type PriorityMaxFields {
   updatedAt: timestamptz
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -5218,7 +5673,7 @@ input PriorityMaxOrderBy {
   updatedAt: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate min on columns"""
@@ -5244,7 +5699,7 @@ type PriorityMinFields {
   updatedAt: timestamptz
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -5272,7 +5727,7 @@ input PriorityMinOrderBy {
   updatedAt: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -5307,9 +5762,8 @@ input PriorityOrderBy {
   service: ServiceOrderBy
   serviceId: OrderBy
   updatedAt: OrderBy
-  vService: VServiceOrderBy
-  year: YearOrderBy
-  yearValue: OrderBy
+  year: OrderBy
+  yearByYear: YearOrderBy
 }
 
 """primary key columns input for table: priority"""
@@ -5347,7 +5801,7 @@ enum PrioritySelectColumn {
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 """
@@ -5402,7 +5856,7 @@ input PrioritySetInput {
   updatedAt: timestamptz
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate stddev on columns"""
@@ -5420,7 +5874,7 @@ type PriorityStddevFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5440,7 +5894,7 @@ input PriorityStddevOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevPop on columns"""
@@ -5458,7 +5912,7 @@ type PriorityStddevPopFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5478,7 +5932,7 @@ input PriorityStddevPopOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
@@ -5496,7 +5950,7 @@ type PriorityStddevSampFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5516,7 +5970,7 @@ input PriorityStddevSampOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -5561,7 +6015,7 @@ input PriorityStreamCursorValueInput {
   updatedAt: timestamptz
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate sum on columns"""
@@ -5579,7 +6033,7 @@ type PrioritySumFields {
   serviceId: Int
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -5599,7 +6053,7 @@ input PrioritySumOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -5628,7 +6082,7 @@ enum PriorityUpdateColumn {
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 input PriorityUpdates {
@@ -5657,7 +6111,7 @@ type PriorityVarPopFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5677,7 +6131,7 @@ input PriorityVarPopOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate varSamp on columns"""
@@ -5695,7 +6149,7 @@ type PriorityVarSampFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5715,7 +6169,7 @@ input PriorityVarSampOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate variance on columns"""
@@ -5733,7 +6187,7 @@ type PriorityVarianceFields {
   serviceId: Float
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -5753,7 +6207,7 @@ input PriorityVarianceOrderBy {
   serviceId: OrderBy
 
   """Year of the priority (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Academic programs within each degree"""
@@ -5852,6 +6306,7 @@ type Program {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
 
   """An array relationship"""
   tracks(
@@ -5994,6 +6449,7 @@ input ProgramBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   tracks: TrackBoolExp
   tracksAggregate: TrackAggregateBoolExp
   updatedAt: TimestamptzComparisonExp
@@ -6042,6 +6498,7 @@ input ProgramInsertInput {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
   tracks: TrackArrRelInsertInput
 
   """
@@ -6074,6 +6531,7 @@ type ProgramMaxFields {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6104,6 +6562,7 @@ input ProgramMaxOrderBy {
 
   """Abbreviated program name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6132,6 +6591,7 @@ type ProgramMinFields {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6162,6 +6622,7 @@ input ProgramMinOrderBy {
 
   """Abbreviated program name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6210,6 +6671,7 @@ input ProgramOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   tracksAggregate: TrackAggregateOrderBy
   updatedAt: OrderBy
   visible: OrderBy
@@ -6242,6 +6704,9 @@ enum ProgramSelectColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   updatedAt
@@ -6281,6 +6746,7 @@ input ProgramSetInput {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6383,6 +6849,7 @@ input ProgramStreamCursorValueInput {
 
   """Abbreviated program name"""
   nameShort: String
+  nomImport: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -6428,6 +6895,9 @@ enum ProgramUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   updatedAt
@@ -6551,14 +7021,11 @@ type Request {
   """
   updatedAt: timestamptz!
 
-  """An object relationship"""
-  vService: VService
-
-  """An object relationship"""
-  year: Year!
-
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int!
+  year: Int!
+
+  """An object relationship"""
+  yearByYear: Year!
 }
 
 """
@@ -6637,7 +7104,7 @@ type RequestAvgFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -6657,7 +7124,7 @@ input RequestAvgOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -6679,9 +7146,8 @@ input RequestBoolExp {
   serviceId: IntComparisonExp
   type: RequestTypeEnumComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vService: VServiceBoolExp
-  year: YearBoolExp
-  yearValue: IntComparisonExp
+  year: IntComparisonExp
+  yearByYear: YearBoolExp
 }
 
 """
@@ -6713,7 +7179,7 @@ input RequestIncInput {
   serviceId: Int
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -6743,11 +7209,10 @@ input RequestInsertInput {
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vService: VServiceObjRelInsertInput
-  year: YearObjRelInsertInput
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
+  yearByYear: YearObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -6778,7 +7243,7 @@ type RequestMaxFields {
   updatedAt: timestamptz
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -6806,7 +7271,7 @@ input RequestMaxOrderBy {
   updatedAt: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate min on columns"""
@@ -6837,7 +7302,7 @@ type RequestMinFields {
   updatedAt: timestamptz
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -6865,7 +7330,7 @@ input RequestMinOrderBy {
   updatedAt: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -6902,9 +7367,8 @@ input RequestOrderBy {
   serviceId: OrderBy
   type: OrderBy
   updatedAt: OrderBy
-  vService: VServiceOrderBy
-  year: YearOrderBy
-  yearValue: OrderBy
+  year: OrderBy
+  yearByYear: YearOrderBy
 }
 
 """primary key columns input for table: request"""
@@ -6939,7 +7403,7 @@ enum RequestSelectColumn {
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 """
@@ -6967,7 +7431,7 @@ input RequestSetInput {
   updatedAt: timestamptz
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate stddev on columns"""
@@ -6990,7 +7454,7 @@ type RequestStddevFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7010,7 +7474,7 @@ input RequestStddevOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevPop on columns"""
@@ -7033,7 +7497,7 @@ type RequestStddevPopFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7053,7 +7517,7 @@ input RequestStddevPopOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
@@ -7076,7 +7540,7 @@ type RequestStddevSampFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7096,7 +7560,7 @@ input RequestStddevSampOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -7136,7 +7600,7 @@ input RequestStreamCursorValueInput {
   updatedAt: timestamptz
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate sum on columns"""
@@ -7159,7 +7623,7 @@ type RequestSumFields {
   serviceId: Int
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -7179,7 +7643,7 @@ input RequestSumOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Types of teaching assignment requests in workflow"""
@@ -7448,7 +7912,7 @@ enum RequestUpdateColumn {
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 input RequestUpdates {
@@ -7482,7 +7946,7 @@ type RequestVarPopFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7502,7 +7966,7 @@ input RequestVarPopOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate varSamp on columns"""
@@ -7525,7 +7989,7 @@ type RequestVarSampFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7545,7 +8009,7 @@ input RequestVarSampOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate variance on columns"""
@@ -7568,7 +8032,7 @@ type RequestVarianceFields {
   serviceId: Float
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -7588,7 +8052,7 @@ input RequestVarianceOrderBy {
   serviceId: OrderBy
 
   """Year of the request (must match service's and course's year)"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Teacher role assignments for system privileges"""
@@ -7608,11 +8072,11 @@ type Role {
   """An object relationship"""
   teacher: Teacher!
 
+  """Teacher identifier with role access"""
+  teacherId: Int!
+
   """Type of privileged role"""
   type: RoleTypeEnum!
-
-  """Teacher identifier with role access"""
-  uid: String!
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7680,6 +8144,9 @@ input RoleArrRelInsertInput {
 type RoleAvgFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -7688,6 +8155,9 @@ order by avg() on columns of table "role"
 input RoleAvgOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """
@@ -7702,8 +8172,8 @@ input RoleBoolExp {
   id: IntComparisonExp
   roleType: RoleTypeBoolExp
   teacher: TeacherBoolExp
+  teacherId: IntComparisonExp
   type: RoleTypeEnumComparisonExp
-  uid: StringComparisonExp
   updatedAt: TimestamptzComparisonExp
 }
 
@@ -7717,9 +8187,17 @@ enum RoleConstraint {
   role_pkey
 
   """
-  unique or primary key constraint on columns "uid", "type"
+  unique or primary key constraint on columns "teacher_id", "type"
   """
-  role_uid_type_key
+  role_teacher_id_type_key
+}
+
+"""
+input type for incrementing numeric columns in table "role"
+"""
+input RoleIncInput {
+  """Teacher identifier with role access"""
+  teacherId: Int
 }
 
 """
@@ -7734,11 +8212,11 @@ input RoleInsertInput {
   roleType: RoleTypeObjRelInsertInput
   teacher: TeacherObjRelInsertInput
 
+  """Teacher identifier with role access"""
+  teacherId: Int
+
   """Type of privileged role"""
   type: RoleTypeEnum
-
-  """Teacher identifier with role access"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7758,7 +8236,7 @@ type RoleMaxFields {
   id: Int
 
   """Teacher identifier with role access"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7780,7 +8258,7 @@ input RoleMaxOrderBy {
   id: OrderBy
 
   """Teacher identifier with role access"""
-  uid: OrderBy
+  teacherId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7800,7 +8278,7 @@ type RoleMinFields {
   id: Int
 
   """Teacher identifier with role access"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7822,7 +8300,7 @@ input RoleMinOrderBy {
   id: OrderBy
 
   """Teacher identifier with role access"""
-  uid: OrderBy
+  teacherId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7857,8 +8335,8 @@ input RoleOrderBy {
   id: OrderBy
   roleType: RoleTypeOrderBy
   teacher: TeacherOrderBy
+  teacherId: OrderBy
   type: OrderBy
-  uid: OrderBy
   updatedAt: OrderBy
 }
 
@@ -7882,10 +8360,10 @@ enum RoleSelectColumn {
   id
 
   """column name"""
-  type
+  teacherId
 
   """column name"""
-  uid
+  type
 
   """column name"""
   updatedAt
@@ -7901,11 +8379,11 @@ input RoleSetInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
+  """Teacher identifier with role access"""
+  teacherId: Int
+
   """Type of privileged role"""
   type: RoleTypeEnum
-
-  """Teacher identifier with role access"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7917,6 +8395,9 @@ input RoleSetInput {
 type RoleStddevFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -7925,12 +8406,18 @@ order by stddev() on columns of table "role"
 input RoleStddevOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """aggregate stddevPop on columns"""
 type RoleStddevPopFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -7939,12 +8426,18 @@ order by stddevPop() on columns of table "role"
 input RoleStddevPopOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
 type RoleStddevSampFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -7953,6 +8446,9 @@ order by stddevSamp() on columns of table "role"
 input RoleStddevSampOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """
@@ -7977,11 +8473,11 @@ input RoleStreamCursorValueInput {
   """Unique role assignment identifier"""
   id: Int
 
+  """Teacher identifier with role access"""
+  teacherId: Int
+
   """Type of privileged role"""
   type: RoleTypeEnum
-
-  """Teacher identifier with role access"""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -7993,6 +8489,9 @@ input RoleStreamCursorValueInput {
 type RoleSumFields {
   """Unique role assignment identifier"""
   id: Int
+
+  """Teacher identifier with role access"""
+  teacherId: Int
 }
 
 """
@@ -8001,6 +8500,9 @@ order by sum() on columns of table "role"
 input RoleSumOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """System roles for privileged access"""
@@ -8259,16 +8761,19 @@ enum RoleUpdateColumn {
   createdAt
 
   """column name"""
-  type
+  teacherId
 
   """column name"""
-  uid
+  type
 
   """column name"""
   updatedAt
 }
 
 input RoleUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: RoleIncInput
+
   """sets the columns of the filtered rows to the given values"""
   _set: RoleSetInput
 
@@ -8280,6 +8785,9 @@ input RoleUpdates {
 type RoleVarPopFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -8288,12 +8796,18 @@ order by varPop() on columns of table "role"
 input RoleVarPopOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """aggregate varSamp on columns"""
 type RoleVarSampFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -8302,12 +8816,18 @@ order by varSamp() on columns of table "role"
 input RoleVarSampOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """aggregate variance on columns"""
 type RoleVarianceFields {
   """Unique role assignment identifier"""
   id: Float
+
+  """Teacher identifier with role access"""
+  teacherId: Float
 }
 
 """
@@ -8316,6 +8836,9 @@ order by variance() on columns of table "role"
 input RoleVarianceOrderBy {
   """Unique role assignment identifier"""
   id: OrderBy
+
+  """Teacher identifier with role access"""
+  teacherId: OrderBy
 }
 
 """
@@ -8331,8 +8854,8 @@ type Service {
   """Unique service identifier"""
   id: Int!
 
-  """Optional message from teacher to course assignment committee"""
-  message: String
+  """An object relationship"""
+  message: Message
 
   """An array relationship"""
   modifications(
@@ -8446,21 +8969,18 @@ type Service {
   teacher: Teacher!
 
   """Teacher identifier linking to teacher table"""
-  uid: String!
+  teacherId: Int!
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz!
 
-  """An object relationship"""
-  vTeacher: VTeacher
-
-  """An object relationship"""
-  year: Year!
-
   """Academic year for this service record"""
-  yearValue: Int!
+  year: Int!
+
+  """An object relationship"""
+  yearByYear: Year!
 }
 
 """
@@ -8527,8 +9047,11 @@ type ServiceAvgFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -8541,8 +9064,11 @@ input ServiceAvgOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -8555,7 +9081,7 @@ input ServiceBoolExp {
   createdAt: TimestamptzComparisonExp
   hours: FloatComparisonExp
   id: IntComparisonExp
-  message: StringComparisonExp
+  message: MessageBoolExp
   modifications: ServiceModificationBoolExp
   modificationsAggregate: ServiceModificationAggregateBoolExp
   priorities: PriorityBoolExp
@@ -8563,11 +9089,10 @@ input ServiceBoolExp {
   requests: RequestBoolExp
   requestsAggregate: RequestAggregateBoolExp
   teacher: TeacherBoolExp
-  uid: StringComparisonExp
+  teacherId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vTeacher: VTeacherBoolExp
-  year: YearBoolExp
-  yearValue: IntComparisonExp
+  year: IntComparisonExp
+  yearByYear: YearBoolExp
 }
 
 """
@@ -8575,9 +9100,9 @@ unique or primary key constraints on table "service"
 """
 enum ServiceConstraint {
   """
-  unique or primary key constraint on columns "year_value", "id"
+  unique or primary key constraint on columns "id", "year"
   """
-  service_id_year_value_key
+  service_id_year_key
 
   """
   unique or primary key constraint on columns "id"
@@ -8585,9 +9110,9 @@ enum ServiceConstraint {
   service_pkey
 
   """
-  unique or primary key constraint on columns "year_value", "uid"
+  unique or primary key constraint on columns "teacher_id", "year"
   """
-  service_year_value_uid_key
+  service_year_teacher_id_key
 }
 
 """
@@ -8597,8 +9122,11 @@ input ServiceIncInput {
   """Required teaching hours for the year before modifications"""
   hours: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Int
+
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -8610,26 +9138,23 @@ input ServiceInsertInput {
 
   """Required teaching hours for the year before modifications"""
   hours: Float
-
-  """Optional message from teacher to course assignment committee"""
-  message: String
+  message: MessageObjRelInsertInput
   modifications: ServiceModificationArrRelInsertInput
   priorities: PriorityArrRelInsertInput
   requests: RequestArrRelInsertInput
   teacher: TeacherObjRelInsertInput
 
   """Teacher identifier linking to teacher table"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vTeacher: VTeacherObjRelInsertInput
-  year: YearObjRelInsertInput
 
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
+  yearByYear: YearObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -8643,11 +9168,8 @@ type ServiceMaxFields {
   """Unique service identifier"""
   id: Int
 
-  """Optional message from teacher to course assignment committee"""
-  message: String
-
   """Teacher identifier linking to teacher table"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -8655,7 +9177,7 @@ type ServiceMaxFields {
   updatedAt: timestamptz
 
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -8671,11 +9193,8 @@ input ServiceMaxOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
-  """Optional message from teacher to course assignment committee"""
-  message: OrderBy
-
   """Teacher identifier linking to teacher table"""
-  uid: OrderBy
+  teacherId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -8683,7 +9202,7 @@ input ServiceMaxOrderBy {
   updatedAt: OrderBy
 
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate min on columns"""
@@ -8697,11 +9216,8 @@ type ServiceMinFields {
   """Unique service identifier"""
   id: Int
 
-  """Optional message from teacher to course assignment committee"""
-  message: String
-
   """Teacher identifier linking to teacher table"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -8709,7 +9225,7 @@ type ServiceMinFields {
   updatedAt: timestamptz
 
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -8725,11 +9241,8 @@ input ServiceMinOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
-  """Optional message from teacher to course assignment committee"""
-  message: OrderBy
-
   """Teacher identifier linking to teacher table"""
-  uid: OrderBy
+  teacherId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -8737,7 +9250,7 @@ input ServiceMinOrderBy {
   updatedAt: OrderBy
 
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """Individual modifications to base teaching service hours"""
@@ -8767,9 +9280,6 @@ type ServiceModification {
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz!
-
-  """An object relationship"""
-  vService: VService
 }
 
 """
@@ -8875,7 +9385,6 @@ input ServiceModificationBoolExp {
   type: ServiceModificationTypeBoolExp
   typeId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vService: VServiceBoolExp
 }
 
 """
@@ -8924,7 +9433,6 @@ input ServiceModificationInsertInput {
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vService: VServiceObjRelInsertInput
 }
 
 """aggregate max on columns"""
@@ -9053,7 +9561,6 @@ input ServiceModificationOrderBy {
   type: ServiceModificationTypeOrderBy
   typeId: OrderBy
   updatedAt: OrderBy
-  vService: VServiceOrderBy
 }
 
 """primary key columns input for table: service_modification"""
@@ -9792,16 +10299,15 @@ input ServiceOrderBy {
   createdAt: OrderBy
   hours: OrderBy
   id: OrderBy
-  message: OrderBy
+  message: MessageOrderBy
   modificationsAggregate: ServiceModificationAggregateOrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
   requestsAggregate: RequestAggregateOrderBy
   teacher: TeacherOrderBy
-  uid: OrderBy
+  teacherId: OrderBy
   updatedAt: OrderBy
-  vTeacher: VTeacherOrderBy
-  year: YearOrderBy
-  yearValue: OrderBy
+  year: OrderBy
+  yearByYear: YearOrderBy
 }
 
 """primary key columns input for table: service"""
@@ -9824,16 +10330,13 @@ enum ServiceSelectColumn {
   id
 
   """column name"""
-  message
-
-  """column name"""
-  uid
+  teacherId
 
   """column name"""
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 """
@@ -9846,11 +10349,8 @@ input ServiceSetInput {
   """Required teaching hours for the year before modifications"""
   hours: Float
 
-  """Optional message from teacher to course assignment committee"""
-  message: String
-
   """Teacher identifier linking to teacher table"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -9858,7 +10358,7 @@ input ServiceSetInput {
   updatedAt: timestamptz
 
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate stddev on columns"""
@@ -9869,8 +10369,11 @@ type ServiceStddevFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -9883,8 +10386,11 @@ input ServiceStddevOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevPop on columns"""
@@ -9895,8 +10401,11 @@ type ServiceStddevPopFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -9909,8 +10418,11 @@ input ServiceStddevPopOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
@@ -9921,8 +10433,11 @@ type ServiceStddevSampFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -9935,8 +10450,11 @@ input ServiceStddevSampOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -9961,11 +10479,8 @@ input ServiceStreamCursorValueInput {
   """Unique service identifier"""
   id: Int
 
-  """Optional message from teacher to course assignment committee"""
-  message: String
-
   """Teacher identifier linking to teacher table"""
-  uid: String
+  teacherId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -9973,7 +10488,7 @@ input ServiceStreamCursorValueInput {
   updatedAt: timestamptz
 
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """aggregate sum on columns"""
@@ -9984,8 +10499,11 @@ type ServiceSumFields {
   """Unique service identifier"""
   id: Int
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Int
+
   """Academic year for this service record"""
-  yearValue: Int
+  year: Int
 }
 
 """
@@ -9998,8 +10516,11 @@ input ServiceSumOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -10013,16 +10534,13 @@ enum ServiceUpdateColumn {
   hours
 
   """column name"""
-  message
-
-  """column name"""
-  uid
+  teacherId
 
   """column name"""
   updatedAt
 
   """column name"""
-  yearValue
+  year
 }
 
 input ServiceUpdates {
@@ -10044,8 +10562,11 @@ type ServiceVarPopFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -10058,8 +10579,11 @@ input ServiceVarPopOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate varSamp on columns"""
@@ -10070,8 +10594,11 @@ type ServiceVarSampFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -10084,8 +10611,11 @@ input ServiceVarSampOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """aggregate variance on columns"""
@@ -10096,8 +10626,11 @@ type ServiceVarianceFields {
   """Unique service identifier"""
   id: Float
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: Float
+
   """Academic year for this service record"""
-  yearValue: Float
+  year: Float
 }
 
 """
@@ -10110,8 +10643,11 @@ input ServiceVarianceOrderBy {
   """Unique service identifier"""
   id: OrderBy
 
+  """Teacher identifier linking to teacher table"""
+  teacherId: OrderBy
+
   """Academic year for this service record"""
-  yearValue: OrderBy
+  year: OrderBy
 }
 
 """
@@ -10226,8 +10762,14 @@ type Teacher {
   """
   displayname: String
 
+  """Teacher's email address (unique)"""
+  email: String!
+
   """Teacher's first name"""
   firstname: String!
+
+  """Unique teacher identifier"""
+  id: Int!
 
   """Teacher's last name"""
   lastname: String!
@@ -10310,49 +10852,10 @@ type Teacher {
     where: ServiceBoolExp
   ): ServiceAggregate!
 
-  """Teacher's email address (primary key)."""
-  uid: String!
-
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz!
-
-  """An array relationship"""
-  vServices(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """An aggregate relationship"""
-  vServicesAggregate(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): VServiceAggregate!
 
   """Controls teacher visibility in the user interface and queries"""
   visible: Boolean!
@@ -10423,6 +10926,9 @@ type TeacherAvgFields {
   """
   baseServiceHours: Float
 
+  """Unique teacher identifier"""
+  id: Float
+
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
 }
@@ -10435,6 +10941,9 @@ input TeacherAvgOrderBy {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
@@ -10454,7 +10963,9 @@ input TeacherBoolExp {
   coordinationsAggregate: CoordinationAggregateBoolExp
   createdAt: TimestamptzComparisonExp
   displayname: StringComparisonExp
+  email: StringComparisonExp
   firstname: StringComparisonExp
+  id: IntComparisonExp
   lastname: StringComparisonExp
   position: PositionBoolExp
   positionId: IntComparisonExp
@@ -10462,10 +10973,7 @@ input TeacherBoolExp {
   rolesAggregate: RoleAggregateBoolExp
   services: ServiceBoolExp
   servicesAggregate: ServiceAggregateBoolExp
-  uid: StringComparisonExp
   updatedAt: TimestamptzComparisonExp
-  vServices: VServiceBoolExp
-  vServicesAggregate: VServiceAggregateBoolExp
   visible: BooleanComparisonExp
 }
 
@@ -10474,7 +10982,12 @@ unique or primary key constraints on table "teacher"
 """
 enum TeacherConstraint {
   """
-  unique or primary key constraint on columns "uid"
+  unique or primary key constraint on columns "email"
+  """
+  teacher_email_key
+
+  """
+  unique or primary key constraint on columns "id"
   """
   teacher_pkey
 }
@@ -10513,6 +11026,9 @@ input TeacherInsertInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
+  """Teacher's email address (unique)"""
+  email: String
+
   """Teacher's first name"""
   firstname: String
 
@@ -10525,14 +11041,10 @@ input TeacherInsertInput {
   roles: RoleArrRelInsertInput
   services: ServiceArrRelInsertInput
 
-  """Teacher's email address (primary key)."""
-  uid: String
-
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vServices: VServiceArrRelInsertInput
 
   """Controls teacher visibility in the user interface and queries"""
   visible: Boolean
@@ -10556,17 +11068,20 @@ type TeacherMaxFields {
   """
   displayname: String
 
+  """Teacher's email address (unique)"""
+  email: String
+
   """Teacher's first name"""
   firstname: String
+
+  """Unique teacher identifier"""
+  id: Int
 
   """Teacher's last name"""
   lastname: String
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Int
-
-  """Teacher's email address (primary key)."""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10594,17 +11109,20 @@ input TeacherMaxOrderBy {
   """
   displayname: OrderBy
 
+  """Teacher's email address (unique)"""
+  email: OrderBy
+
   """Teacher's first name"""
   firstname: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Teacher's last name"""
   lastname: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
-
-  """Teacher's email address (primary key)."""
-  uid: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10630,17 +11148,20 @@ type TeacherMinFields {
   """
   displayname: String
 
+  """Teacher's email address (unique)"""
+  email: String
+
   """Teacher's first name"""
   firstname: String
+
+  """Unique teacher identifier"""
+  id: Int
 
   """Teacher's last name"""
   lastname: String
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Int
-
-  """Teacher's email address (primary key)."""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10668,17 +11189,20 @@ input TeacherMinOrderBy {
   """
   displayname: OrderBy
 
+  """Teacher's email address (unique)"""
+  email: OrderBy
+
   """Teacher's first name"""
   firstname: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Teacher's last name"""
   lastname: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
-
-  """Teacher's email address (primary key)."""
-  uid: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10724,22 +11248,22 @@ input TeacherOrderBy {
   coordinationsAggregate: CoordinationAggregateOrderBy
   createdAt: OrderBy
   displayname: OrderBy
+  email: OrderBy
   firstname: OrderBy
+  id: OrderBy
   lastname: OrderBy
   position: PositionOrderBy
   positionId: OrderBy
   rolesAggregate: RoleAggregateOrderBy
   servicesAggregate: ServiceAggregateOrderBy
-  uid: OrderBy
   updatedAt: OrderBy
-  vServicesAggregate: VServiceAggregateOrderBy
   visible: OrderBy
 }
 
 """primary key columns input for table: teacher"""
 input TeacherPkColumnsInput {
-  """Teacher's email address (primary key)."""
-  uid: String!
+  """Unique teacher identifier"""
+  id: Int!
 }
 
 """
@@ -10762,16 +11286,19 @@ enum TeacherSelectColumn {
   displayname
 
   """column name"""
+  email
+
+  """column name"""
   firstname
+
+  """column name"""
+  id
 
   """column name"""
   lastname
 
   """column name"""
   positionId
-
-  """column name"""
-  uid
 
   """column name"""
   updatedAt
@@ -10822,6 +11349,9 @@ input TeacherSetInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
+  """Teacher's email address (unique)"""
+  email: String
+
   """Teacher's first name"""
   firstname: String
 
@@ -10830,9 +11360,6 @@ input TeacherSetInput {
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Int
-
-  """Teacher's email address (primary key)."""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10850,6 +11377,9 @@ type TeacherStddevFields {
   """
   baseServiceHours: Float
 
+  """Unique teacher identifier"""
+  id: Float
+
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
 }
@@ -10863,6 +11393,9 @@ input TeacherStddevOrderBy {
   """
   baseServiceHours: OrderBy
 
+  """Unique teacher identifier"""
+  id: OrderBy
+
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
 }
@@ -10873,6 +11406,9 @@ type TeacherStddevPopFields {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: Float
+
+  """Unique teacher identifier"""
+  id: Float
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
@@ -10887,6 +11423,9 @@ input TeacherStddevPopOrderBy {
   """
   baseServiceHours: OrderBy
 
+  """Unique teacher identifier"""
+  id: OrderBy
+
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
 }
@@ -10897,6 +11436,9 @@ type TeacherStddevSampFields {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: Float
+
+  """Unique teacher identifier"""
+  id: Float
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
@@ -10910,6 +11452,9 @@ input TeacherStddevSampOrderBy {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
@@ -10949,17 +11494,20 @@ input TeacherStreamCursorValueInput {
   """
   displayname: String
 
+  """Teacher's email address (unique)"""
+  email: String
+
   """Teacher's first name"""
   firstname: String
+
+  """Unique teacher identifier"""
+  id: Int
 
   """Teacher's last name"""
   lastname: String
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Int
-
-  """Teacher's email address (primary key)."""
-  uid: String
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -10977,6 +11525,9 @@ type TeacherSumFields {
   """
   baseServiceHours: Float
 
+  """Unique teacher identifier"""
+  id: Int
+
   """Reference to teacher's position, determines default service hours"""
   positionId: Int
 }
@@ -10989,6 +11540,9 @@ input TeacherSumOrderBy {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
@@ -11011,6 +11565,9 @@ enum TeacherUpdateColumn {
   createdAt
 
   """column name"""
+  email
+
+  """column name"""
   firstname
 
   """column name"""
@@ -11018,9 +11575,6 @@ enum TeacherUpdateColumn {
 
   """column name"""
   positionId
-
-  """column name"""
-  uid
 
   """column name"""
   updatedAt
@@ -11047,6 +11601,9 @@ type TeacherVarPopFields {
   """
   baseServiceHours: Float
 
+  """Unique teacher identifier"""
+  id: Float
+
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
 }
@@ -11060,6 +11617,9 @@ input TeacherVarPopOrderBy {
   """
   baseServiceHours: OrderBy
 
+  """Unique teacher identifier"""
+  id: OrderBy
+
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
 }
@@ -11070,6 +11630,9 @@ type TeacherVarSampFields {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: Float
+
+  """Unique teacher identifier"""
+  id: Float
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
@@ -11084,6 +11647,9 @@ input TeacherVarSampOrderBy {
   """
   baseServiceHours: OrderBy
 
+  """Unique teacher identifier"""
+  id: OrderBy
+
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
 }
@@ -11094,6 +11660,9 @@ type TeacherVarianceFields {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: Float
+
+  """Unique teacher identifier"""
+  id: Float
 
   """Reference to teacher's position, determines default service hours"""
   positionId: Float
@@ -11107,6 +11676,9 @@ input TeacherVarianceOrderBy {
   Individual override for annual teaching hours, takes precedence over position's base hours
   """
   baseServiceHours: OrderBy
+
+  """Unique teacher identifier"""
+  id: OrderBy
 
   """Reference to teacher's position, determines default service hours"""
   positionId: OrderBy
@@ -11219,6 +11791,7 @@ type Track {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
 
   """An object relationship"""
   program: Program!
@@ -11329,6 +11902,7 @@ input TrackBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   program: ProgramBoolExp
   programId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
@@ -11380,6 +11954,7 @@ input TrackInsertInput {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
   program: ProgramObjRelInsertInput
 
   """Parent program for this track"""
@@ -11414,6 +11989,7 @@ type TrackMaxFields {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
 
   """Parent program for this track"""
   programId: Int
@@ -11446,6 +12022,7 @@ input TrackMaxOrderBy {
 
   """Abbreviated track name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Parent program for this track"""
   programId: OrderBy
@@ -11476,6 +12053,7 @@ type TrackMinFields {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
 
   """Parent program for this track"""
   programId: Int
@@ -11508,6 +12086,7 @@ input TrackMinOrderBy {
 
   """Abbreviated track name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Parent program for this track"""
   programId: OrderBy
@@ -11557,6 +12136,7 @@ input TrackOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   program: ProgramOrderBy
   programId: OrderBy
   updatedAt: OrderBy
@@ -11587,6 +12167,9 @@ enum TrackSelectColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   programId
@@ -11628,6 +12211,7 @@ input TrackSetInput {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
 
   """Parent program for this track"""
   programId: Int
@@ -11732,6 +12316,7 @@ input TrackStreamCursorValueInput {
 
   """Abbreviated track name"""
   nameShort: String
+  nomImport: String
 
   """Parent program for this track"""
   programId: Int
@@ -11777,6 +12362,9 @@ enum TrackUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   programId
@@ -11857,733 +12445,6 @@ input TrackVarianceOrderBy {
 
   """Parent program for this track"""
   programId: OrderBy
-}
-
-"""
-columns and relationships of "v_service"
-"""
-type VService {
-  id: Int
-
-  """An array relationship"""
-  modifications(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationBoolExp
-  ): [ServiceModification!]!
-
-  """An aggregate relationship"""
-  modificationsAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationBoolExp
-  ): ServiceModificationAggregate!
-
-  """An array relationship"""
-  priorities(
-    """distinct select on columns"""
-    distinctOn: [PrioritySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [PriorityOrderBy!]
-
-    """filter the rows returned"""
-    where: PriorityBoolExp
-  ): [Priority!]!
-
-  """An aggregate relationship"""
-  prioritiesAggregate(
-    """distinct select on columns"""
-    distinctOn: [PrioritySelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [PriorityOrderBy!]
-
-    """filter the rows returned"""
-    where: PriorityBoolExp
-  ): PriorityAggregate!
-
-  """An array relationship"""
-  requests(
-    """distinct select on columns"""
-    distinctOn: [RequestSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [RequestOrderBy!]
-
-    """filter the rows returned"""
-    where: RequestBoolExp
-  ): [Request!]!
-
-  """An aggregate relationship"""
-  requestsAggregate(
-    """distinct select on columns"""
-    distinctOn: [RequestSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [RequestOrderBy!]
-
-    """filter the rows returned"""
-    where: RequestBoolExp
-  ): RequestAggregate!
-
-  """An object relationship"""
-  teacher: Teacher
-  uid: String
-
-  """An object relationship"""
-  vTeacher: Teacher
-
-  """An object relationship"""
-  year: Year
-  yearValue: Int
-}
-
-"""
-aggregated selection of "v_service"
-"""
-type VServiceAggregate {
-  aggregate: VServiceAggregateFields
-  nodes: [VService!]!
-}
-
-input VServiceAggregateBoolExp {
-  count: vServiceAggregateBoolExpCount
-}
-
-"""
-aggregate fields of "v_service"
-"""
-type VServiceAggregateFields {
-  avg: VServiceAvgFields
-  count(columns: [VServiceSelectColumn!], distinct: Boolean): Int!
-  max: VServiceMaxFields
-  min: VServiceMinFields
-  stddev: VServiceStddevFields
-  stddevPop: VServiceStddevPopFields
-  stddevSamp: VServiceStddevSampFields
-  sum: VServiceSumFields
-  varPop: VServiceVarPopFields
-  varSamp: VServiceVarSampFields
-  variance: VServiceVarianceFields
-}
-
-"""
-order by aggregate values of table "v_service"
-"""
-input VServiceAggregateOrderBy {
-  avg: VServiceAvgOrderBy
-  count: OrderBy
-  max: VServiceMaxOrderBy
-  min: VServiceMinOrderBy
-  stddev: VServiceStddevOrderBy
-  stddevPop: VServiceStddevPopOrderBy
-  stddevSamp: VServiceStddevSampOrderBy
-  sum: VServiceSumOrderBy
-  varPop: VServiceVarPopOrderBy
-  varSamp: VServiceVarSampOrderBy
-  variance: VServiceVarianceOrderBy
-}
-
-"""
-input type for inserting array relation for remote table "v_service"
-"""
-input VServiceArrRelInsertInput {
-  data: [VServiceInsertInput!]!
-}
-
-"""aggregate avg on columns"""
-type VServiceAvgFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by avg() on columns of table "v_service"
-"""
-input VServiceAvgOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""
-Boolean expression to filter rows from the table "v_service". All fields are combined with a logical 'AND'.
-"""
-input VServiceBoolExp {
-  _and: [VServiceBoolExp!]
-  _not: VServiceBoolExp
-  _or: [VServiceBoolExp!]
-  id: IntComparisonExp
-  modifications: ServiceModificationBoolExp
-  modificationsAggregate: ServiceModificationAggregateBoolExp
-  priorities: PriorityBoolExp
-  prioritiesAggregate: PriorityAggregateBoolExp
-  requests: RequestBoolExp
-  requestsAggregate: RequestAggregateBoolExp
-  teacher: TeacherBoolExp
-  uid: StringComparisonExp
-  vTeacher: TeacherBoolExp
-  year: YearBoolExp
-  yearValue: IntComparisonExp
-}
-
-"""
-input type for incrementing numeric columns in table "v_service"
-"""
-input VServiceIncInput {
-  id: Int
-  yearValue: Int
-}
-
-"""
-input type for inserting data into table "v_service"
-"""
-input VServiceInsertInput {
-  id: Int
-  modifications: ServiceModificationArrRelInsertInput
-  priorities: PriorityArrRelInsertInput
-  requests: RequestArrRelInsertInput
-  teacher: TeacherObjRelInsertInput
-  uid: String
-  vTeacher: TeacherObjRelInsertInput
-  year: YearObjRelInsertInput
-  yearValue: Int
-}
-
-"""aggregate max on columns"""
-type VServiceMaxFields {
-  id: Int
-  uid: String
-  yearValue: Int
-}
-
-"""
-order by max() on columns of table "v_service"
-"""
-input VServiceMaxOrderBy {
-  id: OrderBy
-  uid: OrderBy
-  yearValue: OrderBy
-}
-
-"""aggregate min on columns"""
-type VServiceMinFields {
-  id: Int
-  uid: String
-  yearValue: Int
-}
-
-"""
-order by min() on columns of table "v_service"
-"""
-input VServiceMinOrderBy {
-  id: OrderBy
-  uid: OrderBy
-  yearValue: OrderBy
-}
-
-"""
-response of any mutation on the table "v_service"
-"""
-type VServiceMutationResponse {
-  """number of rows affected by the mutation"""
-  affectedRows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [VService!]!
-}
-
-"""
-input type for inserting object relation for remote table "v_service"
-"""
-input VServiceObjRelInsertInput {
-  data: VServiceInsertInput!
-}
-
-"""Ordering options when selecting data from "v_service"."""
-input VServiceOrderBy {
-  id: OrderBy
-  modificationsAggregate: ServiceModificationAggregateOrderBy
-  prioritiesAggregate: PriorityAggregateOrderBy
-  requestsAggregate: RequestAggregateOrderBy
-  teacher: TeacherOrderBy
-  uid: OrderBy
-  vTeacher: TeacherOrderBy
-  year: YearOrderBy
-  yearValue: OrderBy
-}
-
-"""
-select columns of table "v_service"
-"""
-enum VServiceSelectColumn {
-  """column name"""
-  id
-
-  """column name"""
-  uid
-
-  """column name"""
-  yearValue
-}
-
-"""
-input type for updating data in table "v_service"
-"""
-input VServiceSetInput {
-  id: Int
-  uid: String
-  yearValue: Int
-}
-
-"""aggregate stddev on columns"""
-type VServiceStddevFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by stddev() on columns of table "v_service"
-"""
-input VServiceStddevOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""aggregate stddevPop on columns"""
-type VServiceStddevPopFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by stddevPop() on columns of table "v_service"
-"""
-input VServiceStddevPopOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""aggregate stddevSamp on columns"""
-type VServiceStddevSampFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by stddevSamp() on columns of table "v_service"
-"""
-input VServiceStddevSampOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""
-Streaming cursor of the table "v_service"
-"""
-input VServiceStreamCursorInput {
-  """Stream column input with initial value"""
-  initialValue: VServiceStreamCursorValueInput!
-
-  """cursor ordering"""
-  ordering: CursorOrdering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input VServiceStreamCursorValueInput {
-  id: Int
-  uid: String
-  yearValue: Int
-}
-
-"""aggregate sum on columns"""
-type VServiceSumFields {
-  id: Int
-  yearValue: Int
-}
-
-"""
-order by sum() on columns of table "v_service"
-"""
-input VServiceSumOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-input VServiceUpdates {
-  """increments the numeric columns with given value of the filtered values"""
-  _inc: VServiceIncInput
-
-  """sets the columns of the filtered rows to the given values"""
-  _set: VServiceSetInput
-
-  """filter the rows which have to be updated"""
-  where: VServiceBoolExp!
-}
-
-"""aggregate varPop on columns"""
-type VServiceVarPopFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by varPop() on columns of table "v_service"
-"""
-input VServiceVarPopOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""aggregate varSamp on columns"""
-type VServiceVarSampFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by varSamp() on columns of table "v_service"
-"""
-input VServiceVarSampOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""aggregate variance on columns"""
-type VServiceVarianceFields {
-  id: Float
-  yearValue: Float
-}
-
-"""
-order by variance() on columns of table "v_service"
-"""
-input VServiceVarianceOrderBy {
-  id: OrderBy
-  yearValue: OrderBy
-}
-
-"""
-columns and relationships of "v_teacher"
-"""
-type VTeacher {
-  alias: String
-
-  """An array relationship"""
-  coordinations(
-    """distinct select on columns"""
-    distinctOn: [CoordinationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CoordinationOrderBy!]
-
-    """filter the rows returned"""
-    where: CoordinationBoolExp
-  ): [Coordination!]!
-
-  """An aggregate relationship"""
-  coordinationsAggregate(
-    """distinct select on columns"""
-    distinctOn: [CoordinationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CoordinationOrderBy!]
-
-    """filter the rows returned"""
-    where: CoordinationBoolExp
-  ): CoordinationAggregate!
-  displayname: String
-  firstname: String
-  lastname: String
-
-  """An array relationship"""
-  services(
-    """distinct select on columns"""
-    distinctOn: [ServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceBoolExp
-  ): [Service!]!
-
-  """An aggregate relationship"""
-  servicesAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceBoolExp
-  ): ServiceAggregate!
-  uid: String
-
-  """An array relationship"""
-  vServices(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """An aggregate relationship"""
-  vServicesAggregate(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): VServiceAggregate!
-}
-
-"""
-aggregated selection of "v_teacher"
-"""
-type VTeacherAggregate {
-  aggregate: VTeacherAggregateFields
-  nodes: [VTeacher!]!
-}
-
-"""
-aggregate fields of "v_teacher"
-"""
-type VTeacherAggregateFields {
-  count(columns: [VTeacherSelectColumn!], distinct: Boolean): Int!
-  max: VTeacherMaxFields
-  min: VTeacherMinFields
-}
-
-"""
-Boolean expression to filter rows from the table "v_teacher". All fields are combined with a logical 'AND'.
-"""
-input VTeacherBoolExp {
-  _and: [VTeacherBoolExp!]
-  _not: VTeacherBoolExp
-  _or: [VTeacherBoolExp!]
-  alias: StringComparisonExp
-  coordinations: CoordinationBoolExp
-  coordinationsAggregate: CoordinationAggregateBoolExp
-  displayname: StringComparisonExp
-  firstname: StringComparisonExp
-  lastname: StringComparisonExp
-  services: ServiceBoolExp
-  servicesAggregate: ServiceAggregateBoolExp
-  uid: StringComparisonExp
-  vServices: VServiceBoolExp
-  vServicesAggregate: VServiceAggregateBoolExp
-}
-
-"""
-input type for inserting data into table "v_teacher"
-"""
-input VTeacherInsertInput {
-  alias: String
-  coordinations: CoordinationArrRelInsertInput
-  displayname: String
-  firstname: String
-  lastname: String
-  services: ServiceArrRelInsertInput
-  uid: String
-  vServices: VServiceArrRelInsertInput
-}
-
-"""aggregate max on columns"""
-type VTeacherMaxFields {
-  alias: String
-  displayname: String
-  firstname: String
-  lastname: String
-  uid: String
-}
-
-"""aggregate min on columns"""
-type VTeacherMinFields {
-  alias: String
-  displayname: String
-  firstname: String
-  lastname: String
-  uid: String
-}
-
-"""
-response of any mutation on the table "v_teacher"
-"""
-type VTeacherMutationResponse {
-  """number of rows affected by the mutation"""
-  affectedRows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [VTeacher!]!
-}
-
-"""
-input type for inserting object relation for remote table "v_teacher"
-"""
-input VTeacherObjRelInsertInput {
-  data: VTeacherInsertInput!
-}
-
-"""Ordering options when selecting data from "v_teacher"."""
-input VTeacherOrderBy {
-  alias: OrderBy
-  coordinationsAggregate: CoordinationAggregateOrderBy
-  displayname: OrderBy
-  firstname: OrderBy
-  lastname: OrderBy
-  servicesAggregate: ServiceAggregateOrderBy
-  uid: OrderBy
-  vServicesAggregate: VServiceAggregateOrderBy
-}
-
-"""
-select columns of table "v_teacher"
-"""
-enum VTeacherSelectColumn {
-  """column name"""
-  alias
-
-  """column name"""
-  displayname
-
-  """column name"""
-  firstname
-
-  """column name"""
-  lastname
-
-  """column name"""
-  uid
-}
-
-"""
-input type for updating data in table "v_teacher"
-"""
-input VTeacherSetInput {
-  alias: String
-  displayname: String
-  firstname: String
-  lastname: String
-  uid: String
-}
-
-"""
-Streaming cursor of the table "v_teacher"
-"""
-input VTeacherStreamCursorInput {
-  """Stream column input with initial value"""
-  initialValue: VTeacherStreamCursorValueInput!
-
-  """cursor ordering"""
-  ordering: CursorOrdering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input VTeacherStreamCursorValueInput {
-  alias: String
-  displayname: String
-  firstname: String
-  lastname: String
-  uid: String
-}
-
-input VTeacherUpdates {
-  """sets the columns of the filtered rows to the given values"""
-  _set: VTeacherSetInput
-
-  """filter the rows which have to be updated"""
-  where: VTeacherBoolExp!
 }
 
 """
@@ -12747,42 +12608,6 @@ type Year {
   """
   updatedAt: timestamptz!
 
-  """An array relationship"""
-  vServices(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """An aggregate relationship"""
-  vServicesAggregate(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): VServiceAggregate!
-
   """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
   value: Int!
 
@@ -12839,8 +12664,6 @@ input YearBoolExp {
   services: ServiceBoolExp
   servicesAggregate: ServiceAggregateBoolExp
   updatedAt: TimestamptzComparisonExp
-  vServices: VServiceBoolExp
-  vServicesAggregate: VServiceAggregateBoolExp
   value: IntComparisonExp
   visible: BooleanComparisonExp
 }
@@ -12889,7 +12712,6 @@ input YearInsertInput {
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
-  vServices: VServiceArrRelInsertInput
 
   """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
   value: Int
@@ -12965,7 +12787,6 @@ input YearOrderBy {
   requestsAggregate: RequestAggregateOrderBy
   servicesAggregate: ServiceAggregateOrderBy
   updatedAt: OrderBy
-  vServicesAggregate: VServiceAggregateOrderBy
   value: OrderBy
   visible: OrderBy
 }
@@ -13167,7 +12988,7 @@ input courseAggregateBoolExpCount {
 }
 
 input createTeacherServiceArgs {
-  p_uid: String
+  p_teacher_id: Int
   p_year: Int
 }
 
@@ -13406,6 +13227,22 @@ type mutation_root {
   ): Degree
 
   """
+  delete data from the table: "message"
+  """
+  deleteMessage(
+    """filter the rows which have to be deleted"""
+    where: MessageBoolExp!
+  ): MessageMutationResponse
+
+  """
+  delete single row from the table: "message"
+  """
+  deleteMessageByPk(
+    """Unique message identifier"""
+    id: Int!
+  ): Message
+
+  """
   delete data from the table: "phase"
   """
   deletePhase(
@@ -13593,8 +13430,8 @@ type mutation_root {
   delete single row from the table: "teacher"
   """
   deleteTeacherByPk(
-    """Teacher's email address (primary key)."""
-    uid: String!
+    """Unique teacher identifier"""
+    id: Int!
   ): Teacher
 
   """
@@ -13612,22 +13449,6 @@ type mutation_root {
     """Unique track identifier"""
     id: Int!
   ): Track
-
-  """
-  delete data from the table: "v_service"
-  """
-  deleteVService(
-    """filter the rows which have to be deleted"""
-    where: VServiceBoolExp!
-  ): VServiceMutationResponse
-
-  """
-  delete data from the table: "v_teacher"
-  """
-  deleteVTeacher(
-    """filter the rows which have to be deleted"""
-    where: VTeacherBoolExp!
-  ): VTeacherMutationResponse
 
   """
   delete data from the table: "year"
@@ -13796,6 +13617,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: DegreeOnConflict
   ): Degree
+
+  """
+  insert data into the table: "message"
+  """
+  insertMessage(
+    """the rows to be inserted"""
+    objects: [MessageInsertInput!]!
+
+    """upsert condition"""
+    onConflict: MessageOnConflict
+  ): MessageMutationResponse
+
+  """
+  insert a single row into the table: "message"
+  """
+  insertMessageOne(
+    """the row to be inserted"""
+    object: MessageInsertInput!
+
+    """upsert condition"""
+    onConflict: MessageOnConflict
+  ): Message
 
   """
   insert data into the table: "phase"
@@ -14084,38 +13927,6 @@ type mutation_root {
   ): Track
 
   """
-  insert data into the table: "v_service"
-  """
-  insertVService(
-    """the rows to be inserted"""
-    objects: [VServiceInsertInput!]!
-  ): VServiceMutationResponse
-
-  """
-  insert a single row into the table: "v_service"
-  """
-  insertVServiceOne(
-    """the row to be inserted"""
-    object: VServiceInsertInput!
-  ): VService
-
-  """
-  insert data into the table: "v_teacher"
-  """
-  insertVTeacher(
-    """the rows to be inserted"""
-    objects: [VTeacherInsertInput!]!
-  ): VTeacherMutationResponse
-
-  """
-  insert a single row into the table: "v_teacher"
-  """
-  insertVTeacherOne(
-    """the row to be inserted"""
-    object: VTeacherInsertInput!
-  ): VTeacher
-
-  """
   insert data into the table: "year"
   """
   insertYear(
@@ -14330,6 +14141,40 @@ type mutation_root {
   ): [DegreeMutationResponse]
 
   """
+  update data of the table: "message"
+  """
+  updateMessage(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: MessageIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: MessageSetInput
+
+    """filter the rows which have to be updated"""
+    where: MessageBoolExp!
+  ): MessageMutationResponse
+
+  """
+  update single row of the table: "message"
+  """
+  updateMessageByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: MessageIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: MessageSetInput
+    pkColumns: MessagePkColumnsInput!
+  ): Message
+
+  """
+  update multiples rows of table: "message"
+  """
+  updateMessageMany(
+    """updates to execute, in order"""
+    updates: [MessageUpdates!]!
+  ): [MessageMutationResponse]
+
+  """
   update data of the table: "phase"
   """
   updatePhase(
@@ -14525,6 +14370,9 @@ type mutation_root {
   update data of the table: "role"
   """
   updateRole(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: RoleIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: RoleSetInput
 
@@ -14536,6 +14384,9 @@ type mutation_root {
   update single row of the table: "role"
   """
   updateRoleByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: RoleIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: RoleSetInput
     pkColumns: RolePkColumnsInput!
@@ -14740,47 +14591,6 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [TrackUpdates!]!
   ): [TrackMutationResponse]
-
-  """
-  update data of the table: "v_service"
-  """
-  updateVService(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: VServiceIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: VServiceSetInput
-
-    """filter the rows which have to be updated"""
-    where: VServiceBoolExp!
-  ): VServiceMutationResponse
-
-  """
-  update multiples rows of table: "v_service"
-  """
-  updateVServiceMany(
-    """updates to execute, in order"""
-    updates: [VServiceUpdates!]!
-  ): [VServiceMutationResponse]
-
-  """
-  update data of the table: "v_teacher"
-  """
-  updateVTeacher(
-    """sets the columns of the filtered rows to the given values"""
-    _set: VTeacherSetInput
-
-    """filter the rows which have to be updated"""
-    where: VTeacherBoolExp!
-  ): VTeacherMutationResponse
-
-  """
-  update multiples rows of table: "v_teacher"
-  """
-  updateVTeacherMany(
-    """updates to execute, in order"""
-    updates: [VTeacherUpdates!]!
-  ): [VTeacherMutationResponse]
 
   """
   update data of the table: "year"
@@ -15135,6 +14945,52 @@ type query_root {
     """Unique degree identifier"""
     id: Int!
   ): Degree
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinctOn: [MessageSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [MessageOrderBy!]
+
+    """filter the rows returned"""
+    where: MessageBoolExp
+  ): [Message!]!
+
+  """
+  fetch aggregated fields from the table: "message"
+  """
+  messageAggregate(
+    """distinct select on columns"""
+    distinctOn: [MessageSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [MessageOrderBy!]
+
+    """filter the rows returned"""
+    where: MessageBoolExp
+  ): MessageAggregate!
+
+  """fetch data from the table: "message" using primary key columns"""
+  messageByPk(
+    """Unique message identifier"""
+    id: Int!
+  ): Message
 
   """
   fetch data from the table: "phase"
@@ -15688,8 +15544,8 @@ type query_root {
 
   """fetch data from the table: "teacher" using primary key columns"""
   teacherByPk(
-    """Teacher's email address (primary key)."""
-    uid: String!
+    """Unique teacher identifier"""
+    id: Int!
   ): Teacher
 
   """
@@ -15737,86 +15593,6 @@ type query_root {
     """Unique track identifier"""
     id: Int!
   ): Track
-
-  """
-  fetch data from the table: "v_service"
-  """
-  vService(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """
-  fetch aggregated fields from the table: "v_service"
-  """
-  vServiceAggregate(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): VServiceAggregate!
-
-  """
-  fetch data from the table: "v_teacher"
-  """
-  vTeacher(
-    """distinct select on columns"""
-    distinctOn: [VTeacherSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VTeacherOrderBy!]
-
-    """filter the rows returned"""
-    where: VTeacherBoolExp
-  ): [VTeacher!]!
-
-  """
-  fetch aggregated fields from the table: "v_teacher"
-  """
-  vTeacherAggregate(
-    """distinct select on columns"""
-    distinctOn: [VTeacherSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VTeacherOrderBy!]
-
-    """filter the rows returned"""
-    where: VTeacherBoolExp
-  ): VTeacherAggregate!
 
   """
   fetch data from the table: "year"
@@ -16255,6 +16031,66 @@ type subscription_root {
     """filter the rows returned"""
     where: DegreeBoolExp
   ): [Degree!]!
+
+  """
+  fetch data from the table: "message"
+  """
+  message(
+    """distinct select on columns"""
+    distinctOn: [MessageSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [MessageOrderBy!]
+
+    """filter the rows returned"""
+    where: MessageBoolExp
+  ): [Message!]!
+
+  """
+  fetch aggregated fields from the table: "message"
+  """
+  messageAggregate(
+    """distinct select on columns"""
+    distinctOn: [MessageSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [MessageOrderBy!]
+
+    """filter the rows returned"""
+    where: MessageBoolExp
+  ): MessageAggregate!
+
+  """fetch data from the table: "message" using primary key columns"""
+  messageByPk(
+    """Unique message identifier"""
+    id: Int!
+  ): Message
+
+  """
+  fetch data from the table in a streaming manner: "message"
+  """
+  messageStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [MessageStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: MessageBoolExp
+  ): [Message!]!
 
   """
   fetch data from the table: "phase"
@@ -16962,8 +16798,8 @@ type subscription_root {
 
   """fetch data from the table: "teacher" using primary key columns"""
   teacherByPk(
-    """Teacher's email address (primary key)."""
-    uid: String!
+    """Unique teacher identifier"""
+    id: Int!
   ): Teacher
 
   """
@@ -17039,114 +16875,6 @@ type subscription_root {
     """filter the rows returned"""
     where: TrackBoolExp
   ): [Track!]!
-
-  """
-  fetch data from the table: "v_service"
-  """
-  vService(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """
-  fetch aggregated fields from the table: "v_service"
-  """
-  vServiceAggregate(
-    """distinct select on columns"""
-    distinctOn: [VServiceSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VServiceOrderBy!]
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): VServiceAggregate!
-
-  """
-  fetch data from the table in a streaming manner: "v_service"
-  """
-  vServiceStream(
-    """maximum number of rows returned in a single batch"""
-    batchSize: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [VServiceStreamCursorInput]!
-
-    """filter the rows returned"""
-    where: VServiceBoolExp
-  ): [VService!]!
-
-  """
-  fetch data from the table: "v_teacher"
-  """
-  vTeacher(
-    """distinct select on columns"""
-    distinctOn: [VTeacherSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VTeacherOrderBy!]
-
-    """filter the rows returned"""
-    where: VTeacherBoolExp
-  ): [VTeacher!]!
-
-  """
-  fetch aggregated fields from the table: "v_teacher"
-  """
-  vTeacherAggregate(
-    """distinct select on columns"""
-    distinctOn: [VTeacherSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [VTeacherOrderBy!]
-
-    """filter the rows returned"""
-    where: VTeacherBoolExp
-  ): VTeacherAggregate!
-
-  """
-  fetch data from the table in a streaming manner: "v_teacher"
-  """
-  vTeacherStream(
-    """maximum number of rows returned in a single batch"""
-    batchSize: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [VTeacherStreamCursorInput]!
-
-    """filter the rows returned"""
-    where: VTeacherBoolExp
-  ): [VTeacher!]!
 
   """
   fetch data from the table: "year"
@@ -17250,12 +16978,5 @@ input trackAggregateBoolExpCount {
   arguments: [TrackSelectColumn!]
   distinct: Boolean
   filter: TrackBoolExp
-  predicate: IntComparisonExp!
-}
-
-input vServiceAggregateBoolExpCount {
-  arguments: [VServiceSelectColumn!]
-  distinct: Boolean
-  filter: VServiceBoolExp
   predicate: IntComparisonExp!
 }

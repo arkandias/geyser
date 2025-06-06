@@ -233,16 +233,14 @@ export type Coordination = {
   programId?: Maybe<Scalars['Int']['output']>;
   /** An object relationship */
   teacher: Teacher;
+  /** Coordinating teacher */
+  teacherId: Scalars['Int']['output'];
   /** An object relationship */
   track?: Maybe<Track>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Int']['output']>;
-  /** Coordinating teacher */
-  uid: Scalars['String']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An object relationship */
-  vTeacher?: Maybe<VTeacher>;
 };
 
 /** aggregated selection of "coordination" */
@@ -310,6 +308,8 @@ export type CoordinationAvgFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -322,6 +322,8 @@ export type CoordinationAvgOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -339,19 +341,18 @@ export type CoordinationBoolExp = {
   program?: InputMaybe<ProgramBoolExp>;
   programId?: InputMaybe<IntComparisonExp>;
   teacher?: InputMaybe<TeacherBoolExp>;
+  teacherId?: InputMaybe<IntComparisonExp>;
   track?: InputMaybe<TrackBoolExp>;
   trackId?: InputMaybe<IntComparisonExp>;
-  uid?: InputMaybe<StringComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vTeacher?: InputMaybe<VTeacherBoolExp>;
 };
 
 /** unique or primary key constraints on table "coordination" */
 export enum CoordinationConstraint {
   /** unique or primary key constraint on columns "id" */
   CoordinationPkey = 'coordination_pkey',
-  /** unique or primary key constraint on columns "track_id", "uid", "course_id", "program_id" */
-  CoordinationUidCourseIdTrackIdProgramIdKey = 'coordination_uid_course_id_track_id_program_id_key'
+  /** unique or primary key constraint on columns "teacher_id", "track_id", "course_id", "program_id" */
+  CoordinationTeacherIdCourseIdTrackIdProgramIdKey = 'coordination_teacher_id_course_id_track_id_program_id_key'
 }
 
 /** input type for incrementing numeric columns in table "coordination" */
@@ -360,6 +361,8 @@ export type CoordinationIncInput = {
   courseId?: InputMaybe<Scalars['Int']['input']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<Scalars['Int']['input']>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<Scalars['Int']['input']>;
 };
@@ -377,14 +380,13 @@ export type CoordinationInsertInput = {
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<Scalars['Int']['input']>;
   teacher?: InputMaybe<TeacherObjRelInsertInput>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   track?: InputMaybe<TrackObjRelInsertInput>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<Scalars['Int']['input']>;
-  /** Coordinating teacher */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vTeacher?: InputMaybe<VTeacherObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -400,10 +402,10 @@ export type CoordinationMaxFields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Int']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Int']['output']>;
-  /** Coordinating teacher */
-  uid?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -420,10 +422,10 @@ export type CoordinationMaxOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
-  /** Coordinating teacher */
-  uid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -441,10 +443,10 @@ export type CoordinationMinFields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Int']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Int']['output']>;
-  /** Coordinating teacher */
-  uid?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -461,10 +463,10 @@ export type CoordinationMinOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
-  /** Coordinating teacher */
-  uid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -495,11 +497,10 @@ export type CoordinationOrderBy = {
   program?: InputMaybe<ProgramOrderBy>;
   programId?: InputMaybe<OrderBy>;
   teacher?: InputMaybe<TeacherOrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   track?: InputMaybe<TrackOrderBy>;
   trackId?: InputMaybe<OrderBy>;
-  uid?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vTeacher?: InputMaybe<VTeacherOrderBy>;
 };
 
 /** primary key columns input for table: coordination */
@@ -521,9 +522,9 @@ export enum CoordinationSelectColumn {
   /** column name */
   ProgramId = 'programId',
   /** column name */
-  TrackId = 'trackId',
+  TeacherId = 'teacherId',
   /** column name */
-  Uid = 'uid',
+  TrackId = 'trackId',
   /** column name */
   UpdatedAt = 'updatedAt'
 }
@@ -538,10 +539,10 @@ export type CoordinationSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<Scalars['Int']['input']>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<Scalars['Int']['input']>;
-  /** Coordinating teacher */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -555,6 +556,8 @@ export type CoordinationStddevFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -567,6 +570,8 @@ export type CoordinationStddevOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -580,6 +585,8 @@ export type CoordinationStddevPopFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -592,6 +599,8 @@ export type CoordinationStddevPopOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -605,6 +614,8 @@ export type CoordinationStddevSampFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -617,6 +628,8 @@ export type CoordinationStddevSampOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -641,10 +654,10 @@ export type CoordinationStreamCursorValueInput = {
   id?: InputMaybe<Scalars['Int']['input']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<Scalars['Int']['input']>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<Scalars['Int']['input']>;
-  /** Coordinating teacher */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -658,6 +671,8 @@ export type CoordinationSumFields = {
   id?: Maybe<Scalars['Int']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Int']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Int']['output']>;
 };
@@ -670,6 +685,8 @@ export type CoordinationSumOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -685,9 +702,9 @@ export enum CoordinationUpdateColumn {
   /** column name */
   ProgramId = 'programId',
   /** column name */
-  TrackId = 'trackId',
+  TeacherId = 'teacherId',
   /** column name */
-  Uid = 'uid',
+  TrackId = 'trackId',
   /** column name */
   UpdatedAt = 'updatedAt'
 }
@@ -710,6 +727,8 @@ export type CoordinationVarPopFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -722,6 +741,8 @@ export type CoordinationVarPopOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -735,6 +756,8 @@ export type CoordinationVarSampFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -747,6 +770,8 @@ export type CoordinationVarSampOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -760,6 +785,8 @@ export type CoordinationVarianceFields = {
   id?: Maybe<Scalars['Float']['output']>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: Maybe<Scalars['Float']['output']>;
+  /** Coordinating teacher */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: Maybe<Scalars['Float']['output']>;
 };
@@ -772,6 +799,8 @@ export type CoordinationVarianceOrderBy = {
   id?: InputMaybe<OrderBy>;
   /** Program being coordinated (mutually exclusive with track_id and course_id) */
   programId?: InputMaybe<OrderBy>;
+  /** Coordinating teacher */
+  teacherId?: InputMaybe<OrderBy>;
   /** Track being coordinated (mutually exclusive with program_id and course_id) */
   trackId?: InputMaybe<OrderBy>;
 };
@@ -789,6 +818,8 @@ export type Course = {
   cycleYear: Scalars['Int']['output'];
   /** Course description */
   description?: Maybe<Scalars['String']['output']>;
+  ensIdImport?: Maybe<Scalars['String']['output']>;
+  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Standard number of student groups */
   groups: Scalars['Int']['output'];
   /** Modified number of groups if different from standard */
@@ -809,6 +840,7 @@ export type Course = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated course name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   priorities: Array<Priority>;
   /** An aggregate relationship */
@@ -837,10 +869,10 @@ export type Course = {
   updatedAt: Scalars['timestamptz']['output'];
   /** Controls course visibility in the user interface and queries */
   visible: Scalars['Boolean']['output'];
-  /** An object relationship */
-  year: Year;
   /** Academic year when the course is offered */
-  yearValue: Scalars['Int']['output'];
+  year: Scalars['Int']['output'];
+  /** An object relationship */
+  yearByYear: Year;
 };
 
 
@@ -991,7 +1023,7 @@ export type CourseAvgFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "course" */
@@ -1023,7 +1055,7 @@ export type CourseAvgOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "course". All fields are combined with a logical 'AND'. */
@@ -1036,6 +1068,8 @@ export type CourseBoolExp = {
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
   cycleYear?: InputMaybe<IntComparisonExp>;
   description?: InputMaybe<StringComparisonExp>;
+  ensIdImport?: InputMaybe<StringComparisonExp>;
+  formationIdImport?: InputMaybe<StringComparisonExp>;
   groups?: InputMaybe<IntComparisonExp>;
   groupsAdjusted?: InputMaybe<IntComparisonExp>;
   groupsEffective?: InputMaybe<IntComparisonExp>;
@@ -1046,6 +1080,7 @@ export type CourseBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
+  nomImport?: InputMaybe<StringComparisonExp>;
   priorities?: InputMaybe<PriorityBoolExp>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateBoolExp>;
   priorityRule?: InputMaybe<IntComparisonExp>;
@@ -1060,18 +1095,20 @@ export type CourseBoolExp = {
   typeId?: InputMaybe<IntComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
   visible?: InputMaybe<BooleanComparisonExp>;
-  year?: InputMaybe<YearBoolExp>;
-  yearValue?: InputMaybe<IntComparisonExp>;
+  year?: InputMaybe<IntComparisonExp>;
+  yearByYear?: InputMaybe<YearBoolExp>;
 };
 
 /** unique or primary key constraints on table "course" */
 export enum CourseConstraint {
-  /** unique or primary key constraint on columns "year_value", "id" */
-  CourseIdYearValueKey = 'course_id_year_value_key',
+  /** unique or primary key constraint on columns "ens_id_import" */
+  CourseEnsIdImportKey = 'course_ens_id_import_key',
+  /** unique or primary key constraint on columns "id", "year" */
+  CourseIdYearKey = 'course_id_year_key',
   /** unique or primary key constraint on columns "id" */
   CoursePkey = 'course_pkey',
-  /** unique or primary key constraint on columns "year_value", "track_id", "semester", "program_id", "name", "type_id" */
-  CourseYearValueProgramIdTrackIdNameSemesterTypeIdKey = 'course_year_value_program_id_track_id_name_semester_type_id_key'
+  /** unique or primary key constraint on columns "track_id", "semester", "program_id", "name", "year", "type_id" */
+  CourseYearProgramIdTrackIdNameSemesterTypeIdKey = 'course_year_program_id_track_id_name_semester_type_id_key'
 }
 
 /** input type for incrementing numeric columns in table "course" */
@@ -1095,7 +1132,7 @@ export type CourseIncInput = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<Scalars['Int']['input']>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "course" */
@@ -1105,6 +1142,8 @@ export type CourseInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Course description */
   description?: InputMaybe<Scalars['String']['input']>;
+  ensIdImport?: InputMaybe<Scalars['String']['input']>;
+  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Standard number of student groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups if different from standard */
@@ -1117,6 +1156,7 @@ export type CourseInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated course name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   priorities?: InputMaybe<PriorityArrRelInsertInput>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: InputMaybe<Scalars['Int']['input']>;
@@ -1136,9 +1176,9 @@ export type CourseInsertInput = {
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Controls course visibility in the user interface and queries */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
-  year?: InputMaybe<YearObjRelInsertInput>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+  yearByYear?: InputMaybe<YearObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -1150,6 +1190,8 @@ export type CourseMaxFields = {
   cycleYear?: Maybe<Scalars['Int']['output']>;
   /** Course description */
   description?: Maybe<Scalars['String']['output']>;
+  ensIdImport?: Maybe<Scalars['String']['output']>;
+  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Standard number of student groups */
   groups?: Maybe<Scalars['Int']['output']>;
   /** Modified number of groups if different from standard */
@@ -1170,6 +1212,7 @@ export type CourseMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated course name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: Maybe<Scalars['Int']['output']>;
   /** Program offering this course */
@@ -1183,7 +1226,7 @@ export type CourseMaxFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "course" */
@@ -1194,6 +1237,8 @@ export type CourseMaxOrderBy = {
   cycleYear?: InputMaybe<OrderBy>;
   /** Course description */
   description?: InputMaybe<OrderBy>;
+  ensIdImport?: InputMaybe<OrderBy>;
+  formationIdImport?: InputMaybe<OrderBy>;
   /** Standard number of student groups */
   groups?: InputMaybe<OrderBy>;
   /** Modified number of groups if different from standard */
@@ -1214,6 +1259,7 @@ export type CourseMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated course name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: InputMaybe<OrderBy>;
   /** Program offering this course */
@@ -1227,7 +1273,7 @@ export type CourseMaxOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -1239,6 +1285,8 @@ export type CourseMinFields = {
   cycleYear?: Maybe<Scalars['Int']['output']>;
   /** Course description */
   description?: Maybe<Scalars['String']['output']>;
+  ensIdImport?: Maybe<Scalars['String']['output']>;
+  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Standard number of student groups */
   groups?: Maybe<Scalars['Int']['output']>;
   /** Modified number of groups if different from standard */
@@ -1259,6 +1307,7 @@ export type CourseMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated course name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: Maybe<Scalars['Int']['output']>;
   /** Program offering this course */
@@ -1272,7 +1321,7 @@ export type CourseMinFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "course" */
@@ -1283,6 +1332,8 @@ export type CourseMinOrderBy = {
   cycleYear?: InputMaybe<OrderBy>;
   /** Course description */
   description?: InputMaybe<OrderBy>;
+  ensIdImport?: InputMaybe<OrderBy>;
+  formationIdImport?: InputMaybe<OrderBy>;
   /** Standard number of student groups */
   groups?: InputMaybe<OrderBy>;
   /** Modified number of groups if different from standard */
@@ -1303,6 +1354,7 @@ export type CourseMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated course name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: InputMaybe<OrderBy>;
   /** Program offering this course */
@@ -1316,7 +1368,7 @@ export type CourseMinOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "course" */
@@ -1348,6 +1400,8 @@ export type CourseOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   cycleYear?: InputMaybe<OrderBy>;
   description?: InputMaybe<OrderBy>;
+  ensIdImport?: InputMaybe<OrderBy>;
+  formationIdImport?: InputMaybe<OrderBy>;
   groups?: InputMaybe<OrderBy>;
   groupsAdjusted?: InputMaybe<OrderBy>;
   groupsEffective?: InputMaybe<OrderBy>;
@@ -1358,6 +1412,7 @@ export type CourseOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateOrderBy>;
   priorityRule?: InputMaybe<OrderBy>;
   program?: InputMaybe<ProgramOrderBy>;
@@ -1370,8 +1425,8 @@ export type CourseOrderBy = {
   typeId?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
   visible?: InputMaybe<OrderBy>;
-  year?: InputMaybe<YearOrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
+  yearByYear?: InputMaybe<YearOrderBy>;
 };
 
 /** primary key columns input for table: course */
@@ -1388,6 +1443,10 @@ export enum CourseSelectColumn {
   CycleYear = 'cycleYear',
   /** column name */
   Description = 'description',
+  /** column name */
+  EnsIdImport = 'ensIdImport',
+  /** column name */
+  FormationIdImport = 'formationIdImport',
   /** column name */
   Groups = 'groups',
   /** column name */
@@ -1409,6 +1468,8 @@ export enum CourseSelectColumn {
   /** column name */
   NameShort = 'nameShort',
   /** column name */
+  NomImport = 'nomImport',
+  /** column name */
   PriorityRule = 'priorityRule',
   /** column name */
   ProgramId = 'programId',
@@ -1423,7 +1484,7 @@ export enum CourseSelectColumn {
   /** column name */
   Visible = 'visible',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 /** select "courseAggregateBoolExpBool_andArgumentsColumns" columns of table "course" */
@@ -1444,6 +1505,8 @@ export type CourseSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Course description */
   description?: InputMaybe<Scalars['String']['input']>;
+  ensIdImport?: InputMaybe<Scalars['String']['input']>;
+  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Standard number of student groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups if different from standard */
@@ -1456,6 +1519,7 @@ export type CourseSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated course name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: InputMaybe<Scalars['Int']['input']>;
   /** Program offering this course */
@@ -1471,7 +1535,7 @@ export type CourseSetInput = {
   /** Controls course visibility in the user interface and queries */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -1504,7 +1568,7 @@ export type CourseStddevFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "course" */
@@ -1536,7 +1600,7 @@ export type CourseStddevOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -1569,7 +1633,7 @@ export type CourseStddevPopFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "course" */
@@ -1601,7 +1665,7 @@ export type CourseStddevPopOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -1634,7 +1698,7 @@ export type CourseStddevSampFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "course" */
@@ -1666,7 +1730,7 @@ export type CourseStddevSampOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "course" */
@@ -1685,6 +1749,8 @@ export type CourseStreamCursorValueInput = {
   cycleYear?: InputMaybe<Scalars['Int']['input']>;
   /** Course description */
   description?: InputMaybe<Scalars['String']['input']>;
+  ensIdImport?: InputMaybe<Scalars['String']['input']>;
+  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Standard number of student groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups if different from standard */
@@ -1705,6 +1771,7 @@ export type CourseStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated course name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
   priorityRule?: InputMaybe<Scalars['Int']['input']>;
   /** Program offering this course */
@@ -1720,7 +1787,7 @@ export type CourseStreamCursorValueInput = {
   /** Controls course visibility in the user interface and queries */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -1753,7 +1820,7 @@ export type CourseSumFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Int']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "course" */
@@ -1785,7 +1852,7 @@ export type CourseSumOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Types of course delivery with associated workload coefficients */
@@ -2133,6 +2200,10 @@ export enum CourseUpdateColumn {
   /** column name */
   Description = 'description',
   /** column name */
+  EnsIdImport = 'ensIdImport',
+  /** column name */
+  FormationIdImport = 'formationIdImport',
+  /** column name */
   Groups = 'groups',
   /** column name */
   GroupsAdjusted = 'groupsAdjusted',
@@ -2144,6 +2215,8 @@ export enum CourseUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
+  /** column name */
+  NomImport = 'nomImport',
   /** column name */
   PriorityRule = 'priorityRule',
   /** column name */
@@ -2159,7 +2232,7 @@ export enum CourseUpdateColumn {
   /** column name */
   Visible = 'visible',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 export type CourseUpdates = {
@@ -2201,7 +2274,7 @@ export type CourseVarPopFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "course" */
@@ -2233,7 +2306,7 @@ export type CourseVarPopOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -2266,7 +2339,7 @@ export type CourseVarSampFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "course" */
@@ -2298,7 +2371,7 @@ export type CourseVarSampOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -2331,7 +2404,7 @@ export type CourseVarianceFields = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: Maybe<Scalars['Float']['output']>;
   /** Academic year when the course is offered */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "course" */
@@ -2363,7 +2436,7 @@ export type CourseVarianceOrderBy = {
   /** Reference to course delivery type affecting workload calculation */
   typeId?: InputMaybe<OrderBy>;
   /** Academic year when the course is offered */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Singleton table that stores the active system phase reference */
@@ -3072,6 +3145,303 @@ export type IntComparisonExp = {
   _nin?: InputMaybe<Array<Scalars['Int']['input']>>;
 };
 
+/** Message to the assignment committee attached to a service */
+export type Message = {
+  __typename?: 'Message';
+  /** Content of the message */
+  content: Scalars['String']['output'];
+  /** Timestamp when the record was created */
+  createdAt: Scalars['timestamptz']['output'];
+  /** Unique message identifier */
+  id: Scalars['Int']['output'];
+  /** An object relationship */
+  service: Service;
+  /** Identifier of the corresponding service */
+  serviceId: Scalars['Int']['output'];
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt: Scalars['timestamptz']['output'];
+};
+
+/** aggregated selection of "message" */
+export type MessageAggregate = {
+  __typename?: 'MessageAggregate';
+  aggregate?: Maybe<MessageAggregateFields>;
+  nodes: Array<Message>;
+};
+
+/** aggregate fields of "message" */
+export type MessageAggregateFields = {
+  __typename?: 'MessageAggregateFields';
+  avg?: Maybe<MessageAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<MessageMaxFields>;
+  min?: Maybe<MessageMinFields>;
+  stddev?: Maybe<MessageStddevFields>;
+  stddevPop?: Maybe<MessageStddevPopFields>;
+  stddevSamp?: Maybe<MessageStddevSampFields>;
+  sum?: Maybe<MessageSumFields>;
+  varPop?: Maybe<MessageVarPopFields>;
+  varSamp?: Maybe<MessageVarSampFields>;
+  variance?: Maybe<MessageVarianceFields>;
+};
+
+
+/** aggregate fields of "message" */
+export type MessageAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<MessageSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type MessageAvgFields = {
+  __typename?: 'MessageAvgFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "message". All fields are combined with a logical 'AND'. */
+export type MessageBoolExp = {
+  _and?: InputMaybe<Array<MessageBoolExp>>;
+  _not?: InputMaybe<MessageBoolExp>;
+  _or?: InputMaybe<Array<MessageBoolExp>>;
+  content?: InputMaybe<StringComparisonExp>;
+  createdAt?: InputMaybe<TimestamptzComparisonExp>;
+  id?: InputMaybe<IntComparisonExp>;
+  service?: InputMaybe<ServiceBoolExp>;
+  serviceId?: InputMaybe<IntComparisonExp>;
+  updatedAt?: InputMaybe<TimestamptzComparisonExp>;
+};
+
+/** unique or primary key constraints on table "message" */
+export enum MessageConstraint {
+  /** unique or primary key constraint on columns "id" */
+  MessagePkey = 'message_pkey',
+  /** unique or primary key constraint on columns "service_id" */
+  MessageServiceIdKey = 'message_service_id_key'
+}
+
+/** input type for incrementing numeric columns in table "message" */
+export type MessageIncInput = {
+  /** Identifier of the corresponding service */
+  serviceId?: InputMaybe<Scalars['Int']['input']>;
+};
+
+/** input type for inserting data into table "message" */
+export type MessageInsertInput = {
+  /** Content of the message */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  service?: InputMaybe<ServiceObjRelInsertInput>;
+  /** Identifier of the corresponding service */
+  serviceId?: InputMaybe<Scalars['Int']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate max on columns */
+export type MessageMaxFields = {
+  __typename?: 'MessageMaxFields';
+  /** Content of the message */
+  content?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Int']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type MessageMinFields = {
+  __typename?: 'MessageMinFields';
+  /** Content of the message */
+  content?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Int']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "message" */
+export type MessageMutationResponse = {
+  __typename?: 'MessageMutationResponse';
+  /** number of rows affected by the mutation */
+  affectedRows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Message>;
+};
+
+/** input type for inserting object relation for remote table "message" */
+export type MessageObjRelInsertInput = {
+  data: MessageInsertInput;
+  /** upsert condition */
+  onConflict?: InputMaybe<MessageOnConflict>;
+};
+
+/** on_conflict condition type for table "message" */
+export type MessageOnConflict = {
+  constraint: MessageConstraint;
+  updateColumns?: Array<MessageUpdateColumn>;
+  where?: InputMaybe<MessageBoolExp>;
+};
+
+/** Ordering options when selecting data from "message". */
+export type MessageOrderBy = {
+  content?: InputMaybe<OrderBy>;
+  createdAt?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  service?: InputMaybe<ServiceOrderBy>;
+  serviceId?: InputMaybe<OrderBy>;
+  updatedAt?: InputMaybe<OrderBy>;
+};
+
+/** primary key columns input for table: message */
+export type MessagePkColumnsInput = {
+  /** Unique message identifier */
+  id: Scalars['Int']['input'];
+};
+
+/** select columns of table "message" */
+export enum MessageSelectColumn {
+  /** column name */
+  Content = 'content',
+  /** column name */
+  CreatedAt = 'createdAt',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  ServiceId = 'serviceId',
+  /** column name */
+  UpdatedAt = 'updatedAt'
+}
+
+/** input type for updating data in table "message" */
+export type MessageSetInput = {
+  /** Content of the message */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Identifier of the corresponding service */
+  serviceId?: InputMaybe<Scalars['Int']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type MessageStddevFields = {
+  __typename?: 'MessageStddevFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddevPop on columns */
+export type MessageStddevPopFields = {
+  __typename?: 'MessageStddevPopFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddevSamp on columns */
+export type MessageStddevSampFields = {
+  __typename?: 'MessageStddevSampFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "message" */
+export type MessageStreamCursorInput = {
+  /** Stream column input with initial value */
+  initialValue: MessageStreamCursorValueInput;
+  /** cursor ordering */
+  ordering?: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type MessageStreamCursorValueInput = {
+  /** Content of the message */
+  content?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Unique message identifier */
+  id?: InputMaybe<Scalars['Int']['input']>;
+  /** Identifier of the corresponding service */
+  serviceId?: InputMaybe<Scalars['Int']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate sum on columns */
+export type MessageSumFields = {
+  __typename?: 'MessageSumFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Int']['output']>;
+};
+
+/** update columns of table "message" */
+export enum MessageUpdateColumn {
+  /** column name */
+  Content = 'content',
+  /** column name */
+  CreatedAt = 'createdAt',
+  /** column name */
+  ServiceId = 'serviceId',
+  /** column name */
+  UpdatedAt = 'updatedAt'
+}
+
+export type MessageUpdates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<MessageIncInput>;
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<MessageSetInput>;
+  /** filter the rows which have to be updated */
+  where: MessageBoolExp;
+};
+
+/** aggregate varPop on columns */
+export type MessageVarPopFields = {
+  __typename?: 'MessageVarPopFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate varSamp on columns */
+export type MessageVarSampFields = {
+  __typename?: 'MessageVarSampFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type MessageVarianceFields = {
+  __typename?: 'MessageVarianceFields';
+  /** Unique message identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Identifier of the corresponding service */
+  serviceId?: Maybe<Scalars['Float']['output']>;
+};
+
 /** column ordering options */
 export enum OrderBy {
   /** in ascending order, nulls last */
@@ -3651,12 +4021,10 @@ export type Priority = {
   serviceId: Scalars['Int']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An object relationship */
-  vService?: Maybe<VService>;
-  /** An object relationship */
-  year: Year;
   /** Year of the priority (must match service's and course's year) */
-  yearValue: Scalars['Int']['output'];
+  year: Scalars['Int']['output'];
+  /** An object relationship */
+  yearByYear: Year;
 };
 
 /** aggregated selection of "priority" */
@@ -3729,7 +4097,7 @@ export type PriorityAvgFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "priority" */
@@ -3743,7 +4111,7 @@ export type PriorityAvgOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "priority". All fields are combined with a logical 'AND'. */
@@ -3761,9 +4129,8 @@ export type PriorityBoolExp = {
   service?: InputMaybe<ServiceBoolExp>;
   serviceId?: InputMaybe<IntComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vService?: InputMaybe<VServiceBoolExp>;
-  year?: InputMaybe<YearBoolExp>;
-  yearValue?: InputMaybe<IntComparisonExp>;
+  year?: InputMaybe<IntComparisonExp>;
+  yearByYear?: InputMaybe<YearBoolExp>;
 };
 
 /** unique or primary key constraints on table "priority" */
@@ -3783,7 +4150,7 @@ export type PriorityIncInput = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<Scalars['Int']['input']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "priority" */
@@ -3804,10 +4171,9 @@ export type PriorityInsertInput = {
   serviceId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vService?: InputMaybe<VServiceObjRelInsertInput>;
-  year?: InputMaybe<YearObjRelInsertInput>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+  yearByYear?: InputMaybe<YearObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -3826,7 +4192,7 @@ export type PriorityMaxFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "priority" */
@@ -3844,7 +4210,7 @@ export type PriorityMaxOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -3863,7 +4229,7 @@ export type PriorityMinFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "priority" */
@@ -3881,7 +4247,7 @@ export type PriorityMinOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "priority" */
@@ -3912,9 +4278,8 @@ export type PriorityOrderBy = {
   service?: InputMaybe<ServiceOrderBy>;
   serviceId?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vService?: InputMaybe<VServiceOrderBy>;
-  year?: InputMaybe<YearOrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
+  yearByYear?: InputMaybe<YearOrderBy>;
 };
 
 /** primary key columns input for table: priority */
@@ -3942,7 +4307,7 @@ export enum PrioritySelectColumn {
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 /** select "priorityAggregateBoolExpBool_andArgumentsColumns" columns of table "priority" */
@@ -3978,7 +4343,7 @@ export type PrioritySetInput = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -3993,7 +4358,7 @@ export type PriorityStddevFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "priority" */
@@ -4007,7 +4372,7 @@ export type PriorityStddevOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -4022,7 +4387,7 @@ export type PriorityStddevPopFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "priority" */
@@ -4036,7 +4401,7 @@ export type PriorityStddevPopOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -4051,7 +4416,7 @@ export type PriorityStddevSampFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "priority" */
@@ -4065,7 +4430,7 @@ export type PriorityStddevSampOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "priority" */
@@ -4095,7 +4460,7 @@ export type PriorityStreamCursorValueInput = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -4110,7 +4475,7 @@ export type PrioritySumFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Int']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "priority" */
@@ -4124,7 +4489,7 @@ export type PrioritySumOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** update columns of table "priority" */
@@ -4144,7 +4509,7 @@ export enum PriorityUpdateColumn {
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 export type PriorityUpdates = {
@@ -4168,7 +4533,7 @@ export type PriorityVarPopFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "priority" */
@@ -4182,7 +4547,7 @@ export type PriorityVarPopOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -4197,7 +4562,7 @@ export type PriorityVarSampFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "priority" */
@@ -4211,7 +4576,7 @@ export type PriorityVarSampOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -4226,7 +4591,7 @@ export type PriorityVarianceFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "priority" */
@@ -4240,7 +4605,7 @@ export type PriorityVarianceOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the priority (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Academic programs within each degree */
@@ -4268,6 +4633,7 @@ export type Program = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated program name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   tracks: Array<Track>;
   /** An aggregate relationship */
@@ -4429,6 +4795,7 @@ export type ProgramBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
+  nomImport?: InputMaybe<StringComparisonExp>;
   tracks?: InputMaybe<TrackBoolExp>;
   tracksAggregate?: InputMaybe<TrackAggregateBoolExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
@@ -4462,6 +4829,7 @@ export type ProgramInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated program name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   tracks?: InputMaybe<TrackArrRelInsertInput>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
@@ -4484,6 +4852,7 @@ export type ProgramMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated program name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -4502,6 +4871,7 @@ export type ProgramMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated program name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -4521,6 +4891,7 @@ export type ProgramMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated program name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -4539,6 +4910,7 @@ export type ProgramMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated program name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -4577,6 +4949,7 @@ export type ProgramOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   tracksAggregate?: InputMaybe<TrackAggregateOrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
   visible?: InputMaybe<OrderBy>;
@@ -4602,6 +4975,8 @@ export enum ProgramSelectColumn {
   NameDisplay = 'nameDisplay',
   /** column name */
   NameShort = 'nameShort',
+  /** column name */
+  NomImport = 'nomImport',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -4630,6 +5005,7 @@ export type ProgramSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated program name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Controls program visibility in the user interface and queries */
@@ -4709,6 +5085,7 @@ export type ProgramStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated program name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Controls program visibility in the user interface and queries */
@@ -4742,6 +5119,8 @@ export enum ProgramUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
+  /** column name */
+  NomImport = 'nomImport',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -4835,12 +5214,10 @@ export type Request = {
   type: RequestTypeEnum;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An object relationship */
-  vService?: Maybe<VService>;
-  /** An object relationship */
-  year: Year;
   /** Year of the request (must match service's and course's year) */
-  yearValue: Scalars['Int']['output'];
+  year: Scalars['Int']['output'];
+  /** An object relationship */
+  yearByYear: Year;
 };
 
 /** aggregated selection of "request" */
@@ -4913,7 +5290,7 @@ export type RequestAvgFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "request" */
@@ -4927,7 +5304,7 @@ export type RequestAvgOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "request". All fields are combined with a logical 'AND'. */
@@ -4947,9 +5324,8 @@ export type RequestBoolExp = {
   serviceId?: InputMaybe<IntComparisonExp>;
   type?: InputMaybe<RequestTypeEnumComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vService?: InputMaybe<VServiceBoolExp>;
-  year?: InputMaybe<YearBoolExp>;
-  yearValue?: InputMaybe<IntComparisonExp>;
+  year?: InputMaybe<IntComparisonExp>;
+  yearByYear?: InputMaybe<YearBoolExp>;
 };
 
 /** unique or primary key constraints on table "request" */
@@ -4969,7 +5345,7 @@ export type RequestIncInput = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<Scalars['Int']['input']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "request" */
@@ -4989,10 +5365,9 @@ export type RequestInsertInput = {
   type?: InputMaybe<RequestTypeEnum>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vService?: InputMaybe<VServiceObjRelInsertInput>;
-  year?: InputMaybe<YearObjRelInsertInput>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+  yearByYear?: InputMaybe<YearObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -5013,7 +5388,7 @@ export type RequestMaxFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "request" */
@@ -5031,7 +5406,7 @@ export type RequestMaxOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -5052,7 +5427,7 @@ export type RequestMinFields = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "request" */
@@ -5070,7 +5445,7 @@ export type RequestMinOrderBy = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "request" */
@@ -5103,9 +5478,8 @@ export type RequestOrderBy = {
   serviceId?: InputMaybe<OrderBy>;
   type?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vService?: InputMaybe<VServiceOrderBy>;
-  year?: InputMaybe<YearOrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
+  yearByYear?: InputMaybe<YearOrderBy>;
 };
 
 /** primary key columns input for table: request */
@@ -5131,7 +5505,7 @@ export enum RequestSelectColumn {
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 /** input type for updating data in table "request" */
@@ -5149,7 +5523,7 @@ export type RequestSetInput = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -5166,7 +5540,7 @@ export type RequestStddevFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "request" */
@@ -5180,7 +5554,7 @@ export type RequestStddevOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -5197,7 +5571,7 @@ export type RequestStddevPopFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "request" */
@@ -5211,7 +5585,7 @@ export type RequestStddevPopOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -5228,7 +5602,7 @@ export type RequestStddevSampFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "request" */
@@ -5242,7 +5616,7 @@ export type RequestStddevSampOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "request" */
@@ -5270,7 +5644,7 @@ export type RequestStreamCursorValueInput = {
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -5287,7 +5661,7 @@ export type RequestSumFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Int']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "request" */
@@ -5301,7 +5675,7 @@ export type RequestSumOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Types of teaching assignment requests in workflow */
@@ -5519,7 +5893,7 @@ export enum RequestUpdateColumn {
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 export type RequestUpdates = {
@@ -5545,7 +5919,7 @@ export type RequestVarPopFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "request" */
@@ -5559,7 +5933,7 @@ export type RequestVarPopOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -5576,7 +5950,7 @@ export type RequestVarSampFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "request" */
@@ -5590,7 +5964,7 @@ export type RequestVarSampOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -5607,7 +5981,7 @@ export type RequestVarianceFields = {
   /** Associated teacher service record */
   serviceId?: Maybe<Scalars['Float']['output']>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "request" */
@@ -5621,7 +5995,7 @@ export type RequestVarianceOrderBy = {
   /** Associated teacher service record */
   serviceId?: InputMaybe<OrderBy>;
   /** Year of the request (must match service's and course's year) */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Teacher role assignments for system privileges */
@@ -5637,10 +6011,10 @@ export type Role = {
   roleType: RoleType;
   /** An object relationship */
   teacher: Teacher;
+  /** Teacher identifier with role access */
+  teacherId: Scalars['Int']['output'];
   /** Type of privileged role */
   type: RoleTypeEnum;
-  /** Teacher identifier with role access */
-  uid: Scalars['String']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
 };
@@ -5706,12 +6080,16 @@ export type RoleAvgFields = {
   __typename?: 'RoleAvgFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "role" */
 export type RoleAvgOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "role". All fields are combined with a logical 'AND'. */
@@ -5724,8 +6102,8 @@ export type RoleBoolExp = {
   id?: InputMaybe<IntComparisonExp>;
   roleType?: InputMaybe<RoleTypeBoolExp>;
   teacher?: InputMaybe<TeacherBoolExp>;
+  teacherId?: InputMaybe<IntComparisonExp>;
   type?: InputMaybe<RoleTypeEnumComparisonExp>;
-  uid?: InputMaybe<StringComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
 };
 
@@ -5733,9 +6111,15 @@ export type RoleBoolExp = {
 export enum RoleConstraint {
   /** unique or primary key constraint on columns "id" */
   RolePkey = 'role_pkey',
-  /** unique or primary key constraint on columns "uid", "type" */
-  RoleUidTypeKey = 'role_uid_type_key'
+  /** unique or primary key constraint on columns "teacher_id", "type" */
+  RoleTeacherIdTypeKey = 'role_teacher_id_type_key'
 }
+
+/** input type for incrementing numeric columns in table "role" */
+export type RoleIncInput = {
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
+};
 
 /** input type for inserting data into table "role" */
 export type RoleInsertInput = {
@@ -5745,10 +6129,10 @@ export type RoleInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   roleType?: InputMaybe<RoleTypeObjRelInsertInput>;
   teacher?: InputMaybe<TeacherObjRelInsertInput>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Type of privileged role */
   type?: InputMaybe<RoleTypeEnum>;
-  /** Teacher identifier with role access */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -5763,7 +6147,7 @@ export type RoleMaxFields = {
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Int']['output']>;
   /** Teacher identifier with role access */
-  uid?: Maybe<Scalars['String']['output']>;
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -5777,7 +6161,7 @@ export type RoleMaxOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
   /** Teacher identifier with role access */
-  uid?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -5792,7 +6176,7 @@ export type RoleMinFields = {
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Int']['output']>;
   /** Teacher identifier with role access */
-  uid?: Maybe<Scalars['String']['output']>;
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -5806,7 +6190,7 @@ export type RoleMinOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
   /** Teacher identifier with role access */
-  uid?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -5834,8 +6218,8 @@ export type RoleOrderBy = {
   id?: InputMaybe<OrderBy>;
   roleType?: InputMaybe<RoleTypeOrderBy>;
   teacher?: InputMaybe<TeacherOrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   type?: InputMaybe<OrderBy>;
-  uid?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
 };
 
@@ -5854,9 +6238,9 @@ export enum RoleSelectColumn {
   /** column name */
   Id = 'id',
   /** column name */
-  Type = 'type',
+  TeacherId = 'teacherId',
   /** column name */
-  Uid = 'uid',
+  Type = 'type',
   /** column name */
   UpdatedAt = 'updatedAt'
 }
@@ -5867,10 +6251,10 @@ export type RoleSetInput = {
   comment?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Type of privileged role */
   type?: InputMaybe<RoleTypeEnum>;
-  /** Teacher identifier with role access */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -5880,12 +6264,16 @@ export type RoleStddevFields = {
   __typename?: 'RoleStddevFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "role" */
 export type RoleStddevOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -5893,12 +6281,16 @@ export type RoleStddevPopFields = {
   __typename?: 'RoleStddevPopFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "role" */
 export type RoleStddevPopOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -5906,12 +6298,16 @@ export type RoleStddevSampFields = {
   __typename?: 'RoleStddevSampFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "role" */
 export type RoleStddevSampOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "role" */
@@ -5930,10 +6326,10 @@ export type RoleStreamCursorValueInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Unique role assignment identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Type of privileged role */
   type?: InputMaybe<RoleTypeEnum>;
-  /** Teacher identifier with role access */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
 };
@@ -5943,12 +6339,16 @@ export type RoleSumFields = {
   __typename?: 'RoleSumFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Int']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "role" */
 export type RoleSumOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** System roles for privileged access */
@@ -6158,14 +6558,16 @@ export enum RoleUpdateColumn {
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
-  Type = 'type',
+  TeacherId = 'teacherId',
   /** column name */
-  Uid = 'uid',
+  Type = 'type',
   /** column name */
   UpdatedAt = 'updatedAt'
 }
 
 export type RoleUpdates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<RoleIncInput>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<RoleSetInput>;
   /** filter the rows which have to be updated */
@@ -6177,12 +6579,16 @@ export type RoleVarPopFields = {
   __typename?: 'RoleVarPopFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "role" */
 export type RoleVarPopOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -6190,12 +6596,16 @@ export type RoleVarSampFields = {
   __typename?: 'RoleVarSampFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "role" */
 export type RoleVarSampOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -6203,12 +6613,16 @@ export type RoleVarianceFields = {
   __typename?: 'RoleVarianceFields';
   /** Unique role assignment identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier with role access */
+  teacherId?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "role" */
 export type RoleVarianceOrderBy = {
   /** Unique role assignment identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier with role access */
+  teacherId?: InputMaybe<OrderBy>;
 };
 
 /** Annual teaching service records tracking required hours and modifications */
@@ -6220,8 +6634,8 @@ export type Service = {
   hours: Scalars['Float']['output'];
   /** Unique service identifier */
   id: Scalars['Int']['output'];
-  /** Optional message from teacher to course assignment committee */
-  message?: Maybe<Scalars['String']['output']>;
+  /** An object relationship */
+  message?: Maybe<Message>;
   /** An array relationship */
   modifications: Array<ServiceModification>;
   /** An aggregate relationship */
@@ -6237,15 +6651,13 @@ export type Service = {
   /** An object relationship */
   teacher: Teacher;
   /** Teacher identifier linking to teacher table */
-  uid: Scalars['String']['output'];
+  teacherId: Scalars['Int']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An object relationship */
-  vTeacher?: Maybe<VTeacher>;
-  /** An object relationship */
-  year: Year;
   /** Academic year for this service record */
-  yearValue: Scalars['Int']['output'];
+  year: Scalars['Int']['output'];
+  /** An object relationship */
+  yearByYear: Year;
 };
 
 
@@ -6371,8 +6783,10 @@ export type ServiceAvgFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by avg() on columns of table "service" */
@@ -6381,8 +6795,10 @@ export type ServiceAvgOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "service". All fields are combined with a logical 'AND'. */
@@ -6393,7 +6809,7 @@ export type ServiceBoolExp = {
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
   hours?: InputMaybe<FloatComparisonExp>;
   id?: InputMaybe<IntComparisonExp>;
-  message?: InputMaybe<StringComparisonExp>;
+  message?: InputMaybe<MessageBoolExp>;
   modifications?: InputMaybe<ServiceModificationBoolExp>;
   modificationsAggregate?: InputMaybe<ServiceModificationAggregateBoolExp>;
   priorities?: InputMaybe<PriorityBoolExp>;
@@ -6401,29 +6817,30 @@ export type ServiceBoolExp = {
   requests?: InputMaybe<RequestBoolExp>;
   requestsAggregate?: InputMaybe<RequestAggregateBoolExp>;
   teacher?: InputMaybe<TeacherBoolExp>;
-  uid?: InputMaybe<StringComparisonExp>;
+  teacherId?: InputMaybe<IntComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vTeacher?: InputMaybe<VTeacherBoolExp>;
-  year?: InputMaybe<YearBoolExp>;
-  yearValue?: InputMaybe<IntComparisonExp>;
+  year?: InputMaybe<IntComparisonExp>;
+  yearByYear?: InputMaybe<YearBoolExp>;
 };
 
 /** unique or primary key constraints on table "service" */
 export enum ServiceConstraint {
-  /** unique or primary key constraint on columns "year_value", "id" */
-  ServiceIdYearValueKey = 'service_id_year_value_key',
+  /** unique or primary key constraint on columns "id", "year" */
+  ServiceIdYearKey = 'service_id_year_key',
   /** unique or primary key constraint on columns "id" */
   ServicePkey = 'service_pkey',
-  /** unique or primary key constraint on columns "year_value", "uid" */
-  ServiceYearValueUidKey = 'service_year_value_uid_key'
+  /** unique or primary key constraint on columns "teacher_id", "year" */
+  ServiceYearTeacherIdKey = 'service_year_teacher_id_key'
 }
 
 /** input type for incrementing numeric columns in table "service" */
 export type ServiceIncInput = {
   /** Required teaching hours for the year before modifications */
   hours?: InputMaybe<Scalars['Float']['input']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "service" */
@@ -6432,20 +6849,18 @@ export type ServiceInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Required teaching hours for the year before modifications */
   hours?: InputMaybe<Scalars['Float']['input']>;
-  /** Optional message from teacher to course assignment committee */
-  message?: InputMaybe<Scalars['String']['input']>;
+  message?: InputMaybe<MessageObjRelInsertInput>;
   modifications?: InputMaybe<ServiceModificationArrRelInsertInput>;
   priorities?: InputMaybe<PriorityArrRelInsertInput>;
   requests?: InputMaybe<RequestArrRelInsertInput>;
   teacher?: InputMaybe<TeacherObjRelInsertInput>;
   /** Teacher identifier linking to teacher table */
-  uid?: InputMaybe<Scalars['String']['input']>;
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vTeacher?: InputMaybe<VTeacherObjRelInsertInput>;
-  year?: InputMaybe<YearObjRelInsertInput>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
+  yearByYear?: InputMaybe<YearObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -6457,14 +6872,12 @@ export type ServiceMaxFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Int']['output']>;
-  /** Optional message from teacher to course assignment committee */
-  message?: Maybe<Scalars['String']['output']>;
   /** Teacher identifier linking to teacher table */
-  uid?: Maybe<Scalars['String']['output']>;
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by max() on columns of table "service" */
@@ -6475,14 +6888,12 @@ export type ServiceMaxOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
-  /** Optional message from teacher to course assignment committee */
-  message?: InputMaybe<OrderBy>;
   /** Teacher identifier linking to teacher table */
-  uid?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -6494,14 +6905,12 @@ export type ServiceMinFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Int']['output']>;
-  /** Optional message from teacher to course assignment committee */
-  message?: Maybe<Scalars['String']['output']>;
   /** Teacher identifier linking to teacher table */
-  uid?: Maybe<Scalars['String']['output']>;
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by min() on columns of table "service" */
@@ -6512,14 +6921,12 @@ export type ServiceMinOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
-  /** Optional message from teacher to course assignment committee */
-  message?: InputMaybe<OrderBy>;
   /** Teacher identifier linking to teacher table */
-  uid?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Individual modifications to base teaching service hours */
@@ -6541,8 +6948,6 @@ export type ServiceModification = {
   typeId: Scalars['Int']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An object relationship */
-  vService?: Maybe<VService>;
 };
 
 /** aggregated selection of "service_modification" */
@@ -6639,7 +7044,6 @@ export type ServiceModificationBoolExp = {
   type?: InputMaybe<ServiceModificationTypeBoolExp>;
   typeId?: InputMaybe<IntComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vService?: InputMaybe<VServiceBoolExp>;
 };
 
 /** unique or primary key constraints on table "service_modification" */
@@ -6672,7 +7076,6 @@ export type ServiceModificationInsertInput = {
   typeId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vService?: InputMaybe<VServiceObjRelInsertInput>;
 };
 
 /** aggregate max on columns */
@@ -6767,7 +7170,6 @@ export type ServiceModificationOrderBy = {
   type?: InputMaybe<ServiceModificationTypeOrderBy>;
   typeId?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vService?: InputMaybe<VServiceOrderBy>;
 };
 
 /** primary key columns input for table: service_modification */
@@ -7352,16 +7754,15 @@ export type ServiceOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   hours?: InputMaybe<OrderBy>;
   id?: InputMaybe<OrderBy>;
-  message?: InputMaybe<OrderBy>;
+  message?: InputMaybe<MessageOrderBy>;
   modificationsAggregate?: InputMaybe<ServiceModificationAggregateOrderBy>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateOrderBy>;
   requestsAggregate?: InputMaybe<RequestAggregateOrderBy>;
   teacher?: InputMaybe<TeacherOrderBy>;
-  uid?: InputMaybe<OrderBy>;
+  teacherId?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vTeacher?: InputMaybe<VTeacherOrderBy>;
-  year?: InputMaybe<YearOrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
+  yearByYear?: InputMaybe<YearOrderBy>;
 };
 
 /** primary key columns input for table: service */
@@ -7379,13 +7780,11 @@ export enum ServiceSelectColumn {
   /** column name */
   Id = 'id',
   /** column name */
-  Message = 'message',
-  /** column name */
-  Uid = 'uid',
+  TeacherId = 'teacherId',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 /** input type for updating data in table "service" */
@@ -7394,14 +7793,12 @@ export type ServiceSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Required teaching hours for the year before modifications */
   hours?: InputMaybe<Scalars['Float']['input']>;
-  /** Optional message from teacher to course assignment committee */
-  message?: InputMaybe<Scalars['String']['input']>;
   /** Teacher identifier linking to teacher table */
-  uid?: InputMaybe<Scalars['String']['input']>;
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate stddev on columns */
@@ -7411,8 +7808,10 @@ export type ServiceStddevFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddev() on columns of table "service" */
@@ -7421,8 +7820,10 @@ export type ServiceStddevOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
@@ -7432,8 +7833,10 @@ export type ServiceStddevPopFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevPop() on columns of table "service" */
@@ -7442,8 +7845,10 @@ export type ServiceStddevPopOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
@@ -7453,8 +7858,10 @@ export type ServiceStddevSampFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by stddevSamp() on columns of table "service" */
@@ -7463,8 +7870,10 @@ export type ServiceStddevSampOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "service" */
@@ -7483,14 +7892,12 @@ export type ServiceStreamCursorValueInput = {
   hours?: InputMaybe<Scalars['Float']['input']>;
   /** Unique service identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
-  /** Optional message from teacher to course assignment committee */
-  message?: InputMaybe<Scalars['String']['input']>;
   /** Teacher identifier linking to teacher table */
-  uid?: InputMaybe<Scalars['String']['input']>;
+  teacherId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
+  year?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** aggregate sum on columns */
@@ -7500,8 +7907,10 @@ export type ServiceSumFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Int']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Int']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Int']['output']>;
+  year?: Maybe<Scalars['Int']['output']>;
 };
 
 /** order by sum() on columns of table "service" */
@@ -7510,8 +7919,10 @@ export type ServiceSumOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** update columns of table "service" */
@@ -7521,13 +7932,11 @@ export enum ServiceUpdateColumn {
   /** column name */
   Hours = 'hours',
   /** column name */
-  Message = 'message',
-  /** column name */
-  Uid = 'uid',
+  TeacherId = 'teacherId',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
-  YearValue = 'yearValue'
+  Year = 'year'
 }
 
 export type ServiceUpdates = {
@@ -7546,8 +7955,10 @@ export type ServiceVarPopFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varPop() on columns of table "service" */
@@ -7556,8 +7967,10 @@ export type ServiceVarPopOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
@@ -7567,8 +7980,10 @@ export type ServiceVarSampFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by varSamp() on columns of table "service" */
@@ -7577,8 +7992,10 @@ export type ServiceVarSampOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
@@ -7588,8 +8005,10 @@ export type ServiceVarianceFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique service identifier */
   id?: Maybe<Scalars['Float']['output']>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: Maybe<Scalars['Float']['output']>;
   /** Academic year for this service record */
-  yearValue?: Maybe<Scalars['Float']['output']>;
+  year?: Maybe<Scalars['Float']['output']>;
 };
 
 /** order by variance() on columns of table "service" */
@@ -7598,8 +8017,10 @@ export type ServiceVarianceOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique service identifier */
   id?: InputMaybe<OrderBy>;
+  /** Teacher identifier linking to teacher table */
+  teacherId?: InputMaybe<OrderBy>;
   /** Academic year for this service record */
-  yearValue?: InputMaybe<OrderBy>;
+  year?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to compare columns of type "String". All fields are combined with logical 'AND'. */
@@ -7652,8 +8073,12 @@ export type Teacher = {
   createdAt: Scalars['timestamptz']['output'];
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: Maybe<Scalars['String']['output']>;
+  /** Teacher's email address (unique) */
+  email: Scalars['String']['output'];
   /** Teacher's first name */
   firstname: Scalars['String']['output'];
+  /** Unique teacher identifier */
+  id: Scalars['Int']['output'];
   /** Teacher's last name */
   lastname: Scalars['String']['output'];
   /** An object relationship */
@@ -7668,14 +8093,8 @@ export type Teacher = {
   services: Array<Service>;
   /** An aggregate relationship */
   servicesAggregate: ServiceAggregate;
-  /** Teacher's email address (primary key). */
-  uid: Scalars['String']['output'];
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An array relationship */
-  vServices: Array<VService>;
-  /** An aggregate relationship */
-  vServicesAggregate: VServiceAggregate;
   /** Controls teacher visibility in the user interface and queries */
   visible: Scalars['Boolean']['output'];
 };
@@ -7738,26 +8157,6 @@ export type TeacherServicesAggregateArgs = {
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<ServiceOrderBy>>;
   where?: InputMaybe<ServiceBoolExp>;
-};
-
-
-/** Core teacher information and status */
-export type TeacherVServicesArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-/** Core teacher information and status */
-export type TeacherVServicesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
 };
 
 /** aggregated selection of "teacher" */
@@ -7823,6 +8222,8 @@ export type TeacherAvgFields = {
   __typename?: 'TeacherAvgFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -7831,6 +8232,8 @@ export type TeacherAvgFields = {
 export type TeacherAvgOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -7847,7 +8250,9 @@ export type TeacherBoolExp = {
   coordinationsAggregate?: InputMaybe<CoordinationAggregateBoolExp>;
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
   displayname?: InputMaybe<StringComparisonExp>;
+  email?: InputMaybe<StringComparisonExp>;
   firstname?: InputMaybe<StringComparisonExp>;
+  id?: InputMaybe<IntComparisonExp>;
   lastname?: InputMaybe<StringComparisonExp>;
   position?: InputMaybe<PositionBoolExp>;
   positionId?: InputMaybe<IntComparisonExp>;
@@ -7855,16 +8260,15 @@ export type TeacherBoolExp = {
   rolesAggregate?: InputMaybe<RoleAggregateBoolExp>;
   services?: InputMaybe<ServiceBoolExp>;
   servicesAggregate?: InputMaybe<ServiceAggregateBoolExp>;
-  uid?: InputMaybe<StringComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vServices?: InputMaybe<VServiceBoolExp>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateBoolExp>;
   visible?: InputMaybe<BooleanComparisonExp>;
 };
 
 /** unique or primary key constraints on table "teacher" */
 export enum TeacherConstraint {
-  /** unique or primary key constraint on columns "uid" */
+  /** unique or primary key constraint on columns "email" */
+  TeacherEmailKey = 'teacher_email_key',
+  /** unique or primary key constraint on columns "id" */
   TeacherPkey = 'teacher_pkey'
 }
 
@@ -7887,6 +8291,8 @@ export type TeacherInsertInput = {
   coordinations?: InputMaybe<CoordinationArrRelInsertInput>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Teacher's email address (unique) */
+  email?: InputMaybe<Scalars['String']['input']>;
   /** Teacher's first name */
   firstname?: InputMaybe<Scalars['String']['input']>;
   /** Teacher's last name */
@@ -7896,11 +8302,8 @@ export type TeacherInsertInput = {
   positionId?: InputMaybe<Scalars['Int']['input']>;
   roles?: InputMaybe<RoleArrRelInsertInput>;
   services?: InputMaybe<ServiceArrRelInsertInput>;
-  /** Teacher's email address (primary key). */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vServices?: InputMaybe<VServiceArrRelInsertInput>;
   /** Controls teacher visibility in the user interface and queries */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
@@ -7916,14 +8319,16 @@ export type TeacherMaxFields = {
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: Maybe<Scalars['String']['output']>;
+  /** Teacher's email address (unique) */
+  email?: Maybe<Scalars['String']['output']>;
   /** Teacher's first name */
   firstname?: Maybe<Scalars['String']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Int']['output']>;
   /** Teacher's last name */
   lastname?: Maybe<Scalars['String']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Int']['output']>;
-  /** Teacher's email address (primary key). */
-  uid?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -7938,14 +8343,16 @@ export type TeacherMaxOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: InputMaybe<OrderBy>;
+  /** Teacher's email address (unique) */
+  email?: InputMaybe<OrderBy>;
   /** Teacher's first name */
   firstname?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Teacher's last name */
   lastname?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
-  /** Teacher's email address (primary key). */
-  uid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -7961,14 +8368,16 @@ export type TeacherMinFields = {
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: Maybe<Scalars['String']['output']>;
+  /** Teacher's email address (unique) */
+  email?: Maybe<Scalars['String']['output']>;
   /** Teacher's first name */
   firstname?: Maybe<Scalars['String']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Int']['output']>;
   /** Teacher's last name */
   lastname?: Maybe<Scalars['String']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Int']['output']>;
-  /** Teacher's email address (primary key). */
-  uid?: Maybe<Scalars['String']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
 };
@@ -7983,14 +8392,16 @@ export type TeacherMinOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: InputMaybe<OrderBy>;
+  /** Teacher's email address (unique) */
+  email?: InputMaybe<OrderBy>;
   /** Teacher's first name */
   firstname?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Teacher's last name */
   lastname?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
-  /** Teacher's email address (primary key). */
-  uid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<OrderBy>;
 };
@@ -8026,22 +8437,22 @@ export type TeacherOrderBy = {
   coordinationsAggregate?: InputMaybe<CoordinationAggregateOrderBy>;
   createdAt?: InputMaybe<OrderBy>;
   displayname?: InputMaybe<OrderBy>;
+  email?: InputMaybe<OrderBy>;
   firstname?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
   lastname?: InputMaybe<OrderBy>;
   position?: InputMaybe<PositionOrderBy>;
   positionId?: InputMaybe<OrderBy>;
   rolesAggregate?: InputMaybe<RoleAggregateOrderBy>;
   servicesAggregate?: InputMaybe<ServiceAggregateOrderBy>;
-  uid?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateOrderBy>;
   visible?: InputMaybe<OrderBy>;
 };
 
 /** primary key columns input for table: teacher */
 export type TeacherPkColumnsInput = {
-  /** Teacher's email address (primary key). */
-  uid: Scalars['String']['input'];
+  /** Unique teacher identifier */
+  id: Scalars['Int']['input'];
 };
 
 /** select columns of table "teacher" */
@@ -8057,13 +8468,15 @@ export enum TeacherSelectColumn {
   /** column name */
   Displayname = 'displayname',
   /** column name */
+  Email = 'email',
+  /** column name */
   Firstname = 'firstname',
+  /** column name */
+  Id = 'id',
   /** column name */
   Lastname = 'lastname',
   /** column name */
   PositionId = 'positionId',
-  /** column name */
-  Uid = 'uid',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -8096,14 +8509,14 @@ export type TeacherSetInput = {
   baseServiceHours?: InputMaybe<Scalars['Float']['input']>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Teacher's email address (unique) */
+  email?: InputMaybe<Scalars['String']['input']>;
   /** Teacher's first name */
   firstname?: InputMaybe<Scalars['String']['input']>;
   /** Teacher's last name */
   lastname?: InputMaybe<Scalars['String']['input']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<Scalars['Int']['input']>;
-  /** Teacher's email address (primary key). */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Controls teacher visibility in the user interface and queries */
@@ -8115,6 +8528,8 @@ export type TeacherStddevFields = {
   __typename?: 'TeacherStddevFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8123,6 +8538,8 @@ export type TeacherStddevFields = {
 export type TeacherStddevOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8132,6 +8549,8 @@ export type TeacherStddevPopFields = {
   __typename?: 'TeacherStddevPopFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8140,6 +8559,8 @@ export type TeacherStddevPopFields = {
 export type TeacherStddevPopOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8149,6 +8570,8 @@ export type TeacherStddevSampFields = {
   __typename?: 'TeacherStddevSampFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8157,6 +8580,8 @@ export type TeacherStddevSampFields = {
 export type TeacherStddevSampOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8181,14 +8606,16 @@ export type TeacherStreamCursorValueInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Preferred display name, using alias when available, otherwise full name */
   displayname?: InputMaybe<Scalars['String']['input']>;
+  /** Teacher's email address (unique) */
+  email?: InputMaybe<Scalars['String']['input']>;
   /** Teacher's first name */
   firstname?: InputMaybe<Scalars['String']['input']>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<Scalars['Int']['input']>;
   /** Teacher's last name */
   lastname?: InputMaybe<Scalars['String']['input']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<Scalars['Int']['input']>;
-  /** Teacher's email address (primary key). */
-  uid?: InputMaybe<Scalars['String']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Controls teacher visibility in the user interface and queries */
@@ -8200,6 +8627,8 @@ export type TeacherSumFields = {
   __typename?: 'TeacherSumFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Int']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Int']['output']>;
 };
@@ -8208,6 +8637,8 @@ export type TeacherSumFields = {
 export type TeacherSumOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8223,13 +8654,13 @@ export enum TeacherUpdateColumn {
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
+  Email = 'email',
+  /** column name */
   Firstname = 'firstname',
   /** column name */
   Lastname = 'lastname',
   /** column name */
   PositionId = 'positionId',
-  /** column name */
-  Uid = 'uid',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -8250,6 +8681,8 @@ export type TeacherVarPopFields = {
   __typename?: 'TeacherVarPopFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8258,6 +8691,8 @@ export type TeacherVarPopFields = {
 export type TeacherVarPopOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8267,6 +8702,8 @@ export type TeacherVarSampFields = {
   __typename?: 'TeacherVarSampFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8275,6 +8712,8 @@ export type TeacherVarSampFields = {
 export type TeacherVarSampOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8284,6 +8723,8 @@ export type TeacherVarianceFields = {
   __typename?: 'TeacherVarianceFields';
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: Maybe<Scalars['Float']['output']>;
+  /** Unique teacher identifier */
+  id?: Maybe<Scalars['Float']['output']>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: Maybe<Scalars['Float']['output']>;
 };
@@ -8292,6 +8733,8 @@ export type TeacherVarianceFields = {
 export type TeacherVarianceOrderBy = {
   /** Individual override for annual teaching hours, takes precedence over position's base hours */
   baseServiceHours?: InputMaybe<OrderBy>;
+  /** Unique teacher identifier */
+  id?: InputMaybe<OrderBy>;
   /** Reference to teacher's position, determines default service hours */
   positionId?: InputMaybe<OrderBy>;
 };
@@ -8330,6 +8773,7 @@ export type Track = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated track name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** An object relationship */
   program: Program;
   /** Parent program for this track */
@@ -8469,6 +8913,7 @@ export type TrackBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
+  nomImport?: InputMaybe<StringComparisonExp>;
   program?: InputMaybe<ProgramBoolExp>;
   programId?: InputMaybe<IntComparisonExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
@@ -8501,6 +8946,7 @@ export type TrackInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated track name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   program?: InputMaybe<ProgramObjRelInsertInput>;
   /** Parent program for this track */
   programId?: InputMaybe<Scalars['Int']['input']>;
@@ -8523,6 +8969,7 @@ export type TrackMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated track name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Parent program for this track */
   programId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8541,6 +8988,7 @@ export type TrackMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated track name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Parent program for this track */
   programId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8560,6 +9008,7 @@ export type TrackMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated track name */
   nameShort?: Maybe<Scalars['String']['output']>;
+  nomImport?: Maybe<Scalars['String']['output']>;
   /** Parent program for this track */
   programId?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8578,6 +9027,7 @@ export type TrackMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated track name */
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   /** Parent program for this track */
   programId?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8616,6 +9066,7 @@ export type TrackOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
+  nomImport?: InputMaybe<OrderBy>;
   program?: InputMaybe<ProgramOrderBy>;
   programId?: InputMaybe<OrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
@@ -8640,6 +9091,8 @@ export enum TrackSelectColumn {
   NameDisplay = 'nameDisplay',
   /** column name */
   NameShort = 'nameShort',
+  /** column name */
+  NomImport = 'nomImport',
   /** column name */
   ProgramId = 'programId',
   /** column name */
@@ -8668,6 +9121,7 @@ export type TrackSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated track name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Parent program for this track */
   programId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8747,6 +9201,7 @@ export type TrackStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated track name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
+  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Parent program for this track */
   programId?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -8780,6 +9235,8 @@ export enum TrackUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
+  /** column name */
+  NomImport = 'nomImport',
   /** column name */
   ProgramId = 'programId',
   /** column name */
@@ -8848,613 +9305,6 @@ export type TrackVarianceOrderBy = {
   programId?: InputMaybe<OrderBy>;
 };
 
-/** columns and relationships of "v_service" */
-export type VService = {
-  __typename?: 'VService';
-  id?: Maybe<Scalars['Int']['output']>;
-  /** An array relationship */
-  modifications: Array<ServiceModification>;
-  /** An aggregate relationship */
-  modificationsAggregate: ServiceModificationAggregate;
-  /** An array relationship */
-  priorities: Array<Priority>;
-  /** An aggregate relationship */
-  prioritiesAggregate: PriorityAggregate;
-  /** An array relationship */
-  requests: Array<Request>;
-  /** An aggregate relationship */
-  requestsAggregate: RequestAggregate;
-  /** An object relationship */
-  teacher?: Maybe<Teacher>;
-  uid?: Maybe<Scalars['String']['output']>;
-  /** An object relationship */
-  vTeacher?: Maybe<Teacher>;
-  /** An object relationship */
-  year?: Maybe<Year>;
-  yearValue?: Maybe<Scalars['Int']['output']>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServiceModificationsArgs = {
-  distinctOn?: InputMaybe<Array<ServiceModificationSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ServiceModificationOrderBy>>;
-  where?: InputMaybe<ServiceModificationBoolExp>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServiceModificationsAggregateArgs = {
-  distinctOn?: InputMaybe<Array<ServiceModificationSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ServiceModificationOrderBy>>;
-  where?: InputMaybe<ServiceModificationBoolExp>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServicePrioritiesArgs = {
-  distinctOn?: InputMaybe<Array<PrioritySelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<PriorityOrderBy>>;
-  where?: InputMaybe<PriorityBoolExp>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServicePrioritiesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<PrioritySelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<PriorityOrderBy>>;
-  where?: InputMaybe<PriorityBoolExp>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServiceRequestsArgs = {
-  distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<RequestOrderBy>>;
-  where?: InputMaybe<RequestBoolExp>;
-};
-
-
-/** columns and relationships of "v_service" */
-export type VServiceRequestsAggregateArgs = {
-  distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<RequestOrderBy>>;
-  where?: InputMaybe<RequestBoolExp>;
-};
-
-/** aggregated selection of "v_service" */
-export type VServiceAggregate = {
-  __typename?: 'VServiceAggregate';
-  aggregate?: Maybe<VServiceAggregateFields>;
-  nodes: Array<VService>;
-};
-
-export type VServiceAggregateBoolExp = {
-  count?: InputMaybe<VServiceAggregateBoolExpCount>;
-};
-
-/** aggregate fields of "v_service" */
-export type VServiceAggregateFields = {
-  __typename?: 'VServiceAggregateFields';
-  avg?: Maybe<VServiceAvgFields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<VServiceMaxFields>;
-  min?: Maybe<VServiceMinFields>;
-  stddev?: Maybe<VServiceStddevFields>;
-  stddevPop?: Maybe<VServiceStddevPopFields>;
-  stddevSamp?: Maybe<VServiceStddevSampFields>;
-  sum?: Maybe<VServiceSumFields>;
-  varPop?: Maybe<VServiceVarPopFields>;
-  varSamp?: Maybe<VServiceVarSampFields>;
-  variance?: Maybe<VServiceVarianceFields>;
-};
-
-
-/** aggregate fields of "v_service" */
-export type VServiceAggregateFieldsCountArgs = {
-  columns?: InputMaybe<Array<VServiceSelectColumn>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** order by aggregate values of table "v_service" */
-export type VServiceAggregateOrderBy = {
-  avg?: InputMaybe<VServiceAvgOrderBy>;
-  count?: InputMaybe<OrderBy>;
-  max?: InputMaybe<VServiceMaxOrderBy>;
-  min?: InputMaybe<VServiceMinOrderBy>;
-  stddev?: InputMaybe<VServiceStddevOrderBy>;
-  stddevPop?: InputMaybe<VServiceStddevPopOrderBy>;
-  stddevSamp?: InputMaybe<VServiceStddevSampOrderBy>;
-  sum?: InputMaybe<VServiceSumOrderBy>;
-  varPop?: InputMaybe<VServiceVarPopOrderBy>;
-  varSamp?: InputMaybe<VServiceVarSampOrderBy>;
-  variance?: InputMaybe<VServiceVarianceOrderBy>;
-};
-
-/** input type for inserting array relation for remote table "v_service" */
-export type VServiceArrRelInsertInput = {
-  data: Array<VServiceInsertInput>;
-};
-
-/** aggregate avg on columns */
-export type VServiceAvgFields = {
-  __typename?: 'VServiceAvgFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by avg() on columns of table "v_service" */
-export type VServiceAvgOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** Boolean expression to filter rows from the table "v_service". All fields are combined with a logical 'AND'. */
-export type VServiceBoolExp = {
-  _and?: InputMaybe<Array<VServiceBoolExp>>;
-  _not?: InputMaybe<VServiceBoolExp>;
-  _or?: InputMaybe<Array<VServiceBoolExp>>;
-  id?: InputMaybe<IntComparisonExp>;
-  modifications?: InputMaybe<ServiceModificationBoolExp>;
-  modificationsAggregate?: InputMaybe<ServiceModificationAggregateBoolExp>;
-  priorities?: InputMaybe<PriorityBoolExp>;
-  prioritiesAggregate?: InputMaybe<PriorityAggregateBoolExp>;
-  requests?: InputMaybe<RequestBoolExp>;
-  requestsAggregate?: InputMaybe<RequestAggregateBoolExp>;
-  teacher?: InputMaybe<TeacherBoolExp>;
-  uid?: InputMaybe<StringComparisonExp>;
-  vTeacher?: InputMaybe<TeacherBoolExp>;
-  year?: InputMaybe<YearBoolExp>;
-  yearValue?: InputMaybe<IntComparisonExp>;
-};
-
-/** input type for incrementing numeric columns in table "v_service" */
-export type VServiceIncInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "v_service" */
-export type VServiceInsertInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
-  modifications?: InputMaybe<ServiceModificationArrRelInsertInput>;
-  priorities?: InputMaybe<PriorityArrRelInsertInput>;
-  requests?: InputMaybe<RequestArrRelInsertInput>;
-  teacher?: InputMaybe<TeacherObjRelInsertInput>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-  vTeacher?: InputMaybe<TeacherObjRelInsertInput>;
-  year?: InputMaybe<YearObjRelInsertInput>;
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** aggregate max on columns */
-export type VServiceMaxFields = {
-  __typename?: 'VServiceMaxFields';
-  id?: Maybe<Scalars['Int']['output']>;
-  uid?: Maybe<Scalars['String']['output']>;
-  yearValue?: Maybe<Scalars['Int']['output']>;
-};
-
-/** order by max() on columns of table "v_service" */
-export type VServiceMaxOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  uid?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** aggregate min on columns */
-export type VServiceMinFields = {
-  __typename?: 'VServiceMinFields';
-  id?: Maybe<Scalars['Int']['output']>;
-  uid?: Maybe<Scalars['String']['output']>;
-  yearValue?: Maybe<Scalars['Int']['output']>;
-};
-
-/** order by min() on columns of table "v_service" */
-export type VServiceMinOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  uid?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** response of any mutation on the table "v_service" */
-export type VServiceMutationResponse = {
-  __typename?: 'VServiceMutationResponse';
-  /** number of rows affected by the mutation */
-  affectedRows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<VService>;
-};
-
-/** input type for inserting object relation for remote table "v_service" */
-export type VServiceObjRelInsertInput = {
-  data: VServiceInsertInput;
-};
-
-/** Ordering options when selecting data from "v_service". */
-export type VServiceOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  modificationsAggregate?: InputMaybe<ServiceModificationAggregateOrderBy>;
-  prioritiesAggregate?: InputMaybe<PriorityAggregateOrderBy>;
-  requestsAggregate?: InputMaybe<RequestAggregateOrderBy>;
-  teacher?: InputMaybe<TeacherOrderBy>;
-  uid?: InputMaybe<OrderBy>;
-  vTeacher?: InputMaybe<TeacherOrderBy>;
-  year?: InputMaybe<YearOrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** select columns of table "v_service" */
-export enum VServiceSelectColumn {
-  /** column name */
-  Id = 'id',
-  /** column name */
-  Uid = 'uid',
-  /** column name */
-  YearValue = 'yearValue'
-}
-
-/** input type for updating data in table "v_service" */
-export type VServiceSetInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** aggregate stddev on columns */
-export type VServiceStddevFields = {
-  __typename?: 'VServiceStddevFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddev() on columns of table "v_service" */
-export type VServiceStddevOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** aggregate stddevPop on columns */
-export type VServiceStddevPopFields = {
-  __typename?: 'VServiceStddevPopFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddevPop() on columns of table "v_service" */
-export type VServiceStddevPopOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** aggregate stddevSamp on columns */
-export type VServiceStddevSampFields = {
-  __typename?: 'VServiceStddevSampFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddevSamp() on columns of table "v_service" */
-export type VServiceStddevSampOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** Streaming cursor of the table "v_service" */
-export type VServiceStreamCursorInput = {
-  /** Stream column input with initial value */
-  initialValue: VServiceStreamCursorValueInput;
-  /** cursor ordering */
-  ordering?: InputMaybe<CursorOrdering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type VServiceStreamCursorValueInput = {
-  id?: InputMaybe<Scalars['Int']['input']>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-  yearValue?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** aggregate sum on columns */
-export type VServiceSumFields = {
-  __typename?: 'VServiceSumFields';
-  id?: Maybe<Scalars['Int']['output']>;
-  yearValue?: Maybe<Scalars['Int']['output']>;
-};
-
-/** order by sum() on columns of table "v_service" */
-export type VServiceSumOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-export type VServiceUpdates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<VServiceIncInput>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<VServiceSetInput>;
-  /** filter the rows which have to be updated */
-  where: VServiceBoolExp;
-};
-
-/** aggregate varPop on columns */
-export type VServiceVarPopFields = {
-  __typename?: 'VServiceVarPopFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by varPop() on columns of table "v_service" */
-export type VServiceVarPopOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** aggregate varSamp on columns */
-export type VServiceVarSampFields = {
-  __typename?: 'VServiceVarSampFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by varSamp() on columns of table "v_service" */
-export type VServiceVarSampOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** aggregate variance on columns */
-export type VServiceVarianceFields = {
-  __typename?: 'VServiceVarianceFields';
-  id?: Maybe<Scalars['Float']['output']>;
-  yearValue?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by variance() on columns of table "v_service" */
-export type VServiceVarianceOrderBy = {
-  id?: InputMaybe<OrderBy>;
-  yearValue?: InputMaybe<OrderBy>;
-};
-
-/** columns and relationships of "v_teacher" */
-export type VTeacher = {
-  __typename?: 'VTeacher';
-  alias?: Maybe<Scalars['String']['output']>;
-  /** An array relationship */
-  coordinations: Array<Coordination>;
-  /** An aggregate relationship */
-  coordinationsAggregate: CoordinationAggregate;
-  displayname?: Maybe<Scalars['String']['output']>;
-  firstname?: Maybe<Scalars['String']['output']>;
-  lastname?: Maybe<Scalars['String']['output']>;
-  /** An array relationship */
-  services: Array<Service>;
-  /** An aggregate relationship */
-  servicesAggregate: ServiceAggregate;
-  uid?: Maybe<Scalars['String']['output']>;
-  /** An array relationship */
-  vServices: Array<VService>;
-  /** An aggregate relationship */
-  vServicesAggregate: VServiceAggregate;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherCoordinationsArgs = {
-  distinctOn?: InputMaybe<Array<CoordinationSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CoordinationOrderBy>>;
-  where?: InputMaybe<CoordinationBoolExp>;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherCoordinationsAggregateArgs = {
-  distinctOn?: InputMaybe<Array<CoordinationSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CoordinationOrderBy>>;
-  where?: InputMaybe<CoordinationBoolExp>;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherServicesArgs = {
-  distinctOn?: InputMaybe<Array<ServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ServiceOrderBy>>;
-  where?: InputMaybe<ServiceBoolExp>;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherServicesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<ServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<ServiceOrderBy>>;
-  where?: InputMaybe<ServiceBoolExp>;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherVServicesArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-/** columns and relationships of "v_teacher" */
-export type VTeacherVServicesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-/** aggregated selection of "v_teacher" */
-export type VTeacherAggregate = {
-  __typename?: 'VTeacherAggregate';
-  aggregate?: Maybe<VTeacherAggregateFields>;
-  nodes: Array<VTeacher>;
-};
-
-/** aggregate fields of "v_teacher" */
-export type VTeacherAggregateFields = {
-  __typename?: 'VTeacherAggregateFields';
-  count: Scalars['Int']['output'];
-  max?: Maybe<VTeacherMaxFields>;
-  min?: Maybe<VTeacherMinFields>;
-};
-
-
-/** aggregate fields of "v_teacher" */
-export type VTeacherAggregateFieldsCountArgs = {
-  columns?: InputMaybe<Array<VTeacherSelectColumn>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** Boolean expression to filter rows from the table "v_teacher". All fields are combined with a logical 'AND'. */
-export type VTeacherBoolExp = {
-  _and?: InputMaybe<Array<VTeacherBoolExp>>;
-  _not?: InputMaybe<VTeacherBoolExp>;
-  _or?: InputMaybe<Array<VTeacherBoolExp>>;
-  alias?: InputMaybe<StringComparisonExp>;
-  coordinations?: InputMaybe<CoordinationBoolExp>;
-  coordinationsAggregate?: InputMaybe<CoordinationAggregateBoolExp>;
-  displayname?: InputMaybe<StringComparisonExp>;
-  firstname?: InputMaybe<StringComparisonExp>;
-  lastname?: InputMaybe<StringComparisonExp>;
-  services?: InputMaybe<ServiceBoolExp>;
-  servicesAggregate?: InputMaybe<ServiceAggregateBoolExp>;
-  uid?: InputMaybe<StringComparisonExp>;
-  vServices?: InputMaybe<VServiceBoolExp>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateBoolExp>;
-};
-
-/** input type for inserting data into table "v_teacher" */
-export type VTeacherInsertInput = {
-  alias?: InputMaybe<Scalars['String']['input']>;
-  coordinations?: InputMaybe<CoordinationArrRelInsertInput>;
-  displayname?: InputMaybe<Scalars['String']['input']>;
-  firstname?: InputMaybe<Scalars['String']['input']>;
-  lastname?: InputMaybe<Scalars['String']['input']>;
-  services?: InputMaybe<ServiceArrRelInsertInput>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-  vServices?: InputMaybe<VServiceArrRelInsertInput>;
-};
-
-/** aggregate max on columns */
-export type VTeacherMaxFields = {
-  __typename?: 'VTeacherMaxFields';
-  alias?: Maybe<Scalars['String']['output']>;
-  displayname?: Maybe<Scalars['String']['output']>;
-  firstname?: Maybe<Scalars['String']['output']>;
-  lastname?: Maybe<Scalars['String']['output']>;
-  uid?: Maybe<Scalars['String']['output']>;
-};
-
-/** aggregate min on columns */
-export type VTeacherMinFields = {
-  __typename?: 'VTeacherMinFields';
-  alias?: Maybe<Scalars['String']['output']>;
-  displayname?: Maybe<Scalars['String']['output']>;
-  firstname?: Maybe<Scalars['String']['output']>;
-  lastname?: Maybe<Scalars['String']['output']>;
-  uid?: Maybe<Scalars['String']['output']>;
-};
-
-/** response of any mutation on the table "v_teacher" */
-export type VTeacherMutationResponse = {
-  __typename?: 'VTeacherMutationResponse';
-  /** number of rows affected by the mutation */
-  affectedRows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<VTeacher>;
-};
-
-/** input type for inserting object relation for remote table "v_teacher" */
-export type VTeacherObjRelInsertInput = {
-  data: VTeacherInsertInput;
-};
-
-/** Ordering options when selecting data from "v_teacher". */
-export type VTeacherOrderBy = {
-  alias?: InputMaybe<OrderBy>;
-  coordinationsAggregate?: InputMaybe<CoordinationAggregateOrderBy>;
-  displayname?: InputMaybe<OrderBy>;
-  firstname?: InputMaybe<OrderBy>;
-  lastname?: InputMaybe<OrderBy>;
-  servicesAggregate?: InputMaybe<ServiceAggregateOrderBy>;
-  uid?: InputMaybe<OrderBy>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateOrderBy>;
-};
-
-/** select columns of table "v_teacher" */
-export enum VTeacherSelectColumn {
-  /** column name */
-  Alias = 'alias',
-  /** column name */
-  Displayname = 'displayname',
-  /** column name */
-  Firstname = 'firstname',
-  /** column name */
-  Lastname = 'lastname',
-  /** column name */
-  Uid = 'uid'
-}
-
-/** input type for updating data in table "v_teacher" */
-export type VTeacherSetInput = {
-  alias?: InputMaybe<Scalars['String']['input']>;
-  displayname?: InputMaybe<Scalars['String']['input']>;
-  firstname?: InputMaybe<Scalars['String']['input']>;
-  lastname?: InputMaybe<Scalars['String']['input']>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-};
-
-/** Streaming cursor of the table "v_teacher" */
-export type VTeacherStreamCursorInput = {
-  /** Stream column input with initial value */
-  initialValue: VTeacherStreamCursorValueInput;
-  /** cursor ordering */
-  ordering?: InputMaybe<CursorOrdering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type VTeacherStreamCursorValueInput = {
-  alias?: InputMaybe<Scalars['String']['input']>;
-  displayname?: InputMaybe<Scalars['String']['input']>;
-  firstname?: InputMaybe<Scalars['String']['input']>;
-  lastname?: InputMaybe<Scalars['String']['input']>;
-  uid?: InputMaybe<Scalars['String']['input']>;
-};
-
-export type VTeacherUpdates = {
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<VTeacherSetInput>;
-  /** filter the rows which have to be updated */
-  where: VTeacherBoolExp;
-};
-
 /** Academic year definitions with current year designation and visibility settings */
 export type Year = {
   __typename?: 'Year';
@@ -9480,10 +9330,6 @@ export type Year = {
   servicesAggregate: ServiceAggregate;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** An array relationship */
-  vServices: Array<VService>;
-  /** An aggregate relationship */
-  vServicesAggregate: VServiceAggregate;
   /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
   value: Scalars['Int']['output'];
   /** Controls visibility of the year in the user interface and queries */
@@ -9570,26 +9416,6 @@ export type YearServicesAggregateArgs = {
   where?: InputMaybe<ServiceBoolExp>;
 };
 
-
-/** Academic year definitions with current year designation and visibility settings */
-export type YearVServicesArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-/** Academic year definitions with current year designation and visibility settings */
-export type YearVServicesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
 /** aggregated selection of "year" */
 export type YearAggregate = {
   __typename?: 'YearAggregate';
@@ -9643,8 +9469,6 @@ export type YearBoolExp = {
   services?: InputMaybe<ServiceBoolExp>;
   servicesAggregate?: InputMaybe<ServiceAggregateBoolExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  vServices?: InputMaybe<VServiceBoolExp>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateBoolExp>;
   value?: InputMaybe<IntComparisonExp>;
   visible?: InputMaybe<BooleanComparisonExp>;
 };
@@ -9675,7 +9499,6 @@ export type YearInsertInput = {
   services?: InputMaybe<ServiceArrRelInsertInput>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  vServices?: InputMaybe<VServiceArrRelInsertInput>;
   /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
   value?: InputMaybe<Scalars['Int']['input']>;
   /** Controls visibility of the year in the user interface and queries */
@@ -9736,7 +9559,6 @@ export type YearOrderBy = {
   requestsAggregate?: InputMaybe<RequestAggregateOrderBy>;
   servicesAggregate?: InputMaybe<ServiceAggregateOrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
-  vServicesAggregate?: InputMaybe<VServiceAggregateOrderBy>;
   value?: InputMaybe<OrderBy>;
   visible?: InputMaybe<OrderBy>;
 };
@@ -9910,7 +9732,7 @@ export type CourseAggregateBoolExpCount = {
 };
 
 export type CreateTeacherServiceArgs = {
-  p_uid?: InputMaybe<Scalars['String']['input']>;
+  p_teacher_id?: InputMaybe<Scalars['Int']['input']>;
   p_year?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -9962,6 +9784,10 @@ export type Mutation_Root = {
   deleteDegree?: Maybe<DegreeMutationResponse>;
   /** delete single row from the table: "degree" */
   deleteDegreeByPk?: Maybe<Degree>;
+  /** delete data from the table: "message" */
+  deleteMessage?: Maybe<MessageMutationResponse>;
+  /** delete single row from the table: "message" */
+  deleteMessageByPk?: Maybe<Message>;
   /** delete data from the table: "phase" */
   deletePhase?: Maybe<PhaseMutationResponse>;
   /** delete single row from the table: "phase" */
@@ -10014,10 +9840,6 @@ export type Mutation_Root = {
   deleteTrack?: Maybe<TrackMutationResponse>;
   /** delete single row from the table: "track" */
   deleteTrackByPk?: Maybe<Track>;
-  /** delete data from the table: "v_service" */
-  deleteVService?: Maybe<VServiceMutationResponse>;
-  /** delete data from the table: "v_teacher" */
-  deleteVTeacher?: Maybe<VTeacherMutationResponse>;
   /** delete data from the table: "year" */
   deleteYear?: Maybe<YearMutationResponse>;
   /** delete single row from the table: "year" */
@@ -10048,6 +9870,10 @@ export type Mutation_Root = {
   insertDegree?: Maybe<DegreeMutationResponse>;
   /** insert a single row into the table: "degree" */
   insertDegreeOne?: Maybe<Degree>;
+  /** insert data into the table: "message" */
+  insertMessage?: Maybe<MessageMutationResponse>;
+  /** insert a single row into the table: "message" */
+  insertMessageOne?: Maybe<Message>;
   /** insert data into the table: "phase" */
   insertPhase?: Maybe<PhaseMutationResponse>;
   /** insert a single row into the table: "phase" */
@@ -10100,14 +9926,6 @@ export type Mutation_Root = {
   insertTrack?: Maybe<TrackMutationResponse>;
   /** insert a single row into the table: "track" */
   insertTrackOne?: Maybe<Track>;
-  /** insert data into the table: "v_service" */
-  insertVService?: Maybe<VServiceMutationResponse>;
-  /** insert a single row into the table: "v_service" */
-  insertVServiceOne?: Maybe<VService>;
-  /** insert data into the table: "v_teacher" */
-  insertVTeacher?: Maybe<VTeacherMutationResponse>;
-  /** insert a single row into the table: "v_teacher" */
-  insertVTeacherOne?: Maybe<VTeacher>;
   /** insert data into the table: "year" */
   insertYear?: Maybe<YearMutationResponse>;
   /** insert a single row into the table: "year" */
@@ -10148,6 +9966,12 @@ export type Mutation_Root = {
   updateDegreeByPk?: Maybe<Degree>;
   /** update multiples rows of table: "degree" */
   updateDegreeMany?: Maybe<Array<Maybe<DegreeMutationResponse>>>;
+  /** update data of the table: "message" */
+  updateMessage?: Maybe<MessageMutationResponse>;
+  /** update single row of the table: "message" */
+  updateMessageByPk?: Maybe<Message>;
+  /** update multiples rows of table: "message" */
+  updateMessageMany?: Maybe<Array<Maybe<MessageMutationResponse>>>;
   /** update data of the table: "phase" */
   updatePhase?: Maybe<PhaseMutationResponse>;
   /** update single row of the table: "phase" */
@@ -10226,14 +10050,6 @@ export type Mutation_Root = {
   updateTrackByPk?: Maybe<Track>;
   /** update multiples rows of table: "track" */
   updateTrackMany?: Maybe<Array<Maybe<TrackMutationResponse>>>;
-  /** update data of the table: "v_service" */
-  updateVService?: Maybe<VServiceMutationResponse>;
-  /** update multiples rows of table: "v_service" */
-  updateVServiceMany?: Maybe<Array<Maybe<VServiceMutationResponse>>>;
-  /** update data of the table: "v_teacher" */
-  updateVTeacher?: Maybe<VTeacherMutationResponse>;
-  /** update multiples rows of table: "v_teacher" */
-  updateVTeacherMany?: Maybe<Array<Maybe<VTeacherMutationResponse>>>;
   /** update data of the table: "year" */
   updateYear?: Maybe<YearMutationResponse>;
   /** update single row of the table: "year" */
@@ -10366,6 +10182,18 @@ export type Mutation_RootDeleteDegreeArgs = {
 
 /** mutation root */
 export type Mutation_RootDeleteDegreeByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDeleteMessageArgs = {
+  where: MessageBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDeleteMessageByPkArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -10510,7 +10338,7 @@ export type Mutation_RootDeleteTeacherArgs = {
 
 /** mutation root */
 export type Mutation_RootDeleteTeacherByPkArgs = {
-  uid: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -10523,18 +10351,6 @@ export type Mutation_RootDeleteTrackArgs = {
 /** mutation root */
 export type Mutation_RootDeleteTrackByPkArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-/** mutation root */
-export type Mutation_RootDeleteVServiceArgs = {
-  where: VServiceBoolExp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDeleteVTeacherArgs = {
-  where: VTeacherBoolExp;
 };
 
 
@@ -10641,6 +10457,20 @@ export type Mutation_RootInsertDegreeArgs = {
 export type Mutation_RootInsertDegreeOneArgs = {
   object: DegreeInsertInput;
   onConflict?: InputMaybe<DegreeOnConflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsertMessageArgs = {
+  objects: Array<MessageInsertInput>;
+  onConflict?: InputMaybe<MessageOnConflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsertMessageOneArgs = {
+  object: MessageInsertInput;
+  onConflict?: InputMaybe<MessageOnConflict>;
 };
 
 
@@ -10827,30 +10657,6 @@ export type Mutation_RootInsertTrackOneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsertVServiceArgs = {
-  objects: Array<VServiceInsertInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsertVServiceOneArgs = {
-  object: VServiceInsertInput;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsertVTeacherArgs = {
-  objects: Array<VTeacherInsertInput>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsertVTeacherOneArgs = {
-  object: VTeacherInsertInput;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsertYearArgs = {
   objects: Array<YearInsertInput>;
   onConflict?: InputMaybe<YearOnConflict>;
@@ -10993,6 +10799,28 @@ export type Mutation_RootUpdateDegreeManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdateMessageArgs = {
+  _inc?: InputMaybe<MessageIncInput>;
+  _set?: InputMaybe<MessageSetInput>;
+  where: MessageBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdateMessageByPkArgs = {
+  _inc?: InputMaybe<MessageIncInput>;
+  _set?: InputMaybe<MessageSetInput>;
+  pkColumns: MessagePkColumnsInput;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdateMessageManyArgs = {
+  updates: Array<MessageUpdates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdatePhaseArgs = {
   _set?: InputMaybe<PhaseSetInput>;
   where: PhaseBoolExp;
@@ -11122,6 +10950,7 @@ export type Mutation_RootUpdateRequestTypeManyArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdateRoleArgs = {
+  _inc?: InputMaybe<RoleIncInput>;
   _set?: InputMaybe<RoleSetInput>;
   where: RoleBoolExp;
 };
@@ -11129,6 +10958,7 @@ export type Mutation_RootUpdateRoleArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdateRoleByPkArgs = {
+  _inc?: InputMaybe<RoleIncInput>;
   _set?: InputMaybe<RoleSetInput>;
   pkColumns: RolePkColumnsInput;
 };
@@ -11269,33 +11099,6 @@ export type Mutation_RootUpdateTrackManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdateVServiceArgs = {
-  _inc?: InputMaybe<VServiceIncInput>;
-  _set?: InputMaybe<VServiceSetInput>;
-  where: VServiceBoolExp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdateVServiceManyArgs = {
-  updates: Array<VServiceUpdates>;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdateVTeacherArgs = {
-  _set?: InputMaybe<VTeacherSetInput>;
-  where: VTeacherBoolExp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdateVTeacherManyArgs = {
-  updates: Array<VTeacherUpdates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdateYearArgs = {
   _inc?: InputMaybe<YearIncInput>;
   _set?: InputMaybe<YearSetInput>;
@@ -11396,6 +11199,12 @@ export type Query_Root = {
   degreeAggregate: DegreeAggregate;
   /** fetch data from the table: "degree" using primary key columns */
   degreeByPk?: Maybe<Degree>;
+  /** fetch data from the table: "message" */
+  message: Array<Message>;
+  /** fetch aggregated fields from the table: "message" */
+  messageAggregate: MessageAggregate;
+  /** fetch data from the table: "message" using primary key columns */
+  messageByPk?: Maybe<Message>;
   /** fetch data from the table: "phase" */
   phase: Array<Phase>;
   /** fetch aggregated fields from the table: "phase" */
@@ -11474,14 +11283,6 @@ export type Query_Root = {
   trackAggregate: TrackAggregate;
   /** fetch data from the table: "track" using primary key columns */
   trackByPk?: Maybe<Track>;
-  /** fetch data from the table: "v_service" */
-  vService: Array<VService>;
-  /** fetch aggregated fields from the table: "v_service" */
-  vServiceAggregate: VServiceAggregate;
-  /** fetch data from the table: "v_teacher" */
-  vTeacher: Array<VTeacher>;
-  /** fetch aggregated fields from the table: "v_teacher" */
-  vTeacherAggregate: VTeacherAggregate;
   /** fetch data from the table: "year" */
   year: Array<Year>;
   /** fetch aggregated fields from the table: "year" */
@@ -11625,6 +11426,29 @@ export type Query_RootDegreeAggregateArgs = {
 
 
 export type Query_RootDegreeByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Query_RootMessageArgs = {
+  distinctOn?: InputMaybe<Array<MessageSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MessageOrderBy>>;
+  where?: InputMaybe<MessageBoolExp>;
+};
+
+
+export type Query_RootMessageAggregateArgs = {
+  distinctOn?: InputMaybe<Array<MessageSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MessageOrderBy>>;
+  where?: InputMaybe<MessageBoolExp>;
+};
+
+
+export type Query_RootMessageByPkArgs = {
   id: Scalars['Int']['input'];
 };
 
@@ -11901,7 +11725,7 @@ export type Query_RootTeacherAggregateArgs = {
 
 
 export type Query_RootTeacherByPkArgs = {
-  uid: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -11925,42 +11749,6 @@ export type Query_RootTrackAggregateArgs = {
 
 export type Query_RootTrackByPkArgs = {
   id: Scalars['Int']['input'];
-};
-
-
-export type Query_RootVServiceArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-export type Query_RootVServiceAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-export type Query_RootVTeacherArgs = {
-  distinctOn?: InputMaybe<Array<VTeacherSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VTeacherOrderBy>>;
-  where?: InputMaybe<VTeacherBoolExp>;
-};
-
-
-export type Query_RootVTeacherAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VTeacherSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VTeacherOrderBy>>;
-  where?: InputMaybe<VTeacherBoolExp>;
 };
 
 
@@ -12064,6 +11852,14 @@ export type Subscription_Root = {
   degreeByPk?: Maybe<Degree>;
   /** fetch data from the table in a streaming manner: "degree" */
   degreeStream: Array<Degree>;
+  /** fetch data from the table: "message" */
+  message: Array<Message>;
+  /** fetch aggregated fields from the table: "message" */
+  messageAggregate: MessageAggregate;
+  /** fetch data from the table: "message" using primary key columns */
+  messageByPk?: Maybe<Message>;
+  /** fetch data from the table in a streaming manner: "message" */
+  messageStream: Array<Message>;
   /** fetch data from the table: "phase" */
   phase: Array<Phase>;
   /** fetch aggregated fields from the table: "phase" */
@@ -12168,18 +11964,6 @@ export type Subscription_Root = {
   trackByPk?: Maybe<Track>;
   /** fetch data from the table in a streaming manner: "track" */
   trackStream: Array<Track>;
-  /** fetch data from the table: "v_service" */
-  vService: Array<VService>;
-  /** fetch aggregated fields from the table: "v_service" */
-  vServiceAggregate: VServiceAggregate;
-  /** fetch data from the table in a streaming manner: "v_service" */
-  vServiceStream: Array<VService>;
-  /** fetch data from the table: "v_teacher" */
-  vTeacher: Array<VTeacher>;
-  /** fetch aggregated fields from the table: "v_teacher" */
-  vTeacherAggregate: VTeacherAggregate;
-  /** fetch data from the table in a streaming manner: "v_teacher" */
-  vTeacherStream: Array<VTeacher>;
   /** fetch data from the table: "year" */
   year: Array<Year>;
   /** fetch aggregated fields from the table: "year" */
@@ -12368,6 +12152,36 @@ export type Subscription_RootDegreeStreamArgs = {
   batchSize: Scalars['Int']['input'];
   cursor: Array<InputMaybe<DegreeStreamCursorInput>>;
   where?: InputMaybe<DegreeBoolExp>;
+};
+
+
+export type Subscription_RootMessageArgs = {
+  distinctOn?: InputMaybe<Array<MessageSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MessageOrderBy>>;
+  where?: InputMaybe<MessageBoolExp>;
+};
+
+
+export type Subscription_RootMessageAggregateArgs = {
+  distinctOn?: InputMaybe<Array<MessageSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<MessageOrderBy>>;
+  where?: InputMaybe<MessageBoolExp>;
+};
+
+
+export type Subscription_RootMessageByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Subscription_RootMessageStreamArgs = {
+  batchSize: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<MessageStreamCursorInput>>;
+  where?: InputMaybe<MessageBoolExp>;
 };
 
 
@@ -12720,7 +12534,7 @@ export type Subscription_RootTeacherAggregateArgs = {
 
 
 export type Subscription_RootTeacherByPkArgs = {
-  uid: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -12758,56 +12572,6 @@ export type Subscription_RootTrackStreamArgs = {
   batchSize: Scalars['Int']['input'];
   cursor: Array<InputMaybe<TrackStreamCursorInput>>;
   where?: InputMaybe<TrackBoolExp>;
-};
-
-
-export type Subscription_RootVServiceArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-export type Subscription_RootVServiceAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VServiceSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VServiceOrderBy>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-export type Subscription_RootVServiceStreamArgs = {
-  batchSize: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<VServiceStreamCursorInput>>;
-  where?: InputMaybe<VServiceBoolExp>;
-};
-
-
-export type Subscription_RootVTeacherArgs = {
-  distinctOn?: InputMaybe<Array<VTeacherSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VTeacherOrderBy>>;
-  where?: InputMaybe<VTeacherBoolExp>;
-};
-
-
-export type Subscription_RootVTeacherAggregateArgs = {
-  distinctOn?: InputMaybe<Array<VTeacherSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<VTeacherOrderBy>>;
-  where?: InputMaybe<VTeacherBoolExp>;
-};
-
-
-export type Subscription_RootVTeacherStreamArgs = {
-  batchSize: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<VTeacherStreamCursorInput>>;
-  where?: InputMaybe<VTeacherBoolExp>;
 };
 
 
@@ -12882,25 +12646,18 @@ export type TrackAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
-export type VServiceAggregateBoolExpCount = {
-  arguments?: InputMaybe<Array<VServiceSelectColumn>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<VServiceBoolExp>;
-  predicate: IntComparisonExp;
-};
-
 export type GetAppDataQueryVariables = Exact<{
-  uid: Scalars['String']['input'];
+  userId: Scalars['Int']['input'];
 }>;
 
 
-export type GetAppDataQuery = { __typename?: 'query_root', currentPhase?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null, years: Array<{ __typename?: 'Year', value: number, current: boolean, visible: boolean }>, customTexts: Array<{ __typename?: 'AppSetting', key: string, value?: string | null }>, profile?: { __typename?: 'Teacher', uid: string, displayname?: string | null, services: Array<{ __typename?: 'Service', id: number, year: number }> } | null };
+export type GetAppDataQuery = { __typename?: 'query_root', currentPhase?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null, years: Array<{ __typename?: 'Year', value: number, current: boolean, visible: boolean }>, customTexts: Array<{ __typename?: 'AppSetting', key: string, value?: string | null }>, profile?: { __typename?: 'Teacher', id: number, displayname?: string | null, services: Array<{ __typename?: 'Service', id: number, year: number }> } | null };
 
 export type CourseRowFragment = { __typename?: 'Course', id: number, visible: boolean, semester: number, name?: string | null, hoursPerGroup?: number | null, numberOfGroups?: number | null, program: { __typename?: 'Program', id: number, visible: boolean, name?: string | null, degree: { __typename?: 'Degree', visible: boolean, name?: string | null } }, track?: { __typename?: 'Track', visible: boolean, name?: string | null } | null, type: { __typename?: 'CourseType', label: string, coefficient: number }, requests: Array<{ __typename?: 'Request', serviceId: number, type: RequestTypeEnum, hours: number, isPriority?: boolean | null }> } & { ' $fragmentName'?: 'CourseRowFragment' };
 
-export type TableCoursesVServiceFragment = { __typename?: 'VService', id?: number | null, teacher?: { __typename?: 'Teacher', displayname?: string | null } | null } & { ' $fragmentName'?: 'TableCoursesVServiceFragment' };
+export type TableCoursesServiceFragment = { __typename?: 'Service', id: number, teacher: { __typename?: 'Teacher', displayname?: string | null } } & { ' $fragmentName'?: 'TableCoursesServiceFragment' };
 
-export type ServiceRowFragment = { __typename?: 'Service', id: number, hours: number, message?: string | null, teacher: { __typename?: 'Teacher', firstname: string, lastname: string, alias?: string | null, visible: boolean }, modifications: Array<{ __typename?: 'ServiceModification', hours: number }>, requests: Array<{ __typename?: 'Request', type: RequestTypeEnum, hoursWeighted?: number | null }> } & { ' $fragmentName'?: 'ServiceRowFragment' };
+export type ServiceRowFragment = { __typename?: 'Service', id: number, hours: number, teacher: { __typename?: 'Teacher', firstname: string, lastname: string, alias?: string | null, visible: boolean }, modifications: Array<{ __typename?: 'ServiceModification', hours: number }>, requests: Array<{ __typename?: 'Request', type: RequestTypeEnum, hoursWeighted?: number | null }>, message?: { __typename?: 'Message', content: string } | null } & { ' $fragmentName'?: 'ServiceRowFragment' };
 
 export type GetAdminCoursesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -12954,7 +12711,7 @@ export type DeleteCourseTypesMutationVariables = Exact<{
 
 export type DeleteCourseTypesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'CourseTypeMutationResponse', returning: Array<{ __typename?: 'CourseType', id: number }> } | null };
 
-export type AdminCourseFragment = { __typename?: 'Course', id: number, name: string, nameShort?: string | null, nameDisplay?: string | null, semester: number, hours: number, hoursAdjusted?: number | null, groups: number, groupsAdjusted?: number | null, description?: string | null, priorityRule?: number | null, visible: boolean, year: number, program: { __typename?: 'Program', id: number, name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', id: number, name: string, nameDisplay?: string | null } | null, type: { __typename?: 'CourseType', id: number, label: string } } & { ' $fragmentName'?: 'AdminCourseFragment' };
+export type AdminCourseFragment = { __typename?: 'Course', id: number, year: number, name: string, nameShort?: string | null, nameDisplay?: string | null, semester: number, hours: number, hoursAdjusted?: number | null, groups: number, groupsAdjusted?: number | null, description?: string | null, priorityRule?: number | null, visible: boolean, program: { __typename?: 'Program', name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', name: string, nameDisplay?: string | null } | null, type: { __typename?: 'CourseType', label: string } } & { ' $fragmentName'?: 'AdminCourseFragment' };
 
 export type AdminCoursesDegreeFragment = { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null, programs: Array<{ __typename?: 'Program', id: number, name: string, tracks: Array<{ __typename?: 'Track', id: number, name: string }> }> } & { ' $fragmentName'?: 'AdminCoursesDegreeFragment' };
 
@@ -13026,7 +12783,7 @@ export type DeleteDegreesMutationVariables = Exact<{
 
 export type DeleteDegreesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'DegreeMutationResponse', returning: Array<{ __typename?: 'Degree', id: number }> } | null };
 
-export type AdminProgramFragment = { __typename?: 'Program', id: number, name: string, nameShort?: string | null, nameDisplay?: string | null, visible: boolean, degree: { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } } & { ' $fragmentName'?: 'AdminProgramFragment' };
+export type AdminProgramFragment = { __typename?: 'Program', id: number, name: string, nameShort?: string | null, nameDisplay?: string | null, visible: boolean, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } } & { ' $fragmentName'?: 'AdminProgramFragment' };
 
 export type AdminProgramsDegreeFragment = { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } & { ' $fragmentName'?: 'AdminProgramsDegreeFragment' };
 
@@ -13060,7 +12817,7 @@ export type DeleteProgramsMutationVariables = Exact<{
 
 export type DeleteProgramsMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'ProgramMutationResponse', returning: Array<{ __typename?: 'Program', id: number }> } | null };
 
-export type AdminTrackFragment = { __typename?: 'Track', id: number, name: string, nameShort?: string | null, nameDisplay?: string | null, visible: boolean, program: { __typename?: 'Program', id: number, name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } } } & { ' $fragmentName'?: 'AdminTrackFragment' };
+export type AdminTrackFragment = { __typename?: 'Track', id: number, name: string, nameShort?: string | null, nameDisplay?: string | null, visible: boolean, program: { __typename?: 'Program', name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } } } & { ' $fragmentName'?: 'AdminTrackFragment' };
 
 export type AdminTracksDegreeFragment = { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null, programs: Array<{ __typename?: 'Program', id: number, name: string }> } & { ' $fragmentName'?: 'AdminTracksDegreeFragment' };
 
@@ -13113,25 +12870,25 @@ export type UpdateCustomTextMutationVariables = Exact<{
 }>;
 
 
-export type UpdateCustomTextMutation = { __typename?: 'mutation_root', customText?: { __typename?: 'AppSetting', key: string } | null };
+export type UpdateCustomTextMutation = { __typename?: 'mutation_root', insertAppSettingOne?: { __typename?: 'AppSetting', key: string } | null };
 
 export type DeleteCustomTextMutationVariables = Exact<{
   key: Scalars['String']['input'];
 }>;
 
 
-export type DeleteCustomTextMutation = { __typename?: 'mutation_root', customText?: { __typename?: 'AppSetting', key: string } | null };
+export type DeleteCustomTextMutation = { __typename?: 'mutation_root', deleteAppSettingByPk?: { __typename?: 'AppSetting', key: string } | null };
 
 export type SetCurrentPhaseMutationVariables = Exact<{
   phase: PhaseEnum;
 }>;
 
 
-export type SetCurrentPhaseMutation = { __typename?: 'mutation_root', phase?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null };
+export type SetCurrentPhaseMutation = { __typename?: 'mutation_root', updateCurrentPhaseByPk?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null };
 
-export type AdminRoleFragment = { __typename?: 'Role', id: number, uid: string, type: RoleTypeEnum, comment?: string | null } & { ' $fragmentName'?: 'AdminRoleFragment' };
+export type AdminRoleFragment = { __typename?: 'Role', id: number, type: RoleTypeEnum, comment?: string | null, teacher: { __typename?: 'Teacher', email: string } } & { ' $fragmentName'?: 'AdminRoleFragment' };
 
-export type AdminRolesTeacherFragment = { __typename?: 'Teacher', uid: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminRolesTeacherFragment' };
+export type AdminRolesTeacherFragment = { __typename?: 'Teacher', id: number, email: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminRolesTeacherFragment' };
 
 export type InsertRolesMutationVariables = Exact<{
   objects: Array<RoleInsertInput> | RoleInsertInput;
@@ -13168,7 +12925,7 @@ export type SetCurrentYearMutationVariables = Exact<{
 }>;
 
 
-export type SetCurrentYearMutation = { __typename?: 'mutation_root', year?: { __typename?: 'Year', value: number } | null };
+export type SetCurrentYearMutation = { __typename?: 'mutation_root', updateYearByPk?: { __typename?: 'Year', value: number } | null };
 
 export type InsertYearMutationVariables = Exact<{
   value: Scalars['Int']['input'];
@@ -13176,7 +12933,7 @@ export type InsertYearMutationVariables = Exact<{
 }>;
 
 
-export type InsertYearMutation = { __typename?: 'mutation_root', year?: { __typename?: 'Year', value: number } | null };
+export type InsertYearMutation = { __typename?: 'mutation_root', insertYearOne?: { __typename?: 'Year', value: number } | null };
 
 export type UpdateYearMutationVariables = Exact<{
   value: Scalars['Int']['input'];
@@ -13184,14 +12941,14 @@ export type UpdateYearMutationVariables = Exact<{
 }>;
 
 
-export type UpdateYearMutation = { __typename?: 'mutation_root', year?: { __typename?: 'Year', value: number } | null };
+export type UpdateYearMutation = { __typename?: 'mutation_root', updateYearByPk?: { __typename?: 'Year', value: number } | null };
 
 export type DeleteYearMutationVariables = Exact<{
   value: Scalars['Int']['input'];
 }>;
 
 
-export type DeleteYearMutation = { __typename?: 'mutation_root', year?: { __typename?: 'Year', value: number } | null };
+export type DeleteYearMutation = { __typename?: 'mutation_root', deleteYearByPk?: { __typename?: 'Year', value: number } | null };
 
 export type CreateServicesMutationVariables = Exact<{
   year: Scalars['Int']['input'];
@@ -13246,13 +13003,13 @@ export type GetAdminRequestsQuery = { __typename?: 'query_root', requests: Array
     & { ' $fragmentRefs'?: { 'AdminRequestsCourseTypeFragment': AdminRequestsCourseTypeFragment;'AdminPrioritiesCourseTypeFragment': AdminPrioritiesCourseTypeFragment } }
   )> };
 
-export type AdminPriorityFragment = { __typename?: 'Priority', id: number, seniority?: number | null, isPriority?: boolean | null, computed: boolean, year: number, service: { __typename?: 'Service', id: number, uid: string }, course: { __typename?: 'Course', id: number, name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', id: number, name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', id: number, name: string } | null, type: { __typename?: 'CourseType', id: number, label: string } } } & { ' $fragmentName'?: 'AdminPriorityFragment' };
+export type AdminPriorityFragment = { __typename?: 'Priority', id: number, year: number, seniority?: number | null, isPriority?: boolean | null, computed: boolean, service: { __typename?: 'Service', teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } }, course: { __typename?: 'Course', name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', name: string, nameDisplay?: string | null } | null, type: { __typename?: 'CourseType', label: string } } } & { ' $fragmentName'?: 'AdminPriorityFragment' };
 
-export type AdminPrioritiesServiceFragment = { __typename?: 'Service', id: number, year: number, teacher: { __typename?: 'Teacher', uid: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminPrioritiesServiceFragment' };
+export type AdminPrioritiesServiceFragment = { __typename?: 'Service', id: number, year: number, teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminPrioritiesServiceFragment' };
 
-export type AdminPrioritiesTeacherFragment = { __typename?: 'Teacher', uid: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminPrioritiesTeacherFragment' };
+export type AdminPrioritiesTeacherFragment = { __typename?: 'Teacher', email: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminPrioritiesTeacherFragment' };
 
-export type AdminPrioritiesCourseFragment = { __typename?: 'Course', id: number, name: string, nameDisplay?: string | null, semester: number, year: number, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } }, track?: { __typename?: 'Track', name: string, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } } } | null, type: { __typename?: 'CourseType', label: string } } & { ' $fragmentName'?: 'AdminPrioritiesCourseFragment' };
+export type AdminPrioritiesCourseFragment = { __typename?: 'Course', id: number, year: number, name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } }, track?: { __typename?: 'Track', name: string, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } } } | null, type: { __typename?: 'CourseType', label: string } } & { ' $fragmentName'?: 'AdminPrioritiesCourseFragment' };
 
 export type AdminPrioritiesDegreeFragment = { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } & { ' $fragmentName'?: 'AdminPrioritiesDegreeFragment' };
 
@@ -13292,13 +13049,13 @@ export type DeletePrioritiesMutationVariables = Exact<{
 
 export type DeletePrioritiesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'PriorityMutationResponse', returning: Array<{ __typename?: 'Priority', id: number }> } | null };
 
-export type AdminRequestFragment = { __typename?: 'Request', id: number, type: RequestTypeEnum, hours: number, year: number, service: { __typename?: 'Service', id: number, uid: string }, course: { __typename?: 'Course', id: number, name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', id: number, name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', id: number, name: string } | null, type: { __typename?: 'CourseType', id: number, label: string } } } & { ' $fragmentName'?: 'AdminRequestFragment' };
+export type AdminRequestFragment = { __typename?: 'Request', id: number, year: number, type: RequestTypeEnum, hours: number, service: { __typename?: 'Service', teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } }, course: { __typename?: 'Course', name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', name: string, nameDisplay?: string | null, degree: { __typename?: 'Degree', name: string, nameDisplay?: string | null } }, track?: { __typename?: 'Track', name: string, nameDisplay?: string | null } | null, type: { __typename?: 'CourseType', label: string } } } & { ' $fragmentName'?: 'AdminRequestFragment' };
 
-export type AdminRequestsServiceFragment = { __typename?: 'Service', id: number, year: number, teacher: { __typename?: 'Teacher', uid: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminRequestsServiceFragment' };
+export type AdminRequestsServiceFragment = { __typename?: 'Service', id: number, year: number, teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminRequestsServiceFragment' };
 
-export type AdminRequestsTeacherFragment = { __typename?: 'Teacher', uid: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminRequestsTeacherFragment' };
+export type AdminRequestsTeacherFragment = { __typename?: 'Teacher', email: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminRequestsTeacherFragment' };
 
-export type AdminRequestsCourseFragment = { __typename?: 'Course', id: number, name: string, nameDisplay?: string | null, semester: number, year: number, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } }, track?: { __typename?: 'Track', name: string, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } } } | null, type: { __typename?: 'CourseType', label: string } } & { ' $fragmentName'?: 'AdminRequestsCourseFragment' };
+export type AdminRequestsCourseFragment = { __typename?: 'Course', id: number, year: number, name: string, nameDisplay?: string | null, semester: number, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } }, track?: { __typename?: 'Track', name: string, program: { __typename?: 'Program', name: string, degree: { __typename?: 'Degree', name: string } } } | null, type: { __typename?: 'CourseType', label: string } } & { ' $fragmentName'?: 'AdminRequestsCourseFragment' };
 
 export type AdminRequestsDegreeFragment = { __typename?: 'Degree', id: number, name: string, nameDisplay?: string | null } & { ' $fragmentName'?: 'AdminRequestsDegreeFragment' };
 
@@ -13422,13 +13179,13 @@ export type DeleteServiceModificationTypesMutationVariables = Exact<{
 
 export type DeleteServiceModificationTypesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'ServiceModificationTypeMutationResponse', returning: Array<{ __typename?: 'ServiceModificationType', id: number }> } | null };
 
-export type AdminServiceModificationFragment = { __typename?: 'ServiceModification', id: number, hours: number, service: { __typename?: 'Service', uid: string, year: number }, type: { __typename?: 'ServiceModificationType', id: number, label: string } } & { ' $fragmentName'?: 'AdminServiceModificationFragment' };
+export type AdminServiceModificationFragment = { __typename?: 'ServiceModification', id: number, hours: number, service: { __typename?: 'Service', year: number, teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } }, type: { __typename?: 'ServiceModificationType', label: string } } & { ' $fragmentName'?: 'AdminServiceModificationFragment' };
 
 export type AdminServiceModificationsServiceModificationTypeFragment = { __typename?: 'ServiceModificationType', id: number, label: string } & { ' $fragmentName'?: 'AdminServiceModificationsServiceModificationTypeFragment' };
 
-export type AdminServiceModificationsServiceFragment = { __typename?: 'Service', id: number, uid: string, year: number } & { ' $fragmentName'?: 'AdminServiceModificationsServiceFragment' };
+export type AdminServiceModificationsServiceFragment = { __typename?: 'Service', id: number, year: number, teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminServiceModificationsServiceFragment' };
 
-export type AdminServiceModificationsTeacherFragment = { __typename?: 'Teacher', uid: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminServiceModificationsTeacherFragment' };
+export type AdminServiceModificationsTeacherFragment = { __typename?: 'Teacher', email: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminServiceModificationsTeacherFragment' };
 
 export type InsertServiceModificationsMutationVariables = Exact<{
   objects: Array<ServiceModificationInsertInput> | ServiceModificationInsertInput;
@@ -13460,9 +13217,9 @@ export type DeleteServiceModificationsMutationVariables = Exact<{
 
 export type DeleteServiceModificationsMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'ServiceModificationMutationResponse', returning: Array<{ __typename?: 'ServiceModification', id: number }> } | null };
 
-export type AdminServiceFragment = { __typename?: 'Service', id: number, uid: string, hours: number, message?: string | null, year: number } & { ' $fragmentName'?: 'AdminServiceFragment' };
+export type AdminServiceFragment = { __typename?: 'Service', id: number, year: number, hours: number, teacher: { __typename?: 'Teacher', email: string, displayname?: string | null } } & { ' $fragmentName'?: 'AdminServiceFragment' };
 
-export type AdminServicesTeacherFragment = { __typename?: 'Teacher', uid: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminServicesTeacherFragment' };
+export type AdminServicesTeacherFragment = { __typename?: 'Teacher', id: number, email: string, displayname?: string | null } & { ' $fragmentName'?: 'AdminServicesTeacherFragment' };
 
 export type InsertServicesMutationVariables = Exact<{
   objects: Array<ServiceInsertInput> | ServiceInsertInput;
@@ -13494,7 +13251,7 @@ export type DeleteServicesMutationVariables = Exact<{
 
 export type DeleteServicesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'ServiceMutationResponse', returning: Array<{ __typename?: 'Service', id: number }> } | null };
 
-export type AdminTeacherFragment = { __typename?: 'Teacher', uid: string, firstname: string, lastname: string, alias?: string | null, baseServiceHours?: number | null, visible: boolean, active: boolean, position?: { __typename?: 'Position', id: number, label: string } | null } & { ' $fragmentName'?: 'AdminTeacherFragment' };
+export type AdminTeacherFragment = { __typename?: 'Teacher', id: number, email: string, firstname: string, lastname: string, alias?: string | null, baseServiceHours?: number | null, visible: boolean, active: boolean, position?: { __typename?: 'Position', label: string } | null } & { ' $fragmentName'?: 'AdminTeacherFragment' };
 
 export type AdminTeachersPositionFragment = { __typename?: 'Position', id: number, label: string } & { ' $fragmentName'?: 'AdminTeachersPositionFragment' };
 
@@ -13503,7 +13260,7 @@ export type InsertTeachersMutationVariables = Exact<{
 }>;
 
 
-export type InsertTeachersMutation = { __typename?: 'mutation_root', insertData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', uid: string }> } | null };
+export type InsertTeachersMutation = { __typename?: 'mutation_root', insertData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', id: number }> } | null };
 
 export type UpsertTeachersMutationVariables = Exact<{
   objects: Array<TeacherInsertInput> | TeacherInsertInput;
@@ -13511,38 +13268,38 @@ export type UpsertTeachersMutationVariables = Exact<{
 }>;
 
 
-export type UpsertTeachersMutation = { __typename?: 'mutation_root', upsertData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', uid: string }> } | null };
+export type UpsertTeachersMutation = { __typename?: 'mutation_root', upsertData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', id: number }> } | null };
 
 export type UpdateTeachersMutationVariables = Exact<{
-  ids: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  ids: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
   changes: TeacherSetInput;
 }>;
 
 
-export type UpdateTeachersMutation = { __typename?: 'mutation_root', updateData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', uid: string }> } | null };
+export type UpdateTeachersMutation = { __typename?: 'mutation_root', updateData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', id: number }> } | null };
 
 export type DeleteTeachersMutationVariables = Exact<{
-  ids: Array<Scalars['String']['input']> | Scalars['String']['input'];
+  ids: Array<Scalars['Int']['input']> | Scalars['Int']['input'];
 }>;
 
 
-export type DeleteTeachersMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', uid: string }> } | null };
+export type DeleteTeachersMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'TeacherMutationResponse', returning: Array<{ __typename?: 'Teacher', id: number }> } | null };
 
-export type PriorityChipDataFragment = { __typename?: 'Priority', id: number, seniority?: number | null, isPriority?: boolean | null, computed: boolean, service?: { __typename?: 'VService', teacher?: { __typename?: 'Teacher', displayname?: string | null } | null } | null } & { ' $fragmentName'?: 'PriorityChipDataFragment' };
+export type PriorityChipDataFragment = { __typename?: 'Priority', id: number, seniority?: number | null, isPriority?: boolean | null, computed: boolean, service: { __typename?: 'Service', teacher: { __typename?: 'Teacher', displayname?: string | null } } } & { ' $fragmentName'?: 'PriorityChipDataFragment' };
 
 export type DeletePriorityMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type DeletePriorityMutation = { __typename?: 'mutation_root', priority?: { __typename?: 'Priority', id: number } | null };
+export type DeletePriorityMutation = { __typename?: 'mutation_root', deletePriorityByPk?: { __typename?: 'Priority', id: number } | null };
 
 export type DeleteComputedPriorityMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type DeleteComputedPriorityMutation = { __typename?: 'mutation_root', priority?: { __typename?: 'Priority', id: number } | null };
+export type DeleteComputedPriorityMutation = { __typename?: 'mutation_root', updatePriorityByPk?: { __typename?: 'Priority', id: number } | null };
 
 export type PriorityFormDataFragment = { __typename?: 'Course', year: number, courseId: number } & { ' $fragmentName'?: 'PriorityFormDataFragment' };
 
@@ -13555,9 +13312,9 @@ export type UpsertPriorityMutationVariables = Exact<{
 }>;
 
 
-export type UpsertPriorityMutation = { __typename?: 'mutation_root', priority?: { __typename?: 'Priority', id: number } | null };
+export type UpsertPriorityMutation = { __typename?: 'mutation_root', insertPriorityOne?: { __typename?: 'Priority', id: number } | null };
 
-export type RequestCardDataFragment = { __typename?: 'Request', id: number, type: RequestTypeEnum, hours: number, isPriority?: boolean | null, year: number, service?: { __typename?: 'VService', id?: number | null, teacher?: { __typename?: 'Teacher', displayname?: string | null } | null } | null, course: { __typename?: 'Course', id: number, hoursPerGroup?: number | null } } & { ' $fragmentName'?: 'RequestCardDataFragment' };
+export type RequestCardDataFragment = { __typename?: 'Request', id: number, year: number, type: RequestTypeEnum, hours: number, isPriority?: boolean | null, service: { __typename?: 'Service', id: number, teacher: { __typename?: 'Teacher', displayname?: string | null } }, course: { __typename?: 'Course', id: number, hoursPerGroup?: number | null } } & { ' $fragmentName'?: 'RequestCardDataFragment' };
 
 export type GetAssignmentQueryVariables = Exact<{
   serviceId: Scalars['Int']['input'];
@@ -13575,7 +13332,7 @@ export type InsertAssignmentMutationVariables = Exact<{
 }>;
 
 
-export type InsertAssignmentMutation = { __typename?: 'mutation_root', assignment?: { __typename?: 'Request', id: number } | null };
+export type InsertAssignmentMutation = { __typename?: 'mutation_root', insertRequestOne?: { __typename?: 'Request', id: number } | null };
 
 export type UpdateAssignmentMutationVariables = Exact<{
   id: Scalars['Int']['input'];
@@ -13583,14 +13340,14 @@ export type UpdateAssignmentMutationVariables = Exact<{
 }>;
 
 
-export type UpdateAssignmentMutation = { __typename?: 'mutation_root', assignment?: { __typename?: 'Request', id: number } | null };
+export type UpdateAssignmentMutation = { __typename?: 'mutation_root', updateRequestByPk?: { __typename?: 'Request', id: number } | null };
 
 export type DeleteRequestCardMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type DeleteRequestCardMutation = { __typename?: 'mutation_root', request?: { __typename?: 'Request', id: number } | null };
+export type DeleteRequestCardMutation = { __typename?: 'mutation_root', deleteRequestByPk?: { __typename?: 'Request', id: number } | null };
 
 export type RequestFormDataFragment = { __typename?: 'Course', year: number, courseId: number, hoursPerGroup?: number | null } & { ' $fragmentName'?: 'RequestFormDataFragment' };
 
@@ -13603,7 +13360,7 @@ export type UpsertRequestMutationVariables = Exact<{
 }>;
 
 
-export type UpsertRequestMutation = { __typename?: 'mutation_root', request?: { __typename?: 'Request', id: number } | null };
+export type UpsertRequestMutation = { __typename?: 'mutation_root', insertRequestOne?: { __typename?: 'Request', id: number } | null };
 
 export type DeleteRequestMutationVariables = Exact<{
   serviceId: Scalars['Int']['input'];
@@ -13612,7 +13369,7 @@ export type DeleteRequestMutationVariables = Exact<{
 }>;
 
 
-export type DeleteRequestMutation = { __typename?: 'mutation_root', requests?: { __typename?: 'RequestMutationResponse', returning: Array<{ __typename?: 'Request', id: number }> } | null };
+export type DeleteRequestMutation = { __typename?: 'mutation_root', deleteRequest?: { __typename?: 'RequestMutationResponse', returning: Array<{ __typename?: 'Request', id: number }> } | null };
 
 export type GetServicesQueryVariables = Exact<{
   year: Scalars['Int']['input'];
@@ -13621,7 +13378,7 @@ export type GetServicesQueryVariables = Exact<{
 
 export type GetServicesQuery = { __typename?: 'query_root', services: Array<{ __typename?: 'Service', id: number, teacher: { __typename?: 'Teacher', displayname?: string | null } }> };
 
-export type CourseArchivesDataFragment = { __typename?: 'Course', programId: number, trackId?: number | null, name: string, semester: number, typeId: number, year: number } & { ' $fragmentName'?: 'CourseArchivesDataFragment' };
+export type CourseArchivesDataFragment = { __typename?: 'Course', year: number, programId: number, trackId?: number | null, name: string, semester: number, typeId: number } & { ' $fragmentName'?: 'CourseArchivesDataFragment' };
 
 export type GetCourseArchivesQueryVariables = Exact<{
   year: Scalars['Int']['input'];
@@ -13638,9 +13395,9 @@ export type GetCourseArchivesQuery = { __typename?: 'query_root', courses: Array
       & { ' $fragmentRefs'?: { 'RequestCardDataFragment': RequestCardDataFragment } }
     )> }> };
 
-export type CourseCoordinatorsFragment = { __typename?: 'Course', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher?: { __typename?: 'VTeacher', displayname?: string | null } | null }>, program: { __typename?: 'Program', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher?: { __typename?: 'VTeacher', displayname?: string | null } | null }> }, track?: { __typename?: 'Track', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher?: { __typename?: 'VTeacher', displayname?: string | null } | null }> } | null } & { ' $fragmentName'?: 'CourseCoordinatorsFragment' };
+export type CourseCoordinatorsFragment = { __typename?: 'Course', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher: { __typename?: 'Teacher', displayname?: string | null } }>, program: { __typename?: 'Program', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher: { __typename?: 'Teacher', displayname?: string | null } }> }, track?: { __typename?: 'Track', coordinations: Array<{ __typename?: 'Coordination', comment?: string | null, teacher: { __typename?: 'Teacher', displayname?: string | null } }> } | null } & { ' $fragmentName'?: 'CourseCoordinatorsFragment' };
 
-export type CourseDescriptionFragment = { __typename?: 'Course', description?: string | null, courseId: number, coordinations: Array<{ __typename?: 'Coordination', uid: string }>, program: { __typename?: 'Program', coordinations: Array<{ __typename?: 'Coordination', uid: string }> }, track?: { __typename?: 'Track', coordinations: Array<{ __typename?: 'Coordination', uid: string }> } | null } & { ' $fragmentName'?: 'CourseDescriptionFragment' };
+export type CourseDescriptionFragment = { __typename?: 'Course', description?: string | null, courseId: number, coordinations: Array<{ __typename?: 'Coordination', teacherId: number }>, program: { __typename?: 'Program', coordinations: Array<{ __typename?: 'Coordination', teacherId: number }> }, track?: { __typename?: 'Track', coordinations: Array<{ __typename?: 'Coordination', teacherId: number }> } | null } & { ' $fragmentName'?: 'CourseDescriptionFragment' };
 
 export type UpdateDescriptionMutationVariables = Exact<{
   courseId: Scalars['Int']['input'];
@@ -13648,7 +13405,7 @@ export type UpdateDescriptionMutationVariables = Exact<{
 }>;
 
 
-export type UpdateDescriptionMutation = { __typename?: 'mutation_root', course?: { __typename?: 'Course', id: number } | null };
+export type UpdateDescriptionMutation = { __typename?: 'mutation_root', updateCourseByPk?: { __typename?: 'Course', id: number } | null };
 
 export type CourseDetailsFragment = (
   { __typename?: 'Course', courseId: number }
@@ -13673,16 +13430,16 @@ export type CourseRequestsFragment = (
   & { ' $fragmentRefs'?: { 'RequestFormDataFragment': RequestFormDataFragment } }
 ) & { ' $fragmentName'?: 'CourseRequestsFragment' };
 
-export type TeacherServiceDetailsFragment = { __typename?: 'Service', id: number, uid: string, yearValue: number, hours: number, modifications: Array<{ __typename?: 'ServiceModification', id: number, hours: number, modificationType: { __typename?: 'ServiceModificationType', label: string } }> } & { ' $fragmentName'?: 'TeacherServiceDetailsFragment' };
+export type TeacherServiceDetailsFragment = { __typename?: 'Service', id: number, year: number, teacherId: number, hours: number, modifications: Array<{ __typename?: 'ServiceModification', id: number, hours: number, modificationType: { __typename?: 'ServiceModificationType', label: string } }> } & { ' $fragmentName'?: 'TeacherServiceDetailsFragment' };
 
 export type UpdateServiceMutationVariables = Exact<{
   year: Scalars['Int']['input'];
-  uid: Scalars['String']['input'];
+  teacherId: Scalars['Int']['input'];
   hours: Scalars['Float']['input'];
 }>;
 
 
-export type UpdateServiceMutation = { __typename?: 'mutation_root', services?: { __typename?: 'ServiceMutationResponse', returning: Array<{ __typename?: 'Service', id: number }> } | null };
+export type UpdateServiceMutation = { __typename?: 'mutation_root', updateService?: { __typename?: 'ServiceMutationResponse', returning: Array<{ __typename?: 'Service', id: number }> } | null };
 
 export type GetModificationTypesQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -13696,24 +13453,31 @@ export type InsertModificationMutationVariables = Exact<{
 }>;
 
 
-export type InsertModificationMutation = { __typename?: 'mutation_root', serviceModification?: { __typename?: 'ServiceModification', id: number } | null };
+export type InsertModificationMutation = { __typename?: 'mutation_root', insertServiceModificationOne?: { __typename?: 'ServiceModification', id: number } | null };
 
 export type DeleteModificationMutationVariables = Exact<{
   id: Scalars['Int']['input'];
 }>;
 
 
-export type DeleteModificationMutation = { __typename?: 'mutation_root', serviceModification?: { __typename?: 'ServiceModification', id: number } | null };
+export type DeleteModificationMutation = { __typename?: 'mutation_root', deleteServiceModificationByPk?: { __typename?: 'ServiceModification', id: number } | null };
 
-export type TeacherServiceMessageFragment = { __typename?: 'Service', id: number, uid: string, message?: string | null } & { ' $fragmentName'?: 'TeacherServiceMessageFragment' };
+export type TeacherServiceMessageFragment = { __typename?: 'Service', id: number, year: number, teacherId: number, message?: { __typename?: 'Message', id: number, content: string } | null } & { ' $fragmentName'?: 'TeacherServiceMessageFragment' };
 
-export type UpdateMessageMutationVariables = Exact<{
+export type UpsertMessageMutationVariables = Exact<{
   serviceId: Scalars['Int']['input'];
-  message?: InputMaybe<Scalars['String']['input']>;
+  content: Scalars['String']['input'];
 }>;
 
 
-export type UpdateMessageMutation = { __typename?: 'mutation_root', service?: { __typename?: 'Service', id: number } | null };
+export type UpsertMessageMutation = { __typename?: 'mutation_root', insertMessageOne?: { __typename?: 'Message', id: number } | null };
+
+export type DeleteMessageMutationVariables = Exact<{
+  serviceId: Scalars['Int']['input'];
+}>;
+
+
+export type DeleteMessageMutation = { __typename?: 'mutation_root', deleteRequest?: { __typename?: 'RequestMutationResponse', returning: Array<{ __typename?: 'Request', id: number }> } | null };
 
 export type TeacherServicePrioritiesFragment = { __typename?: 'Service', priorities: Array<{ __typename?: 'Priority', id: number, seniority?: number | null, isPriority?: boolean | null, course: { __typename?: 'Course', semester: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } }, track?: { __typename?: 'Track', name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null, type: { __typename?: 'CourseType', label: string } } }> } & { ' $fragmentName'?: 'TeacherServicePrioritiesFragment' };
 
@@ -13724,7 +13488,7 @@ export type ServiceTeacherFragment = (
   & { ' $fragmentRefs'?: { 'TeacherTitleFragment': TeacherTitleFragment;'TeacherCoordinationsFragment': TeacherCoordinationsFragment } }
 ) & { ' $fragmentName'?: 'ServiceTeacherFragment' };
 
-export type TeacherCoordinationsFragment = { __typename?: 'Teacher', coordinations: Array<{ __typename?: 'Coordination', id: number, comment?: string | null, program?: { __typename?: 'Program', id: number, name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } | null, track?: { __typename?: 'Track', id: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null, course?: { __typename?: 'Course', id: number, yearValue: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } }, track?: { __typename?: 'Track', name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null } | null }> } & { ' $fragmentName'?: 'TeacherCoordinationsFragment' };
+export type TeacherCoordinationsFragment = { __typename?: 'Teacher', coordinations: Array<{ __typename?: 'Coordination', id: number, comment?: string | null, program?: { __typename?: 'Program', id: number, name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } | null, track?: { __typename?: 'Track', id: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null, course?: { __typename?: 'Course', id: number, year: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } }, track?: { __typename?: 'Track', name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null } | null }> } & { ' $fragmentName'?: 'TeacherCoordinationsFragment' };
 
 export type TeacherTitleFragment = { __typename?: 'Teacher', displayname?: string | null, position?: { __typename?: 'Position', label: string } | null } & { ' $fragmentName'?: 'TeacherTitleFragment' };
 
@@ -13734,7 +13498,7 @@ export type GetAssignmentsQueryVariables = Exact<{
 }>;
 
 
-export type GetAssignmentsQuery = { __typename?: 'query_root', assignments: Array<{ __typename?: 'Request', course: { __typename?: 'Course', semester: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } }, track?: { __typename?: 'Track', name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null, type: { __typename?: 'CourseType', label: string } }, service?: { __typename?: 'VService', teacher?: { __typename?: 'Teacher', uid: string, displayname?: string | null } | null } | null }> };
+export type GetAssignmentsQuery = { __typename?: 'query_root', assignments: Array<{ __typename?: 'Request', course: { __typename?: 'Course', semester: number, name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } }, track?: { __typename?: 'Track', name?: string | null, program: { __typename?: 'Program', name?: string | null, degree: { __typename?: 'Degree', name?: string | null } } } | null, type: { __typename?: 'CourseType', label: string } }, service: { __typename?: 'Service', teacher: { __typename?: 'Teacher', displayname?: string | null, email: string } } }> };
 
 export type DummyMutationMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -13758,10 +13522,7 @@ export type GetServiceRowsQueryVariables = Exact<{
 
 export type GetServiceRowsQuery = { __typename?: 'query_root', services: Array<(
     { __typename?: 'Service' }
-    & { ' $fragmentRefs'?: { 'ServiceRowFragment': ServiceRowFragment } }
-  )>, vServices: Array<(
-    { __typename?: 'VService' }
-    & { ' $fragmentRefs'?: { 'TableCoursesVServiceFragment': TableCoursesVServiceFragment } }
+    & { ' $fragmentRefs'?: { 'ServiceRowFragment': ServiceRowFragment;'TableCoursesServiceFragment': TableCoursesServiceFragment } }
   )> };
 
 export type GetCourseDetailsQueryVariables = Exact<{
@@ -13775,7 +13536,7 @@ export type GetCourseDetailsQuery = { __typename?: 'query_root', course?: (
   ) | null };
 
 export type GetTeacherDetailsQueryVariables = Exact<{
-  uid: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 }>;
 
 
@@ -13798,68 +13559,68 @@ export type GetServiceDetailsQuery = { __typename?: 'query_root', service?: (
   ) | null };
 
 export const CourseRowFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}},{"kind":"Field","alias":{"kind":"Name","value":"numberOfGroups"},"name":{"kind":"Name","value":"groupsEffective"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"serviceId"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}}]} as unknown as DocumentNode<CourseRowFragment, unknown>;
-export const TableCoursesVServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TableCoursesVService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VService"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<TableCoursesVServiceFragment, unknown>;
-export const ServiceRowFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]} as unknown as DocumentNode<ServiceRowFragment, unknown>;
+export const TableCoursesServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TableCoursesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<TableCoursesServiceFragment, unknown>;
+export const ServiceRowFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","name":{"kind":"Name","value":"message"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]} as unknown as DocumentNode<ServiceRowFragment, unknown>;
 export const AdminCourseTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]} as unknown as DocumentNode<AdminCourseTypeFragment, unknown>;
-export const AdminCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"hoursAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"groups"}},{"kind":"Field","name":{"kind":"Name","value":"groupsAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"priorityRule"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminCourseFragment, unknown>;
+export const AdminCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"hoursAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"groups"}},{"kind":"Field","name":{"kind":"Name","value":"groupsAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"priorityRule"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminCourseFragment, unknown>;
 export const AdminCoursesDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tracks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}}]} as unknown as DocumentNode<AdminCoursesDegreeFragment, unknown>;
 export const AdminCoursesProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminCoursesProgramFragment, unknown>;
 export const AdminCoursesTrackFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminCoursesTrackFragment, unknown>;
 export const AdminCoursesCourseTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<AdminCoursesCourseTypeFragment, unknown>;
 export const AdminDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminDegreeFragment, unknown>;
-export const AdminProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminProgramFragment, unknown>;
+export const AdminProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminProgramFragment, unknown>;
 export const AdminProgramsDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgramsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminProgramsDegreeFragment, unknown>;
-export const AdminTrackFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminTrackFragment, unknown>;
+export const AdminTrackFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}}]} as unknown as DocumentNode<AdminTrackFragment, unknown>;
 export const AdminTracksDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]} as unknown as DocumentNode<AdminTracksDegreeFragment, unknown>;
 export const AdminTracksProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminTracksProgramFragment, unknown>;
-export const AdminRoleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRole"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]} as unknown as DocumentNode<AdminRoleFragment, unknown>;
-export const AdminRolesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRolesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminRolesTeacherFragment, unknown>;
-export const AdminPriorityFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPriority"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<AdminPriorityFragment, unknown>;
-export const AdminPrioritiesServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<AdminPrioritiesServiceFragment, unknown>;
-export const AdminPrioritiesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminPrioritiesTeacherFragment, unknown>;
-export const AdminPrioritiesCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<AdminPrioritiesCourseFragment, unknown>;
+export const AdminRoleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRole"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]} as unknown as DocumentNode<AdminRoleFragment, unknown>;
+export const AdminRolesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRolesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminRolesTeacherFragment, unknown>;
+export const AdminPriorityFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPriority"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<AdminPriorityFragment, unknown>;
+export const AdminPrioritiesServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<AdminPrioritiesServiceFragment, unknown>;
+export const AdminPrioritiesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminPrioritiesTeacherFragment, unknown>;
+export const AdminPrioritiesCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<AdminPrioritiesCourseFragment, unknown>;
 export const AdminPrioritiesDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminPrioritiesDegreeFragment, unknown>;
 export const AdminPrioritiesProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminPrioritiesProgramFragment, unknown>;
 export const AdminPrioritiesTrackFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminPrioritiesTrackFragment, unknown>;
 export const AdminPrioritiesCourseTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<AdminPrioritiesCourseTypeFragment, unknown>;
-export const AdminRequestFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequest"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]} as unknown as DocumentNode<AdminRequestFragment, unknown>;
-export const AdminRequestsServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<AdminRequestsServiceFragment, unknown>;
-export const AdminRequestsTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminRequestsTeacherFragment, unknown>;
-export const AdminRequestsCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<AdminRequestsCourseFragment, unknown>;
+export const AdminRequestFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequest"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]} as unknown as DocumentNode<AdminRequestFragment, unknown>;
+export const AdminRequestsServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<AdminRequestsServiceFragment, unknown>;
+export const AdminRequestsTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminRequestsTeacherFragment, unknown>;
+export const AdminRequestsCourseFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<AdminRequestsCourseFragment, unknown>;
 export const AdminRequestsDegreeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminRequestsDegreeFragment, unknown>;
 export const AdminRequestsProgramFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminRequestsProgramFragment, unknown>;
 export const AdminRequestsTrackFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]} as unknown as DocumentNode<AdminRequestsTrackFragment, unknown>;
 export const AdminRequestsCourseTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<AdminRequestsCourseTypeFragment, unknown>;
 export const AdminPositionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}}]}}]} as unknown as DocumentNode<AdminPositionFragment, unknown>;
 export const AdminServiceModificationTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]} as unknown as DocumentNode<AdminServiceModificationTypeFragment, unknown>;
-export const AdminServiceModificationFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModification"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModification"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]} as unknown as DocumentNode<AdminServiceModificationFragment, unknown>;
+export const AdminServiceModificationFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModification"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModification"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]} as unknown as DocumentNode<AdminServiceModificationFragment, unknown>;
 export const AdminServiceModificationsServiceModificationTypeFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<AdminServiceModificationsServiceModificationTypeFragment, unknown>;
-export const AdminServiceModificationsServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]} as unknown as DocumentNode<AdminServiceModificationsServiceFragment, unknown>;
-export const AdminServiceModificationsTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminServiceModificationsTeacherFragment, unknown>;
-export const AdminServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]} as unknown as DocumentNode<AdminServiceFragment, unknown>;
-export const AdminServicesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServicesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminServicesTeacherFragment, unknown>;
-export const AdminTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"active"}}]}}]} as unknown as DocumentNode<AdminTeacherFragment, unknown>;
+export const AdminServiceModificationsServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<AdminServiceModificationsServiceFragment, unknown>;
+export const AdminServiceModificationsTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminServiceModificationsTeacherFragment, unknown>;
+export const AdminServiceFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]} as unknown as DocumentNode<AdminServiceFragment, unknown>;
+export const AdminServicesTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServicesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<AdminServicesTeacherFragment, unknown>;
+export const AdminTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"active"}}]}}]} as unknown as DocumentNode<AdminTeacherFragment, unknown>;
 export const AdminTeachersPositionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeachersPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<AdminTeachersPositionFragment, unknown>;
 export const CourseExpansionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseExpansion"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","alias":{"kind":"Name","value":"courseType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<CourseExpansionFragment, unknown>;
-export const CourseCoordinatorsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}}]} as unknown as DocumentNode<CourseCoordinatorsFragment, unknown>;
-export const CourseDescriptionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}}]} as unknown as DocumentNode<CourseDescriptionFragment, unknown>;
-export const RequestFormDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}}]} as unknown as DocumentNode<RequestFormDataFragment, unknown>;
-export const RequestCardDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<RequestCardDataFragment, unknown>;
-export const CourseRequestsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<CourseRequestsFragment, unknown>;
-export const PriorityFormDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<PriorityFormDataFragment, unknown>;
-export const PriorityChipDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<PriorityChipDataFragment, unknown>;
-export const CoursePrioritiesFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<CoursePrioritiesFragment, unknown>;
-export const CourseArchivesDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}}]} as unknown as DocumentNode<CourseArchivesDataFragment, unknown>;
-export const CourseDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseExpansion"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseCoordinators"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDescription"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CoursePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseArchivesData"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseExpansion"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","alias":{"kind":"Name","value":"courseType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}}]} as unknown as DocumentNode<CourseDetailsFragment, unknown>;
-export const TeacherServiceDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"modificationType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]}}]} as unknown as DocumentNode<TeacherServiceDetailsFragment, unknown>;
-export const TeacherServiceMessageFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceMessage"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]} as unknown as DocumentNode<TeacherServiceMessageFragment, unknown>;
+export const CourseCoordinatorsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}}]} as unknown as DocumentNode<CourseCoordinatorsFragment, unknown>;
+export const CourseDescriptionFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}}]}}]} as unknown as DocumentNode<CourseDescriptionFragment, unknown>;
+export const RequestFormDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}}]} as unknown as DocumentNode<RequestFormDataFragment, unknown>;
+export const RequestCardDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<RequestCardDataFragment, unknown>;
+export const CourseRequestsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<CourseRequestsFragment, unknown>;
+export const PriorityFormDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}}]} as unknown as DocumentNode<PriorityFormDataFragment, unknown>;
+export const PriorityChipDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<PriorityChipDataFragment, unknown>;
+export const CoursePrioritiesFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}}]} as unknown as DocumentNode<CoursePrioritiesFragment, unknown>;
+export const CourseArchivesDataFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}}]} as unknown as DocumentNode<CourseArchivesDataFragment, unknown>;
+export const CourseDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseExpansion"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseCoordinators"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDescription"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CoursePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseArchivesData"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseExpansion"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","alias":{"kind":"Name","value":"courseType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}}]} as unknown as DocumentNode<CourseDetailsFragment, unknown>;
+export const TeacherServiceDetailsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacherId"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"modificationType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]}}]} as unknown as DocumentNode<TeacherServiceDetailsFragment, unknown>;
+export const TeacherServiceMessageFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceMessage"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacherId"}},{"kind":"Field","name":{"kind":"Name","value":"message"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]} as unknown as DocumentNode<TeacherServiceMessageFragment, unknown>;
 export const TeacherServicePrioritiesFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServicePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}}]} as unknown as DocumentNode<TeacherServicePrioritiesFragment, unknown>;
 export const TeacherServiceRequestsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignment"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"primary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"PRIMARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"secondary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"SECONDARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}}]}}]} as unknown as DocumentNode<TeacherServiceRequestsFragment, unknown>;
 export const TeacherTitleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<TeacherTitleFragment, unknown>;
-export const TeacherCoordinationsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<TeacherCoordinationsFragment, unknown>;
-export const ServiceTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<ServiceTeacherFragment, unknown>;
-export const GetAppDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAppData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"uid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"currentPhase"},"name":{"kind":"Name","value":"currentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"years"},"name":{"kind":"Name","value":"year"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"current"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"customTexts"},"name":{"kind":"Name","value":"appSetting"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"profile"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"uid"},"value":{"kind":"Variable","name":{"kind":"Name","value":"uid"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"services"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}}]}}]}}]}}]} as unknown as DocumentNode<GetAppDataQuery, GetAppDataQueryVariables>;
-export const GetAdminCoursesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminCourses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"degrees"},"name":{"kind":"Name","value":"degree"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgramsDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesDegree"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"programs"},"name":{"kind":"Name","value":"program"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesProgram"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"tracks"},"name":{"kind":"Name","value":"track"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTrack"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesTrack"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourse"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"types"},"name":{"kind":"Name","value":"courseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourseType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesCourseType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgramsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tracks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"hoursAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"groups"}},{"kind":"Field","name":{"kind":"Name","value":"groupsAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"priorityRule"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminCoursesQuery, GetAdminCoursesQueryVariables>;
+export const TeacherCoordinationsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<TeacherCoordinationsFragment, unknown>;
+export const ServiceTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<ServiceTeacherFragment, unknown>;
+export const GetAppDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAppData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"currentPhase"},"name":{"kind":"Name","value":"currentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"years"},"name":{"kind":"Name","value":"year"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"current"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"customTexts"},"name":{"kind":"Name","value":"appSetting"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"profile"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"services"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}}]}}]}}]}}]} as unknown as DocumentNode<GetAppDataQuery, GetAppDataQueryVariables>;
+export const GetAdminCoursesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminCourses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"degrees"},"name":{"kind":"Name","value":"degree"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgramsDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesDegree"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"programs"},"name":{"kind":"Name","value":"program"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesProgram"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"tracks"},"name":{"kind":"Name","value":"track"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTrack"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesTrack"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourse"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"types"},"name":{"kind":"Name","value":"courseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourseType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesCourseType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgramsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tracks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"hoursAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"groups"}},{"kind":"Field","name":{"kind":"Name","value":"groupsAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"priorityRule"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminCoursesQuery, GetAdminCoursesQueryVariables>;
 export const InsertCourseTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertCourseTypes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertCourseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertCourseTypesMutation, InsertCourseTypesMutationVariables>;
 export const UpsertCourseTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertCourseTypes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertCourseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertCourseTypesMutation, UpsertCourseTypesMutationVariables>;
 export const UpdateCourseTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCourseTypes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateCourseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateCourseTypesMutation, UpdateCourseTypesMutationVariables>;
@@ -13880,22 +13641,22 @@ export const InsertTracksDocument = {"kind":"Document","definitions":[{"kind":"O
 export const UpsertTracksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertTracks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TrackInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"TrackOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertTrack"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertTracksMutation, UpsertTracksMutationVariables>;
 export const UpdateTracksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateTracks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TrackSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateTrack"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateTracksMutation, UpdateTracksMutationVariables>;
 export const DeleteTracksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTracks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteTrack"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteTracksMutation, DeleteTracksMutationVariables>;
-export const GetAdminRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"roles"},"name":{"kind":"Name","value":"role"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRole"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRolesTeacher"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRole"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRolesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<GetAdminRolesQuery, GetAdminRolesQueryVariables>;
-export const UpdateCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"customText"},"name":{"kind":"Name","value":"insertAppSettingOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"app_setting_pkey"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"value"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<UpdateCustomTextMutation, UpdateCustomTextMutationVariables>;
-export const DeleteCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"customText"},"name":{"kind":"Name","value":"deleteAppSettingByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<DeleteCustomTextMutation, DeleteCustomTextMutationVariables>;
-export const SetCurrentPhaseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentPhase"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phase"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PhaseEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"phase"},"name":{"kind":"Name","value":"updateCurrentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phase"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentPhaseMutation, SetCurrentPhaseMutationVariables>;
+export const GetAdminRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"roles"},"name":{"kind":"Name","value":"role"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRole"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRolesTeacher"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRole"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRolesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<GetAdminRolesQuery, GetAdminRolesQueryVariables>;
+export const UpdateCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertAppSettingOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"app_setting_pkey"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"value"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<UpdateCustomTextMutation, UpdateCustomTextMutationVariables>;
+export const DeleteCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAppSettingByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<DeleteCustomTextMutation, DeleteCustomTextMutationVariables>;
+export const SetCurrentPhaseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentPhase"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phase"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PhaseEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCurrentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phase"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentPhaseMutation, SetCurrentPhaseMutationVariables>;
 export const InsertRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertRolesMutation, InsertRolesMutationVariables>;
 export const UpsertRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertRolesMutation, UpsertRolesMutationVariables>;
 export const UpdateRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateRolesMutation, UpdateRolesMutationVariables>;
 export const DeleteRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteRolesMutation, DeleteRolesMutationVariables>;
-export const SetCurrentYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"current"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentYearMutation, SetCurrentYearMutationVariables>;
-export const InsertYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"visible"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"insertYearOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"visible"},"value":{"kind":"Variable","name":{"kind":"Name","value":"visible"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<InsertYearMutation, InsertYearMutationVariables>;
-export const UpdateYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"YearSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<UpdateYearMutation, UpdateYearMutationVariables>;
-export const DeleteYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"deleteYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<DeleteYearMutation, DeleteYearMutationVariables>;
+export const SetCurrentYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"current"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentYearMutation, SetCurrentYearMutationVariables>;
+export const InsertYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"visible"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertYearOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"visible"},"value":{"kind":"Variable","name":{"kind":"Name","value":"visible"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<InsertYearMutation, InsertYearMutationVariables>;
+export const UpdateYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"YearSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<UpdateYearMutation, UpdateYearMutationVariables>;
+export const DeleteYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<DeleteYearMutation, DeleteYearMutationVariables>;
 export const CreateServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createYearServices"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateServicesMutation, CreateServicesMutationVariables>;
 export const CopyCoursesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CopyCourses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"copyYearCourses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CopyCoursesMutation, CopyCoursesMutationVariables>;
 export const ComputePrioritiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ComputePriorities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"computeYearPriorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ComputePrioritiesMutation, ComputePrioritiesMutationVariables>;
-export const GetAdminRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminRequests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"requests"},"name":{"kind":"Name","value":"request"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequest"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"priorities"},"name":{"kind":"Name","value":"priority"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPriority"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsService"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesService"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesTeacher"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsCourse"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesCourse"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"degrees"},"name":{"kind":"Name","value":"degree"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesDegree"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"programs"},"name":{"kind":"Name","value":"program"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesProgram"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"tracks"},"name":{"kind":"Name","value":"track"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsTrack"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesTrack"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courseTypes"},"name":{"kind":"Name","value":"courseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsCourseType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesCourseType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequest"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPriority"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminRequestsQuery, GetAdminRequestsQueryVariables>;
+export const GetAdminRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminRequests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"requests"},"name":{"kind":"Name","value":"request"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequest"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"priorities"},"name":{"kind":"Name","value":"priority"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPriority"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsService"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesService"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesTeacher"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsCourse"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesCourse"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"degrees"},"name":{"kind":"Name","value":"degree"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesDegree"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"programs"},"name":{"kind":"Name","value":"program"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesProgram"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"tracks"},"name":{"kind":"Name","value":"track"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsTrack"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesTrack"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courseTypes"},"name":{"kind":"Name","value":"courseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRequestsCourseType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPrioritiesCourseType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequest"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPriority"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRequestsCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPrioritiesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminRequestsQuery, GetAdminRequestsQueryVariables>;
 export const InsertPrioritiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertPriorities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PriorityInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertPriority"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertPrioritiesMutation, InsertPrioritiesMutationVariables>;
 export const UpsertPrioritiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertPriorities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PriorityInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"PriorityOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertPriority"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertPrioritiesMutation, UpsertPrioritiesMutationVariables>;
 export const UpdatePrioritiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePriorities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PrioritySetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updatePriority"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdatePrioritiesMutation, UpdatePrioritiesMutationVariables>;
@@ -13904,7 +13665,7 @@ export const InsertRequestsDocument = {"kind":"Document","definitions":[{"kind":
 export const UpsertRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertRequests"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertRequestsMutation, UpsertRequestsMutationVariables>;
 export const UpdateRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateRequests"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateRequestsMutation, UpdateRequestsMutationVariables>;
 export const DeleteRequestsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRequests"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteRequestsMutation, DeleteRequestsMutationVariables>;
-export const GetAdminTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminTeachers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServicesTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"positions"},"name":{"kind":"Name","value":"position"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPosition"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTeachersPosition"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminService"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsService"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"serviceModifications"},"name":{"kind":"Name","value":"serviceModification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModification"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"serviceModificationTypes"},"name":{"kind":"Name","value":"serviceModificationType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsServiceModificationType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"active"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServicesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeachersPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModification"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModification"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminTeachersQuery, GetAdminTeachersQueryVariables>;
+export const GetAdminTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminTeachers"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServicesTeacher"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"positions"},"name":{"kind":"Name","value":"position"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminPosition"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTeachersPosition"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminService"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsService"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"serviceModifications"},"name":{"kind":"Name","value":"serviceModification"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModification"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"serviceModificationTypes"},"name":{"kind":"Name","value":"serviceModificationType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminServiceModificationsServiceModificationType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"active"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServicesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"baseServiceHours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTeachersPosition"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Position"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModification"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModification"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminServiceModificationsServiceModificationType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceModificationType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminTeachersQuery, GetAdminTeachersQueryVariables>;
 export const InsertPositionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertPositions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PositionInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertPosition"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertPositionsMutation, InsertPositionsMutationVariables>;
 export const UpsertPositionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertPositions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PositionInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PositionOnConflict"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertPosition"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertPositionsMutation, UpsertPositionsMutationVariables>;
 export const UpdatePositionsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdatePositions"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PositionSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updatePosition"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdatePositionsMutation, UpdatePositionsMutationVariables>;
@@ -13921,31 +13682,32 @@ export const InsertServicesDocument = {"kind":"Document","definitions":[{"kind":
 export const UpsertServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertServicesMutation, UpsertServicesMutationVariables>;
 export const UpdateServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"ServiceSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateServicesMutation, UpdateServicesMutationVariables>;
 export const DeleteServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteServicesMutation, DeleteServicesMutationVariables>;
-export const InsertTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}}]} as unknown as DocumentNode<InsertTeachersMutation, InsertTeachersMutationVariables>;
-export const UpsertTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertTeachersMutation, UpsertTeachersMutationVariables>;
-export const UpdateTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"uid"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateTeachersMutation, UpdateTeachersMutationVariables>;
-export const DeleteTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"uid"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteTeachersMutation, DeleteTeachersMutationVariables>;
-export const DeletePriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeletePriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"priority"},"name":{"kind":"Name","value":"deletePriorityByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeletePriorityMutation, DeletePriorityMutationVariables>;
-export const DeleteComputedPriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteComputedPriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"priority"},"name":{"kind":"Name","value":"updatePriorityByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"seniority"},"value":{"kind":"NullValue"}},{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"NullValue"}},{"kind":"ObjectField","name":{"kind":"Name","value":"computed"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteComputedPriorityMutation, DeleteComputedPriorityMutationVariables>;
-export const UpsertPriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertPriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"seniority"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isPriority"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"priority"},"name":{"kind":"Name","value":"insertPriorityOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"seniority"},"value":{"kind":"Variable","name":{"kind":"Name","value":"seniority"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isPriority"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"computed"},"value":{"kind":"BooleanValue","value":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"priority_service_id_course_id_key"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"seniority"},{"kind":"EnumValue","value":"isPriority"},{"kind":"EnumValue","value":"computed"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpsertPriorityMutation, UpsertPriorityMutationVariables>;
+export const InsertTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertTeachersMutation, InsertTeachersMutationVariables>;
+export const UpsertTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertTeachersMutation, UpsertTeachersMutationVariables>;
+export const UpdateTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"TeacherSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateTeachersMutation, UpdateTeachersMutationVariables>;
+export const DeleteTeachersDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTeachers"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteTeacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteTeachersMutation, DeleteTeachersMutationVariables>;
+export const DeletePriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeletePriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deletePriorityByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeletePriorityMutation, DeletePriorityMutationVariables>;
+export const DeleteComputedPriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteComputedPriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePriorityByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"seniority"},"value":{"kind":"NullValue"}},{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"NullValue"}},{"kind":"ObjectField","name":{"kind":"Name","value":"computed"},"value":{"kind":"BooleanValue","value":false}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteComputedPriorityMutation, DeleteComputedPriorityMutationVariables>;
+export const UpsertPriorityDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertPriority"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"seniority"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"isPriority"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertPriorityOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"seniority"},"value":{"kind":"Variable","name":{"kind":"Name","value":"seniority"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"Variable","name":{"kind":"Name","value":"isPriority"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"computed"},"value":{"kind":"BooleanValue","value":false}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"priority_service_id_course_id_key"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"seniority"},{"kind":"EnumValue","value":"isPriority"},{"kind":"EnumValue","value":"computed"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpsertPriorityMutation, UpsertPriorityMutationVariables>;
 export const GetAssignmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAssignment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"requests"},"name":{"kind":"Name","value":"request"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"limit"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]}}]} as unknown as DocumentNode<GetAssignmentQuery, GetAssignmentQueryVariables>;
-export const InsertAssignmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertAssignment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignment"},"name":{"kind":"Name","value":"insertRequestOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<InsertAssignmentMutation, InsertAssignmentMutationVariables>;
-export const UpdateAssignmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateAssignment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignment"},"name":{"kind":"Name","value":"updateRequestByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateAssignmentMutation, UpdateAssignmentMutationVariables>;
-export const DeleteRequestCardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRequestCard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"request"},"name":{"kind":"Name","value":"deleteRequestByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteRequestCardMutation, DeleteRequestCardMutationVariables>;
-export const UpsertRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestTypeEnum"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"request"},"name":{"kind":"Name","value":"insertRequestOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"request_service_id_course_id_type_key"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"hours"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpsertRequestMutation, UpsertRequestMutationVariables>;
-export const DeleteRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestTypeEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"requests"},"name":{"kind":"Name","value":"deleteRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}}}]}}]}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteRequestMutation, DeleteRequestMutationVariables>;
-export const GetServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]}}]} as unknown as DocumentNode<GetServicesQuery, GetServicesQueryVariables>;
-export const GetCourseArchivesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseArchives"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"programId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"trackIdComp"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IntComparisonExp"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"semester"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"typeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_lt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"programId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"trackIdComp"}}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"semester"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"typeId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"typeId"}}}]}}]}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"EnumValue","value":"DESC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<GetCourseArchivesQuery, GetCourseArchivesQueryVariables>;
-export const UpdateDescriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateDescription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"course"},"name":{"kind":"Name","value":"updateCourseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateDescriptionMutation, UpdateDescriptionMutationVariables>;
-export const UpdateServiceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateService"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"uid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"updateService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"uid"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"uid"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateServiceMutation, UpdateServiceMutationVariables>;
+export const InsertAssignmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertAssignment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertRequestOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<InsertAssignmentMutation, InsertAssignmentMutationVariables>;
+export const UpdateAssignmentDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateAssignment"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateRequestByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateAssignmentMutation, UpdateAssignmentMutationVariables>;
+export const DeleteRequestCardDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRequestCard"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRequestByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteRequestCardMutation, DeleteRequestCardMutationVariables>;
+export const UpsertRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestTypeEnum"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertRequestOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"request_service_id_course_id_type_key"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"hours"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpsertRequestMutation, UpsertRequestMutationVariables>;
+export const DeleteRequestDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRequest"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestTypeEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"requestType"}}}]}}]}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteRequestMutation, DeleteRequestMutationVariables>;
+export const GetServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]}}]} as unknown as DocumentNode<GetServicesQuery, GetServicesQueryVariables>;
+export const GetCourseArchivesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseArchives"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"programId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"trackIdComp"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"IntComparisonExp"}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"name"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"semester"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"typeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_lt"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"programId"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"trackIdComp"}}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"name"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"semester"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"typeId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"typeId"}}}]}}]}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]} as unknown as DocumentNode<GetCourseArchivesQuery, GetCourseArchivesQueryVariables>;
+export const UpdateDescriptionDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateDescription"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"description"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCourseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"description"},"value":{"kind":"Variable","name":{"kind":"Name","value":"description"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateDescriptionMutation, UpdateDescriptionMutationVariables>;
+export const UpdateServiceDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateService"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"teacherId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}},{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"teacherId"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateServiceMutation, UpdateServiceMutationVariables>;
 export const GetModificationTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetModificationTypes"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"modificationTypes"},"name":{"kind":"Name","value":"serviceModificationType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}}]}}]} as unknown as DocumentNode<GetModificationTypesQuery, GetModificationTypesQueryVariables>;
-export const InsertModificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertModification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"modificationTypeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"serviceModification"},"name":{"kind":"Name","value":"insertServiceModificationOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"typeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"modificationTypeId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<InsertModificationMutation, InsertModificationMutationVariables>;
-export const DeleteModificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteModification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"serviceModification"},"name":{"kind":"Name","value":"deleteServiceModificationByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteModificationMutation, DeleteModificationMutationVariables>;
-export const UpdateMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"message"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"updateServiceByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"message"},"value":{"kind":"Variable","name":{"kind":"Name","value":"message"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpdateMessageMutation, UpdateMessageMutationVariables>;
-export const GetAssignmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAssignments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestBoolExp"}},"defaultValue":{"kind":"ObjectValue","fields":[]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignments"},"name":{"kind":"Name","value":"request"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]},{"kind":"Variable","name":{"kind":"Name","value":"where"}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetAssignmentsQuery, GetAssignmentsQueryVariables>;
+export const InsertModificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertModification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"modificationTypeId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"hours"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Float"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertServiceModificationOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"typeId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"modificationTypeId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"Variable","name":{"kind":"Name","value":"hours"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<InsertModificationMutation, InsertModificationMutationVariables>;
+export const DeleteModificationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteModification"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteServiceModificationByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<DeleteModificationMutation, DeleteModificationMutationVariables>;
+export const UpsertMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"content"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertMessageOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"content"},"value":{"kind":"Variable","name":{"kind":"Name","value":"content"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"message_service_id_key"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"content"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<UpsertMessageMutation, UpsertMessageMutationVariables>;
+export const DeleteMessageDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteMessage"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteRequest"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"serviceId"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"serviceId"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteMessageMutation, DeleteMessageMutationVariables>;
+export const GetAssignmentsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAssignments"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"where"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RequestBoolExp"}},"defaultValue":{"kind":"ObjectValue","fields":[]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignments"},"name":{"kind":"Name","value":"request"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]},{"kind":"Variable","name":{"kind":"Name","value":"where"}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"email"}}]}}]}}]}}]}}]} as unknown as DocumentNode<GetAssignmentsQuery, GetAssignmentsQueryVariables>;
 export const DummyMutationDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DummyMutation"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"dummyFunction"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"__typename"}}]}}]}}]} as unknown as DocumentNode<DummyMutationMutation, DummyMutationMutationVariables>;
-export const GetCourseRowsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseRows"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hoursEffective"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_gt"},"value":{"kind":"IntValue","value":"0"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"groupsEffective"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_gt"},"value":{"kind":"IntValue","value":"0"}}]}}]}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRow"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}},{"kind":"Field","alias":{"kind":"Name","value":"numberOfGroups"},"name":{"kind":"Name","value":"groupsEffective"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"serviceId"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}}]} as unknown as DocumentNode<GetCourseRowsQuery, GetCourseRowsQueryVariables>;
-export const GetServiceRowsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServiceRows"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceRow"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"vServices"},"name":{"kind":"Name","value":"vService"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"yearValue"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TableCoursesVService"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TableCoursesVService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"VService"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<GetServiceRowsQuery, GetServiceRowsQueryVariables>;
-export const GetCourseDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"course"},"name":{"kind":"Name","value":"courseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDetails"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseExpansion"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","alias":{"kind":"Name","value":"courseType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"uid"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"vService"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"vTeacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"year"},"name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseExpansion"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseCoordinators"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDescription"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CoursePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseArchivesData"}}]}}]} as unknown as DocumentNode<GetCourseDetailsQuery, GetCourseDetailsQueryVariables>;
-export const GetTeacherDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTeacherDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"uid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"uid"},"value":{"kind":"Variable","name":{"kind":"Name","value":"uid"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceTeacher"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetTeacherDetailsQuery, GetTeacherDetailsQueryVariables>;
-export const GetServiceDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServiceDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"serviceByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceTeacher"}}]}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceDetails"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServicePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceMessage"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"yearValue"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"modificationType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignment"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"primary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"PRIMARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"secondary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"SECONDARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServicePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceMessage"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"uid"}},{"kind":"Field","name":{"kind":"Name","value":"message"}}]}}]} as unknown as DocumentNode<GetServiceDetailsQuery, GetServiceDetailsQueryVariables>;
+export const GetCourseRowsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseRows"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_and"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hoursEffective"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_gt"},"value":{"kind":"IntValue","value":"0"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"groupsEffective"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_gt"},"value":{"kind":"IntValue","value":"0"}}]}}]}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRow"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}},{"kind":"Field","alias":{"kind":"Name","value":"numberOfGroups"},"name":{"kind":"Name","value":"groupsEffective"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"serviceId"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}}]} as unknown as DocumentNode<GetCourseRowsQuery, GetCourseRowsQueryVariables>;
+export const GetServiceRowsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServiceRows"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"services"},"name":{"kind":"Name","value":"service"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceRow"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TableCoursesService"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceRow"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"firstname"}},{"kind":"Field","name":{"kind":"Name","value":"lastname"}},{"kind":"Field","name":{"kind":"Name","value":"alias"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","name":{"kind":"Name","value":"message"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TableCoursesService"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}}]} as unknown as DocumentNode<GetServiceRowsQuery, GetServiceRowsQueryVariables>;
+export const GetCourseDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetCourseDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"course"},"name":{"kind":"Name","value":"courseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"courseId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDetails"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseExpansion"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","alias":{"kind":"Name","value":"courseType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseCoordinators"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDescription"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacherId"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"RequestCardData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Request"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"hoursPerGroup"},"name":{"kind":"Name","value":"hoursEffective"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestFormData"}},{"kind":"Field","name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"RequestCardData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityFormData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"PriorityChipData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Priority"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"service"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"Field","name":{"kind":"Name","value":"computed"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CoursePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityFormData"}},{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"service"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"displayname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"PriorityChipData"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseArchivesData"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"programId"}},{"kind":"Field","name":{"kind":"Name","value":"trackId"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"typeId"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"CourseDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"courseId"},"name":{"kind":"Name","value":"id"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseExpansion"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseCoordinators"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseDescription"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CoursePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"CourseArchivesData"}}]}}]} as unknown as DocumentNode<GetCourseDetailsQuery, GetCourseDetailsQueryVariables>;
+export const GetTeacherDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetTeacherDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"teacher"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceTeacher"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<GetTeacherDetailsQuery, GetTeacherDetailsQueryVariables>;
+export const GetServiceDetailsDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetServiceDetails"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"service"},"name":{"kind":"Name","value":"serviceByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"ServiceTeacher"}}]}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceDetails"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceRequests"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServicePriorities"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherServiceMessage"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceDetails"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacherId"}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"modifications"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"hours"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"modificationType"},"name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceRequests"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"assignment"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"ASSIGNMENT"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"primary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"PRIMARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"secondary"},"name":{"kind":"Name","value":"requests"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_eq"},"value":{"kind":"EnumValue","value":"SECONDARY"}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"hoursWeighted"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServicePriorities"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"priorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"isPriority"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_isNull"},"value":{"kind":"BooleanValue","value":false}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"course"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"seniority"}},{"kind":"Field","name":{"kind":"Name","value":"isPriority"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherServiceMessage"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Service"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"teacherId"}},{"kind":"Field","name":{"kind":"Name","value":"message"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"content"}}]}}]}}]} as unknown as DocumentNode<GetServiceDetailsQuery, GetServiceDetailsQueryVariables>;

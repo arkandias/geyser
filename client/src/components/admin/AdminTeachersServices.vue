@@ -1,5 +1,5 @@
 <script lang="ts">
-export type ColName = "year" | "uid" | "hours" | "message";
+export type ColName = "year" | "teacherEmail" | "hours" | "message";
 </script>
 
 <script setup lang="ts">
@@ -47,10 +47,10 @@ const rowDescriptor = {
     type: "number",
     formType: "select",
   },
-  uid: {
+  teacherEmail: {
     type: "string",
     format: (val: string) =>
-      teachers.value.find((t) => t.uid === val)?.displayname,
+      teachers.value.find((t) => t.email === val)?.displayname,
     formType: "select",
   },
   hours: {
@@ -69,14 +69,17 @@ const rowDescriptor = {
 graphql(`
   fragment AdminService on Service {
     id
-    year: yearValue
-    uid
+    year
+    teacher {
+      email
+      displayname
+    }
     hours
-    message
   }
 
   fragment AdminServicesTeacher on Teacher {
-    uid
+    id
+    email
     displayname
   }
 
@@ -127,25 +130,36 @@ const upsertServices = useMutation(UpsertServicesDocument);
 const updateServices = useMutation(UpdateServicesDocument);
 const deleteServices = useMutation(DeleteServicesDocument);
 
-const importConstraint = ServiceConstraint.ServiceYearValueUidKey;
+const importConstraint = ServiceConstraint.ServiceYearTeacherIdKey;
 const importUpdateColumns = [
-  ServiceUpdateColumn.YearValue,
-  ServiceUpdateColumn.Uid,
+  ServiceUpdateColumn.Year,
+  ServiceUpdateColumn.TeacherId,
   ServiceUpdateColumn.Hours,
-  ServiceUpdateColumn.Message,
 ];
 
-const formatRow = (row: Row): string => `${row.year} — ${row.uid}`;
+const formatRow = (row: Row): string =>
+  `${row.year} — ${row.teacher.displayname}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   if (flatRow.year !== undefined) {
-    object.yearValue = flatRow.year;
+    object.year = flatRow.year;
   }
 
-  if (flatRow.uid !== undefined) {
-    object.uid = flatRow.uid;
+  // teacherId
+  if (flatRow.teacherEmail !== undefined) {
+    const teacher = teachers.value.find(
+      (t) => t.email === flatRow.teacherEmail,
+    );
+    if (teacher === undefined) {
+      throw new Error(
+        t("admin.teachers.services.form.error.teacherNotFound", {
+          email: flatRow.teacherEmail,
+        }),
+      );
+    }
+    object.teacherId = teacher.id;
   }
 
   if (flatRow.hours !== undefined) {
@@ -155,17 +169,16 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.hours = flatRow.hours;
   }
 
-  if (flatRow.message !== undefined) {
-    object.message = flatRow.message;
-  }
-
   return object;
 };
 
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   year: years.value.map((y) => y.value),
-  uid: teachers.value.map((t) => ({ value: t.uid, label: t.displayname })),
+  teacherEmail: teachers.value.map((t) => ({
+    value: t.email,
+    label: t.displayname,
+  })),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});

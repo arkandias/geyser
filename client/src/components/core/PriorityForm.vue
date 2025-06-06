@@ -19,7 +19,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment PriorityFormData on Course {
-    year: yearValue
+    year
     courseId: id
   }
 
@@ -30,9 +30,9 @@ graphql(`
     $seniority: Int
     $isPriority: Boolean
   ) {
-    priority: insertPriorityOne(
+    insertPriorityOne(
       object: {
-        yearValue: $year
+        year: $year
         serviceId: $serviceId
         courseId: $courseId
         seniority: $seniority
@@ -95,7 +95,7 @@ const submitForm = async (): Promise<void> => {
     isPriority: isPriority.value,
   });
 
-  if (result.data?.priority && !result.error) {
+  if (result.data?.insertPriorityOne && !result.error) {
     notify(NotifyType.Success, {
       message: t("priorityForm.success"),
     });

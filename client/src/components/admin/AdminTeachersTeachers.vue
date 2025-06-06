@@ -1,10 +1,10 @@
 <script lang="ts">
 export type ColName =
-  | "uid"
+  | "email"
   | "firstname"
   | "lastname"
   | "alias"
-  | "position"
+  | "positionLabel"
   | "baseServiceHours"
   | "visible"
   | "active";
@@ -47,9 +47,9 @@ const { teacherFragments, positionFragments } = defineProps<{
 
 const { t } = useTypedI18n();
 
-const idKey: keyof Row = "uid";
+const idKey: keyof Row = "id";
 const rowDescriptor = {
-  uid: {
+  email: {
     type: "string",
     formType: "input",
   },
@@ -66,7 +66,7 @@ const rowDescriptor = {
     nullable: true,
     formType: "input",
   },
-  position: {
+  positionLabel: {
     type: "string",
     nullable: true,
     field: (row) => row.position?.label,
@@ -90,12 +90,12 @@ const rowDescriptor = {
 
 graphql(`
   fragment AdminTeacher on Teacher {
-    uid
+    id
+    email
     firstname
     lastname
     alias
     position {
-      id
       label
     }
     baseServiceHours
@@ -111,7 +111,7 @@ graphql(`
   mutation InsertTeachers($objects: [TeacherInsertInput!]!) {
     insertData: insertTeacher(objects: $objects) {
       returning {
-        uid
+        id
       }
     }
   }
@@ -122,23 +122,23 @@ graphql(`
   ) {
     upsertData: insertTeacher(objects: $objects, onConflict: $onConflict) {
       returning {
-        uid
+        id
       }
     }
   }
 
-  mutation UpdateTeachers($ids: [String!]!, $changes: TeacherSetInput!) {
-    updateData: updateTeacher(where: { uid: { _in: $ids } }, _set: $changes) {
+  mutation UpdateTeachers($ids: [Int!]!, $changes: TeacherSetInput!) {
+    updateData: updateTeacher(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
-        uid
+        id
       }
     }
   }
 
-  mutation DeleteTeachers($ids: [String!]!) {
-    deleteData: deleteTeacher(where: { uid: { _in: $ids } }) {
+  mutation DeleteTeachers($ids: [Int!]!) {
+    deleteData: deleteTeacher(where: { id: { _in: $ids } }) {
       returning {
-        uid
+        id
       }
     }
   }
@@ -159,7 +159,7 @@ const deleteTeachers = useMutation(DeleteTeachersDocument);
 
 const importConstraint = TeacherConstraint.TeacherPkey;
 const importUpdateColumns = [
-  TeacherUpdateColumn.Uid,
+  TeacherUpdateColumn.Email,
   TeacherUpdateColumn.Firstname,
   TeacherUpdateColumn.Lastname,
   TeacherUpdateColumn.Alias,
@@ -169,13 +169,13 @@ const importUpdateColumns = [
   TeacherUpdateColumn.Active,
 ];
 
-const formatRow = (row: Row) => row.uid;
+const formatRow = (row: Row) => row.email;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
-  if (flatRow.uid !== undefined) {
-    object.uid = flatRow.uid;
+  if (flatRow.email !== undefined) {
+    object.email = flatRow.email;
   }
 
   if (flatRow.firstname !== undefined) {
@@ -190,15 +190,16 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.alias = flatRow.alias;
   }
 
-  if (flatRow.position !== undefined) {
-    object.positionId = flatRow.position
-      ? positions.value.find((p) => p.label === flatRow.position)?.id
+  if (flatRow.positionLabel !== undefined) {
+    const position = flatRow.positionLabel
+      ? positions.value.find((p) => p.label === flatRow.positionLabel)
       : null;
-    if (object.positionId === undefined) {
+    if (position === undefined) {
       throw new Error(
         t("admin.teachers.teachers.form.error.positionNotFound", flatRow),
       );
     }
+    object.positionId = position !== null ? position.id : null;
   }
 
   if (flatRow.baseServiceHours !== undefined) {
@@ -223,7 +224,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
-  position: positions.value.map((p) => p.label),
+  positionLabel: positions.value.map((p) => p.label),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});

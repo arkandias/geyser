@@ -11,7 +11,7 @@ export class RolesService {
     private roleRepository: Repository<Role>,
   ) {}
 
-  async findByUid(uid: string): Promise<Role[]> {
-    return this.roleRepository.findBy({ uid });
+  async findByUserId(userId: number): Promise<Role[]> {
+    return this.roleRepository.findBy({ teacher_id: userId });
   }
 }

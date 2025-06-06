@@ -58,7 +58,7 @@ If these degrees contain programs, you will not be able to delete them.`,
     programs: {
       label: "Programs",
       column: {
-        degree: {
+        degreeName: {
           label: "Degree",
           tooltip: "",
         },
@@ -111,11 +111,11 @@ If there are tracks, courses, or coordinators for these programs, you will not b
     tracks: {
       label: "Tracks",
       column: {
-        degree: {
+        degreeName: {
           label: "Degree",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Program",
           tooltip: "",
         },
@@ -175,15 +175,15 @@ If there are courses or coordinators for these tracks, you will not be able to d
           label: "Year",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Degree",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Program",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Track",
           tooltip: "",
         },
@@ -199,7 +199,7 @@ If there are courses or coordinators for these tracks, you will not be able to d
           label: "Semester",
           tooltip: "",
         },
-        type: {
+        typeLabel: {
           label: "Course type",
           tooltip: "",
         },

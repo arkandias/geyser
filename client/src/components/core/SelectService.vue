@@ -13,7 +13,7 @@ const id = defineModel<number | null>();
 graphql(`
   query GetServices($year: Int!) {
     services: service(
-      where: { yearValue: { _eq: $year } }
+      where: { year: { _eq: $year } }
       orderBy: [{ teacher: { displayname: ASC } }]
     ) {
       id

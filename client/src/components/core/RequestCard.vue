@@ -25,10 +25,10 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment RequestCardData on Request {
     id
-    year: yearValue
-    service: vService {
+    year
+    service {
       id
-      teacher: vTeacher {
+      teacher {
         displayname
       }
     }
@@ -63,9 +63,9 @@ graphql(`
     $courseId: Int!
     $hours: Float!
   ) {
-    assignment: insertRequestOne(
+    insertRequestOne(
       object: {
-        yearValue: $year
+        year: $year
         serviceId: $serviceId
         courseId: $courseId
         type: ASSIGNMENT
@@ -77,16 +77,13 @@ graphql(`
   }
 
   mutation UpdateAssignment($id: Int!, $hours: Float!) {
-    assignment: updateRequestByPk(
-      pkColumns: { id: $id }
-      _set: { hours: $hours }
-    ) {
+    updateRequestByPk(pkColumns: { id: $id }, _set: { hours: $hours }) {
       id
     }
   }
 
   mutation DeleteRequestCard($id: Int!) {
-    request: deleteRequestByPk(id: $id) {
+    deleteRequestByPk(id: $id) {
       id
     }
   }
@@ -103,7 +100,7 @@ const request = computed(() =>
 const getAssignment = useQuery({
   query: GetAssignmentDocument,
   variables: () => ({
-    serviceId: request.value.service?.id ?? -1,
+    serviceId: request.value.service.id,
     courseId: request.value.course.id,
   }),
   pause: true,
@@ -161,7 +158,7 @@ const validateRequest = async (): Promise<void> => {
       hours: request.value.hours,
     });
 
-    if (data?.assignment && !error) {
+    if (data?.updateRequestByPk && !error) {
       notify(NotifyType.Success, {
         message: t("requestCard.validate.updated"),
       });
@@ -174,12 +171,12 @@ const validateRequest = async (): Promise<void> => {
   } else {
     const { data, error } = await insertAssignment.executeMutation({
       year: request.value.year,
-      serviceId: request.value.service?.id ?? -1,
+      serviceId: request.value.service.id,
       courseId: request.value.course.id,
       hours: request.value.hours,
     });
 
-    if (data?.assignment && !error) {
+    if (data?.insertRequestOne && !error) {
       notify(NotifyType.Success, {
         message: t("requestCard.validate.created"),
       });
@@ -197,7 +194,7 @@ const deleteRequest = async (): Promise<void> => {
     id: request.value.id,
   });
 
-  if (data?.request && !error) {
+  if (data?.deleteRequestByPk && !error) {
     notify(NotifyType.Success, {
       message: t("requestCard.delete.success"),
     });

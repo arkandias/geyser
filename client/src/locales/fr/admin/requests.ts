@@ -22,27 +22,27 @@ export default {
           label: "Heures",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Intervenant",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Diplôme",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Mention",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Parcours",
           tooltip: "",
         },
-        course: {
+        courseName: {
           label: "Enseignement",
           tooltip: "",
         },
-        semester: {
+        courseSemester: {
           label: "Semestre",
           tooltip: "",
         },
@@ -58,10 +58,10 @@ export default {
           multiple: "{count} demandes sélectionnées",
         },
         error: {
-          updateUidWithoutYear:
+          updateTeacherWithoutYear:
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
           serviceNotFound:
-            "Il n'existe pas de service pour l'intervenant {uid} pour l'année {year}",
+            "Il n'existe pas de service pour l'intervenant {teacherEmail} pour l'année {year}",
           updateCourseMissingFields:
             "Pour mettre à jour le cours, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
@@ -112,27 +112,27 @@ export default {
           label: "Calculée",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Intervenant",
           tooltip: "",
         },
-        degree: {
+        degreeName: {
           label: "Diplôme",
           tooltip: "",
         },
-        program: {
+        programName: {
           label: "Mention",
           tooltip: "",
         },
-        track: {
+        trackName: {
           label: "Parcours",
           tooltip: "",
         },
-        course: {
+        courseName: {
           label: "Enseignement",
           tooltip: "",
         },
-        semester: {
+        courseSemester: {
           label: "Semestre",
           tooltip: "",
         },
@@ -148,10 +148,10 @@ export default {
           multiple: "{count} priorités sélectionnées",
         },
         error: {
-          updateUidWithoutYear:
+          updateTeacherWithoutYear:
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
           serviceNotFound:
-            "Il n'existe pas de service pour l'intervenant {uid} pour l'année {year}",
+            "Il n'existe pas de service pour l'intervenant {teacherEmail} pour l'année {year}",
           updateCourseMissingFields:
             "Pour mettre à jour le cours, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:

@@ -12,7 +12,7 @@ export default {
     teachers: {
       label: "Teachers",
       column: {
-        uid: {
+        email: {
           label: "Email",
           tooltip: "",
         },
@@ -28,7 +28,7 @@ export default {
           label: "Alias",
           tooltip: "",
         },
-        position: {
+        positionLabel: {
           label: "Position",
           tooltip: "",
         },
@@ -137,7 +137,7 @@ If these positions are assigned to teachers, you will not be able to delete them
           label: "Year",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Teacher",
           tooltip: "",
         },
@@ -157,6 +157,7 @@ If these positions are assigned to teachers, you will not be able to delete them
           multiple: "{count} services selected",
         },
         error: {
+          teacherNotFound: `No teacher with email '{email}'`,
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },
@@ -190,11 +191,11 @@ If there are modifications, requests, or priorities for these services, you will
           label: "Year",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Teacher",
           tooltip: "",
         },
-        type: {
+        typeLabel: {
           label: "Type",
           tooltip: "",
         },
@@ -218,7 +219,7 @@ If there are modifications, requests, or priorities for these services, you will
           updateTeacherWithoutYear:
             "You cannot modify the teacher without selecting a year",
           serviceNotFound:
-            "No service exists for teacher {uid} and year {year}",
+            "No service exists for teacher {teacherEmail} and year {year}",
           typeNotFound:
             'No service modification with the label "{type}" exists',
           hoursNegative: "Enter a positive or zero number of hours",

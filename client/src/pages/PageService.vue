@@ -18,8 +18,8 @@ import ServiceRequests from "@/components/service/ServiceRequests.vue";
 import ServiceTeacher from "@/components/service/ServiceTeacher.vue";
 
 graphql(`
-  query GetTeacherDetails($uid: String!) {
-    teacher: teacherByPk(uid: $uid) {
+  query GetTeacherDetails($id: Int!) {
+    teacher: teacherByPk(id: $id) {
       ...ServiceTeacher
     }
   }
@@ -38,7 +38,7 @@ graphql(`
 `);
 
 const { t } = useTypedI18n();
-const { uid: myUid, serviceId: myServiceId } = useProfileStore();
+const { profile, currentServiceId: myServiceId } = useProfileStore();
 const { getValue: selectedService } = useQueryParam("serviceId", true);
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);
@@ -62,7 +62,7 @@ const service = computed(() => getServiceDetails.data.value?.service ?? null);
 
 const getTeacherDetails = useQuery({
   query: GetTeacherDetailsDocument,
-  variables: () => ({ uid: myUid }),
+  variables: () => ({ id: profile.value.id }),
   pause: () => serviceId.value !== null,
   context: {
     additionalTypenames: ["All", "Coordination"],

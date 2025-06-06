@@ -54,7 +54,7 @@ la supprimer.`,
     roles: {
       label: "Rôles",
       column: {
-        uid: {
+        teacherEmail: {
           label: "Intervenant",
           tooltip: "",
         },
@@ -74,6 +74,7 @@ la supprimer.`,
           multiple: "{count} rôles sélectionnés",
         },
         error: {
+          teacherNotFound: `Il n'existe pas d'intervenant avec l'email « {email} »`,
           invalidRole: `Le type de rôle doit être ${RoleTypeEnum.Admin} ou ${RoleTypeEnum.Commissioner}`,
         },
       },

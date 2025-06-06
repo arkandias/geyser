@@ -7,8 +7,9 @@ import { usePermissions } from "@/composables/usePermissions.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
+  DeleteMessageDocument,
   TeacherServiceMessageFragmentDoc,
-  UpdateMessageDocument,
+  UpsertMessageDocument,
 } from "@/gql/graphql.ts";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
@@ -21,16 +22,31 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment TeacherServiceMessage on Service {
     id
-    uid
-    message
+    year
+    teacherId
+    message {
+      id
+      content
+    }
   }
 
-  mutation UpdateMessage($serviceId: Int!, $message: String) {
-    service: updateServiceByPk(
-      pkColumns: { id: $serviceId }
-      _set: { message: $message }
+  mutation UpsertMessage($serviceId: Int!, $content: String!) {
+    insertMessageOne(
+      object: { serviceId: $serviceId, content: $content }
+      onConflict: {
+        constraint: message_service_id_key
+        updateColumns: [content]
+      }
     ) {
       id
+    }
+  }
+
+  mutation DeleteMessage($serviceId: Int!) {
+    deleteRequest(where: { serviceId: { _eq: $serviceId } }) {
+      returning {
+        id
+      }
     }
   }
 `);
@@ -38,25 +54,37 @@ graphql(`
 const { t } = useTypedI18n();
 const perm = usePermissions();
 
-const updateMessage = useMutation(UpdateMessageDocument);
+const upsertMessage = useMutation(UpsertMessageDocument);
+const deleteMessage = useMutation(DeleteMessageDocument);
 
 const data = computed(() =>
   useFragment(TeacherServiceMessageFragmentDoc, dataFragment),
 );
 
 const editMessage = ref(false);
-const message = computed(() => DOMPurify.sanitize(data.value.message ?? ""));
+const message = computed(() =>
+  DOMPurify.sanitize(data.value.message?.content ?? ""),
+);
 const setMessage = computed(
   () => (message: string) =>
-    updateMessage
-      .executeMutation({
-        serviceId: data.value.id,
-        message: message || null,
-      })
-      .then((result) => ({
-        returnId: result.data?.service?.id ?? null,
-        error: result.error,
-      })),
+    message
+      ? upsertMessage
+          .executeMutation({
+            serviceId: data.value.id,
+            content: message,
+          })
+          .then((result) => ({
+            returnId: result.data?.insertMessageOne?.id ?? null,
+            error: result.error,
+          }))
+      : deleteMessage
+          .executeMutation({
+            serviceId: data.value.id,
+          })
+          .then((result) => ({
+            returnId: result.data?.deleteRequest?.returning[0]?.id ?? null,
+            error: result.error,
+          })),
 );
 </script>
 

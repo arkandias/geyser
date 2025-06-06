@@ -190,8 +190,8 @@ export class AuthManager {
     return this._postLogout;
   }
 
-  get userId(): string {
-    return this._payload?.userId ?? "";
+  get userId(): number {
+    return this._payload?.userId ?? NaN;
   }
 
   get allowedRoles(): RoleTypeEnum[] {

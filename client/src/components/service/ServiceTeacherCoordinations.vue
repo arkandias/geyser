@@ -50,7 +50,7 @@ graphql(`
       }
       course {
         id
-        yearValue
+        year
         name: nameDisplay
         program {
           name: nameDisplay
@@ -83,7 +83,7 @@ const coordinations = computed(() =>
     TeacherCoordinationsFragmentDoc,
     dataFragment,
   ).coordinations.filter(
-    (c) => !c.course || c.course.yearValue === activeYear.value,
+    (c) => !c.course || c.course.year === activeYear.value,
   ),
 );
 

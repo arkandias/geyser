@@ -5,7 +5,7 @@ import { roleTypeSchema } from "./role-type.schema.ts";
 
 export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
   z.looseObject({
-    userId: z.string(),
+    userId: z.number(),
     allowedRoles: z.array(roleTypeSchema),
     defaultRole: roleTypeSchema,
   }),

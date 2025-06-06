@@ -36,7 +36,9 @@ graphql(`
       type
       hoursWeighted
     }
-    message
+    message {
+      content
+    }
   }
 `);
 
@@ -151,7 +153,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     label: t("courses.table.services.columns.message.label"),
     tooltip: t("courses.table.services.columns.message.tooltip"),
     align: "center",
-    field: (row) => !!row.message,
+    field: (row) => !!row.message?.content,
     format: (val: boolean) => (val ? "✓" : "✗"),
     sortable: true,
     visible: false,

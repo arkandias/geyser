@@ -21,8 +21,8 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment PriorityChipData on Priority {
     id
-    service: vService {
-      teacher: vTeacher {
+    service {
+      teacher {
         displayname
       }
     }
@@ -32,13 +32,13 @@ graphql(`
   }
 
   mutation DeletePriority($id: Int!) {
-    priority: deletePriorityByPk(id: $id) {
+    deletePriorityByPk(id: $id) {
       id
     }
   }
 
   mutation DeleteComputedPriority($id: Int!) {
-    priority: updatePriorityByPk(
+    updatePriorityByPk(
       pkColumns: { id: $id }
       _set: { seniority: null, isPriority: null, computed: false }
     ) {
@@ -59,27 +59,33 @@ const priority = computed(() =>
 );
 
 const remove = async () => {
-  const { data, error } = await (priority.value.computed
-    ? deleteComputedPriority.executeMutation({ id: priority.value.id })
-    : deletePriority.executeMutation({ id: priority.value.id }));
-
-  if (data?.priority && !error) {
-    notify(
-      NotifyType.Success,
-      priority.value.computed
-        ? {
-            message: t("priorityChip.deleteComputed.success.message"),
-            caption: t("priorityChip.deleteComputed.success.caption"),
-          }
-        : { message: t("priorityChip.delete.success") },
-    );
-  } else {
-    notify(NotifyType.Error, {
-      message: priority.value.computed
-        ? t("priorityChip.deleteComputed.error")
-        : t("priorityChip.delete.error"),
-      caption: error?.message,
+  if (priority.value.computed) {
+    const { data, error } = await deleteComputedPriority.executeMutation({
+      id: priority.value.id,
     });
+    if (data?.updatePriorityByPk && !error) {
+      notify(NotifyType.Success, {
+        message: t("priorityChip.deleteComputed.success.message"),
+        caption: t("priorityChip.deleteComputed.success.caption"),
+      });
+    } else {
+      notify(NotifyType.Error, {
+        message: t("priorityChip.deleteComputed.error"),
+        caption: error?.message,
+      });
+    }
+  } else {
+    const { data, error } = await deletePriority.executeMutation({
+      id: priority.value.id,
+    });
+    if (data?.deletePriorityByPk && !error) {
+      notify(NotifyType.Success, { message: t("priorityChip.delete.success") });
+    } else {
+      notify(NotifyType.Error, {
+        message: t("priorityChip.delete.error"),
+        caption: error?.message,
+      });
+    }
   }
 };
 </script>

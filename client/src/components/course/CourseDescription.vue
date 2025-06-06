@@ -23,22 +23,22 @@ graphql(`
     courseId: id
     description
     coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-      uid
+      teacherId
     }
     program {
       coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-        uid
+        teacherId
       }
     }
     track {
       coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-        uid
+        teacherId
       }
     }
   }
 
   mutation UpdateDescription($courseId: Int!, $description: String) {
-    course: updateCourseByPk(
+    updateCourseByPk(
       pkColumns: { id: $courseId }
       _set: { description: $description }
     ) {
@@ -60,9 +60,9 @@ const description = computed(() =>
   DOMPurify.sanitize(data.value.description ?? ""),
 );
 const coordinators = computed(() => [
-  ...data.value.coordinations.map((c) => c.uid),
-  ...data.value.program.coordinations.map((c) => c.uid),
-  ...(data.value.track?.coordinations.map((c) => c.uid) ?? []),
+  ...data.value.coordinations.map((c) => c.teacherId),
+  ...data.value.program.coordinations.map((c) => c.teacherId),
+  ...(data.value.track?.coordinations.map((c) => c.teacherId) ?? []),
 ]);
 
 const editDescription = ref(false);
@@ -74,7 +74,7 @@ const setDescription = (text: string) =>
       description: text || null,
     })
     .then((result) => ({
-      returnId: result.data?.course?.id ?? null,
+      returnId: result.data?.updateCourseByPk?.id ?? null,
       error: result.error,
     }));
 </script>

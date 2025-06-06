@@ -12,6 +12,7 @@ import type { Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
+import { UsersService } from "../users/users.service";
 import { AuthService } from "./auth.service";
 import { CookiesService } from "./cookies.service";
 import { JwtService } from "./jwt.service";
@@ -28,6 +29,7 @@ export class AuthController {
     private cookiesService: CookiesService,
     private jwtService: JwtService,
     private oidcService: OidcService,
+    private usersService: UsersService,
   ) {
     this.loginCallbackUrl = new URL(
       "/auth/login/callback",
@@ -84,8 +86,16 @@ export class AuthController {
           redirect_uri: this.loginCallbackUrl.href,
         });
 
-      const { email: uid } = await this.oidcService.verifyToken(identityToken);
-      await this.cookiesService.setAuthCookies(res, uid);
+      const { email } = await this.oidcService.verifyToken(identityToken);
+
+      const user = await this.usersService.findByEmail(email);
+      if (!user) {
+        throw new UnauthorizedException("User not found");
+      }
+      if (!user.active) {
+        throw new UnauthorizedException("User not active");
+      }
+      await this.cookiesService.setAuthCookies(res, user.id);
 
       if (redirectUrl) {
         res.redirect(redirectUrl.toString());

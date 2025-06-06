@@ -1,5 +1,10 @@
 <script lang="ts">
-export type ColName = "degree" | "program" | "name" | "nameShort" | "visible";
+export type ColName =
+  | "degreeName"
+  | "programName"
+  | "name"
+  | "nameShort"
+  | "visible";
 </script>
 
 <script setup lang="ts">
@@ -43,14 +48,14 @@ const { t } = useTypedI18n();
 
 const idKey: keyof Row = "id";
 const rowDescriptor = {
-  degree: {
+  degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
     formType: "select",
   },
-  program: {
+  programName: {
     type: "string",
     field: (row) => row.program.name,
     format: (val: string) =>
@@ -76,7 +81,6 @@ graphql(`
   fragment AdminTrack on Track {
     id
     program {
-      id
       name
       nameDisplay
       degree {
@@ -171,24 +175,24 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
   // programId
-  if (flatRow.degree !== undefined || flatRow.program !== undefined) {
-    if (flatRow.program === undefined) {
+  if (flatRow.degreeName !== undefined || flatRow.programName !== undefined) {
+    if (flatRow.programName === undefined) {
       throw new Error(
         t("admin.courses.tracks.form.error.updateDegreeWithoutProgram"),
       );
     }
-    if (flatRow.degree === undefined) {
+    if (flatRow.degreeName === undefined) {
       throw new Error(
         t("admin.courses.tracks.form.error.updateProgramWithoutDegree"),
       );
     }
-    const degree = degrees.value.find((d) => d.name === flatRow.degree);
+    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
     if (degree === undefined) {
       throw new Error(
         t("admin.courses.tracks.form.error.degreeNotFound", flatRow),
       );
     }
-    const program = degree.programs.find((p) => p.name === flatRow.program);
+    const program = degree.programs.find((p) => p.name === flatRow.programName);
     if (program === undefined) {
       throw new Error(
         t("admin.courses.tracks.form.error.programNotFound", flatRow),
@@ -214,16 +218,16 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
-  degree: degrees.value.map((d) => d.name),
-  program:
+  degreeName: degrees.value.map((d) => d.name),
+  programName:
     degrees.value
-      .find((d) => d.name === formValues.value["degree"])
+      .find((d) => d.name === formValues.value["degreeName"])
       ?.programs.map((p) => p.name) ?? [],
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed(() => ({
-  program: programs.value.map((p) => p.name),
+  programName: programs.value.map((p) => p.name),
 }));
 </script>
 

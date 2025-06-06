@@ -12,7 +12,7 @@ export default {
     teachers: {
       label: "Intervenants",
       column: {
-        uid: {
+        email: {
           label: "Email",
           tooltip: "",
         },
@@ -28,7 +28,7 @@ export default {
           label: "Alias",
           tooltip: "",
         },
-        position: {
+        positionLabel: {
           label: "Fonction",
           tooltip: "",
         },
@@ -138,7 +138,7 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
           label: "Année",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Intervenant",
           tooltip: "",
         },
@@ -158,6 +158,7 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
           multiple: "{count} services sélectionnés",
         },
         error: {
+          teacherNotFound: `Il n'existe pas d'intervenant avec l'email « {email} »`,
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },
@@ -190,11 +191,11 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
           label: "Année",
           tooltip: "",
         },
-        uid: {
+        teacherEmail: {
           label: "Intervenant",
           tooltip: "",
         },
-        type: {
+        typeLabel: {
           label: "Type",
           tooltip: "",
         },
@@ -218,7 +219,7 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
           updateTeacherWithoutYear:
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
           serviceNotFound:
-            "Il n'existe pas de service pour l'intervenant {uid} et l'année {year}",
+            "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
           typeNotFound:
             "Il n'existe pas de modification de service avec le label « {type} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",

@@ -1,5 +1,5 @@
 <script lang="ts">
-export type ColName = "uid" | "type" | "comment";
+export type ColName = "teacherEmail" | "type" | "comment";
 </script>
 
 <script setup lang="ts">
@@ -27,7 +27,6 @@ import type {
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
-import { isRoleType } from "@/utils";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
@@ -44,10 +43,11 @@ const { t } = useTypedI18n();
 
 const idKey: keyof Row = "id";
 const rowDescriptor = {
-  uid: {
+  teacherEmail: {
     type: "string",
+    field: (row) => row.teacher.email,
     format: (val: string) =>
-      teachers.value.find((t) => t.uid === val)?.displayname,
+      teachers.value.find((t) => t.email === val)?.displayname,
     formType: "select",
   },
   type: {
@@ -65,13 +65,16 @@ const rowDescriptor = {
 graphql(`
   fragment AdminRole on Role {
     id
-    uid
+    teacher {
+      email
+    }
     type
     comment
   }
 
   fragment AdminRolesTeacher on Teacher {
-    uid
+    id
+    email
     displayname
   }
 
@@ -122,24 +125,39 @@ const upsertServices = useMutation(UpsertRolesDocument);
 const updateServices = useMutation(UpdateRolesDocument);
 const deleteServices = useMutation(DeleteRolesDocument);
 
-const importConstraint = RoleConstraint.RoleUidTypeKey;
+const importConstraint = RoleConstraint.RoleTeacherIdTypeKey;
 const importUpdateColumns = [
-  RoleUpdateColumn.Uid,
+  RoleUpdateColumn.TeacherId,
   RoleUpdateColumn.Type,
   RoleUpdateColumn.Comment,
 ];
 
-const formatRow = (row: Row) => `${roleTypeLabel(t, row.type)} — ${row.uid}`;
+const formatRow = (row: Row) =>
+  `${roleTypeLabel(t, row.type)} — ${row.teacher.email}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};
 
-  if (flatRow.uid !== undefined) {
-    object.uid = flatRow.uid;
+  // teacherId
+  if (flatRow.teacherEmail !== undefined) {
+    const teacher = teachers.value.find(
+      (t) => t.email === flatRow.teacherEmail,
+    );
+    if (teacher === undefined) {
+      throw new Error(
+        t("admin.general.roles.form.error.teacherNotFound", {
+          email: flatRow.teacherEmail,
+        }),
+      );
+    }
+    object.teacherId = teacher.id;
   }
 
   if (flatRow.type !== undefined) {
-    if (!isRoleType(flatRow.type)) {
+    if (
+      flatRow.type !== RoleTypeEnum.Admin &&
+      flatRow.type !== RoleTypeEnum.Commissioner
+    ) {
       throw new Error(t("admin.general.roles.form.error.invalidRole"));
     }
     object.type = flatRow.type;
@@ -154,7 +172,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
 const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
-  uid: teachers.value.map((t) => ({ value: t.uid, label: t.displayname })),
+  teacherEmail: teachers.value.map((t) => ({
+    value: t.id,
+    label: t.displayname,
+  })),
   type: Object.values(RoleTypeEnum).map((type) => ({
     value: type,
     label: roleTypeLabel(t, type),

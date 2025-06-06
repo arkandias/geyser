@@ -19,7 +19,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment CourseArchivesData on Course {
-    year: yearValue
+    year
     programId
     trackId
     name
@@ -38,7 +38,7 @@ graphql(`
     courses: course(
       where: {
         _and: [
-          { yearValue: { _lt: $year } }
+          { year: { _lt: $year } }
           { programId: { _eq: $programId } }
           { trackId: $trackIdComp }
           { name: { _eq: $name } }
@@ -46,9 +46,9 @@ graphql(`
           { typeId: { _eq: $typeId } }
         ]
       }
-      orderBy: [{ yearValue: DESC }]
+      orderBy: [{ year: DESC }]
     ) {
-      year: yearValue
+      year
       requests(
         where: { type: { _eq: ASSIGNMENT } }
         orderBy: [{ service: { teacher: { displayname: ASC } } }]

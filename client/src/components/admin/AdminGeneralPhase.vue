@@ -24,10 +24,7 @@ const phaseOptions = [
 
 graphql(`
   mutation SetCurrentPhase($phase: PhaseEnum!) {
-    phase: updateCurrentPhaseByPk(
-      pkColumns: { id: 1 }
-      _set: { value: $phase }
-    ) {
+    updateCurrentPhaseByPk(pkColumns: { id: 1 }, _set: { value: $phase }) {
       value
     }
   }
