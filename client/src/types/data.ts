@@ -50,15 +50,16 @@ export type RowDescriptorExtra<
   R extends SimpleObject = SimpleObject,
 > = Record<K, FieldDescriptorExtra<R>>;
 
+export type SelectKeys<
+  K extends string,
+  R extends SimpleObject,
+  T extends RowDescriptorExtra<K, R>,
+> = {
+  [K in keyof T]: T[K]["formType"] extends "select" ? K : never;
+}[keyof T];
+
 export type SelectOptions<
   K extends string,
   R extends SimpleObject,
   T extends RowDescriptorExtra<K, R>,
-> = Partial<
-  Record<
-    {
-      [K in keyof T]: T[K]["formType"] extends "select" ? K : never;
-    }[keyof T],
-    Scalar[] | Option[]
-  >
->;
+> = Partial<Record<SelectKeys<K, R, T>, Scalar[] | Option[]>>;

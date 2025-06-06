@@ -352,7 +352,10 @@ const filters: Ref<Filter[]> = ref(
       name: key,
       options: computed(() =>
         descriptor.formType === "select"
-          ? (filterOptions[key] ?? formOptions[key] ?? [])
+          ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+            (filterOptions[key as keyof typeof filterOptions] ??
+            formOptions[key as keyof typeof formOptions] ??
+            [])
           : [
               // formType === 'toggle'
               { value: "✓", label: t("yes") },
@@ -690,7 +693,7 @@ const exportDataHandle = () => {
               v-if="rowDescriptor[key]?.formType === 'select'"
               v-model="formValues[key]"
               v-model:selected-fields="selectedFields"
-              :options="formOptions[key]"
+              :options="formOptions[key as keyof typeof formOptions]"
               :key-prefix
               :name="key"
               :multiple-selection
@@ -783,9 +786,11 @@ const exportDataHandle = () => {
   max-width: unset;
   width: $dialog-admin-data-width;
 }
+
 .search-input-with-filters {
   width: calc(100% - 50px);
 }
+
 .search-input-without-filters {
   width: 100%;
 }
