@@ -329,7 +329,7 @@ const formatRow = (row: Row) =>
   `${row.year} — ${row.service.teacher.displayname} — ` +
   `${row.course.program.degree.name} — ${row.course.program.name} ` +
   (row.course.track ? `— ${row.course.track.name}` : "") +
-  `— ${row.course.name} — ${row.course.semester} — ${row.course.type}`;
+  `— ${row.course.name} — ${row.course.semester} — ${row.course.type.label}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {};

@@ -2,8 +2,8 @@
   setup
   lang="ts"
   generic="
-    Row extends SimpleObject,
-    IdKey extends string & keyof Row,
+    Id extends Scalar,
+    Row extends SimpleObject & Record<'id', Id>,
     T extends RowDescriptorExtra<string, Row>,
     InsertInput extends object,
     Constraint extends string,
@@ -35,13 +35,12 @@ import AdminInput from "@/components/admin/core/AdminInput.vue";
 import AdminSelect from "@/components/admin/core/AdminSelect.vue";
 import AdminToggle from "@/components/admin/core/AdminToggle.vue";
 
-type Id = Row[IdKey];
 type FlatRow = Partial<NullableParsedRow<T>>;
 type CustomMutationResponse<
   Name extends string,
   V extends object,
 > = UseMutationResponse<
-  Partial<Record<Name, { returning: Record<IdKey, Id>[] } | null>>,
+  Partial<Record<Name, { returning: Pick<Row, "id">[] } | null>>,
   V
 >;
 
@@ -54,7 +53,6 @@ const filterValues = defineModel<Record<string, Scalar[]>>("filterValues", {
 const {
   section,
   name,
-  idKey,
   rowDescriptor,
   rows,
   formatRow,
@@ -70,7 +68,6 @@ const {
 } = defineProps<{
   section: string;
   name: string;
-  idKey: IdKey;
   rowDescriptor: T;
   rows: Row[];
   formatRow: (row: Row) => string;
@@ -272,7 +269,7 @@ const updateDataHandle = async () => {
   }
 
   const { data, error } = await updateData.executeMutation({
-    ids: selectedRows.value.map((row) => row[idKey]),
+    ids: selectedRows.value.map((row) => row.id),
     changes,
   });
   if (error || !data?.updateData?.returning) {
@@ -314,7 +311,7 @@ const deleteDataHandle = async () => {
   }
 
   const { data, error } = await deleteData.executeMutation({
-    ids: selectedRows.value.map((row) => row[idKey]),
+    ids: selectedRows.value.map((row) => row.id),
   });
   if (error || !data?.deleteData?.returning) {
     notify(NotifyType.Error, {
@@ -609,7 +606,7 @@ const exportDataHandle = () => {
     :rows-per-page-options="[0, 10, 20, 50, 100]"
     :filter="filterObj"
     :filter-method
-    :row-key="idKey"
+    row-key="id"
     selection="multiple"
     bordered
     flat

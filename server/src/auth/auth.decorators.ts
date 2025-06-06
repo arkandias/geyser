@@ -2,7 +2,7 @@ import { type ExecutionContext, createParamDecorator } from "@nestjs/common";
 import type { Request } from "express";
 
 export const UserId = createParamDecorator(
-  (_: unknown, ctx: ExecutionContext): string | undefined => {
+  (_: unknown, ctx: ExecutionContext): number | undefined => {
     const request = ctx.switchToHttp().getRequest<Request>();
 
     if (!request.auth) {

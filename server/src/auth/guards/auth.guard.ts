@@ -8,6 +8,7 @@ import {
   applyDecorators,
 } from "@nestjs/common";
 import { Request } from "express";
+import { z } from "zod/v4";
 
 import { ConfigService } from "../../config/config.service";
 import { JwtService } from "../jwt.service";
@@ -23,9 +24,11 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     // Extract required headers
-    const userId = Array.isArray(request.headers["x-user-id"])
-      ? request.headers["x-user-id"].at(-1) // Last value
-      : request.headers["x-user-id"];
+    const userId = z.number().parse(
+      Array.isArray(request.headers["x-user-id"])
+        ? request.headers["x-user-id"].at(-1) // Last value
+        : request.headers["x-user-id"],
+    );
     const userRole = Array.isArray(request.headers["x-user-role"])
       ? request.headers["x-user-role"].at(-1) // Last value
       : request.headers["x-user-role"];

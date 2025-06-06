@@ -58,7 +58,7 @@ const formatCoordinators = (coordinators: Coordinator[]) =>
   coordinators
     .map(
       (c) =>
-        (c.teacher?.displayname ?? "") + (c.comment ? ` (${c.comment})` : ""),
+        (c.teacher.displayname ?? "") + (c.comment ? ` (${c.comment})` : ""),
     )
     .join(", ");
 </script>

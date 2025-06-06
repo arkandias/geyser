@@ -24,7 +24,7 @@ const { years, currentYear } = useYearsStore();
 
 const selectedYear = ref<number | null>(null);
 const isFormOpen = ref(false);
-const year = ref<number | null>(null);
+const yearValue = ref<number | null>(null);
 
 graphql(`
   mutation SetCurrentYear($value: Int!) {
@@ -96,7 +96,7 @@ const setCurrentYearHandle = async (year: number): Promise<void> => {
 };
 
 const insertYearHandle = async () => {
-  if (year.value === null) {
+  if (yearValue.value === null) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
       caption: t("admin.general.years.error.emptyValue"),
@@ -105,7 +105,7 @@ const insertYearHandle = async () => {
   }
 
   const { data, error } = await insertYear.executeMutation({
-    value: year.value,
+    value: yearValue.value,
     visible: false,
   });
 
@@ -158,7 +158,7 @@ const updateYearValueHandle = async () => {
     return;
   }
 
-  if (year.value === null) {
+  if (yearValue.value === null) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
       caption: t("admin.general.years.error.emptyValue"),
@@ -166,7 +166,7 @@ const updateYearValueHandle = async () => {
     return;
   }
 
-  await updateYearHandle(selectedYear.value, { value: year.value });
+  await updateYearHandle(selectedYear.value, { value: yearValue.value });
 };
 
 const updateYearVisibilityHandle = async (value: number, visible: boolean) => {
@@ -264,13 +264,13 @@ const computePrioritiesHandle = async () => {
 
 const create = () => {
   selectedYear.value = null;
-  year.value = null;
+  yearValue.value = null;
   isFormOpen.value = true;
 };
 
 const edit = (newYear: number) => {
   selectedYear.value = newYear;
-  year.value = newYear;
+  yearValue.value = newYear;
   isFormOpen.value = true;
 };
 </script>
@@ -382,7 +382,10 @@ const edit = (newYear: number) => {
           class="q-gutter-md"
           @submit="selectedYear ? updateYearValueHandle() : insertYearHandle()"
         >
-          <NumInput v-model="year" :label="t('admin.general.years.year')" />
+          <NumInput
+            v-model="yearValue"
+            :label="t('admin.general.years.year')"
+          />
         </QForm>
       </QCardSection>
       <QSeparator />
@@ -396,7 +399,7 @@ const edit = (newYear: number) => {
               : t('admin.general.years.button.create')
           "
           color="primary"
-          :disable="year === null"
+          :disable="yearValue === null"
           flat
           square
         />
