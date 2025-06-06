@@ -3,12 +3,9 @@ import { computed } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
-import {
-  type CourseCoordinatorsFragment,
-  CourseCoordinatorsFragmentDoc,
-} from "@/gql/graphql.ts";
-import type { ArrayElement } from "@/types/misc.ts";
+import { CourseCoordinatorsFragmentDoc } from "@/gql/graphql.ts";
 
+import CoordinationsList from "@/components/core/CoordinationsList.vue";
 import DetailsSubsection from "@/components/core/DetailsSubsection.vue";
 
 const { dataFragment } = defineProps<{
@@ -18,25 +15,16 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment CourseCoordinators on Course {
     coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-      teacher {
-        displayname
-      }
-      comment
+      ...CoordinationData
     }
     program {
       coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-        teacher {
-          displayname
-        }
-        comment
+        ...CoordinationData
       }
     }
     track {
       coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
-        teacher {
-          displayname
-        }
-        comment
+        ...CoordinationData
       }
     }
   }
@@ -47,40 +35,36 @@ const { t } = useTypedI18n();
 const data = computed(() =>
   useFragment(CourseCoordinatorsFragmentDoc, dataFragment),
 );
-const courseCoordinators = computed(() => data.value.coordinations);
-const programCoordinators = computed(() => data.value.program.coordinations);
-const trackCoordinators = computed(() => data.value.track?.coordinations ?? []);
-
-// Helpers
-type Coordinator = ArrayElement<CourseCoordinatorsFragment["coordinations"]>;
-
-const formatCoordinators = (coordinators: Coordinator[]) =>
-  coordinators
-    .map(
-      (c) =>
-        (c.teacher.displayname ?? "") + (c.comment ? ` (${c.comment})` : ""),
-    )
-    .join(", ");
+const courseCoordinations = computed(() => data.value.coordinations);
+const programCoordinations = computed(() => data.value.program.coordinations);
+const trackCoordinations = computed(
+  () => data.value.track?.coordinations ?? [],
+);
 </script>
 
 <template>
   <DetailsSubsection :title="t('courses.expansion.coordinators.title')">
-    <div v-if="programCoordinators.length">
-      {{
-        t("courses.expansion.coordinators.program", programCoordinators.length)
-      }}
-      {{ formatCoordinators(programCoordinators) }}
-    </div>
-    <div v-if="trackCoordinators.length">
-      {{ t("courses.expansion.coordinators.track", trackCoordinators.length) }}
-      {{ formatCoordinators(trackCoordinators) }}
-    </div>
-    <div v-if="courseCoordinators.length">
-      {{
-        t("courses.expansion.coordinators.course", courseCoordinators.length)
-      }}
-      {{ formatCoordinators(courseCoordinators) }}
-    </div>
+    <CoordinationsList
+      v-if="programCoordinations.length"
+      :title="
+        t('courses.expansion.coordinators.program', programCoordinations.length)
+      "
+      :data-fragments="programCoordinations"
+    />
+    <CoordinationsList
+      v-if="trackCoordinations.length"
+      :title="
+        t('courses.expansion.coordinators.track', trackCoordinations.length)
+      "
+      :data-fragments="trackCoordinations"
+    />
+    <CoordinationsList
+      v-if="courseCoordinations.length"
+      :title="
+        t('courses.expansion.coordinators.course', courseCoordinations.length)
+      "
+      :data-fragments="courseCoordinations"
+    />
   </DetailsSubsection>
 </template>
 
