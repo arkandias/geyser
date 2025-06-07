@@ -39,12 +39,12 @@ const { serviceModificationTypeFragments } = defineProps<{
 const rowDescriptor = {
   label: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   description: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

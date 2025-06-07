@@ -7,10 +7,10 @@ import { inputToNumber } from "@/utils";
 const modelValue = defineModel<string | number | null>();
 const selectedFields = defineModel<string[]>("selectedFields");
 
-const { keyPrefix, name, numeric, multipleSelection } = defineProps<{
+const { keyPrefix, name, type, multipleSelection } = defineProps<{
   keyPrefix: string;
   name: string;
-  numeric?: boolean;
+  type?: "text" | "textarea" | "number";
   multipleSelection?: boolean;
 }>();
 
@@ -27,18 +27,19 @@ const disable = computed(
 );
 
 const onUpdate = (value: string | number | null) => {
-  modelValue.value = numeric
-    ? inputToNumber(value)
-    : value !== null
-      ? String(value)
-      : null;
+  modelValue.value =
+    type === "number"
+      ? inputToNumber(value)
+      : value !== null
+        ? String(value)
+        : null;
 };
 </script>
 
 <template>
   <QInput
     :model-value="modelValue"
-    :type="numeric ? 'number' : 'text'"
+    :type
     :label
     :disable
     clearable

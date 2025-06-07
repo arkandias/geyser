@@ -147,10 +147,6 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
           label: "Heures (@:unit.weightedHours)",
           tooltip: "",
         },
-        message: {
-          label: "Message",
-          tooltip: "",
-        },
       } satisfies Record<AdminTeachersServicesColName, AdminColNameOptions>,
       form: {
         title: {

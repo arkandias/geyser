@@ -41,9 +41,15 @@ export type FieldDescriptorExtra<R extends SimpleObject> = FieldDescriptor & {
   field?: string | ((row: R) => any);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   format?: (val: any, row: R) => any;
-  numberFormat?: "decimal" | "decimalFixed";
-  formType: "input" | "inputNum" | "select" | "toggle";
-};
+} & (
+    | {
+        formComponent: "select" | "toggle";
+      }
+    | {
+        formComponent: "input";
+        inputType?: "text" | "textarea" | "number";
+      }
+  );
 
 export type RowDescriptorExtra<
   K extends string = string,
@@ -55,7 +61,7 @@ export type SelectKeys<
   R extends SimpleObject,
   T extends RowDescriptorExtra<K, R>,
 > = {
-  [K in keyof T]: T[K]["formType"] extends "select" ? K : never;
+  [K in keyof T]: T[K]["formComponent"] extends "select" ? K : never;
 }[keyof T];
 
 export type SelectOptions<

@@ -73,34 +73,34 @@ const {
   >[];
 }>();
 
-const { t } = useTypedI18n();
+const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
 const rowDescriptor = {
   year: {
     type: "number",
-    formType: "select",
+    formComponent: "select",
   },
   teacherEmail: {
     type: "string",
     field: (row) => row.service.teacher.email,
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
-    formType: "select",
+    formComponent: "select",
   },
   degreeName: {
     type: "string",
     field: (row) => row.course.program.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   programName: {
     type: "string",
     field: (row) => row.course.program.name,
     format: (val: string) =>
       programs.value.find((p) => p.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   trackName: {
     type: "string",
@@ -108,39 +108,42 @@ const rowDescriptor = {
     field: (row) => row.course.track?.name,
     format: (val: string) =>
       tracks.value.find((t) => t.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   courseName: {
     type: "string",
     field: (row) => row.course.name,
     format: (val: string) =>
       courses.value.find((c) => c.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   courseSemester: {
     type: "number",
     field: (row) => row.course.semester,
     format: (val: number) => t("semester", { semester: val }),
-    formType: "select",
+    formComponent: "select",
   },
   courseType: {
     type: "string",
     field: (row) => row.course.type.label,
-    formType: "select",
+    formComponent: "select",
   },
   seniority: {
     type: "number",
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   isPriority: {
     type: "boolean",
     nullable: true,
-    formType: "toggle",
+    format: (val: boolean | null) => (val === null ? "–" : val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
   computed: {
     type: "boolean",
-    formType: "toggle",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

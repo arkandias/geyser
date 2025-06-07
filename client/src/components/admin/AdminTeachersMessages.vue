@@ -47,18 +47,19 @@ const rowDescriptor = {
   year: {
     type: "number",
     field: (row) => row.service.year,
-    formType: "select",
+    formComponent: "select",
   },
   teacherEmail: {
     type: "string",
     field: (row) => row.service.teacher.email,
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
-    formType: "select",
+    formComponent: "select",
   },
   content: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
+    inputType: "textarea",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

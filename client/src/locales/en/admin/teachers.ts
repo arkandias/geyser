@@ -146,10 +146,6 @@ If these positions are assigned to teachers, you will not be able to delete them
           label: "Hours (@:unit.weightedHours)",
           tooltip: "",
         },
-        message: {
-          label: "Message",
-          tooltip: "",
-        },
       } satisfies Record<AdminTeachersServicesColName, AdminColNameOptions>,
       form: {
         title: {

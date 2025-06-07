@@ -66,27 +66,27 @@ const {
   courseTypeFragments: FragmentType<typeof AdminCoursesCourseTypeFragmentDoc>[];
 }>();
 
-const { t } = useTypedI18n();
+const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
 const rowDescriptor = {
   year: {
     type: "number",
-    formType: "select",
+    formComponent: "select",
   },
   degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   programName: {
     type: "string",
     field: (row) => row.program.name,
     format: (val: string) =>
       programs.value.find((p) => p.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   trackName: {
     type: "string",
@@ -94,63 +94,70 @@ const rowDescriptor = {
     field: (row) => row.track?.name,
     format: (val: string) =>
       tracks.value.find((t) => t.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   name: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
   semester: {
     type: "number",
     format: (val: number) => t("semester", { semester: val }),
-    formType: "input",
+    formComponent: "input",
   },
   typeLabel: {
     type: "string",
     field: (row) => row.type.label,
-    formType: "select",
+    formComponent: "select",
   },
   hours: {
     type: "number",
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   hoursAdjusted: {
     type: "number",
     nullable: true,
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   groups: {
     type: "number",
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   groupsAdjusted: {
     type: "number",
     nullable: true,
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   description: {
     type: "string",
     nullable: true,
     format: (val: string) => (val ? "✓" : "✗"),
-    formType: "input",
+    formComponent: "input",
+    inputType: "textarea",
   },
   priorityRule: {
     type: "number",
     nullable: true,
-    formType: "inputNum",
+    formComponent: "input",
+    inputType: "number",
   },
   visible: {
     type: "boolean",
-    formType: "toggle",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

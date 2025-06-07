@@ -14,7 +14,11 @@ import MenuUser from "@/components/header/MenuUser.vue";
 import NavBtn from "@/components/header/NavBtn.vue";
 import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
-defineProps<{ disable: boolean }>();
+defineProps<{
+  disable: boolean;
+  title?: string;
+  subtitle?: string;
+}>();
 
 const { t } = useTypedI18n();
 const router = useRouter();
@@ -34,6 +38,18 @@ const { hasService } = useProfileStore();
           {{ version }}
         </QBadge>
       </QToolbarTitle>
+      <div class="instance-name">
+        <QSeparator vertical inset />
+        <!-- TODO: remove default values and replace v-if condition -->
+        <div class="instance-text">
+          <div class="title">
+            {{ title || "Université de Lille" }}
+          </div>
+          <div v-if="true" class="subtitle">
+            {{ subtitle || "Département de mathématiques" }}
+          </div>
+        </div>
+      </div>
       <QSpace />
       <NavBtn
         name="home"
@@ -41,14 +57,14 @@ const { hasService } = useProfileStore();
         :disable
         :tooltip="t('header.home.label')"
       />
-      <QSeparator vertical inset color="white" />
+      <QSeparator vertical inset />
       <NavBtn
         name="service"
         icon="sym_s_id_card"
         :disable="disable || !hasService"
         :tooltip="t('header.service.label')"
       />
-      <QSeparator vertical inset color="white" />
+      <QSeparator vertical inset />
       <NavBtn
         name="courses"
         icon="sym_s_menu_book"
@@ -63,7 +79,7 @@ const { hasService } = useProfileStore();
           <ToolbarCourses />
         </div>
       </Transition>
-      <QSeparator vertical inset color="white" />
+      <QSeparator vertical inset />
       <NavBtn
         v-if="perm.toAdmin"
         name="admin"
@@ -71,7 +87,7 @@ const { hasService } = useProfileStore();
         :disable
         :tooltip="t('header.admin.label')"
       />
-      <QSeparator v-if="perm.toAdmin" vertical inset color="white" />
+      <QSeparator v-if="perm.toAdmin" vertical inset />
       <QBtn
         icon="sym_s_refresh"
         :disable
@@ -109,6 +125,35 @@ const { hasService } = useProfileStore();
 .dev #header {
   background-color: $secondary;
 }
+
+.instance-name {
+  display: flex;
+  align-items: center;
+  margin: 0 12px;
+
+  .q-separator {
+    margin: 0;
+  }
+
+  .instance-text {
+    margin-left: 12px;
+    line-height: 1.2;
+    white-space: nowrap;
+
+    .title {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.9);
+    }
+
+    .subtitle {
+      font-size: 0.75rem;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 1px;
+    }
+  }
+}
+
 #toolbar-wrapper {
   display: flex;
   align-items: center;

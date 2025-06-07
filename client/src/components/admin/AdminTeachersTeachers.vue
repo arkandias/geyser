@@ -45,45 +45,48 @@ const { teacherFragments, positionFragments } = defineProps<{
   positionFragments: FragmentType<typeof AdminTeachersPositionFragmentDoc>[];
 }>();
 
-const { t } = useTypedI18n();
+const { t, n } = useTypedI18n();
 
 const rowDescriptor = {
   email: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   firstname: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   lastname: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   alias: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
   positionLabel: {
     type: "string",
     nullable: true,
     field: (row) => row.position?.label,
-    formType: "select",
+    formComponent: "select",
   },
   baseServiceHours: {
     type: "number",
     nullable: true,
-    numberFormat: "decimalFixed",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimalFixed"),
+    formComponent: "input",
+    inputType: "number",
   },
   visible: {
     type: "boolean",
-    formType: "toggle",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
   active: {
     type: "boolean",
-    formType: "toggle",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

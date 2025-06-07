@@ -1,5 +1,5 @@
 <script lang="ts">
-export type ColName = "year" | "teacherEmail" | "hours" | "message";
+export type ColName = "year" | "teacherEmail" | "hours";
 </script>
 
 <script setup lang="ts">
@@ -38,30 +38,25 @@ const { serviceFragments, teacherFragments } = defineProps<{
   teacherFragments: FragmentType<typeof AdminServicesTeacherFragmentDoc>[];
 }>();
 
-const { t } = useTypedI18n();
+const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
 const rowDescriptor = {
   year: {
     type: "number",
-    formType: "select",
+    formComponent: "select",
   },
   teacherEmail: {
     type: "string",
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
-    formType: "select",
+    formComponent: "select",
   },
   hours: {
     type: "number",
-    numberFormat: "decimalFixed",
-    formType: "inputNum",
-  },
-  message: {
-    type: "string",
-    nullable: true,
-    format: (val: string) => (val ? "✓" : "✗"),
-    formType: "input",
+    format: (val: number) => n(val, "decimalFixed"),
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

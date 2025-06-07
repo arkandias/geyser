@@ -45,20 +45,21 @@ const rowDescriptor = {
     field: (row) => row.degree.name,
     format: (val: string) =>
       degrees.value.find((d) => d.name === val)?.nameDisplay,
-    formType: "select",
+    formComponent: "select",
   },
   name: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
   visible: {
     type: "boolean",
-    formType: "toggle",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

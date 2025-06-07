@@ -100,7 +100,7 @@ const {
   importUpdateColumns: UpdateColumn[];
 }>();
 
-const { t, n } = useTypedI18n();
+const { t } = useTypedI18n();
 const { notify } = useNotify();
 
 const keyPrefix = `admin.${section}.${name}`;
@@ -118,14 +118,7 @@ const columns = computed<Column<Row>[]>(() =>
           ? "right"
           : "center",
     field: descriptor.field ?? key,
-    format:
-      descriptor.type === "boolean"
-        ? (val: boolean | null) => (val ? "✓" : "✗")
-        : descriptor.numberFormat
-          ? (val: number | null) =>
-              // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-              val === null ? null : n(val, descriptor.numberFormat!)
-          : descriptor.format,
+    format: descriptor.format,
     sortable: true,
     searchable: descriptor.type === "string",
   })),
@@ -344,17 +337,17 @@ type Filter = {
 const showFilters = ref(false);
 const filters: Ref<Filter[]> = ref(
   Object.entries(rowDescriptor)
-    .filter(([_, descriptor]) => !descriptor.formType.startsWith("input"))
+    .filter(([_, descriptor]) => !descriptor.formComponent.startsWith("input"))
     .map(([key, descriptor]) => ({
       name: key,
       options: computed(() =>
-        descriptor.formType === "select"
+        descriptor.formComponent === "select"
           ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             (filterOptions[key as keyof typeof filterOptions] ??
             formOptions[key as keyof typeof formOptions] ??
             [])
           : [
-              // formType === 'toggle'
+              // formComponent === 'toggle'
               { value: "✓", label: t("yes") },
               { value: "✗", label: t("no") },
             ],
@@ -678,16 +671,16 @@ const exportDataHandle = () => {
         >
           <div v-for="key in Object.keys(rowDescriptor)" :key>
             <AdminInput
-              v-if="rowDescriptor[key]?.formType.startsWith('input')"
+              v-if="rowDescriptor[key]?.formComponent == 'input'"
               v-model="formValues[key] as string | number | null | undefined"
               v-model:selected-fields="selectedFields"
               :key-prefix
               :name="key"
-              :numeric="rowDescriptor[key]?.formType === 'inputNum'"
+              :type="rowDescriptor[key].inputType"
               :multiple-selection
             />
             <AdminSelect
-              v-if="rowDescriptor[key]?.formType === 'select'"
+              v-if="rowDescriptor[key]?.formComponent === 'select'"
               v-model="formValues[key]"
               v-model:selected-fields="selectedFields"
               :options="formOptions[key as keyof typeof formOptions]"
@@ -696,7 +689,7 @@ const exportDataHandle = () => {
               :multiple-selection
             />
             <AdminToggle
-              v-if="rowDescriptor[key]?.formType === 'toggle'"
+              v-if="rowDescriptor[key]?.formComponent === 'toggle'"
               v-model="formValues[key]"
               v-model:selected-fields="selectedFields"
               :key-prefix

@@ -55,31 +55,32 @@ const {
   >[];
 }>();
 
-const { t } = useTypedI18n();
+const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
 const rowDescriptor = {
   year: {
     type: "number",
     field: (row) => row.service.year,
-    formType: "select",
+    formComponent: "select",
   },
   teacherEmail: {
     type: "string",
     field: (row) => row.service.teacher.email,
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
-    formType: "select",
+    formComponent: "select",
   },
   typeLabel: {
     type: "string",
     field: (row) => row.type.label,
-    formType: "select",
+    formComponent: "select",
   },
   hours: {
     type: "number",
-    numberFormat: "decimalFixed",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimalFixed"),
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

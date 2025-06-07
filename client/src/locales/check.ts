@@ -166,7 +166,6 @@ const findKeysInFiles = async (): Promise<string[]> => {
         "year",
         "teacherEmail",
         "hours",
-        "message",
       ] satisfies AdminTeachersServicesColNames[],
       serviceModifications: [
         "year",

@@ -40,17 +40,18 @@ const { t } = useTypedI18n();
 const rowDescriptor = {
   label: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   description: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
   baseServiceHours: {
     type: "number",
     nullable: true,
-    formType: "inputNum",
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 

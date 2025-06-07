@@ -6,6 +6,7 @@ export type ColName = "label" | "coefficient" | "description";
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
 
+import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   type AdminCourseTypeFragment,
@@ -34,20 +35,23 @@ const { courseTypeFragments } = defineProps<{
   courseTypeFragments: FragmentType<typeof AdminCourseTypeFragmentDoc>[];
 }>();
 
+const { n } = useTypedI18n();
+
 const rowDescriptor = {
   label: {
     type: "string",
-    formType: "input",
+    formComponent: "input",
   },
   coefficient: {
     type: "number",
-    numberFormat: "decimal",
-    formType: "inputNum",
+    format: (val: number) => n(val, "decimal"),
+    formComponent: "input",
+    inputType: "number",
   },
   description: {
     type: "string",
     nullable: true,
-    formType: "input",
+    formComponent: "input",
   },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 
