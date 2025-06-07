@@ -46,7 +46,6 @@ const { degreeFragments, programFragments, trackFragments } = defineProps<{
 
 const { t } = useTypedI18n();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   degreeName: {
     type: "string",
@@ -237,7 +236,6 @@ const filterOptions = computed(() => ({
     v-model:filter-values="filterValues"
     section="courses"
     name="tracks"
-    :id-key
     :row-descriptor
     :rows="tracks"
     :format-row

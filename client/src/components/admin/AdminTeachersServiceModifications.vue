@@ -58,7 +58,6 @@ const {
 const { t } = useTypedI18n();
 const { years } = useYearsStore();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   year: {
     type: "number",
@@ -289,7 +288,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="teachers"
     name="serviceModifications"
-    :id-key
     :row-descriptor
     :rows="serviceModifications"
     :format-row

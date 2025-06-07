@@ -37,7 +37,6 @@ const { positionFragments } = defineProps<{
 
 const { t } = useTypedI18n();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   label: {
     type: "string",
@@ -149,7 +148,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="teachers"
     name="positions"
-    :id-key
     :row-descriptor
     :rows="positions"
     :format-row

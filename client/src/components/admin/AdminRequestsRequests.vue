@@ -77,7 +77,6 @@ const {
 const { t } = useTypedI18n();
 const { years } = useYearsStore();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   year: {
     type: "number",
@@ -480,7 +479,6 @@ const filterOptions = computed(() => ({
     v-model:filter-values="filterValues"
     section="requests"
     name="requests"
-    :id-key
     :row-descriptor
     :rows="requests"
     :format-row

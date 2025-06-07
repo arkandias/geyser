@@ -69,7 +69,6 @@ const {
 const { t } = useTypedI18n();
 const { years } = useYearsStore();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   year: {
     type: "number",
@@ -474,7 +473,6 @@ const filterOptions: ComputedRef<
     v-model:filter-values="filterValues"
     section="courses"
     name="courses"
-    :id-key
     :row-descriptor
     :rows="courses"
     :format-row

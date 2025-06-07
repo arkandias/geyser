@@ -34,7 +34,6 @@ const { degreeFragments } = defineProps<{
   degreeFragments: FragmentType<typeof AdminDegreeFragmentDoc>[];
 }>();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   name: {
     type: "string",
@@ -140,7 +139,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="courses"
     name="degrees"
-    :id-key
     :row-descriptor
     :rows="degrees"
     :format-row

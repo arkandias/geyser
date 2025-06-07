@@ -41,7 +41,6 @@ const { roleFragments, teacherFragments } = defineProps<{
 
 const { t } = useTypedI18n();
 
-const idKey: keyof Row = "id";
 const rowDescriptor = {
   teacherEmail: {
     type: "string",
@@ -191,7 +190,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="general"
     name="roles"
-    :id-key
     :row-descriptor
     :rows="roles"
     :format-row
