@@ -67,10 +67,11 @@ export class JwtService {
 
   async makeAccessToken(userId: number): Promise<string> {
     const roles = await this.rolesService.findByUserId(userId);
-    const roleTypes = roles
-      .map((role) => roleTypeSchema.parse(role.type))
-      .concat("teacher")
-      .sort();
+    const roleTypes = roles.map((role) => roleTypeSchema.parse(role.type));
+    if (!roleTypes.includes("teacher")) {
+      roleTypes.concat("teacher");
+    }
+    roleTypes.sort();
 
     return this.makeToken({
       sub: userId,
