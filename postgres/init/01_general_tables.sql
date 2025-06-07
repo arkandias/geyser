@@ -21,8 +21,9 @@ COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permiss
 CREATE TABLE public.current_phase
 (
     id    integer PRIMARY KEY DEFAULT 1 CHECK ( id = 1 ),
-    value text REFERENCES public.phase
+    value text REFERENCES public.phase ON UPDATE CASCADE
 );
+CREATE INDEX idx_current_phase_value ON public.current_phase (value);
 
 COMMENT ON TABLE public.current_phase IS 'Singleton table that stores the active system phase reference';
 COMMENT ON COLUMN public.current_phase.id IS 'Primary key with constraint to ensure only one record exists';
@@ -35,8 +36,7 @@ CREATE TABLE public.year
     visible boolean NOT NULL DEFAULT TRUE,
     CONSTRAINT year_current_visible_check CHECK (NOT current OR visible)
 );
-CREATE UNIQUE INDEX unique_current_year ON public.year (current)
-    WHERE current = TRUE;
+CREATE UNIQUE INDEX unique_current_year ON public.year (current) WHERE current = TRUE;
 
 COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';

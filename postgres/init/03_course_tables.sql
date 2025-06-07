@@ -72,7 +72,7 @@ COMMENT ON COLUMN public.course_type.description IS 'Description of the course t
 CREATE TABLE public.course
 (
     id               integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year_value       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
+    year       integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
     program_id       integer NOT NULL REFERENCES public.program ON UPDATE CASCADE,
     track_id         integer,
     name             text    NOT NULL,
@@ -91,20 +91,20 @@ CREATE TABLE public.course
     priority_rule    integer, -- 0=: Infinity; NULL: No rule
     visible          boolean NOT NULL DEFAULT TRUE,
     FOREIGN KEY (track_id, program_id) REFERENCES public.track (id, program_id) ON UPDATE CASCADE,
-    UNIQUE NULLS NOT DISTINCT (year_value, program_id, track_id, name, semester, type_id),
-    UNIQUE (id, year_value),  -- referenced in requests and priorities to ensure data consistency
+    UNIQUE NULLS NOT DISTINCT (year, program_id, track_id, name, semester, type_id),
+    UNIQUE (id, year),  -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
     CONSTRAINT course_priority_rule_non_negative_check CHECK (priority_rule >= 0)
 );
-CREATE INDEX idx_course_year ON public.course (year_value);
+CREATE INDEX idx_course_year ON public.course (year);
 CREATE INDEX idx_course_program_id ON public.course (program_id);
 CREATE INDEX idx_course_type_id ON public.course (type_id);
 CREATE INDEX idx_course_track_id_program_id ON public.course (track_id, program_id);
 
 COMMENT ON TABLE public.course IS 'Detailed course definitions and configurations';
 COMMENT ON COLUMN public.course.id IS 'Unique course identifier';
-COMMENT ON COLUMN public.course.year_value IS 'Academic year when the course is offered';
+COMMENT ON COLUMN public.course.year IS 'Academic year when the course is offered';
 COMMENT ON COLUMN public.course.program_id IS 'Program offering this course';
 COMMENT ON COLUMN public.course.track_id IS 'Optional track specialization for this course';
 COMMENT ON COLUMN public.course.name IS 'Full course name';
@@ -126,22 +126,22 @@ COMMENT ON COLUMN public.course.visible IS 'Controls course visibility in the us
 CREATE TABLE public.coordination
 (
     id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    uid        text NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
+    teacher_id integer NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
     program_id integer REFERENCES public.program ON UPDATE CASCADE,
     track_id   integer REFERENCES public.track ON UPDATE CASCADE,
     course_id  integer REFERENCES public.course ON UPDATE CASCADE,
     comment    text,
-    UNIQUE NULLS NOT DISTINCT (uid, course_id, track_id, program_id),
+    UNIQUE NULLS NOT DISTINCT (teacher_id, course_id, track_id, program_id),
     CONSTRAINT coordination_exclusive_type_check CHECK (num_nonnulls(course_id, track_id, program_id) = 1)
 );
-CREATE INDEX idx_coordination_uid ON public.coordination (uid);
+CREATE INDEX idx_coordination_teacher_id ON public.coordination (teacher_id);
 CREATE INDEX idx_coordination_program_id ON public.coordination (program_id);
 CREATE INDEX idx_coordination_track_id ON public.coordination (track_id);
 CREATE INDEX idx_coordination_course_id ON public.coordination (course_id);
 
 COMMENT ON TABLE public.coordination IS 'Academic coordination assignments at program, track, or course level';
 COMMENT ON COLUMN public.coordination.id IS 'Unique coordination identifier';
-COMMENT ON COLUMN public.coordination.uid IS 'Coordinating teacher';
+COMMENT ON COLUMN public.coordination.teacher_id IS 'Coordinating teacher';
 COMMENT ON COLUMN public.coordination.program_id IS 'Program being coordinated (mutually exclusive with track_id and course_id)';
 COMMENT ON COLUMN public.coordination.track_id IS 'Track being coordinated (mutually exclusive with program_id and course_id)';
 COMMENT ON COLUMN public.coordination.course_id IS 'Course being coordinated (mutually exclusive with program_id and track_id)';
