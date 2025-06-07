@@ -15,6 +15,7 @@ import type { ColName as AdminCoursesTracksColName } from "@/components/admin/Ad
 import type { ColName as AdminRolesRolesColName } from "@/components/admin/AdminGeneralRoles.vue";
 import type { ColName as AdminRequestsPrioritiesColNames } from "@/components/admin/AdminRequestsPriorities.vue";
 import type { ColName as AdminRequestsRequestsColNames } from "@/components/admin/AdminRequestsRequests.vue";
+import type { ColName as AdminTeachersMessagesColNames } from "@/components/admin/AdminTeachersMessages.vue";
 import type { ColName as AdminTeachersPositionsColNames } from "@/components/admin/AdminTeachersPositions.vue";
 import type { ColName as AdminTeachersServiceModificationTypesColNames } from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import type { ColName as AdminTeachersServiceModificationsColNames } from "@/components/admin/AdminTeachersServiceModifications.vue";
@@ -177,6 +178,11 @@ const findKeysInFiles = async (): Promise<string[]> => {
         "label",
         "description",
       ] satisfies AdminTeachersServiceModificationTypesColNames[],
+      messages: [
+        "year",
+        "teacherEmail",
+        "content",
+      ] satisfies AdminTeachersMessagesColNames[],
     },
     courses: {
       degrees: [

@@ -1,5 +1,6 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
+import type { ColName as AdminTeachersMessagesColName } from "@/components/admin/AdminTeachersMessages.vue";
 import type { ColName as AdminTeachersPositionsColName } from "@/components/admin/AdminTeachersPositions.vue";
 import type { ColName as AdminTeachersServiceModificationTypesColName } from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import type { ColName as AdminTeachersServiceModificationsColName } from "@/components/admin/AdminTeachersServiceModifications.vue";
@@ -287,6 +288,58 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
 Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer.`,
             multiple: `Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
 Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
+          },
+        },
+      },
+    },
+    messages: {
+      label: "Messages",
+      column: {
+        year: {
+          label: "Année",
+          tooltip: "",
+        },
+        teacherEmail: {
+          label: "Intervenant",
+          tooltip: "",
+        },
+        content: {
+          label: "Contenu",
+          tooltip: "",
+        },
+      } satisfies Record<AdminTeachersMessagesColName, AdminColNameOptions>,
+      form: {
+        title: {
+          none: "Nouveau message",
+          single: "{label}",
+          multiple: "{count} messages sélectionnés",
+        },
+        error: {
+          updateYearWithoutTeacher:
+            "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
+          updateTeacherWithoutYear:
+            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
+          serviceNotFound:
+            "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
+          noContent: "Entrez un contenu",
+        },
+      },
+      data: {
+        success: {
+          insert: "Aucun message créé | Message créé | {count} messages créés",
+          update:
+            "Aucun message mis à jour | Message mis à jour | {count} messages mis à jour",
+          delete:
+            "Aucun message supprimé | Message supprimé | {count} messages supprimés",
+          import:
+            "0 message importé | 1 message importé | {count} messages importés",
+          export:
+            "0 message exporté | 1 message exporté | {count} messages exportés",
+        },
+        confirm: {
+          delete: {
+            single: `Êtes-vous sûr de vouloir supprimer le message « {label} » ?`,
+            multiple: `Êtes-vous sûr de vouloir supprimer les {count} messages sélectionnés ?`,
           },
         },
       },

@@ -6,6 +6,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminTeachersDocument } from "@/gql/graphql.ts";
 
+import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
 import AdminTeachersServiceModificationTypes from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import AdminTeachersServiceModifications from "@/components/admin/AdminTeachersServiceModifications.vue";
@@ -21,6 +22,7 @@ graphql(`
       ...AdminTeacher
       ...AdminServicesTeacher
       ...AdminServiceModificationsTeacher
+      ...AdminMessagesTeacher
     }
     positions: position(orderBy: [{ label: ASC }]) {
       ...AdminPosition
@@ -35,6 +37,7 @@ graphql(`
     ) {
       ...AdminService
       ...AdminServiceModificationsService
+      ...AdminMessagesService
     }
     serviceModifications: serviceModification(
       orderBy: [
@@ -51,6 +54,15 @@ graphql(`
     ) {
       ...AdminServiceModificationType
       ...AdminServiceModificationsServiceModificationType
+    }
+    messages: message(
+      orderBy: [
+        { service: { year: DESC } }
+        { service: { teacher: { lastname: ASC } } }
+        { service: { teacher: { firstname: ASC } } }
+      ]
+    ) {
+      ...AdminMessage
     }
   }
 `);
@@ -78,6 +90,7 @@ const serviceModifications = computed(
 const serviceModificationTypes = computed(
   () => data.value?.serviceModificationTypes ?? [],
 );
+const messages = computed(() => data.value?.messages ?? []);
 </script>
 
 <template>
@@ -135,6 +148,16 @@ const serviceModificationTypes = computed(
     >
       <AdminTeachersServiceModificationTypes
         :service-modification-type-fragments="serviceModificationTypes"
+      />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection icon="sym_s_chat" :label="t('admin.teachers.messages.label')">
+      <AdminTeachersMessages
+        :message-fragments="messages"
+        :service-fragments="services"
+        :teacher-fragments="teachers"
       />
     </AdminSection>
   </QList>

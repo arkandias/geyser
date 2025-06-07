@@ -1,5 +1,6 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
+import type { ColName as AdminTeachersMessagesColName } from "@/components/admin/AdminTeachersMessages.vue";
 import type { ColName as AdminTeachersPositionsColName } from "@/components/admin/AdminTeachersPositions.vue";
 import type { ColName as AdminTeachersServiceModificationTypesColName } from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import type { ColName as AdminTeachersServiceModificationsColName } from "@/components/admin/AdminTeachersServiceModifications.vue";
@@ -287,6 +288,59 @@ If there are modifications, requests, or priorities for these services, you will
 If this type is assigned to modifications, you will not be able to delete it.`,
             multiple: `Are you sure you want to delete the {count} selected modification types?
 If these types are assigned to modifications, you will not be able to delete them.`,
+          },
+        },
+      },
+    },
+    messages: {
+      label: "Messages",
+      column: {
+        year: {
+          label: "Year",
+          tooltip: "",
+        },
+        teacherEmail: {
+          label: "Teacher",
+          tooltip: "",
+        },
+        content: {
+          label: "Content",
+          tooltip: "",
+        },
+      } satisfies Record<AdminTeachersMessagesColName, AdminColNameOptions>,
+      form: {
+        title: {
+          none: "New message",
+          single: "{label}",
+          multiple: "{count} messages selected",
+        },
+        error: {
+          updateYearWithoutTeacher:
+            "You cannot modify the year without selecting a teacher",
+          updateTeacherWithoutYear:
+            "You cannot modify the teacher without selecting a year",
+          serviceNotFound:
+            "No service exists for teacher {teacherEmail} and year {year}",
+          noContent: "Enter a content",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No message created | Message created | {count} messages created",
+          update:
+            "No message updated | Message updated | {count} messages updated",
+          delete:
+            "No message deleted | Message deleted | {count} messages deleted",
+          import:
+            "0 message imported | 1 message imported | {count} messages imported",
+          export:
+            "0 message exported | 1 message exported | {count} messages exported",
+        },
+        confirm: {
+          delete: {
+            single: `Are you sure you want to delete the message "{label}"?`,
+            multiple: `Are you sure you want to delete the {count} selected messages?`,
           },
         },
       },
