@@ -78,10 +78,8 @@ select_permissions:
           - yearByYear:
               visible:
                 _eq: true
-          - teacher_id:
-              _eq: X-Hasura-User-Id
       allow_aggregations: true
-    comment: Can view their own services for visible years [except during shutdown phase]
+    comment: Can view services for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
     permission:

@@ -35,6 +35,7 @@ select_permissions:
         - alias
         - base_service_hours
         - displayname
+        - email
         - firstname
         - id
         - lastname
@@ -56,6 +57,7 @@ select_permissions:
         - alias
         - base_service_hours
         - displayname
+        - email
         - firstname
         - id
         - lastname
