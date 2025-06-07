@@ -24,11 +24,14 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     // Extract required headers
-    const userId = z.number().parse(
-      Array.isArray(request.headers["x-user-id"])
-        ? request.headers["x-user-id"].at(-1) // Last value
-        : request.headers["x-user-id"],
-    );
+    const userId = z
+      .number()
+      .optional()
+      .parse(
+        Array.isArray(request.headers["x-user-id"])
+          ? request.headers["x-user-id"].at(-1) // Last value
+          : request.headers["x-user-id"],
+      );
     const userRole = Array.isArray(request.headers["x-user-role"])
       ? request.headers["x-user-role"].at(-1) // Last value
       : request.headers["x-user-role"];
