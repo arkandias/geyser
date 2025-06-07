@@ -387,7 +387,6 @@ const filterMethod = (
   rows: readonly Row[],
   terms: typeof filterObj.value,
   cols: readonly Column<Row>[],
-  getCellValue: (col: Column<Row>, row: Row) => Scalar,
 ): readonly Row[] =>
   rows.filter(
     (row) =>
@@ -404,7 +403,7 @@ const filterMethod = (
           const col = cols.find((col) => col.name === filter.name);
           return (
             !col ||
-            filterValues.value[filter.name]?.includes(getCellValue(col, row))
+            filterValues.value[filter.name]?.includes(getField(row, col.field))
           );
         })),
   );
