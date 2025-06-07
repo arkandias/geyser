@@ -43,7 +43,7 @@ graphql(`
   }
 
   mutation DeleteMessage($serviceId: Int!) {
-    deleteRequest(where: { serviceId: { _eq: $serviceId } }) {
+    deleteMessage(where: { serviceId: { _eq: $serviceId } }) {
       returning {
         id
       }
@@ -82,7 +82,7 @@ const setMessage = computed(
             serviceId: data.value.id,
           })
           .then((result) => ({
-            returnId: result.data?.deleteRequest?.returning[0]?.id ?? null,
+            returnId: result.data?.deleteMessage?.returning[0]?.id ?? null,
             error: result.error,
           })),
 );
