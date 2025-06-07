@@ -11,7 +11,7 @@ export default {
       requests: `
         <p>
           On the <i class="q-icon text-primary material-symbols-sharp">badge</i>
-          My Information page, enter your base service (in teaching equivalent hours), then add
+          My Service page, enter your base service (in teaching equivalent hours), then add
           any service modifications (delegation, release, leave, etc.).
           <b>
             The total shown should correspond to the number of teaching equivalent hours that the commission
