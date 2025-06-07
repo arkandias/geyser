@@ -25,16 +25,6 @@ COMMENT ON COLUMN public.priority.seniority IS 'Consecutive years teaching this 
 COMMENT ON COLUMN public.priority.computed IS 'Flag indicating whether the seniority value was automatically computed rather than manually assigned';
 COMMENT ON COLUMN public.priority.is_priority IS 'Current priority status based on seniority and course rules';
 
-CREATE TABLE public.request_type
-(
-    value       text PRIMARY KEY,
-    description text
-);
-
-COMMENT ON TABLE public.request_type IS 'Types of teaching assignment requests in workflow';
-COMMENT ON COLUMN public.request_type.value IS 'Request type identifier';
-COMMENT ON COLUMN public.request_type.description IS 'Description of the request type and its purpose';
-
 CREATE TABLE public.request
 (
     id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,

@@ -1,8 +1,6 @@
 CREATE FUNCTION public.dummy_function() RETURNS setof public.app_setting AS
 $$
-SELECT *
-FROM public.app_setting
-WHERE FALSE;
+SELECT * FROM public.app_setting WHERE FALSE;
 $$ LANGUAGE sql VOLATILE;
 COMMENT ON FUNCTION public.dummy_function() IS 'Dummy function that does nothing (useful for GraphQL clients)';
 

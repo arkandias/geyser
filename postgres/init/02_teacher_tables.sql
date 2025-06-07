@@ -39,16 +39,6 @@ COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for 
 COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
 COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
 
-CREATE TABLE public.role_type
-(
-    value       text PRIMARY KEY,
-    description text
-);
-
-COMMENT ON TABLE public.role_type IS 'System roles for privileged access';
-COMMENT ON COLUMN public.role_type.value IS 'Role identifier';
-COMMENT ON COLUMN public.role_type.description IS 'Description of the role privileges and responsibilities';
-
 CREATE TABLE public.role
 (
     id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
