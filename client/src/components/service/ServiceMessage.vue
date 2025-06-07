@@ -8,7 +8,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   DeleteMessageDocument,
-  TeacherServiceMessageFragmentDoc,
+  ServiceMessageFragmentDoc,
   UpsertMessageDocument,
 } from "@/gql/graphql.ts";
 
@@ -16,11 +16,11 @@ import DetailsSection from "@/components/core/DetailsSection.vue";
 import EditableText from "@/components/core/EditableText.vue";
 
 const { dataFragment } = defineProps<{
-  dataFragment: FragmentType<typeof TeacherServiceMessageFragmentDoc>;
+  dataFragment: FragmentType<typeof ServiceMessageFragmentDoc>;
 }>();
 
 graphql(`
-  fragment TeacherServiceMessage on Service {
+  fragment ServiceMessage on Service {
     id
     year
     teacherId
@@ -58,7 +58,7 @@ const upsertMessage = useMutation(UpsertMessageDocument);
 const deleteMessage = useMutation(DeleteMessageDocument);
 
 const data = computed(() =>
-  useFragment(TeacherServiceMessageFragmentDoc, dataFragment),
+  useFragment(ServiceMessageFragmentDoc, dataFragment),
 );
 
 const editMessage = ref(false);

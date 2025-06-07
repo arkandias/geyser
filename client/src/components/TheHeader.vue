@@ -6,6 +6,7 @@ import { usePermissions } from "@/composables/usePermissions.ts";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/env.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
@@ -20,6 +21,7 @@ const router = useRouter();
 const perm = usePermissions();
 const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
+const { hasService } = useProfileStore();
 </script>
 
 <template>
@@ -43,7 +45,7 @@ const { isDarkModeActive, toggleDarkMode } = useDarkMode();
       <NavBtn
         name="service"
         icon="sym_s_id_card"
-        :disable
+        :disable="disable || !hasService"
         :tooltip="t('header.service.label')"
       />
       <QSeparator vertical inset color="white" />

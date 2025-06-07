@@ -5,10 +5,7 @@ import { computed } from "vue";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import {
-  GetServiceDetailsDocument,
-  GetTeacherDetailsDocument,
-} from "@/gql/graphql.ts";
+import { GetServiceDetailsDocument } from "@/gql/graphql.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import ServiceDetails from "@/components/service/ServiceDetails.vue";
@@ -18,27 +15,21 @@ import ServiceRequests from "@/components/service/ServiceRequests.vue";
 import ServiceTeacher from "@/components/service/ServiceTeacher.vue";
 
 graphql(`
-  query GetTeacherDetails($id: Int!) {
-    teacher: teacherByPk(id: $id) {
-      ...ServiceTeacher
-    }
-  }
-
   query GetServiceDetails($id: Int!) {
     service: serviceByPk(id: $id) {
       teacher {
         ...ServiceTeacher
       }
-      ...TeacherServiceDetails
-      ...TeacherServiceRequests
-      ...TeacherServicePriorities
-      ...TeacherServiceMessage
+      ...ServiceDetails
+      ...ServiceRequests
+      ...ServicePriorities
+      ...ServiceMessage
     }
   }
 `);
 
 const { t } = useTypedI18n();
-const { profile, currentServiceId: myServiceId } = useProfileStore();
+const { currentServiceId: myServiceId } = useProfileStore();
 const { getValue: selectedService } = useQueryParam("serviceId", true);
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);
@@ -59,23 +50,8 @@ const getServiceDetails = useQuery({
     ],
   },
 });
+const fetching = computed(() => getServiceDetails.fetching.value);
 const service = computed(() => getServiceDetails.data.value?.service ?? null);
-
-const getTeacherDetails = useQuery({
-  query: GetTeacherDetailsDocument,
-  variables: () => ({ id: profile.value.id }),
-  pause: () => serviceId.value !== null,
-  context: {
-    additionalTypenames: ["All", "Coordination"],
-  },
-});
-
-const fetching = computed(
-  () => getServiceDetails.fetching.value || getTeacherDetails.fetching.value,
-);
-const teacher = computed(
-  () => service.value?.teacher ?? getTeacherDetails.data.value?.teacher ?? null,
-);
 </script>
 
 <template>
@@ -85,14 +61,12 @@ const teacher = computed(
         {{ t("service.fetching") }}
       </QCardSection>
     </QCard>
-    <QCard v-else-if="teacher" flat square>
-      <ServiceTeacher :data-fragment="teacher" />
-      <template v-if="service">
-        <ServiceDetails :data-fragment="service" />
-        <ServiceRequests :data-fragment="service" />
-        <ServicePriorities :data-fragment="service" />
-        <ServiceMessage :data-fragment="service" />
-      </template>
+    <QCard v-else-if="service" flat square>
+      <ServiceTeacher :data-fragment="service.teacher" />
+      <ServiceDetails :data-fragment="service" />
+      <ServiceRequests :data-fragment="service" />
+      <ServicePriorities :data-fragment="service" />
+      <ServiceMessage :data-fragment="service" />
     </QCard>
     <QCard v-else flat square>
       <QCardSection class="text-h4 q-pa-xl">

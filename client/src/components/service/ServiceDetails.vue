@@ -11,7 +11,7 @@ import {
   DeleteModificationDocument,
   GetModificationTypesDocument,
   InsertModificationDocument,
-  TeacherServiceDetailsFragmentDoc,
+  ServiceDetailsFragmentDoc,
   UpdateServiceDocument,
 } from "@/gql/graphql.ts";
 
@@ -20,11 +20,11 @@ import NumInput from "@/components/core/NumInput.vue";
 import ServiceTable from "@/components/service/ServiceTable.vue";
 
 const { dataFragment } = defineProps<{
-  dataFragment: FragmentType<typeof TeacherServiceDetailsFragmentDoc>;
+  dataFragment: FragmentType<typeof ServiceDetailsFragmentDoc>;
 }>();
 
 graphql(`
-  fragment TeacherServiceDetails on Service {
+  fragment ServiceDetails on Service {
     id
     year
     teacherId
@@ -89,7 +89,7 @@ const insertModification = useMutation(InsertModificationDocument);
 const deleteModification = useMutation(DeleteModificationDocument);
 
 const service = computed(() =>
-  useFragment(TeacherServiceDetailsFragmentDoc, dataFragment),
+  useFragment(ServiceDetailsFragmentDoc, dataFragment),
 );
 const totalService = computed(
   () =>

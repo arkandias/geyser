@@ -4,8 +4,8 @@ import { computed } from "vue";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
-  type TeacherServicePrioritiesFragment,
-  TeacherServicePrioritiesFragmentDoc,
+  type ServicePrioritiesFragment,
+  ServicePrioritiesFragmentDoc,
 } from "@/gql/graphql.ts";
 import type { ArrayElement } from "@/types/misc.ts";
 import { priorityColor } from "@/utils";
@@ -14,11 +14,11 @@ import DetailsSection from "@/components/core/DetailsSection.vue";
 import ServiceList from "@/components/service/ServiceList.vue";
 
 const { dataFragment } = defineProps<{
-  dataFragment: FragmentType<typeof TeacherServicePrioritiesFragmentDoc>;
+  dataFragment: FragmentType<typeof ServicePrioritiesFragmentDoc>;
 }>();
 
 graphql(`
-  fragment TeacherServicePriorities on Service {
+  fragment ServicePriorities on Service {
     priorities(
       where: { isPriority: { _isNull: false } }
       orderBy: [
@@ -61,11 +61,10 @@ graphql(`
 const { t } = useTypedI18n();
 
 const priorities = computed(
-  () =>
-    useFragment(TeacherServicePrioritiesFragmentDoc, dataFragment).priorities,
+  () => useFragment(ServicePrioritiesFragmentDoc, dataFragment).priorities,
 );
 
-type Priority = ArrayElement<TeacherServicePrioritiesFragment["priorities"]>;
+type Priority = ArrayElement<ServicePrioritiesFragment["priorities"]>;
 
 const formatTypeAndSemester = (priority: Priority) =>
   t("service.priorities.format.typeAndSemester", {
