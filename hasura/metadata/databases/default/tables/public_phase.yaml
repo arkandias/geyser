@@ -1,27 +1,29 @@
 table:
   name: phase
   schema: public
-is_enum: true
-array_relationships:
-  - name: currentPhases
+object_relationships:
+  - name: organization
     using:
-      foreign_key_constraint_on:
-        column: value
-        table:
-          name: current_phase
-          schema: public
+      foreign_key_constraint_on: oid
+  - name: phase
+    using:
+      foreign_key_constraint_on: value
 select_permissions:
   - role: commissioner
     permission:
       columns:
-        - description
+        - oid
         - value
-      filter: {}
-    comment: Can view all phases and their status
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Can view the phase of their organization
   - role: teacher
     permission:
       columns:
-        - description
+        - oid
         - value
-      filter: {}
-    comment: Can view all phases and their status
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Can view the phase of their organization

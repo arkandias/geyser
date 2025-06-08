@@ -29,7 +29,7 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: current_phase
+            name: phase
             schema: public
           _where:
             value:
@@ -49,7 +49,7 @@ select_permissions:
         _and:
           - _exists:
               _table:
-                name: current_phase
+                name: phase
                 schema: public
               _where:
                 value:
@@ -102,4 +102,4 @@ select_permissions:
                             service:
                               teacher_id:
                                 _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"
+    comment: 'Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities'

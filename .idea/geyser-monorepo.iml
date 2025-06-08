@@ -16,6 +16,8 @@
       <excludeFolder url="file://$MODULE_DIR$/server/keys" />
       <excludeFolder url="file://$MODULE_DIR$/server/prod" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
+      <excludeFolder url="file://$MODULE_DIR$/db/migration/dumps" />
+      <excludeFolder url="file://$MODULE_DIR$/db/migration/summaries" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

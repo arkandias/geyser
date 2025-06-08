@@ -14,7 +14,7 @@ import MenuBase from "@/components/header/MenuBase.vue";
 const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
-const { profile } = useProfileStore();
+const { isLoaded, profile } = useProfileStore();
 
 const roleOptions = computed(() =>
   [RoleTypeEnum.Admin, RoleTypeEnum.Commissioner, RoleTypeEnum.Teacher]
@@ -34,7 +34,7 @@ const updateRole = async (value: RoleTypeEnum) => {
 <template>
   <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
     <QList>
-      <template v-if="authManager.isAuthenticated">
+      <template v-if="authManager.hasAccess && isLoaded">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
             {{ profile.displayname }}

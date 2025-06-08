@@ -35,7 +35,7 @@ select_permissions:
       filter:
         _exists:
           _table:
-            name: current_phase
+            name: phase
             schema: public
           _where:
             value:
@@ -54,7 +54,7 @@ select_permissions:
         _and:
           - _exists:
               _table:
-                name: current_phase
+                name: phase
                 schema: public
               _where:
                 value:

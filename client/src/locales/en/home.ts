@@ -41,7 +41,7 @@ export default {
     },
     alert: {
       loggedOut: "You are logged out",
-      notAuthenticated: "You are not authenticated",
+      noAccess: "You don't have access",
       loadingAppData: "Loading application settings…",
       profileNotLoaded: "Profile not loaded",
       shutdown: "Geyser is currently closed",

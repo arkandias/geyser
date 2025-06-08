@@ -19,11 +19,7 @@ export class AuthService {
 
   constructor(private configService: ConfigService) {}
 
-  validateRedirectUrl(redirectUrl: string | undefined): URL | null {
-    if (!redirectUrl) {
-      return null;
-    }
-
+  private validateRedirectUrl(redirectUrl: string): URL {
     let url: URL;
     try {
       url = new URL(redirectUrl);
@@ -41,7 +37,7 @@ export class AuthService {
     throw new BadRequestException("Redirect URL not allowed");
   }
 
-  newState(url?: string): string {
+  newState(url: string): string {
     const id = randomUUID();
     const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
     const redirectUrl = this.validateRedirectUrl(url);

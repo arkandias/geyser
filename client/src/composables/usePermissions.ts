@@ -1,6 +1,6 @@
 import { computed, inject, readonly } from "vue";
 
-import { PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
+import { PhaseTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
@@ -19,7 +19,7 @@ export const usePermissions = () => {
     () =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Teacher &&
-        currentPhase.value === PhaseEnum.Requests &&
+        currentPhase.value === PhaseTypeEnum.Requests &&
         isCurrentYearActive.value &&
         hasService.value),
   );
@@ -39,7 +39,7 @@ export const usePermissions = () => {
   const toViewAssignments = computed(
     () =>
       toEditAssignments.value ||
-      currentPhase.value === PhaseEnum.Results ||
+      currentPhase.value === PhaseTypeEnum.Results ||
       !isCurrentYearActive.value,
   );
 
@@ -47,7 +47,7 @@ export const usePermissions = () => {
     () =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Commissioner &&
-        currentPhase.value === PhaseEnum.Assignments &&
+        currentPhase.value === PhaseTypeEnum.Assignments &&
         isCurrentYearActive.value),
   );
 
@@ -65,14 +65,14 @@ export const usePermissions = () => {
     () =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Commissioner &&
-        currentPhase.value === PhaseEnum.Assignments),
+        currentPhase.value === PhaseTypeEnum.Assignments),
   );
 
   const toEditAService = computed(
     () => (service: { year: number; teacherId: number }) =>
       activeRole.value === RoleTypeEnum.Admin ||
       (activeRole.value === RoleTypeEnum.Teacher &&
-        currentPhase.value === PhaseEnum.Requests &&
+        currentPhase.value === PhaseTypeEnum.Requests &&
         service.year === currentYear.value &&
         service.teacherId === profile.value.id),
   );

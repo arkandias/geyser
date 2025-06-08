@@ -1,0 +1,49 @@
+table:
+  name: organization
+  schema: public
+object_relationships:
+  - name: phase
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: phase
+          schema: public
+array_relationships:
+  - name: appSettings
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: app_setting
+          schema: public
+  - name: years
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: year
+          schema: public
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - id
+        - key
+        - label
+        - sublabel
+      filter:
+        id:
+          _eq: X-Hasura-Org-Id
+    comment: Can view their own organization
+  - role: teacher
+    permission:
+      columns:
+        - id
+        - key
+        - label
+        - sublabel
+      filter:
+        id:
+          _eq: X-Hasura-Org-Id
+    comment: Can view their own organization

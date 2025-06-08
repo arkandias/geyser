@@ -182,12 +182,16 @@ export class AuthManager {
     }
   }
 
-  get isAuthenticated(): boolean {
+  get hasAccess(): boolean {
     return !!this._payload;
   }
 
   get isLoggedOut(): boolean {
     return this._postLogout;
+  }
+
+  get orgId(): number {
+    return this._payload?.orgId ?? NaN;
   }
 
   get userId(): number {

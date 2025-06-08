@@ -5,9 +5,12 @@ import {
   type BaseTokenPayload,
   type OmitWithIndex,
   accessTokenPayloadSchema,
-  baseTokenPayloadSchema,
   roleTypeSchema,
 } from "@geyser/shared";
+import {
+  RefreshTokenPayload,
+  refreshTokenPayloadSchema,
+} from "@geyser/shared/dist/schemas/refresh-token-payload.schema";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose from "jose";
 
@@ -65,11 +68,11 @@ export class JwtService {
     return result.payload;
   }
 
-  async makeAccessToken(userId: number): Promise<string> {
+  async makeAccessToken(orgId: number, userId: number): Promise<string> {
     const roles = await this.rolesService.findByUserId(userId);
     const roleTypes = roles.map((role) => roleTypeSchema.parse(role.type));
     if (!roleTypes.includes("teacher")) {
-      roleTypes.concat("teacher");
+      roleTypes.push("teacher");
     }
     roleTypes.sort();
 
@@ -80,13 +83,14 @@ export class JwtService {
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
       typ: "Bearer",
+      orgId,
       userId,
       allowedRoles: roleTypes,
       defaultRole: "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  async makeRefreshToken(userId: number): Promise<string> {
+  async makeRefreshToken(orgId: number, userId: number): Promise<string> {
     return this.makeToken({
       sub: userId,
       aud: this.configService.api.url.href,
@@ -94,6 +98,8 @@ export class JwtService {
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
       typ: "Refresh",
+      orgId,
+      userId,
     } satisfies OmitWithIndex<BaseTokenPayload, "iss" | "iat" | "jti">);
   }
 
@@ -111,10 +117,10 @@ export class JwtService {
     return parsed.data;
   }
 
-  async verifyRefreshToken(refreshToken: string): Promise<BaseTokenPayload> {
+  async verifyRefreshToken(refreshToken: string): Promise<RefreshTokenPayload> {
     const payload = await this.verifyToken(refreshToken, "Refresh");
 
-    const parsed = baseTokenPayloadSchema.safeParse(payload);
+    const parsed = refreshTokenPayloadSchema.safeParse(payload);
     if (!parsed.success) {
       throw new UnauthorizedException({
         message: "Invalid refresh token",

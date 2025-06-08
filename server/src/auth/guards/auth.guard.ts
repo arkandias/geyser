@@ -24,6 +24,14 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     // Extract required headers
+    const orgId = z
+      .number()
+      .optional()
+      .parse(
+        Array.isArray(request.headers["x-org-id"])
+          ? request.headers["x-org-id"].at(-1) // Last value
+          : request.headers["x-org-id"],
+      );
     const userId = z
       .number()
       .optional()
@@ -42,6 +50,7 @@ export class AuthGuard implements CanActivate {
       if (adminSecret === this.configService.api.adminSecret) {
         // Super admin: accept headers as-is
         request.auth = {
+          orgId,
           userId,
           userRole,
           isSuperAdmin: true,
@@ -64,23 +73,31 @@ export class AuthGuard implements CanActivate {
     // Verify JWT token
     const payload = await this.jwtService.verifyAccessToken(accessToken);
 
-    // Validate X-User-Id header against JWT
-    if (userId && userId !== payload.userId) {
+    // Validate X-Org-Id header against JWT
+    if (orgId && orgId !== payload.orgId) {
       throw new UnauthorizedException(
-        `X-User-Id header '${userId}' does not match user id '${payload.userId}'`,
+        `X-Org-Id header '${orgId}' does not match organization id '${payload.orgId}' from access token`,
       );
     }
 
-    // Validate X-User-Role against JWT allowed roles
+    // Validate X-User-Id header against JWT
+    if (userId && userId !== payload.userId) {
+      throw new UnauthorizedException(
+        `X-User-Id header '${userId}' does not match user id '${payload.userId}' from access token`,
+      );
+    }
+
+    // Validate X-User-Role header against JWT allowed roles
     const userRoleWithDefault = userRole ?? payload.defaultRole;
     if (!payload.allowedRoles.includes(userRoleWithDefault as RoleType)) {
       throw new UnauthorizedException(
-        `${userRole ? "X-User-Role header" : "User default role"} '${userRoleWithDefault}' not in user allowed roles: [${payload.allowedRoles.join(", ")}]`,
+        `${userRole ? "X-User-Role header" : "User default role"} '${userRoleWithDefault}' not in user allowed roles from access token: [${payload.allowedRoles.join(", ")}]`,
       );
     }
 
     // JWT validation successful
     request.auth = {
+      orgId: payload.orgId,
       userId: payload.userId,
       userRole: userRoleWithDefault,
       jwtPayload: payload,

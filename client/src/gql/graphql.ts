@@ -23,12 +23,18 @@ export type AppSetting = {
   __typename?: 'AppSetting';
   /** Timestamp when the record was created */
   createdAt: Scalars['timestamptz']['output'];
-  /** Text identifier */
+  /** Unique setting identifier */
+  id: Scalars['Int']['output'];
+  /** Setting name */
   key: Scalars['String']['output'];
+  /** Organization reference */
+  oid: Scalars['Int']['output'];
+  /** An object relationship */
+  organization: Organization;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** Text content */
-  value?: Maybe<Scalars['String']['output']>;
+  /** Setting value */
+  value: Scalars['String']['output'];
 };
 
 /** aggregated selection of "app_setting" */
@@ -38,12 +44,24 @@ export type AppSettingAggregate = {
   nodes: Array<AppSetting>;
 };
 
+export type AppSettingAggregateBoolExp = {
+  count?: InputMaybe<AppSettingAggregateBoolExpCount>;
+};
+
 /** aggregate fields of "app_setting" */
 export type AppSettingAggregateFields = {
   __typename?: 'AppSettingAggregateFields';
+  avg?: Maybe<AppSettingAvgFields>;
   count: Scalars['Int']['output'];
   max?: Maybe<AppSettingMaxFields>;
   min?: Maybe<AppSettingMinFields>;
+  stddev?: Maybe<AppSettingStddevFields>;
+  stddevPop?: Maybe<AppSettingStddevPopFields>;
+  stddevSamp?: Maybe<AppSettingStddevSampFields>;
+  sum?: Maybe<AppSettingSumFields>;
+  varPop?: Maybe<AppSettingVarPopFields>;
+  varSamp?: Maybe<AppSettingVarSampFields>;
+  variance?: Maybe<AppSettingVarianceFields>;
 };
 
 
@@ -53,32 +71,83 @@ export type AppSettingAggregateFieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** order by aggregate values of table "app_setting" */
+export type AppSettingAggregateOrderBy = {
+  avg?: InputMaybe<AppSettingAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<AppSettingMaxOrderBy>;
+  min?: InputMaybe<AppSettingMinOrderBy>;
+  stddev?: InputMaybe<AppSettingStddevOrderBy>;
+  stddevPop?: InputMaybe<AppSettingStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<AppSettingStddevSampOrderBy>;
+  sum?: InputMaybe<AppSettingSumOrderBy>;
+  varPop?: InputMaybe<AppSettingVarPopOrderBy>;
+  varSamp?: InputMaybe<AppSettingVarSampOrderBy>;
+  variance?: InputMaybe<AppSettingVarianceOrderBy>;
+};
+
+/** input type for inserting array relation for remote table "app_setting" */
+export type AppSettingArrRelInsertInput = {
+  data: Array<AppSettingInsertInput>;
+  /** upsert condition */
+  onConflict?: InputMaybe<AppSettingOnConflict>;
+};
+
+/** aggregate avg on columns */
+export type AppSettingAvgFields = {
+  __typename?: 'AppSettingAvgFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "app_setting" */
+export type AppSettingAvgOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
 /** Boolean expression to filter rows from the table "app_setting". All fields are combined with a logical 'AND'. */
 export type AppSettingBoolExp = {
   _and?: InputMaybe<Array<AppSettingBoolExp>>;
   _not?: InputMaybe<AppSettingBoolExp>;
   _or?: InputMaybe<Array<AppSettingBoolExp>>;
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
+  id?: InputMaybe<IntComparisonExp>;
   key?: InputMaybe<StringComparisonExp>;
+  oid?: InputMaybe<IntComparisonExp>;
+  organization?: InputMaybe<OrganizationBoolExp>;
   updatedAt?: InputMaybe<TimestamptzComparisonExp>;
   value?: InputMaybe<StringComparisonExp>;
 };
 
 /** unique or primary key constraints on table "app_setting" */
 export enum AppSettingConstraint {
-  /** unique or primary key constraint on columns "key" */
+  /** unique or primary key constraint on columns "id" */
   AppSettingPkey = 'app_setting_pkey'
 }
+
+/** input type for incrementing numeric columns in table "app_setting" */
+export type AppSettingIncInput = {
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+};
 
 /** input type for inserting data into table "app_setting" */
 export type AppSettingInsertInput = {
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text identifier */
+  /** Setting name */
   key?: InputMaybe<Scalars['String']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  organization?: InputMaybe<OrganizationObjRelInsertInput>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text content */
+  /** Setting value */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -87,12 +156,32 @@ export type AppSettingMaxFields = {
   __typename?: 'AppSettingMaxFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Text identifier */
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Setting name */
   key?: Maybe<Scalars['String']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Text content */
+  /** Setting value */
   value?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by max() on columns of table "app_setting" */
+export type AppSettingMaxOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Setting name */
+  key?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
+  /** Setting value */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -100,12 +189,32 @@ export type AppSettingMinFields = {
   __typename?: 'AppSettingMinFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Text identifier */
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Setting name */
   key?: Maybe<Scalars['String']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Text content */
+  /** Setting value */
   value?: Maybe<Scalars['String']['output']>;
+};
+
+/** order by min() on columns of table "app_setting" */
+export type AppSettingMinOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Setting name */
+  key?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
+  /** Setting value */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "app_setting" */
@@ -127,15 +236,18 @@ export type AppSettingOnConflict = {
 /** Ordering options when selecting data from "app_setting". */
 export type AppSettingOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
   key?: InputMaybe<OrderBy>;
+  oid?: InputMaybe<OrderBy>;
+  organization?: InputMaybe<OrganizationOrderBy>;
   updatedAt?: InputMaybe<OrderBy>;
   value?: InputMaybe<OrderBy>;
 };
 
 /** primary key columns input for table: app_setting */
 export type AppSettingPkColumnsInput = {
-  /** Text identifier */
-  key: Scalars['String']['input'];
+  /** Unique setting identifier */
+  id: Scalars['Int']['input'];
 };
 
 /** select columns of table "app_setting" */
@@ -143,7 +255,11 @@ export enum AppSettingSelectColumn {
   /** column name */
   CreatedAt = 'createdAt',
   /** column name */
+  Id = 'id',
+  /** column name */
   Key = 'key',
+  /** column name */
+  Oid = 'oid',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -154,12 +270,65 @@ export enum AppSettingSelectColumn {
 export type AppSettingSetInput = {
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text identifier */
+  /** Setting name */
   key?: InputMaybe<Scalars['String']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text content */
+  /** Setting value */
   value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type AppSettingStddevFields = {
+  __typename?: 'AppSettingStddevFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "app_setting" */
+export type AppSettingStddevOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevPop on columns */
+export type AppSettingStddevPopFields = {
+  __typename?: 'AppSettingStddevPopFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "app_setting" */
+export type AppSettingStddevPopOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type AppSettingStddevSampFields = {
+  __typename?: 'AppSettingStddevSampFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "app_setting" */
+export type AppSettingStddevSampOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "app_setting" */
@@ -174,12 +343,33 @@ export type AppSettingStreamCursorInput = {
 export type AppSettingStreamCursorValueInput = {
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text identifier */
+  /** Unique setting identifier */
+  id?: InputMaybe<Scalars['Int']['input']>;
+  /** Setting name */
   key?: InputMaybe<Scalars['String']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Text content */
+  /** Setting value */
   value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** aggregate sum on columns */
+export type AppSettingSumFields = {
+  __typename?: 'AppSettingSumFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "app_setting" */
+export type AppSettingSumOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
 };
 
 /** update columns of table "app_setting" */
@@ -189,16 +379,71 @@ export enum AppSettingUpdateColumn {
   /** column name */
   Key = 'key',
   /** column name */
+  Oid = 'oid',
+  /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
   Value = 'value'
 }
 
 export type AppSettingUpdates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<AppSettingIncInput>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<AppSettingSetInput>;
   /** filter the rows which have to be updated */
   where: AppSettingBoolExp;
+};
+
+/** aggregate varPop on columns */
+export type AppSettingVarPopFields = {
+  __typename?: 'AppSettingVarPopFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "app_setting" */
+export type AppSettingVarPopOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type AppSettingVarSampFields = {
+  __typename?: 'AppSettingVarSampFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "app_setting" */
+export type AppSettingVarSampOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type AppSettingVarianceFields = {
+  __typename?: 'AppSettingVarianceFields';
+  /** Unique setting identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "app_setting" */
+export type AppSettingVarianceOrderBy = {
+  /** Unique setting identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'. */
@@ -2439,356 +2684,6 @@ export type CourseVarianceOrderBy = {
   year?: InputMaybe<OrderBy>;
 };
 
-/** Singleton table that stores the active system phase reference */
-export type CurrentPhase = {
-  __typename?: 'CurrentPhase';
-  /** Timestamp when the record was created */
-  createdAt: Scalars['timestamptz']['output'];
-  /** Primary key with constraint to ensure only one record exists */
-  id: Scalars['Int']['output'];
-  /** An object relationship */
-  phase?: Maybe<Phase>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt: Scalars['timestamptz']['output'];
-  /** Reference to the currently active phase identifier */
-  value?: Maybe<PhaseEnum>;
-};
-
-/** aggregated selection of "current_phase" */
-export type CurrentPhaseAggregate = {
-  __typename?: 'CurrentPhaseAggregate';
-  aggregate?: Maybe<CurrentPhaseAggregateFields>;
-  nodes: Array<CurrentPhase>;
-};
-
-export type CurrentPhaseAggregateBoolExp = {
-  count?: InputMaybe<CurrentPhaseAggregateBoolExpCount>;
-};
-
-/** aggregate fields of "current_phase" */
-export type CurrentPhaseAggregateFields = {
-  __typename?: 'CurrentPhaseAggregateFields';
-  avg?: Maybe<CurrentPhaseAvgFields>;
-  count: Scalars['Int']['output'];
-  max?: Maybe<CurrentPhaseMaxFields>;
-  min?: Maybe<CurrentPhaseMinFields>;
-  stddev?: Maybe<CurrentPhaseStddevFields>;
-  stddevPop?: Maybe<CurrentPhaseStddevPopFields>;
-  stddevSamp?: Maybe<CurrentPhaseStddevSampFields>;
-  sum?: Maybe<CurrentPhaseSumFields>;
-  varPop?: Maybe<CurrentPhaseVarPopFields>;
-  varSamp?: Maybe<CurrentPhaseVarSampFields>;
-  variance?: Maybe<CurrentPhaseVarianceFields>;
-};
-
-
-/** aggregate fields of "current_phase" */
-export type CurrentPhaseAggregateFieldsCountArgs = {
-  columns?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-};
-
-/** order by aggregate values of table "current_phase" */
-export type CurrentPhaseAggregateOrderBy = {
-  avg?: InputMaybe<CurrentPhaseAvgOrderBy>;
-  count?: InputMaybe<OrderBy>;
-  max?: InputMaybe<CurrentPhaseMaxOrderBy>;
-  min?: InputMaybe<CurrentPhaseMinOrderBy>;
-  stddev?: InputMaybe<CurrentPhaseStddevOrderBy>;
-  stddevPop?: InputMaybe<CurrentPhaseStddevPopOrderBy>;
-  stddevSamp?: InputMaybe<CurrentPhaseStddevSampOrderBy>;
-  sum?: InputMaybe<CurrentPhaseSumOrderBy>;
-  varPop?: InputMaybe<CurrentPhaseVarPopOrderBy>;
-  varSamp?: InputMaybe<CurrentPhaseVarSampOrderBy>;
-  variance?: InputMaybe<CurrentPhaseVarianceOrderBy>;
-};
-
-/** input type for inserting array relation for remote table "current_phase" */
-export type CurrentPhaseArrRelInsertInput = {
-  data: Array<CurrentPhaseInsertInput>;
-  /** upsert condition */
-  onConflict?: InputMaybe<CurrentPhaseOnConflict>;
-};
-
-/** aggregate avg on columns */
-export type CurrentPhaseAvgFields = {
-  __typename?: 'CurrentPhaseAvgFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by avg() on columns of table "current_phase" */
-export type CurrentPhaseAvgOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** Boolean expression to filter rows from the table "current_phase". All fields are combined with a logical 'AND'. */
-export type CurrentPhaseBoolExp = {
-  _and?: InputMaybe<Array<CurrentPhaseBoolExp>>;
-  _not?: InputMaybe<CurrentPhaseBoolExp>;
-  _or?: InputMaybe<Array<CurrentPhaseBoolExp>>;
-  createdAt?: InputMaybe<TimestamptzComparisonExp>;
-  id?: InputMaybe<IntComparisonExp>;
-  phase?: InputMaybe<PhaseBoolExp>;
-  updatedAt?: InputMaybe<TimestamptzComparisonExp>;
-  value?: InputMaybe<PhaseEnumComparisonExp>;
-};
-
-/** unique or primary key constraints on table "current_phase" */
-export enum CurrentPhaseConstraint {
-  /** unique or primary key constraint on columns "id" */
-  CurrentPhasePkey = 'current_phase_pkey'
-}
-
-/** input type for incrementing numeric columns in table "current_phase" */
-export type CurrentPhaseIncInput = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<Scalars['Int']['input']>;
-};
-
-/** input type for inserting data into table "current_phase" */
-export type CurrentPhaseInsertInput = {
-  /** Timestamp when the record was created */
-  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<Scalars['Int']['input']>;
-  phase?: InputMaybe<PhaseObjRelInsertInput>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Reference to the currently active phase identifier */
-  value?: InputMaybe<PhaseEnum>;
-};
-
-/** aggregate max on columns */
-export type CurrentPhaseMaxFields = {
-  __typename?: 'CurrentPhaseMaxFields';
-  /** Timestamp when the record was created */
-  createdAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-};
-
-/** order by max() on columns of table "current_phase" */
-export type CurrentPhaseMaxOrderBy = {
-  /** Timestamp when the record was created */
-  createdAt?: InputMaybe<OrderBy>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: InputMaybe<OrderBy>;
-};
-
-/** aggregate min on columns */
-export type CurrentPhaseMinFields = {
-  __typename?: 'CurrentPhaseMinFields';
-  /** Timestamp when the record was created */
-  createdAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Int']['output']>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-};
-
-/** order by min() on columns of table "current_phase" */
-export type CurrentPhaseMinOrderBy = {
-  /** Timestamp when the record was created */
-  createdAt?: InputMaybe<OrderBy>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: InputMaybe<OrderBy>;
-};
-
-/** response of any mutation on the table "current_phase" */
-export type CurrentPhaseMutationResponse = {
-  __typename?: 'CurrentPhaseMutationResponse';
-  /** number of rows affected by the mutation */
-  affectedRows: Scalars['Int']['output'];
-  /** data from the rows affected by the mutation */
-  returning: Array<CurrentPhase>;
-};
-
-/** on_conflict condition type for table "current_phase" */
-export type CurrentPhaseOnConflict = {
-  constraint: CurrentPhaseConstraint;
-  updateColumns?: Array<CurrentPhaseUpdateColumn>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-/** Ordering options when selecting data from "current_phase". */
-export type CurrentPhaseOrderBy = {
-  createdAt?: InputMaybe<OrderBy>;
-  id?: InputMaybe<OrderBy>;
-  phase?: InputMaybe<PhaseOrderBy>;
-  updatedAt?: InputMaybe<OrderBy>;
-  value?: InputMaybe<OrderBy>;
-};
-
-/** primary key columns input for table: current_phase */
-export type CurrentPhasePkColumnsInput = {
-  /** Primary key with constraint to ensure only one record exists */
-  id: Scalars['Int']['input'];
-};
-
-/** select columns of table "current_phase" */
-export enum CurrentPhaseSelectColumn {
-  /** column name */
-  CreatedAt = 'createdAt',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UpdatedAt = 'updatedAt',
-  /** column name */
-  Value = 'value'
-}
-
-/** input type for updating data in table "current_phase" */
-export type CurrentPhaseSetInput = {
-  /** Timestamp when the record was created */
-  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Reference to the currently active phase identifier */
-  value?: InputMaybe<PhaseEnum>;
-};
-
-/** aggregate stddev on columns */
-export type CurrentPhaseStddevFields = {
-  __typename?: 'CurrentPhaseStddevFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddev() on columns of table "current_phase" */
-export type CurrentPhaseStddevOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** aggregate stddevPop on columns */
-export type CurrentPhaseStddevPopFields = {
-  __typename?: 'CurrentPhaseStddevPopFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddevPop() on columns of table "current_phase" */
-export type CurrentPhaseStddevPopOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** aggregate stddevSamp on columns */
-export type CurrentPhaseStddevSampFields = {
-  __typename?: 'CurrentPhaseStddevSampFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by stddevSamp() on columns of table "current_phase" */
-export type CurrentPhaseStddevSampOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** Streaming cursor of the table "current_phase" */
-export type CurrentPhaseStreamCursorInput = {
-  /** Stream column input with initial value */
-  initialValue: CurrentPhaseStreamCursorValueInput;
-  /** cursor ordering */
-  ordering?: InputMaybe<CursorOrdering>;
-};
-
-/** Initial value of the column from where the streaming should start */
-export type CurrentPhaseStreamCursorValueInput = {
-  /** Timestamp when the record was created */
-  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<Scalars['Int']['input']>;
-  /** Timestamp when the record was last updated, automatically managed by trigger */
-  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Reference to the currently active phase identifier */
-  value?: InputMaybe<PhaseEnum>;
-};
-
-/** aggregate sum on columns */
-export type CurrentPhaseSumFields = {
-  __typename?: 'CurrentPhaseSumFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Int']['output']>;
-};
-
-/** order by sum() on columns of table "current_phase" */
-export type CurrentPhaseSumOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** update columns of table "current_phase" */
-export enum CurrentPhaseUpdateColumn {
-  /** column name */
-  CreatedAt = 'createdAt',
-  /** column name */
-  Id = 'id',
-  /** column name */
-  UpdatedAt = 'updatedAt',
-  /** column name */
-  Value = 'value'
-}
-
-export type CurrentPhaseUpdates = {
-  /** increments the numeric columns with given value of the filtered values */
-  _inc?: InputMaybe<CurrentPhaseIncInput>;
-  /** sets the columns of the filtered rows to the given values */
-  _set?: InputMaybe<CurrentPhaseSetInput>;
-  /** filter the rows which have to be updated */
-  where: CurrentPhaseBoolExp;
-};
-
-/** aggregate varPop on columns */
-export type CurrentPhaseVarPopFields = {
-  __typename?: 'CurrentPhaseVarPopFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by varPop() on columns of table "current_phase" */
-export type CurrentPhaseVarPopOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** aggregate varSamp on columns */
-export type CurrentPhaseVarSampFields = {
-  __typename?: 'CurrentPhaseVarSampFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by varSamp() on columns of table "current_phase" */
-export type CurrentPhaseVarSampOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
-/** aggregate variance on columns */
-export type CurrentPhaseVarianceFields = {
-  __typename?: 'CurrentPhaseVarianceFields';
-  /** Primary key with constraint to ensure only one record exists */
-  id?: Maybe<Scalars['Float']['output']>;
-};
-
-/** order by variance() on columns of table "current_phase" */
-export type CurrentPhaseVarianceOrderBy = {
-  /** Primary key with constraint to ensure only one record exists */
-  id?: InputMaybe<OrderBy>;
-};
-
 /** ordering argument of a cursor */
 export enum CursorOrdering {
   /** ascending ordering of the cursor */
@@ -3458,37 +3353,368 @@ export enum OrderBy {
   DescNullsLast = 'DESC_NULLS_LAST'
 }
 
-/** System phases controlling the course assignment workflow */
+/** Organization information */
+export type Organization = {
+  __typename?: 'Organization';
+  /** An array relationship */
+  appSettings: Array<AppSetting>;
+  /** An aggregate relationship */
+  appSettingsAggregate: AppSettingAggregate;
+  /** Timestamp when the record was created */
+  createdAt: Scalars['timestamptz']['output'];
+  /** Unique identifier */
+  id: Scalars['Int']['output'];
+  /** Human-readable identifier */
+  key: Scalars['String']['output'];
+  /** Label for display purposes */
+  label: Scalars['String']['output'];
+  /** An object relationship */
+  phase?: Maybe<Phase>;
+  /** Sublabel for display purposes */
+  sublabel?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt: Scalars['timestamptz']['output'];
+  /** An array relationship */
+  years: Array<Year>;
+  /** An aggregate relationship */
+  yearsAggregate: YearAggregate;
+};
+
+
+/** Organization information */
+export type OrganizationAppSettingsArgs = {
+  distinctOn?: InputMaybe<Array<AppSettingSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AppSettingOrderBy>>;
+  where?: InputMaybe<AppSettingBoolExp>;
+};
+
+
+/** Organization information */
+export type OrganizationAppSettingsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<AppSettingSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<AppSettingOrderBy>>;
+  where?: InputMaybe<AppSettingBoolExp>;
+};
+
+
+/** Organization information */
+export type OrganizationYearsArgs = {
+  distinctOn?: InputMaybe<Array<YearSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<YearOrderBy>>;
+  where?: InputMaybe<YearBoolExp>;
+};
+
+
+/** Organization information */
+export type OrganizationYearsAggregateArgs = {
+  distinctOn?: InputMaybe<Array<YearSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<YearOrderBy>>;
+  where?: InputMaybe<YearBoolExp>;
+};
+
+/** aggregated selection of "organization" */
+export type OrganizationAggregate = {
+  __typename?: 'OrganizationAggregate';
+  aggregate?: Maybe<OrganizationAggregateFields>;
+  nodes: Array<Organization>;
+};
+
+/** aggregate fields of "organization" */
+export type OrganizationAggregateFields = {
+  __typename?: 'OrganizationAggregateFields';
+  avg?: Maybe<OrganizationAvgFields>;
+  count: Scalars['Int']['output'];
+  max?: Maybe<OrganizationMaxFields>;
+  min?: Maybe<OrganizationMinFields>;
+  stddev?: Maybe<OrganizationStddevFields>;
+  stddevPop?: Maybe<OrganizationStddevPopFields>;
+  stddevSamp?: Maybe<OrganizationStddevSampFields>;
+  sum?: Maybe<OrganizationSumFields>;
+  varPop?: Maybe<OrganizationVarPopFields>;
+  varSamp?: Maybe<OrganizationVarSampFields>;
+  variance?: Maybe<OrganizationVarianceFields>;
+};
+
+
+/** aggregate fields of "organization" */
+export type OrganizationAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<OrganizationSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** aggregate avg on columns */
+export type OrganizationAvgFields = {
+  __typename?: 'OrganizationAvgFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Boolean expression to filter rows from the table "organization". All fields are combined with a logical 'AND'. */
+export type OrganizationBoolExp = {
+  _and?: InputMaybe<Array<OrganizationBoolExp>>;
+  _not?: InputMaybe<OrganizationBoolExp>;
+  _or?: InputMaybe<Array<OrganizationBoolExp>>;
+  appSettings?: InputMaybe<AppSettingBoolExp>;
+  appSettingsAggregate?: InputMaybe<AppSettingAggregateBoolExp>;
+  createdAt?: InputMaybe<TimestamptzComparisonExp>;
+  id?: InputMaybe<IntComparisonExp>;
+  key?: InputMaybe<StringComparisonExp>;
+  label?: InputMaybe<StringComparisonExp>;
+  phase?: InputMaybe<PhaseBoolExp>;
+  sublabel?: InputMaybe<StringComparisonExp>;
+  updatedAt?: InputMaybe<TimestamptzComparisonExp>;
+  years?: InputMaybe<YearBoolExp>;
+  yearsAggregate?: InputMaybe<YearAggregateBoolExp>;
+};
+
+/** unique or primary key constraints on table "organization" */
+export enum OrganizationConstraint {
+  /** unique or primary key constraint on columns "key" */
+  OrganizationKeyKey = 'organization_key_key',
+  /** unique or primary key constraint on columns "id" */
+  OrganizationPkey = 'organization_pkey'
+}
+
+/** input type for inserting data into table "organization" */
+export type OrganizationInsertInput = {
+  appSettings?: InputMaybe<AppSettingArrRelInsertInput>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Human-readable identifier */
+  key?: InputMaybe<Scalars['String']['input']>;
+  /** Label for display purposes */
+  label?: InputMaybe<Scalars['String']['input']>;
+  phase?: InputMaybe<PhaseObjRelInsertInput>;
+  /** Sublabel for display purposes */
+  sublabel?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  years?: InputMaybe<YearArrRelInsertInput>;
+};
+
+/** aggregate max on columns */
+export type OrganizationMaxFields = {
+  __typename?: 'OrganizationMaxFields';
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Human-readable identifier */
+  key?: Maybe<Scalars['String']['output']>;
+  /** Label for display purposes */
+  label?: Maybe<Scalars['String']['output']>;
+  /** Sublabel for display purposes */
+  sublabel?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** aggregate min on columns */
+export type OrganizationMinFields = {
+  __typename?: 'OrganizationMinFields';
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Human-readable identifier */
+  key?: Maybe<Scalars['String']['output']>;
+  /** Label for display purposes */
+  label?: Maybe<Scalars['String']['output']>;
+  /** Sublabel for display purposes */
+  sublabel?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** response of any mutation on the table "organization" */
+export type OrganizationMutationResponse = {
+  __typename?: 'OrganizationMutationResponse';
+  /** number of rows affected by the mutation */
+  affectedRows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<Organization>;
+};
+
+/** input type for inserting object relation for remote table "organization" */
+export type OrganizationObjRelInsertInput = {
+  data: OrganizationInsertInput;
+  /** upsert condition */
+  onConflict?: InputMaybe<OrganizationOnConflict>;
+};
+
+/** on_conflict condition type for table "organization" */
+export type OrganizationOnConflict = {
+  constraint: OrganizationConstraint;
+  updateColumns?: Array<OrganizationUpdateColumn>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+/** Ordering options when selecting data from "organization". */
+export type OrganizationOrderBy = {
+  appSettingsAggregate?: InputMaybe<AppSettingAggregateOrderBy>;
+  createdAt?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  key?: InputMaybe<OrderBy>;
+  label?: InputMaybe<OrderBy>;
+  phase?: InputMaybe<PhaseOrderBy>;
+  sublabel?: InputMaybe<OrderBy>;
+  updatedAt?: InputMaybe<OrderBy>;
+  yearsAggregate?: InputMaybe<YearAggregateOrderBy>;
+};
+
+/** primary key columns input for table: organization */
+export type OrganizationPkColumnsInput = {
+  /** Unique identifier */
+  id: Scalars['Int']['input'];
+};
+
+/** select columns of table "organization" */
+export enum OrganizationSelectColumn {
+  /** column name */
+  CreatedAt = 'createdAt',
+  /** column name */
+  Id = 'id',
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  Sublabel = 'sublabel',
+  /** column name */
+  UpdatedAt = 'updatedAt'
+}
+
+/** input type for updating data in table "organization" */
+export type OrganizationSetInput = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Human-readable identifier */
+  key?: InputMaybe<Scalars['String']['input']>;
+  /** Label for display purposes */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Sublabel for display purposes */
+  sublabel?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate stddev on columns */
+export type OrganizationStddevFields = {
+  __typename?: 'OrganizationStddevFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddevPop on columns */
+export type OrganizationStddevPopFields = {
+  __typename?: 'OrganizationStddevPopFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate stddevSamp on columns */
+export type OrganizationStddevSampFields = {
+  __typename?: 'OrganizationStddevSampFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Streaming cursor of the table "organization" */
+export type OrganizationStreamCursorInput = {
+  /** Stream column input with initial value */
+  initialValue: OrganizationStreamCursorValueInput;
+  /** cursor ordering */
+  ordering?: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type OrganizationStreamCursorValueInput = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Unique identifier */
+  id?: InputMaybe<Scalars['Int']['input']>;
+  /** Human-readable identifier */
+  key?: InputMaybe<Scalars['String']['input']>;
+  /** Label for display purposes */
+  label?: InputMaybe<Scalars['String']['input']>;
+  /** Sublabel for display purposes */
+  sublabel?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+};
+
+/** aggregate sum on columns */
+export type OrganizationSumFields = {
+  __typename?: 'OrganizationSumFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+};
+
+/** update columns of table "organization" */
+export enum OrganizationUpdateColumn {
+  /** column name */
+  CreatedAt = 'createdAt',
+  /** column name */
+  Key = 'key',
+  /** column name */
+  Label = 'label',
+  /** column name */
+  Sublabel = 'sublabel',
+  /** column name */
+  UpdatedAt = 'updatedAt'
+}
+
+export type OrganizationUpdates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<OrganizationSetInput>;
+  /** filter the rows which have to be updated */
+  where: OrganizationBoolExp;
+};
+
+/** aggregate varPop on columns */
+export type OrganizationVarPopFields = {
+  __typename?: 'OrganizationVarPopFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate varSamp on columns */
+export type OrganizationVarSampFields = {
+  __typename?: 'OrganizationVarSampFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** aggregate variance on columns */
+export type OrganizationVarianceFields = {
+  __typename?: 'OrganizationVarianceFields';
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+};
+
+/** Current active phase for each organization */
 export type Phase = {
   __typename?: 'Phase';
-  /** An array relationship */
-  currentPhases: Array<CurrentPhase>;
-  /** An aggregate relationship */
-  currentPhasesAggregate: CurrentPhaseAggregate;
-  /** Summary of activities and permissions during this phase */
-  description?: Maybe<Scalars['String']['output']>;
-  /** Phase identifier */
-  value: Scalars['String']['output'];
-};
-
-
-/** System phases controlling the course assignment workflow */
-export type PhaseCurrentPhasesArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
-/** System phases controlling the course assignment workflow */
-export type PhaseCurrentPhasesAggregateArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
+  /** Timestamp when the record was created */
+  createdAt: Scalars['timestamptz']['output'];
+  /** Organization reference */
+  oid: Scalars['Int']['output'];
+  /** An object relationship */
+  organization: Organization;
+  /** An object relationship */
+  phase: PhaseType;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt: Scalars['timestamptz']['output'];
+  /** Active phase reference */
+  value: PhaseTypeEnum;
 };
 
 /** aggregated selection of "phase" */
@@ -3498,12 +3724,24 @@ export type PhaseAggregate = {
   nodes: Array<Phase>;
 };
 
+export type PhaseAggregateBoolExp = {
+  count?: InputMaybe<PhaseAggregateBoolExpCount>;
+};
+
 /** aggregate fields of "phase" */
 export type PhaseAggregateFields = {
   __typename?: 'PhaseAggregateFields';
+  avg?: Maybe<PhaseAvgFields>;
   count: Scalars['Int']['output'];
   max?: Maybe<PhaseMaxFields>;
   min?: Maybe<PhaseMinFields>;
+  stddev?: Maybe<PhaseStddevFields>;
+  stddevPop?: Maybe<PhaseStddevPopFields>;
+  stddevSamp?: Maybe<PhaseStddevSampFields>;
+  sum?: Maybe<PhaseSumFields>;
+  varPop?: Maybe<PhaseVarPopFields>;
+  varSamp?: Maybe<PhaseVarSampFields>;
+  variance?: Maybe<PhaseVarianceFields>;
 };
 
 
@@ -3513,68 +3751,120 @@ export type PhaseAggregateFieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** order by aggregate values of table "phase" */
+export type PhaseAggregateOrderBy = {
+  avg?: InputMaybe<PhaseAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<PhaseMaxOrderBy>;
+  min?: InputMaybe<PhaseMinOrderBy>;
+  stddev?: InputMaybe<PhaseStddevOrderBy>;
+  stddevPop?: InputMaybe<PhaseStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<PhaseStddevSampOrderBy>;
+  sum?: InputMaybe<PhaseSumOrderBy>;
+  varPop?: InputMaybe<PhaseVarPopOrderBy>;
+  varSamp?: InputMaybe<PhaseVarSampOrderBy>;
+  variance?: InputMaybe<PhaseVarianceOrderBy>;
+};
+
+/** input type for inserting array relation for remote table "phase" */
+export type PhaseArrRelInsertInput = {
+  data: Array<PhaseInsertInput>;
+  /** upsert condition */
+  onConflict?: InputMaybe<PhaseOnConflict>;
+};
+
+/** aggregate avg on columns */
+export type PhaseAvgFields = {
+  __typename?: 'PhaseAvgFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "phase" */
+export type PhaseAvgOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
 /** Boolean expression to filter rows from the table "phase". All fields are combined with a logical 'AND'. */
 export type PhaseBoolExp = {
   _and?: InputMaybe<Array<PhaseBoolExp>>;
   _not?: InputMaybe<PhaseBoolExp>;
   _or?: InputMaybe<Array<PhaseBoolExp>>;
-  currentPhases?: InputMaybe<CurrentPhaseBoolExp>;
-  currentPhasesAggregate?: InputMaybe<CurrentPhaseAggregateBoolExp>;
-  description?: InputMaybe<StringComparisonExp>;
-  value?: InputMaybe<StringComparisonExp>;
+  createdAt?: InputMaybe<TimestamptzComparisonExp>;
+  oid?: InputMaybe<IntComparisonExp>;
+  organization?: InputMaybe<OrganizationBoolExp>;
+  phase?: InputMaybe<PhaseTypeBoolExp>;
+  updatedAt?: InputMaybe<TimestamptzComparisonExp>;
+  value?: InputMaybe<PhaseTypeEnumComparisonExp>;
 };
 
 /** unique or primary key constraints on table "phase" */
 export enum PhaseConstraint {
-  /** unique or primary key constraint on columns "value" */
+  /** unique or primary key constraint on columns "oid" */
   PhasePkey = 'phase_pkey'
 }
 
-export enum PhaseEnum {
-  /** The course assignment committee reviews requests and makes final teaching assignments, during which teachers can view but not modify their requests. */
-  Assignments = 'ASSIGNMENTS',
-  /** Teachers submit their teaching preferences by making primary and secondary course requests, while also confirming their required teaching hours and any service modifications. */
-  Requests = 'REQUESTS',
-  /** Teachers can view their final course assignments for the upcoming year, along with historical assignments from previous years. */
-  Results = 'RESULTS',
-  /** System is temporarily closed, typically between academic years or during maintenance periods. */
-  Shutdown = 'SHUTDOWN'
-}
-
-/** Boolean expression to compare columns of type "PhaseEnum". All fields are combined with logical 'AND'. */
-export type PhaseEnumComparisonExp = {
-  _eq?: InputMaybe<PhaseEnum>;
-  _in?: InputMaybe<Array<PhaseEnum>>;
-  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
-  _neq?: InputMaybe<PhaseEnum>;
-  _nin?: InputMaybe<Array<PhaseEnum>>;
+/** input type for incrementing numeric columns in table "phase" */
+export type PhaseIncInput = {
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
 };
 
 /** input type for inserting data into table "phase" */
 export type PhaseInsertInput = {
-  currentPhases?: InputMaybe<CurrentPhaseArrRelInsertInput>;
-  /** Summary of activities and permissions during this phase */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Phase identifier */
-  value?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  organization?: InputMaybe<OrganizationObjRelInsertInput>;
+  phase?: InputMaybe<PhaseTypeObjRelInsertInput>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Active phase reference */
+  value?: InputMaybe<PhaseTypeEnum>;
 };
 
 /** aggregate max on columns */
 export type PhaseMaxFields = {
   __typename?: 'PhaseMaxFields';
-  /** Summary of activities and permissions during this phase */
-  description?: Maybe<Scalars['String']['output']>;
-  /** Phase identifier */
-  value?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by max() on columns of table "phase" */
+export type PhaseMaxOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
 export type PhaseMinFields = {
   __typename?: 'PhaseMinFields';
-  /** Summary of activities and permissions during this phase */
-  description?: Maybe<Scalars['String']['output']>;
-  /** Phase identifier */
-  value?: Maybe<Scalars['String']['output']>;
+  /** Timestamp when the record was created */
+  createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: Maybe<Scalars['timestamptz']['output']>;
+};
+
+/** order by min() on columns of table "phase" */
+export type PhaseMinOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "phase" */
@@ -3602,31 +3892,81 @@ export type PhaseOnConflict = {
 
 /** Ordering options when selecting data from "phase". */
 export type PhaseOrderBy = {
-  currentPhasesAggregate?: InputMaybe<CurrentPhaseAggregateOrderBy>;
-  description?: InputMaybe<OrderBy>;
+  createdAt?: InputMaybe<OrderBy>;
+  oid?: InputMaybe<OrderBy>;
+  organization?: InputMaybe<OrganizationOrderBy>;
+  phase?: InputMaybe<PhaseTypeOrderBy>;
+  updatedAt?: InputMaybe<OrderBy>;
   value?: InputMaybe<OrderBy>;
 };
 
 /** primary key columns input for table: phase */
 export type PhasePkColumnsInput = {
-  /** Phase identifier */
-  value: Scalars['String']['input'];
+  /** Organization reference */
+  oid: Scalars['Int']['input'];
 };
 
 /** select columns of table "phase" */
 export enum PhaseSelectColumn {
   /** column name */
-  Description = 'description',
+  CreatedAt = 'createdAt',
+  /** column name */
+  Oid = 'oid',
+  /** column name */
+  UpdatedAt = 'updatedAt',
   /** column name */
   Value = 'value'
 }
 
 /** input type for updating data in table "phase" */
 export type PhaseSetInput = {
-  /** Summary of activities and permissions during this phase */
-  description?: InputMaybe<Scalars['String']['input']>;
-  /** Phase identifier */
-  value?: InputMaybe<Scalars['String']['input']>;
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Active phase reference */
+  value?: InputMaybe<PhaseTypeEnum>;
+};
+
+/** aggregate stddev on columns */
+export type PhaseStddevFields = {
+  __typename?: 'PhaseStddevFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "phase" */
+export type PhaseStddevOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevPop on columns */
+export type PhaseStddevPopFields = {
+  __typename?: 'PhaseStddevPopFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "phase" */
+export type PhaseStddevPopOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate stddevSamp on columns */
+export type PhaseStddevSampFields = {
+  __typename?: 'PhaseStddevSampFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "phase" */
+export type PhaseStddevSampOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "phase" */
@@ -3639,25 +3979,297 @@ export type PhaseStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type PhaseStreamCursorValueInput = {
-  /** Summary of activities and permissions during this phase */
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Active phase reference */
+  value?: InputMaybe<PhaseTypeEnum>;
+};
+
+/** aggregate sum on columns */
+export type PhaseSumFields = {
+  __typename?: 'PhaseSumFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "phase" */
+export type PhaseSumOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** Workflow phases that control system access and capabilities within an organization */
+export type PhaseType = {
+  __typename?: 'PhaseType';
+  /** Short description */
+  description?: Maybe<Scalars['String']['output']>;
+  /** An array relationship */
+  phases: Array<Phase>;
+  /** An aggregate relationship */
+  phasesAggregate: PhaseAggregate;
+  /** Unique identifier */
+  value: Scalars['String']['output'];
+};
+
+
+/** Workflow phases that control system access and capabilities within an organization */
+export type PhaseTypePhasesArgs = {
+  distinctOn?: InputMaybe<Array<PhaseSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseOrderBy>>;
+  where?: InputMaybe<PhaseBoolExp>;
+};
+
+
+/** Workflow phases that control system access and capabilities within an organization */
+export type PhaseTypePhasesAggregateArgs = {
+  distinctOn?: InputMaybe<Array<PhaseSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseOrderBy>>;
+  where?: InputMaybe<PhaseBoolExp>;
+};
+
+/** aggregated selection of "phase_type" */
+export type PhaseTypeAggregate = {
+  __typename?: 'PhaseTypeAggregate';
+  aggregate?: Maybe<PhaseTypeAggregateFields>;
+  nodes: Array<PhaseType>;
+};
+
+/** aggregate fields of "phase_type" */
+export type PhaseTypeAggregateFields = {
+  __typename?: 'PhaseTypeAggregateFields';
+  count: Scalars['Int']['output'];
+  max?: Maybe<PhaseTypeMaxFields>;
+  min?: Maybe<PhaseTypeMinFields>;
+};
+
+
+/** aggregate fields of "phase_type" */
+export type PhaseTypeAggregateFieldsCountArgs = {
+  columns?: InputMaybe<Array<PhaseTypeSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+};
+
+/** Boolean expression to filter rows from the table "phase_type". All fields are combined with a logical 'AND'. */
+export type PhaseTypeBoolExp = {
+  _and?: InputMaybe<Array<PhaseTypeBoolExp>>;
+  _not?: InputMaybe<PhaseTypeBoolExp>;
+  _or?: InputMaybe<Array<PhaseTypeBoolExp>>;
+  description?: InputMaybe<StringComparisonExp>;
+  phases?: InputMaybe<PhaseBoolExp>;
+  phasesAggregate?: InputMaybe<PhaseAggregateBoolExp>;
+  value?: InputMaybe<StringComparisonExp>;
+};
+
+/** unique or primary key constraints on table "phase_type" */
+export enum PhaseTypeConstraint {
+  /** unique or primary key constraint on columns "value" */
+  PhaseTypePkey = 'phase_type_pkey'
+}
+
+export enum PhaseTypeEnum {
+  /** The course assignment committee reviews requests and makes final teaching assignments. Meanwhile, teachers can view but not modify their requests. */
+  Assignments = 'ASSIGNMENTS',
+  /** Phase pendant laquelle la commission des services attribue les différents enseignements aux intervenants. */
+  Commission = 'COMMISSION',
+  /** Phase pendant laquelle les intervenants peuvent consulter les enseignements qui leur ont été attribués. */
+  Consultation = 'CONSULTATION',
+  /** Phase pendant laquelle seuls les administrateurs peuvent accéder à Geyser. */
+  Fermeture = 'FERMETURE',
+  /** Teachers submit their teaching preferences by making primary and secondary course requests. They can also update their required teaching hours and leave a message to the assignment committee. */
+  Requests = 'REQUESTS',
+  /** Teachers can view their final course assignments. */
+  Results = 'RESULTS',
+  /** System is temporarily closed, typically between academic years or during maintenance periods. */
+  Shutdown = 'SHUTDOWN',
+  /** Phase pendant laquelle les intervenants peuvent formuler leurs demandes. */
+  Voeux = 'VOEUX'
+}
+
+/** Boolean expression to compare columns of type "PhaseTypeEnum". All fields are combined with logical 'AND'. */
+export type PhaseTypeEnumComparisonExp = {
+  _eq?: InputMaybe<PhaseTypeEnum>;
+  _in?: InputMaybe<Array<PhaseTypeEnum>>;
+  _isNull?: InputMaybe<Scalars['Boolean']['input']>;
+  _neq?: InputMaybe<PhaseTypeEnum>;
+  _nin?: InputMaybe<Array<PhaseTypeEnum>>;
+};
+
+/** input type for inserting data into table "phase_type" */
+export type PhaseTypeInsertInput = {
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Phase identifier */
+  phases?: InputMaybe<PhaseArrRelInsertInput>;
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
-/** update columns of table "phase" */
-export enum PhaseUpdateColumn {
+/** aggregate max on columns */
+export type PhaseTypeMaxFields = {
+  __typename?: 'PhaseTypeMaxFields';
+  /** Short description */
+  description?: Maybe<Scalars['String']['output']>;
+  /** Unique identifier */
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** aggregate min on columns */
+export type PhaseTypeMinFields = {
+  __typename?: 'PhaseTypeMinFields';
+  /** Short description */
+  description?: Maybe<Scalars['String']['output']>;
+  /** Unique identifier */
+  value?: Maybe<Scalars['String']['output']>;
+};
+
+/** response of any mutation on the table "phase_type" */
+export type PhaseTypeMutationResponse = {
+  __typename?: 'PhaseTypeMutationResponse';
+  /** number of rows affected by the mutation */
+  affectedRows: Scalars['Int']['output'];
+  /** data from the rows affected by the mutation */
+  returning: Array<PhaseType>;
+};
+
+/** input type for inserting object relation for remote table "phase_type" */
+export type PhaseTypeObjRelInsertInput = {
+  data: PhaseTypeInsertInput;
+  /** upsert condition */
+  onConflict?: InputMaybe<PhaseTypeOnConflict>;
+};
+
+/** on_conflict condition type for table "phase_type" */
+export type PhaseTypeOnConflict = {
+  constraint: PhaseTypeConstraint;
+  updateColumns?: Array<PhaseTypeUpdateColumn>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
+};
+
+/** Ordering options when selecting data from "phase_type". */
+export type PhaseTypeOrderBy = {
+  description?: InputMaybe<OrderBy>;
+  phasesAggregate?: InputMaybe<PhaseAggregateOrderBy>;
+  value?: InputMaybe<OrderBy>;
+};
+
+/** primary key columns input for table: phase_type */
+export type PhaseTypePkColumnsInput = {
+  /** Unique identifier */
+  value: Scalars['String']['input'];
+};
+
+/** select columns of table "phase_type" */
+export enum PhaseTypeSelectColumn {
   /** column name */
   Description = 'description',
   /** column name */
   Value = 'value'
 }
 
+/** input type for updating data in table "phase_type" */
+export type PhaseTypeSetInput = {
+  /** Short description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Unique identifier */
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** Streaming cursor of the table "phase_type" */
+export type PhaseTypeStreamCursorInput = {
+  /** Stream column input with initial value */
+  initialValue: PhaseTypeStreamCursorValueInput;
+  /** cursor ordering */
+  ordering?: InputMaybe<CursorOrdering>;
+};
+
+/** Initial value of the column from where the streaming should start */
+export type PhaseTypeStreamCursorValueInput = {
+  /** Short description */
+  description?: InputMaybe<Scalars['String']['input']>;
+  /** Unique identifier */
+  value?: InputMaybe<Scalars['String']['input']>;
+};
+
+/** update columns of table "phase_type" */
+export enum PhaseTypeUpdateColumn {
+  /** column name */
+  Description = 'description',
+  /** column name */
+  Value = 'value'
+}
+
+export type PhaseTypeUpdates = {
+  /** sets the columns of the filtered rows to the given values */
+  _set?: InputMaybe<PhaseTypeSetInput>;
+  /** filter the rows which have to be updated */
+  where: PhaseTypeBoolExp;
+};
+
+/** update columns of table "phase" */
+export enum PhaseUpdateColumn {
+  /** column name */
+  CreatedAt = 'createdAt',
+  /** column name */
+  Oid = 'oid',
+  /** column name */
+  UpdatedAt = 'updatedAt',
+  /** column name */
+  Value = 'value'
+}
+
 export type PhaseUpdates = {
+  /** increments the numeric columns with given value of the filtered values */
+  _inc?: InputMaybe<PhaseIncInput>;
   /** sets the columns of the filtered rows to the given values */
   _set?: InputMaybe<PhaseSetInput>;
   /** filter the rows which have to be updated */
   where: PhaseBoolExp;
+};
+
+/** aggregate varPop on columns */
+export type PhaseVarPopFields = {
+  __typename?: 'PhaseVarPopFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "phase" */
+export type PhaseVarPopOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate varSamp on columns */
+export type PhaseVarSampFields = {
+  __typename?: 'PhaseVarSampFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "phase" */
+export type PhaseVarSampOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+};
+
+/** aggregate variance on columns */
+export type PhaseVarianceFields = {
+  __typename?: 'PhaseVarianceFields';
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "phase" */
+export type PhaseVarianceOrderBy = {
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
 };
 
 /** Teaching positions with associated service hour requirements */
@@ -5678,21 +6290,21 @@ export type RequestSumOrderBy = {
   year?: InputMaybe<OrderBy>;
 };
 
-/** Types of teaching assignment requests in workflow */
+/** Course request types that categorize teacher-course relationships */
 export type RequestType = {
   __typename?: 'RequestType';
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   requests: Array<Request>;
   /** An aggregate relationship */
   requestsAggregate: RequestAggregate;
-  /** Request type identifier */
+  /** Unique identifier */
   value: Scalars['String']['output'];
 };
 
 
-/** Types of teaching assignment requests in workflow */
+/** Course request types that categorize teacher-course relationships */
 export type RequestTypeRequestsArgs = {
   distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -5702,7 +6314,7 @@ export type RequestTypeRequestsArgs = {
 };
 
 
-/** Types of teaching assignment requests in workflow */
+/** Course request types that categorize teacher-course relationships */
 export type RequestTypeRequestsAggregateArgs = {
   distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -5753,9 +6365,9 @@ export enum RequestTypeConstraint {
 export enum RequestTypeEnum {
   /** Final course assignment made by the committee during the assignments phase */
   Assignment = 'ASSIGNMENT',
-  /** Teacher's preferred course choices submitted during the requests phase */
+  /** Teacher's preferred course choice submitted during the requests phase */
   Primary = 'PRIMARY',
-  /** Teacher's backup course choices submitted during the requests phase */
+  /** Teacher's backup course choice submitted during the requests phase */
   Secondary = 'SECONDARY'
 }
 
@@ -5770,28 +6382,28 @@ export type RequestTypeEnumComparisonExp = {
 
 /** input type for inserting data into table "request_type" */
 export type RequestTypeInsertInput = {
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
   requests?: InputMaybe<RequestArrRelInsertInput>;
-  /** Request type identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
 export type RequestTypeMaxFields = {
   __typename?: 'RequestTypeMaxFields';
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
-  /** Request type identifier */
+  /** Unique identifier */
   value?: Maybe<Scalars['String']['output']>;
 };
 
 /** aggregate min on columns */
 export type RequestTypeMinFields = {
   __typename?: 'RequestTypeMinFields';
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
-  /** Request type identifier */
+  /** Unique identifier */
   value?: Maybe<Scalars['String']['output']>;
 };
 
@@ -5827,7 +6439,7 @@ export type RequestTypeOrderBy = {
 
 /** primary key columns input for table: request_type */
 export type RequestTypePkColumnsInput = {
-  /** Request type identifier */
+  /** Unique identifier */
   value: Scalars['String']['input'];
 };
 
@@ -5841,9 +6453,9 @@ export enum RequestTypeSelectColumn {
 
 /** input type for updating data in table "request_type" */
 export type RequestTypeSetInput = {
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Request type identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -5857,9 +6469,9 @@ export type RequestTypeStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type RequestTypeStreamCursorValueInput = {
-  /** Description of the request type and its purpose */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Request type identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -6351,21 +6963,21 @@ export type RoleSumOrderBy = {
   teacherId?: InputMaybe<OrderBy>;
 };
 
-/** System roles for privileged access */
+/** User roles that determine system access and capabilities within an organization */
 export type RoleType = {
   __typename?: 'RoleType';
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
   /** An array relationship */
   roles: Array<Role>;
   /** An aggregate relationship */
   rolesAggregate: RoleAggregate;
-  /** Role identifier */
+  /** Unique identifier */
   value: Scalars['String']['output'];
 };
 
 
-/** System roles for privileged access */
+/** User roles that determine system access and capabilities within an organization */
 export type RoleTypeRolesArgs = {
   distinctOn?: InputMaybe<Array<RoleSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -6375,7 +6987,7 @@ export type RoleTypeRolesArgs = {
 };
 
 
-/** System roles for privileged access */
+/** User roles that determine system access and capabilities within an organization */
 export type RoleTypeRolesAggregateArgs = {
   distinctOn?: InputMaybe<Array<RoleSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -6424,11 +7036,11 @@ export enum RoleTypeConstraint {
 }
 
 export enum RoleTypeEnum {
-  /** Full system administration access with ability to manage users, roles, and system configuration */
+  /** Administrator with full capabilities including configuration and user management */
   Admin = 'ADMIN',
-  /** Member of the course assignment committee with extra abilities during the assignments phase */
+  /** Committee member with extra capabilities during assignment phase */
   Commissioner = 'COMMISSIONER',
-  /** Base role with limited abilities */
+  /** Standard user with basic capabilities */
   Teacher = 'TEACHER'
 }
 
@@ -6443,28 +7055,28 @@ export type RoleTypeEnumComparisonExp = {
 
 /** input type for inserting data into table "role_type" */
 export type RoleTypeInsertInput = {
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
   roles?: InputMaybe<RoleArrRelInsertInput>;
-  /** Role identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
 /** aggregate max on columns */
 export type RoleTypeMaxFields = {
   __typename?: 'RoleTypeMaxFields';
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
-  /** Role identifier */
+  /** Unique identifier */
   value?: Maybe<Scalars['String']['output']>;
 };
 
 /** aggregate min on columns */
 export type RoleTypeMinFields = {
   __typename?: 'RoleTypeMinFields';
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: Maybe<Scalars['String']['output']>;
-  /** Role identifier */
+  /** Unique identifier */
   value?: Maybe<Scalars['String']['output']>;
 };
 
@@ -6500,7 +7112,7 @@ export type RoleTypeOrderBy = {
 
 /** primary key columns input for table: role_type */
 export type RoleTypePkColumnsInput = {
-  /** Role identifier */
+  /** Unique identifier */
   value: Scalars['String']['input'];
 };
 
@@ -6514,9 +7126,9 @@ export enum RoleTypeSelectColumn {
 
 /** input type for updating data in table "role_type" */
 export type RoleTypeSetInput = {
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Role identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -6530,9 +7142,9 @@ export type RoleTypeStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type RoleTypeStreamCursorValueInput = {
-  /** Description of the role privileges and responsibilities */
+  /** Short description */
   description?: InputMaybe<Scalars['String']['input']>;
-  /** Role identifier */
+  /** Unique identifier */
   value?: InputMaybe<Scalars['String']['input']>;
 };
 
@@ -9305,7 +9917,7 @@ export type TrackVarianceOrderBy = {
   programId?: InputMaybe<OrderBy>;
 };
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type Year = {
   __typename?: 'Year';
   /** An array relationship */
@@ -9314,8 +9926,14 @@ export type Year = {
   coursesAggregate: CourseAggregate;
   /** Timestamp when the record was created */
   createdAt: Scalars['timestamptz']['output'];
-  /** Current academic year flag. Constrained to have at most one current year */
+  /** Current year flag */
   current: Scalars['Boolean']['output'];
+  /** Unique identifier */
+  id: Scalars['Int']['output'];
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+  /** An object relationship */
+  organization?: Maybe<Organization>;
   /** An array relationship */
   priorities: Array<Priority>;
   /** An aggregate relationship */
@@ -9330,14 +9948,14 @@ export type Year = {
   servicesAggregate: ServiceAggregate;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt: Scalars['timestamptz']['output'];
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value: Scalars['Int']['output'];
-  /** Controls visibility of the year in the user interface and queries */
+  /** User access control flag */
   visible: Scalars['Boolean']['output'];
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearCoursesArgs = {
   distinctOn?: InputMaybe<Array<CourseSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9347,7 +9965,7 @@ export type YearCoursesArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearCoursesAggregateArgs = {
   distinctOn?: InputMaybe<Array<CourseSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9357,7 +9975,7 @@ export type YearCoursesAggregateArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearPrioritiesArgs = {
   distinctOn?: InputMaybe<Array<PrioritySelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9367,7 +9985,7 @@ export type YearPrioritiesArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearPrioritiesAggregateArgs = {
   distinctOn?: InputMaybe<Array<PrioritySelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9377,7 +9995,7 @@ export type YearPrioritiesAggregateArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearRequestsArgs = {
   distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9387,7 +10005,7 @@ export type YearRequestsArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearRequestsAggregateArgs = {
   distinctOn?: InputMaybe<Array<RequestSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9397,7 +10015,7 @@ export type YearRequestsAggregateArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearServicesArgs = {
   distinctOn?: InputMaybe<Array<ServiceSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9407,7 +10025,7 @@ export type YearServicesArgs = {
 };
 
 
-/** Academic year definitions with current year designation and visibility settings */
+/** Academic years with current year designation and visibility control */
 export type YearServicesAggregateArgs = {
   distinctOn?: InputMaybe<Array<ServiceSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -9421,6 +10039,12 @@ export type YearAggregate = {
   __typename?: 'YearAggregate';
   aggregate?: Maybe<YearAggregateFields>;
   nodes: Array<Year>;
+};
+
+export type YearAggregateBoolExp = {
+  bool_and?: InputMaybe<YearAggregateBoolExpBool_And>;
+  bool_or?: InputMaybe<YearAggregateBoolExpBool_Or>;
+  count?: InputMaybe<YearAggregateBoolExpCount>;
 };
 
 /** aggregate fields of "year" */
@@ -9446,11 +10070,47 @@ export type YearAggregateFieldsCountArgs = {
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
+/** order by aggregate values of table "year" */
+export type YearAggregateOrderBy = {
+  avg?: InputMaybe<YearAvgOrderBy>;
+  count?: InputMaybe<OrderBy>;
+  max?: InputMaybe<YearMaxOrderBy>;
+  min?: InputMaybe<YearMinOrderBy>;
+  stddev?: InputMaybe<YearStddevOrderBy>;
+  stddevPop?: InputMaybe<YearStddevPopOrderBy>;
+  stddevSamp?: InputMaybe<YearStddevSampOrderBy>;
+  sum?: InputMaybe<YearSumOrderBy>;
+  varPop?: InputMaybe<YearVarPopOrderBy>;
+  varSamp?: InputMaybe<YearVarSampOrderBy>;
+  variance?: InputMaybe<YearVarianceOrderBy>;
+};
+
+/** input type for inserting array relation for remote table "year" */
+export type YearArrRelInsertInput = {
+  data: Array<YearInsertInput>;
+  /** upsert condition */
+  onConflict?: InputMaybe<YearOnConflict>;
+};
+
 /** aggregate avg on columns */
 export type YearAvgFields = {
   __typename?: 'YearAvgFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by avg() on columns of table "year" */
+export type YearAvgOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** Boolean expression to filter rows from the table "year". All fields are combined with a logical 'AND'. */
@@ -9462,6 +10122,9 @@ export type YearBoolExp = {
   coursesAggregate?: InputMaybe<CourseAggregateBoolExp>;
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
   current?: InputMaybe<BooleanComparisonExp>;
+  id?: InputMaybe<IntComparisonExp>;
+  oid?: InputMaybe<IntComparisonExp>;
+  organization?: InputMaybe<OrganizationBoolExp>;
   priorities?: InputMaybe<PriorityBoolExp>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateBoolExp>;
   requests?: InputMaybe<RequestBoolExp>;
@@ -9475,15 +10138,17 @@ export type YearBoolExp = {
 
 /** unique or primary key constraints on table "year" */
 export enum YearConstraint {
-  /** unique or primary key constraint on columns "current" */
+  /** unique or primary key constraint on columns "current", "oid" */
   UniqueCurrentYear = 'unique_current_year',
-  /** unique or primary key constraint on columns "value" */
+  /** unique or primary key constraint on columns "id" */
   YearPkey = 'year_pkey'
 }
 
 /** input type for incrementing numeric columns in table "year" */
 export type YearIncInput = {
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: InputMaybe<Scalars['Int']['input']>;
 };
 
@@ -9492,16 +10157,19 @@ export type YearInsertInput = {
   courses?: InputMaybe<CourseArrRelInsertInput>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Current academic year flag. Constrained to have at most one current year */
+  /** Current year flag */
   current?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
+  organization?: InputMaybe<OrganizationObjRelInsertInput>;
   priorities?: InputMaybe<PriorityArrRelInsertInput>;
   requests?: InputMaybe<RequestArrRelInsertInput>;
   services?: InputMaybe<ServiceArrRelInsertInput>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: InputMaybe<Scalars['Int']['input']>;
-  /** Controls visibility of the year in the user interface and queries */
+  /** User access control flag */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
@@ -9510,10 +10178,28 @@ export type YearMaxFields = {
   __typename?: 'YearMaxFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by max() on columns of table "year" */
+export type YearMaxOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate min on columns */
@@ -9521,10 +10207,28 @@ export type YearMinFields = {
   __typename?: 'YearMinFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: Maybe<Scalars['timestamptz']['output']>;
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by min() on columns of table "year" */
+export type YearMinOrderBy = {
+  /** Timestamp when the record was created */
+  createdAt?: InputMaybe<OrderBy>;
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Timestamp when the record was last updated, automatically managed by trigger */
+  updatedAt?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** response of any mutation on the table "year" */
@@ -9555,6 +10259,9 @@ export type YearOrderBy = {
   coursesAggregate?: InputMaybe<CourseAggregateOrderBy>;
   createdAt?: InputMaybe<OrderBy>;
   current?: InputMaybe<OrderBy>;
+  id?: InputMaybe<OrderBy>;
+  oid?: InputMaybe<OrderBy>;
+  organization?: InputMaybe<OrganizationOrderBy>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateOrderBy>;
   requestsAggregate?: InputMaybe<RequestAggregateOrderBy>;
   servicesAggregate?: InputMaybe<ServiceAggregateOrderBy>;
@@ -9565,8 +10272,8 @@ export type YearOrderBy = {
 
 /** primary key columns input for table: year */
 export type YearPkColumnsInput = {
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
-  value: Scalars['Int']['input'];
+  /** Unique identifier */
+  id: Scalars['Int']['input'];
 };
 
 /** select columns of table "year" */
@@ -9576,9 +10283,29 @@ export enum YearSelectColumn {
   /** column name */
   Current = 'current',
   /** column name */
+  Id = 'id',
+  /** column name */
+  Oid = 'oid',
+  /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
   Value = 'value',
+  /** column name */
+  Visible = 'visible'
+}
+
+/** select "yearAggregateBoolExpBool_andArgumentsColumns" columns of table "year" */
+export enum YearSelectColumnYearAggregateBoolExpBool_AndArgumentsColumns {
+  /** column name */
+  Current = 'current',
+  /** column name */
+  Visible = 'visible'
+}
+
+/** select "yearAggregateBoolExpBool_orArgumentsColumns" columns of table "year" */
+export enum YearSelectColumnYearAggregateBoolExpBool_OrArgumentsColumns {
+  /** column name */
+  Current = 'current',
   /** column name */
   Visible = 'visible'
 }
@@ -9587,35 +10314,79 @@ export enum YearSelectColumn {
 export type YearSetInput = {
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Current academic year flag. Constrained to have at most one current year */
+  /** Current year flag */
   current?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: InputMaybe<Scalars['Int']['input']>;
-  /** Controls visibility of the year in the user interface and queries */
+  /** User access control flag */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** aggregate stddev on columns */
 export type YearStddevFields = {
   __typename?: 'YearStddevFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddev() on columns of table "year" */
+export type YearStddevOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevPop on columns */
 export type YearStddevPopFields = {
   __typename?: 'YearStddevPopFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevPop() on columns of table "year" */
+export type YearStddevPopOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate stddevSamp on columns */
 export type YearStddevSampFields = {
   __typename?: 'YearStddevSampFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by stddevSamp() on columns of table "year" */
+export type YearStddevSampOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** Streaming cursor of the table "year" */
@@ -9630,21 +10401,39 @@ export type YearStreamCursorInput = {
 export type YearStreamCursorValueInput = {
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Current academic year flag. Constrained to have at most one current year */
+  /** Current year flag */
   current?: InputMaybe<Scalars['Boolean']['input']>;
+  /** Unique identifier */
+  id?: InputMaybe<Scalars['Int']['input']>;
+  /** Organization reference */
+  oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
   updatedAt?: InputMaybe<Scalars['timestamptz']['input']>;
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: InputMaybe<Scalars['Int']['input']>;
-  /** Controls visibility of the year in the user interface and queries */
+  /** User access control flag */
   visible?: InputMaybe<Scalars['Boolean']['input']>;
 };
 
 /** aggregate sum on columns */
 export type YearSumFields = {
   __typename?: 'YearSumFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Int']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Int']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Int']['output']>;
+};
+
+/** order by sum() on columns of table "year" */
+export type YearSumOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** update columns of table "year" */
@@ -9653,6 +10442,8 @@ export enum YearUpdateColumn {
   CreatedAt = 'createdAt',
   /** column name */
   Current = 'current',
+  /** column name */
+  Oid = 'oid',
   /** column name */
   UpdatedAt = 'updatedAt',
   /** column name */
@@ -9673,22 +10464,71 @@ export type YearUpdates = {
 /** aggregate varPop on columns */
 export type YearVarPopFields = {
   __typename?: 'YearVarPopFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varPop() on columns of table "year" */
+export type YearVarPopOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate varSamp on columns */
 export type YearVarSampFields = {
   __typename?: 'YearVarSampFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by varSamp() on columns of table "year" */
+export type YearVarSampOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
 };
 
 /** aggregate variance on columns */
 export type YearVarianceFields = {
   __typename?: 'YearVarianceFields';
-  /** Academic year identifier (e.g., 2024 for 2024-2025 academic year) */
+  /** Unique identifier */
+  id?: Maybe<Scalars['Float']['output']>;
+  /** Organization reference */
+  oid?: Maybe<Scalars['Float']['output']>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
   value?: Maybe<Scalars['Float']['output']>;
+};
+
+/** order by variance() on columns of table "year" */
+export type YearVarianceOrderBy = {
+  /** Unique identifier */
+  id?: InputMaybe<OrderBy>;
+  /** Organization reference */
+  oid?: InputMaybe<OrderBy>;
+  /** Academic year (e.g., 2024 for 2024-2025) */
+  value?: InputMaybe<OrderBy>;
+};
+
+export type AppSettingAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<AppSettingSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<AppSettingBoolExp>;
+  predicate: IntComparisonExp;
 };
 
 export type ComputeServicePrioritiesArgs = {
@@ -9740,13 +10580,6 @@ export type CreateYearServicesArgs = {
   p_year?: InputMaybe<Scalars['Int']['input']>;
 };
 
-export type CurrentPhaseAggregateBoolExpCount = {
-  arguments?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  distinct?: InputMaybe<Scalars['Boolean']['input']>;
-  filter?: InputMaybe<CurrentPhaseBoolExp>;
-  predicate: IntComparisonExp;
-};
-
 /** mutation root */
 export type Mutation_Root = {
   __typename?: 'mutation_root';
@@ -9776,10 +10609,6 @@ export type Mutation_Root = {
   deleteCourseType?: Maybe<CourseTypeMutationResponse>;
   /** delete single row from the table: "course_type" */
   deleteCourseTypeByPk?: Maybe<CourseType>;
-  /** delete data from the table: "current_phase" */
-  deleteCurrentPhase?: Maybe<CurrentPhaseMutationResponse>;
-  /** delete single row from the table: "current_phase" */
-  deleteCurrentPhaseByPk?: Maybe<CurrentPhase>;
   /** delete data from the table: "degree" */
   deleteDegree?: Maybe<DegreeMutationResponse>;
   /** delete single row from the table: "degree" */
@@ -9788,10 +10617,18 @@ export type Mutation_Root = {
   deleteMessage?: Maybe<MessageMutationResponse>;
   /** delete single row from the table: "message" */
   deleteMessageByPk?: Maybe<Message>;
+  /** delete data from the table: "organization" */
+  deleteOrganization?: Maybe<OrganizationMutationResponse>;
+  /** delete single row from the table: "organization" */
+  deleteOrganizationByPk?: Maybe<Organization>;
   /** delete data from the table: "phase" */
   deletePhase?: Maybe<PhaseMutationResponse>;
   /** delete single row from the table: "phase" */
   deletePhaseByPk?: Maybe<Phase>;
+  /** delete data from the table: "phase_type" */
+  deletePhaseType?: Maybe<PhaseTypeMutationResponse>;
+  /** delete single row from the table: "phase_type" */
+  deletePhaseTypeByPk?: Maybe<PhaseType>;
   /** delete data from the table: "position" */
   deletePosition?: Maybe<PositionMutationResponse>;
   /** delete single row from the table: "position" */
@@ -9862,10 +10699,6 @@ export type Mutation_Root = {
   insertCourseType?: Maybe<CourseTypeMutationResponse>;
   /** insert a single row into the table: "course_type" */
   insertCourseTypeOne?: Maybe<CourseType>;
-  /** insert data into the table: "current_phase" */
-  insertCurrentPhase?: Maybe<CurrentPhaseMutationResponse>;
-  /** insert a single row into the table: "current_phase" */
-  insertCurrentPhaseOne?: Maybe<CurrentPhase>;
   /** insert data into the table: "degree" */
   insertDegree?: Maybe<DegreeMutationResponse>;
   /** insert a single row into the table: "degree" */
@@ -9874,10 +10707,18 @@ export type Mutation_Root = {
   insertMessage?: Maybe<MessageMutationResponse>;
   /** insert a single row into the table: "message" */
   insertMessageOne?: Maybe<Message>;
+  /** insert data into the table: "organization" */
+  insertOrganization?: Maybe<OrganizationMutationResponse>;
+  /** insert a single row into the table: "organization" */
+  insertOrganizationOne?: Maybe<Organization>;
   /** insert data into the table: "phase" */
   insertPhase?: Maybe<PhaseMutationResponse>;
   /** insert a single row into the table: "phase" */
   insertPhaseOne?: Maybe<Phase>;
+  /** insert data into the table: "phase_type" */
+  insertPhaseType?: Maybe<PhaseTypeMutationResponse>;
+  /** insert a single row into the table: "phase_type" */
+  insertPhaseTypeOne?: Maybe<PhaseType>;
   /** insert data into the table: "position" */
   insertPosition?: Maybe<PositionMutationResponse>;
   /** insert a single row into the table: "position" */
@@ -9954,12 +10795,6 @@ export type Mutation_Root = {
   updateCourseTypeByPk?: Maybe<CourseType>;
   /** update multiples rows of table: "course_type" */
   updateCourseTypeMany?: Maybe<Array<Maybe<CourseTypeMutationResponse>>>;
-  /** update data of the table: "current_phase" */
-  updateCurrentPhase?: Maybe<CurrentPhaseMutationResponse>;
-  /** update single row of the table: "current_phase" */
-  updateCurrentPhaseByPk?: Maybe<CurrentPhase>;
-  /** update multiples rows of table: "current_phase" */
-  updateCurrentPhaseMany?: Maybe<Array<Maybe<CurrentPhaseMutationResponse>>>;
   /** update data of the table: "degree" */
   updateDegree?: Maybe<DegreeMutationResponse>;
   /** update single row of the table: "degree" */
@@ -9972,12 +10807,24 @@ export type Mutation_Root = {
   updateMessageByPk?: Maybe<Message>;
   /** update multiples rows of table: "message" */
   updateMessageMany?: Maybe<Array<Maybe<MessageMutationResponse>>>;
+  /** update data of the table: "organization" */
+  updateOrganization?: Maybe<OrganizationMutationResponse>;
+  /** update single row of the table: "organization" */
+  updateOrganizationByPk?: Maybe<Organization>;
+  /** update multiples rows of table: "organization" */
+  updateOrganizationMany?: Maybe<Array<Maybe<OrganizationMutationResponse>>>;
   /** update data of the table: "phase" */
   updatePhase?: Maybe<PhaseMutationResponse>;
   /** update single row of the table: "phase" */
   updatePhaseByPk?: Maybe<Phase>;
   /** update multiples rows of table: "phase" */
   updatePhaseMany?: Maybe<Array<Maybe<PhaseMutationResponse>>>;
+  /** update data of the table: "phase_type" */
+  updatePhaseType?: Maybe<PhaseTypeMutationResponse>;
+  /** update single row of the table: "phase_type" */
+  updatePhaseTypeByPk?: Maybe<PhaseType>;
+  /** update multiples rows of table: "phase_type" */
+  updatePhaseTypeMany?: Maybe<Array<Maybe<PhaseTypeMutationResponse>>>;
   /** update data of the table: "position" */
   updatePosition?: Maybe<PositionMutationResponse>;
   /** update single row of the table: "position" */
@@ -10122,7 +10969,7 @@ export type Mutation_RootDeleteAppSettingArgs = {
 
 /** mutation root */
 export type Mutation_RootDeleteAppSettingByPkArgs = {
-  key: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -10163,18 +11010,6 @@ export type Mutation_RootDeleteCourseTypeByPkArgs = {
 
 
 /** mutation root */
-export type Mutation_RootDeleteCurrentPhaseArgs = {
-  where: CurrentPhaseBoolExp;
-};
-
-
-/** mutation root */
-export type Mutation_RootDeleteCurrentPhaseByPkArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-/** mutation root */
 export type Mutation_RootDeleteDegreeArgs = {
   where: DegreeBoolExp;
 };
@@ -10199,6 +11034,18 @@ export type Mutation_RootDeleteMessageByPkArgs = {
 
 
 /** mutation root */
+export type Mutation_RootDeleteOrganizationArgs = {
+  where: OrganizationBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDeleteOrganizationByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
 export type Mutation_RootDeletePhaseArgs = {
   where: PhaseBoolExp;
 };
@@ -10206,6 +11053,18 @@ export type Mutation_RootDeletePhaseArgs = {
 
 /** mutation root */
 export type Mutation_RootDeletePhaseByPkArgs = {
+  oid: Scalars['Int']['input'];
+};
+
+
+/** mutation root */
+export type Mutation_RootDeletePhaseTypeArgs = {
+  where: PhaseTypeBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootDeletePhaseTypeByPkArgs = {
   value: Scalars['String']['input'];
 };
 
@@ -10362,7 +11221,7 @@ export type Mutation_RootDeleteYearArgs = {
 
 /** mutation root */
 export type Mutation_RootDeleteYearByPkArgs = {
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -10433,20 +11292,6 @@ export type Mutation_RootInsertCourseTypeOneArgs = {
 
 
 /** mutation root */
-export type Mutation_RootInsertCurrentPhaseArgs = {
-  objects: Array<CurrentPhaseInsertInput>;
-  onConflict?: InputMaybe<CurrentPhaseOnConflict>;
-};
-
-
-/** mutation root */
-export type Mutation_RootInsertCurrentPhaseOneArgs = {
-  object: CurrentPhaseInsertInput;
-  onConflict?: InputMaybe<CurrentPhaseOnConflict>;
-};
-
-
-/** mutation root */
 export type Mutation_RootInsertDegreeArgs = {
   objects: Array<DegreeInsertInput>;
   onConflict?: InputMaybe<DegreeOnConflict>;
@@ -10475,6 +11320,20 @@ export type Mutation_RootInsertMessageOneArgs = {
 
 
 /** mutation root */
+export type Mutation_RootInsertOrganizationArgs = {
+  objects: Array<OrganizationInsertInput>;
+  onConflict?: InputMaybe<OrganizationOnConflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsertOrganizationOneArgs = {
+  object: OrganizationInsertInput;
+  onConflict?: InputMaybe<OrganizationOnConflict>;
+};
+
+
+/** mutation root */
 export type Mutation_RootInsertPhaseArgs = {
   objects: Array<PhaseInsertInput>;
   onConflict?: InputMaybe<PhaseOnConflict>;
@@ -10485,6 +11344,20 @@ export type Mutation_RootInsertPhaseArgs = {
 export type Mutation_RootInsertPhaseOneArgs = {
   object: PhaseInsertInput;
   onConflict?: InputMaybe<PhaseOnConflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsertPhaseTypeArgs = {
+  objects: Array<PhaseTypeInsertInput>;
+  onConflict?: InputMaybe<PhaseTypeOnConflict>;
+};
+
+
+/** mutation root */
+export type Mutation_RootInsertPhaseTypeOneArgs = {
+  object: PhaseTypeInsertInput;
+  onConflict?: InputMaybe<PhaseTypeOnConflict>;
 };
 
 
@@ -10672,6 +11545,7 @@ export type Mutation_RootInsertYearOneArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdateAppSettingArgs = {
+  _inc?: InputMaybe<AppSettingIncInput>;
   _set?: InputMaybe<AppSettingSetInput>;
   where: AppSettingBoolExp;
 };
@@ -10679,6 +11553,7 @@ export type Mutation_RootUpdateAppSettingArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdateAppSettingByPkArgs = {
+  _inc?: InputMaybe<AppSettingIncInput>;
   _set?: InputMaybe<AppSettingSetInput>;
   pkColumns: AppSettingPkColumnsInput;
 };
@@ -10757,28 +11632,6 @@ export type Mutation_RootUpdateCourseTypeManyArgs = {
 
 
 /** mutation root */
-export type Mutation_RootUpdateCurrentPhaseArgs = {
-  _inc?: InputMaybe<CurrentPhaseIncInput>;
-  _set?: InputMaybe<CurrentPhaseSetInput>;
-  where: CurrentPhaseBoolExp;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdateCurrentPhaseByPkArgs = {
-  _inc?: InputMaybe<CurrentPhaseIncInput>;
-  _set?: InputMaybe<CurrentPhaseSetInput>;
-  pkColumns: CurrentPhasePkColumnsInput;
-};
-
-
-/** mutation root */
-export type Mutation_RootUpdateCurrentPhaseManyArgs = {
-  updates: Array<CurrentPhaseUpdates>;
-};
-
-
-/** mutation root */
 export type Mutation_RootUpdateDegreeArgs = {
   _set?: InputMaybe<DegreeSetInput>;
   where: DegreeBoolExp;
@@ -10821,7 +11674,28 @@ export type Mutation_RootUpdateMessageManyArgs = {
 
 
 /** mutation root */
+export type Mutation_RootUpdateOrganizationArgs = {
+  _set?: InputMaybe<OrganizationSetInput>;
+  where: OrganizationBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdateOrganizationByPkArgs = {
+  _set?: InputMaybe<OrganizationSetInput>;
+  pkColumns: OrganizationPkColumnsInput;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdateOrganizationManyArgs = {
+  updates: Array<OrganizationUpdates>;
+};
+
+
+/** mutation root */
 export type Mutation_RootUpdatePhaseArgs = {
+  _inc?: InputMaybe<PhaseIncInput>;
   _set?: InputMaybe<PhaseSetInput>;
   where: PhaseBoolExp;
 };
@@ -10829,6 +11703,7 @@ export type Mutation_RootUpdatePhaseArgs = {
 
 /** mutation root */
 export type Mutation_RootUpdatePhaseByPkArgs = {
+  _inc?: InputMaybe<PhaseIncInput>;
   _set?: InputMaybe<PhaseSetInput>;
   pkColumns: PhasePkColumnsInput;
 };
@@ -10837,6 +11712,26 @@ export type Mutation_RootUpdatePhaseByPkArgs = {
 /** mutation root */
 export type Mutation_RootUpdatePhaseManyArgs = {
   updates: Array<PhaseUpdates>;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdatePhaseTypeArgs = {
+  _set?: InputMaybe<PhaseTypeSetInput>;
+  where: PhaseTypeBoolExp;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdatePhaseTypeByPkArgs = {
+  _set?: InputMaybe<PhaseTypeSetInput>;
+  pkColumns: PhaseTypePkColumnsInput;
+};
+
+
+/** mutation root */
+export type Mutation_RootUpdatePhaseTypeManyArgs = {
+  updates: Array<PhaseTypeUpdates>;
 };
 
 
@@ -11119,6 +12014,13 @@ export type Mutation_RootUpdateYearManyArgs = {
   updates: Array<YearUpdates>;
 };
 
+export type PhaseAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<PhaseSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<PhaseBoolExp>;
+  predicate: IntComparisonExp;
+};
+
 export type PriorityAggregateBoolExpBool_And = {
   arguments: PrioritySelectColumnPriorityAggregateBoolExpBool_AndArgumentsColumns;
   distinct?: InputMaybe<Scalars['Boolean']['input']>;
@@ -11187,12 +12089,6 @@ export type Query_Root = {
   courseTypeAggregate: CourseTypeAggregate;
   /** fetch data from the table: "course_type" using primary key columns */
   courseTypeByPk?: Maybe<CourseType>;
-  /** fetch data from the table: "current_phase" */
-  currentPhase: Array<CurrentPhase>;
-  /** fetch aggregated fields from the table: "current_phase" */
-  currentPhaseAggregate: CurrentPhaseAggregate;
-  /** fetch data from the table: "current_phase" using primary key columns */
-  currentPhaseByPk?: Maybe<CurrentPhase>;
   /** fetch data from the table: "degree" */
   degree: Array<Degree>;
   /** fetch aggregated fields from the table: "degree" */
@@ -11205,12 +12101,24 @@ export type Query_Root = {
   messageAggregate: MessageAggregate;
   /** fetch data from the table: "message" using primary key columns */
   messageByPk?: Maybe<Message>;
+  /** fetch data from the table: "organization" */
+  organization: Array<Organization>;
+  /** fetch aggregated fields from the table: "organization" */
+  organizationAggregate: OrganizationAggregate;
+  /** fetch data from the table: "organization" using primary key columns */
+  organizationByPk?: Maybe<Organization>;
   /** fetch data from the table: "phase" */
   phase: Array<Phase>;
   /** fetch aggregated fields from the table: "phase" */
   phaseAggregate: PhaseAggregate;
   /** fetch data from the table: "phase" using primary key columns */
   phaseByPk?: Maybe<Phase>;
+  /** fetch data from the table: "phase_type" */
+  phaseType: Array<PhaseType>;
+  /** fetch aggregated fields from the table: "phase_type" */
+  phaseTypeAggregate: PhaseTypeAggregate;
+  /** fetch data from the table: "phase_type" using primary key columns */
+  phaseTypeByPk?: Maybe<PhaseType>;
   /** fetch data from the table: "position" */
   position: Array<Position>;
   /** fetch aggregated fields from the table: "position" */
@@ -11311,7 +12219,7 @@ export type Query_RootAppSettingAggregateArgs = {
 
 
 export type Query_RootAppSettingByPkArgs = {
-  key: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -11384,29 +12292,6 @@ export type Query_RootCourseTypeByPkArgs = {
 };
 
 
-export type Query_RootCurrentPhaseArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
-export type Query_RootCurrentPhaseAggregateArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
-export type Query_RootCurrentPhaseByPkArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
 export type Query_RootDegreeArgs = {
   distinctOn?: InputMaybe<Array<DegreeSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11453,6 +12338,29 @@ export type Query_RootMessageByPkArgs = {
 };
 
 
+export type Query_RootOrganizationArgs = {
+  distinctOn?: InputMaybe<Array<OrganizationSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+
+export type Query_RootOrganizationAggregateArgs = {
+  distinctOn?: InputMaybe<Array<OrganizationSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+
+export type Query_RootOrganizationByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
 export type Query_RootPhaseArgs = {
   distinctOn?: InputMaybe<Array<PhaseSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -11472,6 +12380,29 @@ export type Query_RootPhaseAggregateArgs = {
 
 
 export type Query_RootPhaseByPkArgs = {
+  oid: Scalars['Int']['input'];
+};
+
+
+export type Query_RootPhaseTypeArgs = {
+  distinctOn?: InputMaybe<Array<PhaseTypeSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseTypeOrderBy>>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
+};
+
+
+export type Query_RootPhaseTypeAggregateArgs = {
+  distinctOn?: InputMaybe<Array<PhaseTypeSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseTypeOrderBy>>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
+};
+
+
+export type Query_RootPhaseTypeByPkArgs = {
   value: Scalars['String']['input'];
 };
 
@@ -11771,7 +12702,7 @@ export type Query_RootYearAggregateArgs = {
 
 
 export type Query_RootYearByPkArgs = {
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 };
 
 export type RequestAggregateBoolExpCount = {
@@ -11836,14 +12767,6 @@ export type Subscription_Root = {
   courseTypeByPk?: Maybe<CourseType>;
   /** fetch data from the table in a streaming manner: "course_type" */
   courseTypeStream: Array<CourseType>;
-  /** fetch data from the table: "current_phase" */
-  currentPhase: Array<CurrentPhase>;
-  /** fetch aggregated fields from the table: "current_phase" */
-  currentPhaseAggregate: CurrentPhaseAggregate;
-  /** fetch data from the table: "current_phase" using primary key columns */
-  currentPhaseByPk?: Maybe<CurrentPhase>;
-  /** fetch data from the table in a streaming manner: "current_phase" */
-  currentPhaseStream: Array<CurrentPhase>;
   /** fetch data from the table: "degree" */
   degree: Array<Degree>;
   /** fetch aggregated fields from the table: "degree" */
@@ -11860,6 +12783,14 @@ export type Subscription_Root = {
   messageByPk?: Maybe<Message>;
   /** fetch data from the table in a streaming manner: "message" */
   messageStream: Array<Message>;
+  /** fetch data from the table: "organization" */
+  organization: Array<Organization>;
+  /** fetch aggregated fields from the table: "organization" */
+  organizationAggregate: OrganizationAggregate;
+  /** fetch data from the table: "organization" using primary key columns */
+  organizationByPk?: Maybe<Organization>;
+  /** fetch data from the table in a streaming manner: "organization" */
+  organizationStream: Array<Organization>;
   /** fetch data from the table: "phase" */
   phase: Array<Phase>;
   /** fetch aggregated fields from the table: "phase" */
@@ -11868,6 +12799,14 @@ export type Subscription_Root = {
   phaseByPk?: Maybe<Phase>;
   /** fetch data from the table in a streaming manner: "phase" */
   phaseStream: Array<Phase>;
+  /** fetch data from the table: "phase_type" */
+  phaseType: Array<PhaseType>;
+  /** fetch aggregated fields from the table: "phase_type" */
+  phaseTypeAggregate: PhaseTypeAggregate;
+  /** fetch data from the table: "phase_type" using primary key columns */
+  phaseTypeByPk?: Maybe<PhaseType>;
+  /** fetch data from the table in a streaming manner: "phase_type" */
+  phaseTypeStream: Array<PhaseType>;
   /** fetch data from the table: "position" */
   position: Array<Position>;
   /** fetch aggregated fields from the table: "position" */
@@ -11994,7 +12933,7 @@ export type Subscription_RootAppSettingAggregateArgs = {
 
 
 export type Subscription_RootAppSettingByPkArgs = {
-  key: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -12095,36 +13034,6 @@ export type Subscription_RootCourseTypeStreamArgs = {
 };
 
 
-export type Subscription_RootCurrentPhaseArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
-export type Subscription_RootCurrentPhaseAggregateArgs = {
-  distinctOn?: InputMaybe<Array<CurrentPhaseSelectColumn>>;
-  limit?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
-  orderBy?: InputMaybe<Array<CurrentPhaseOrderBy>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
-export type Subscription_RootCurrentPhaseByPkArgs = {
-  id: Scalars['Int']['input'];
-};
-
-
-export type Subscription_RootCurrentPhaseStreamArgs = {
-  batchSize: Scalars['Int']['input'];
-  cursor: Array<InputMaybe<CurrentPhaseStreamCursorInput>>;
-  where?: InputMaybe<CurrentPhaseBoolExp>;
-};
-
-
 export type Subscription_RootDegreeArgs = {
   distinctOn?: InputMaybe<Array<DegreeSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12185,6 +13094,36 @@ export type Subscription_RootMessageStreamArgs = {
 };
 
 
+export type Subscription_RootOrganizationArgs = {
+  distinctOn?: InputMaybe<Array<OrganizationSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+
+export type Subscription_RootOrganizationAggregateArgs = {
+  distinctOn?: InputMaybe<Array<OrganizationSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+
+export type Subscription_RootOrganizationByPkArgs = {
+  id: Scalars['Int']['input'];
+};
+
+
+export type Subscription_RootOrganizationStreamArgs = {
+  batchSize: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<OrganizationStreamCursorInput>>;
+  where?: InputMaybe<OrganizationBoolExp>;
+};
+
+
 export type Subscription_RootPhaseArgs = {
   distinctOn?: InputMaybe<Array<PhaseSelectColumn>>;
   limit?: InputMaybe<Scalars['Int']['input']>;
@@ -12204,7 +13143,7 @@ export type Subscription_RootPhaseAggregateArgs = {
 
 
 export type Subscription_RootPhaseByPkArgs = {
-  value: Scalars['String']['input'];
+  oid: Scalars['Int']['input'];
 };
 
 
@@ -12212,6 +13151,36 @@ export type Subscription_RootPhaseStreamArgs = {
   batchSize: Scalars['Int']['input'];
   cursor: Array<InputMaybe<PhaseStreamCursorInput>>;
   where?: InputMaybe<PhaseBoolExp>;
+};
+
+
+export type Subscription_RootPhaseTypeArgs = {
+  distinctOn?: InputMaybe<Array<PhaseTypeSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseTypeOrderBy>>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
+};
+
+
+export type Subscription_RootPhaseTypeAggregateArgs = {
+  distinctOn?: InputMaybe<Array<PhaseTypeSelectColumn>>;
+  limit?: InputMaybe<Scalars['Int']['input']>;
+  offset?: InputMaybe<Scalars['Int']['input']>;
+  orderBy?: InputMaybe<Array<PhaseTypeOrderBy>>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
+};
+
+
+export type Subscription_RootPhaseTypeByPkArgs = {
+  value: Scalars['String']['input'];
+};
+
+
+export type Subscription_RootPhaseTypeStreamArgs = {
+  batchSize: Scalars['Int']['input'];
+  cursor: Array<InputMaybe<PhaseTypeStreamCursorInput>>;
+  where?: InputMaybe<PhaseTypeBoolExp>;
 };
 
 
@@ -12594,7 +13563,7 @@ export type Subscription_RootYearAggregateArgs = {
 
 
 export type Subscription_RootYearByPkArgs = {
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 };
 
 
@@ -12646,12 +13615,34 @@ export type TrackAggregateBoolExpCount = {
   predicate: IntComparisonExp;
 };
 
+export type YearAggregateBoolExpBool_And = {
+  arguments: YearSelectColumnYearAggregateBoolExpBool_AndArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<YearBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type YearAggregateBoolExpBool_Or = {
+  arguments: YearSelectColumnYearAggregateBoolExpBool_OrArgumentsColumns;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<YearBoolExp>;
+  predicate: BooleanComparisonExp;
+};
+
+export type YearAggregateBoolExpCount = {
+  arguments?: InputMaybe<Array<YearSelectColumn>>;
+  distinct?: InputMaybe<Scalars['Boolean']['input']>;
+  filter?: InputMaybe<YearBoolExp>;
+  predicate: IntComparisonExp;
+};
+
 export type GetAppDataQueryVariables = Exact<{
+  orgId: Scalars['Int']['input'];
   userId: Scalars['Int']['input'];
 }>;
 
 
-export type GetAppDataQuery = { __typename?: 'query_root', currentPhase?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null, years: Array<{ __typename?: 'Year', value: number, current: boolean, visible: boolean }>, customTexts: Array<{ __typename?: 'AppSetting', key: string, value?: string | null }>, profile?: { __typename?: 'Teacher', id: number, displayname?: string | null, services: Array<{ __typename?: 'Service', id: number, year: number }> } | null };
+export type GetAppDataQuery = { __typename?: 'query_root', organization?: { __typename?: 'Organization', currentPhase?: { __typename?: 'Phase', value: PhaseTypeEnum } | null, years: Array<{ __typename?: 'Year', id: number, value: number, current: boolean, visible: boolean }>, customTexts: Array<{ __typename?: 'AppSetting', id: number, key: string, value: string }> } | null, profile?: { __typename?: 'Teacher', id: number, displayname?: string | null, services: Array<{ __typename?: 'Service', id: number, year: number }> } | null };
 
 export type CourseRowFragment = { __typename?: 'Course', id: number, visible: boolean, semester: number, name?: string | null, hoursPerGroup?: number | null, numberOfGroups?: number | null, program: { __typename?: 'Program', id: number, visible: boolean, name?: string | null, degree: { __typename?: 'Degree', visible: boolean, name?: string | null } }, track?: { __typename?: 'Track', visible: boolean, name?: string | null } | null, type: { __typename?: 'CourseType', label: string, coefficient: number }, requests: Array<{ __typename?: 'Request', serviceId: number, type: RequestTypeEnum, hours: number, isPriority?: boolean | null }> } & { ' $fragmentName'?: 'CourseRowFragment' };
 
@@ -12873,18 +13864,19 @@ export type UpdateCustomTextMutationVariables = Exact<{
 export type UpdateCustomTextMutation = { __typename?: 'mutation_root', insertAppSettingOne?: { __typename?: 'AppSetting', key: string } | null };
 
 export type DeleteCustomTextMutationVariables = Exact<{
-  key: Scalars['String']['input'];
+  id: Scalars['Int']['input'];
 }>;
 
 
 export type DeleteCustomTextMutation = { __typename?: 'mutation_root', deleteAppSettingByPk?: { __typename?: 'AppSetting', key: string } | null };
 
 export type SetCurrentPhaseMutationVariables = Exact<{
-  phase: PhaseEnum;
+  oid: Scalars['Int']['input'];
+  phase: PhaseTypeEnum;
 }>;
 
 
-export type SetCurrentPhaseMutation = { __typename?: 'mutation_root', updateCurrentPhaseByPk?: { __typename?: 'CurrentPhase', value?: PhaseEnum | null } | null };
+export type SetCurrentPhaseMutation = { __typename?: 'mutation_root', updatePhaseByPk?: { __typename?: 'Phase', value: PhaseTypeEnum } | null };
 
 export type AdminRoleFragment = { __typename?: 'Role', id: number, type: RoleTypeEnum, comment?: string | null, teacher: { __typename?: 'Teacher', email: string } } & { ' $fragmentName'?: 'AdminRoleFragment' };
 
@@ -12921,11 +13913,11 @@ export type DeleteRolesMutationVariables = Exact<{
 export type DeleteRolesMutation = { __typename?: 'mutation_root', deleteData?: { __typename?: 'RoleMutationResponse', returning: Array<{ __typename?: 'Role', id: number }> } | null };
 
 export type SetCurrentYearMutationVariables = Exact<{
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 }>;
 
 
-export type SetCurrentYearMutation = { __typename?: 'mutation_root', updateYearByPk?: { __typename?: 'Year', value: number } | null };
+export type SetCurrentYearMutation = { __typename?: 'mutation_root', updateYearByPk?: { __typename?: 'Year', id: number } | null };
 
 export type InsertYearMutationVariables = Exact<{
   value: Scalars['Int']['input'];
@@ -12936,7 +13928,7 @@ export type InsertYearMutationVariables = Exact<{
 export type InsertYearMutation = { __typename?: 'mutation_root', insertYearOne?: { __typename?: 'Year', value: number } | null };
 
 export type UpdateYearMutationVariables = Exact<{
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
   changes: YearSetInput;
 }>;
 
@@ -12944,7 +13936,7 @@ export type UpdateYearMutationVariables = Exact<{
 export type UpdateYearMutation = { __typename?: 'mutation_root', updateYearByPk?: { __typename?: 'Year', value: number } | null };
 
 export type DeleteYearMutationVariables = Exact<{
-  value: Scalars['Int']['input'];
+  id: Scalars['Int']['input'];
 }>;
 
 
@@ -13663,7 +14655,7 @@ export const ServiceRequestsFragmentDoc = {"kind":"Document","definitions":[{"ki
 export const TeacherTitleFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}}]} as unknown as DocumentNode<TeacherTitleFragment, unknown>;
 export const TeacherCoordinationsFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<TeacherCoordinationsFragment, unknown>;
 export const ServiceTeacherFragmentDoc = {"kind":"Document","definitions":[{"kind":"FragmentDefinition","name":{"kind":"Name","value":"ServiceTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherTitle"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"TeacherCoordinations"}},{"kind":"Field","alias":{"kind":"Name","value":"coordinationIds"},"name":{"kind":"Name","value":"coordinations"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherTitle"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"position"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"TeacherCoordinations"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"coordinations"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"programId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"trackId"},"value":{"kind":"EnumValue","value":"ASC_NULLS_LAST"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"courseId"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"course"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"name"},"name":{"kind":"Name","value":"nameDisplay"}}]}}]}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}}]}}]} as unknown as DocumentNode<ServiceTeacherFragment, unknown>;
-export const GetAppDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAppData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"currentPhase"},"name":{"kind":"Name","value":"currentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"years"},"name":{"kind":"Name","value":"year"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"current"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"customTexts"},"name":{"kind":"Name","value":"appSetting"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"profile"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"services"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}}]}}]}}]}}]} as unknown as DocumentNode<GetAppDataQuery, GetAppDataQueryVariables>;
+export const GetAppDataDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAppData"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"orgId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"userId"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"organization"},"name":{"kind":"Name","value":"organizationByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"orgId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"currentPhase"},"name":{"kind":"Name","value":"phase"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}},{"kind":"Field","name":{"kind":"Name","value":"years"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"EnumValue","value":"DESC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"value"}},{"kind":"Field","name":{"kind":"Name","value":"current"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"customTexts"},"name":{"kind":"Name","value":"appSettings"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"key"}},{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}},{"kind":"Field","alias":{"kind":"Name","value":"profile"},"name":{"kind":"Name","value":"teacherByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"userId"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}},{"kind":"Field","name":{"kind":"Name","value":"services"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}}]}}]}}]}}]} as unknown as DocumentNode<GetAppDataQuery, GetAppDataQueryVariables>;
 export const GetAdminCoursesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminCourses"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"degrees"},"name":{"kind":"Name","value":"degree"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgramsDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksDegree"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesDegree"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"programs"},"name":{"kind":"Name","value":"program"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTracksProgram"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesProgram"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"tracks"},"name":{"kind":"Name","value":"track"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminTrack"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesTrack"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"courses"},"name":{"kind":"Name","value":"course"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"year"},"value":{"kind":"EnumValue","value":"DESC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"degree"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"program"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"track"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"name"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"semester"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourse"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"types"},"name":{"kind":"Name","value":"courseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"label"},"value":{"kind":"EnumValue","value":"ASC"}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCourseType"}},{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminCoursesCourseType"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgramsDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesDegree"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Degree"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"programs"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"tracks"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}}]}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTracksProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesProgram"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Program"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesTrack"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Track"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourse"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Course"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"year"}},{"kind":"Field","name":{"kind":"Name","value":"program"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"degree"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}}]}},{"kind":"Field","name":{"kind":"Name","value":"track"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}}]}},{"kind":"Field","name":{"kind":"Name","value":"name"}},{"kind":"Field","name":{"kind":"Name","value":"nameShort"}},{"kind":"Field","name":{"kind":"Name","value":"nameDisplay"}},{"kind":"Field","name":{"kind":"Name","value":"semester"}},{"kind":"Field","name":{"kind":"Name","value":"type"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"label"}}]}},{"kind":"Field","name":{"kind":"Name","value":"hours"}},{"kind":"Field","name":{"kind":"Name","value":"hoursAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"groups"}},{"kind":"Field","name":{"kind":"Name","value":"groupsAdjusted"}},{"kind":"Field","name":{"kind":"Name","value":"description"}},{"kind":"Field","name":{"kind":"Name","value":"priorityRule"}},{"kind":"Field","name":{"kind":"Name","value":"visible"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}},{"kind":"Field","name":{"kind":"Name","value":"coefficient"}},{"kind":"Field","name":{"kind":"Name","value":"description"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminCoursesCourseType"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"CourseType"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"label"}}]}}]} as unknown as DocumentNode<GetAdminCoursesQuery, GetAdminCoursesQueryVariables>;
 export const InsertCourseTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertCourseTypes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertCourseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertCourseTypesMutation, InsertCourseTypesMutationVariables>;
 export const UpsertCourseTypesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertCourseTypes"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"CourseTypeOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertCourseType"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertCourseTypesMutation, UpsertCourseTypesMutationVariables>;
@@ -13687,16 +14679,16 @@ export const UpdateTracksDocument = {"kind":"Document","definitions":[{"kind":"O
 export const DeleteTracksDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteTracks"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteTrack"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteTracksMutation, DeleteTracksMutationVariables>;
 export const GetAdminRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"query","name":{"kind":"Name","value":"GetAdminRoles"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"roles"},"name":{"kind":"Name","value":"role"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"type"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"teacher"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRole"}}]}},{"kind":"Field","alias":{"kind":"Name","value":"teachers"},"name":{"kind":"Name","value":"teacher"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"orderBy"},"value":{"kind":"ListValue","values":[{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"lastname"},"value":{"kind":"EnumValue","value":"ASC"}}]},{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"firstname"},"value":{"kind":"EnumValue","value":"ASC"}}]}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"FragmentSpread","name":{"kind":"Name","value":"AdminRolesTeacher"}}]}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRole"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Role"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"teacher"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"email"}}]}},{"kind":"Field","name":{"kind":"Name","value":"type"}},{"kind":"Field","name":{"kind":"Name","value":"comment"}}]}},{"kind":"FragmentDefinition","name":{"kind":"Name","value":"AdminRolesTeacher"},"typeCondition":{"kind":"NamedType","name":{"kind":"Name","value":"Teacher"}},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}},{"kind":"Field","name":{"kind":"Name","value":"email"}},{"kind":"Field","name":{"kind":"Name","value":"displayname"}}]}}]} as unknown as DocumentNode<GetAdminRolesQuery, GetAdminRolesQueryVariables>;
 export const UpdateCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertAppSettingOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"constraint"},"value":{"kind":"EnumValue","value":"app_setting_pkey"}},{"kind":"ObjectField","name":{"kind":"Name","value":"updateColumns"},"value":{"kind":"ListValue","values":[{"kind":"EnumValue","value":"value"}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<UpdateCustomTextMutation, UpdateCustomTextMutationVariables>;
-export const DeleteCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"key"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"String"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAppSettingByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"key"},"value":{"kind":"Variable","name":{"kind":"Name","value":"key"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<DeleteCustomTextMutation, DeleteCustomTextMutationVariables>;
-export const SetCurrentPhaseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentPhase"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phase"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PhaseEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateCurrentPhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"IntValue","value":"1"}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phase"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentPhaseMutation, SetCurrentPhaseMutationVariables>;
+export const DeleteCustomTextDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteCustomText"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteAppSettingByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"key"}}]}}]}}]} as unknown as DocumentNode<DeleteCustomTextMutation, DeleteCustomTextMutationVariables>;
+export const SetCurrentPhaseDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentPhase"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"oid"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"phase"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"PhaseTypeEnum"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updatePhaseByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"oid"},"value":{"kind":"Variable","name":{"kind":"Name","value":"oid"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"phase"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentPhaseMutation, SetCurrentPhaseMutationVariables>;
 export const InsertRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleInsertInput"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"insertData"},"name":{"kind":"Name","value":"insertRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<InsertRolesMutation, InsertRolesMutationVariables>;
 export const UpsertRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpsertRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"objects"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleInsertInput"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}},"type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleOnConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"upsertData"},"name":{"kind":"Name","value":"insertRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"objects"},"value":{"kind":"Variable","name":{"kind":"Name","value":"objects"}}},{"kind":"Argument","name":{"kind":"Name","value":"onConflict"},"value":{"kind":"Variable","name":{"kind":"Name","value":"onConflict"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpsertRolesMutation, UpsertRolesMutationVariables>;
 export const UpdateRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"RoleSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"updateData"},"name":{"kind":"Name","value":"updateRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<UpdateRolesMutation, UpdateRolesMutationVariables>;
 export const DeleteRolesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteRoles"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"ids"}},"type":{"kind":"NonNullType","type":{"kind":"ListType","type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","alias":{"kind":"Name","value":"deleteData"},"name":{"kind":"Name","value":"deleteRole"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"where"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"_in"},"value":{"kind":"Variable","name":{"kind":"Name","value":"ids"}}}]}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"returning"},"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]}}]} as unknown as DocumentNode<DeleteRolesMutation, DeleteRolesMutationVariables>;
-export const SetCurrentYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"current"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<SetCurrentYearMutation, SetCurrentYearMutationVariables>;
+export const SetCurrentYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"SetCurrentYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"current"},"value":{"kind":"BooleanValue","value":true}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<SetCurrentYearMutation, SetCurrentYearMutationVariables>;
 export const InsertYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"InsertYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"visible"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Boolean"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"insertYearOne"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"object"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}},{"kind":"ObjectField","name":{"kind":"Name","value":"visible"},"value":{"kind":"Variable","name":{"kind":"Name","value":"visible"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<InsertYearMutation, InsertYearMutationVariables>;
-export const UpdateYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"YearSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<UpdateYearMutation, UpdateYearMutationVariables>;
-export const DeleteYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"value"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"value"},"value":{"kind":"Variable","name":{"kind":"Name","value":"value"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<DeleteYearMutation, DeleteYearMutationVariables>;
+export const UpdateYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"UpdateYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}},{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"changes"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"YearSetInput"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"updateYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"pkColumns"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}]}},{"kind":"Argument","name":{"kind":"Name","value":"_set"},"value":{"kind":"Variable","name":{"kind":"Name","value":"changes"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<UpdateYearMutation, UpdateYearMutationVariables>;
+export const DeleteYearDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"DeleteYear"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"id"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"deleteYearByPk"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"id"},"value":{"kind":"Variable","name":{"kind":"Name","value":"id"}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"value"}}]}}]}}]} as unknown as DocumentNode<DeleteYearMutation, DeleteYearMutationVariables>;
 export const CreateServicesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CreateServices"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"createYearServices"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CreateServicesMutation, CreateServicesMutationVariables>;
 export const CopyCoursesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"CopyCourses"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"copyYearCourses"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<CopyCoursesMutation, CopyCoursesMutationVariables>;
 export const ComputePrioritiesDocument = {"kind":"Document","definitions":[{"kind":"OperationDefinition","operation":"mutation","name":{"kind":"Name","value":"ComputePriorities"},"variableDefinitions":[{"kind":"VariableDefinition","variable":{"kind":"Variable","name":{"kind":"Name","value":"year"}},"type":{"kind":"NonNullType","type":{"kind":"NamedType","name":{"kind":"Name","value":"Int"}}}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"computeYearPriorities"},"arguments":[{"kind":"Argument","name":{"kind":"Name","value":"args"},"value":{"kind":"ObjectValue","fields":[{"kind":"ObjectField","name":{"kind":"Name","value":"p_year"},"value":{"kind":"Variable","name":{"kind":"Name","value":"year"}}}]}}],"selectionSet":{"kind":"SelectionSet","selections":[{"kind":"Field","name":{"kind":"Name","value":"id"}}]}}]}}]} as unknown as DocumentNode<ComputePrioritiesMutation, ComputePrioritiesMutationVariables>;

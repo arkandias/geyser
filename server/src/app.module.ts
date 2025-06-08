@@ -7,7 +7,7 @@ import { GraphqlModule } from "./graphql/graphql.module";
 import { HealthModule } from "./health/health.module";
 import { KeysModule } from "./keys/keys.module";
 import { RolesModule } from "./roles/roles.module";
-import { UsersModule } from "./users/users.module";
+import { UserModule } from "./user/user.module";
 
 @Module({
   imports: [
@@ -18,7 +18,7 @@ import { UsersModule } from "./users/users.module";
     HealthModule,
     KeysModule,
     RolesModule,
-    UsersModule,
+    UserModule,
   ],
 })
 export class AppModule {}

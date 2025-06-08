@@ -14,14 +14,14 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - description
         - value
+        - description
       filter: {}
     comment: Can view all request types
   - role: teacher
     permission:
       columns:
-        - description
         - value
+        - description
       filter: {}
     comment: Can view all request types

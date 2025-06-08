@@ -27,9 +27,9 @@ const isFormOpen = ref(false);
 const yearValue = ref<number | null>(null);
 
 graphql(`
-  mutation SetCurrentYear($value: Int!) {
-    updateYearByPk(pkColumns: { value: $value }, _set: { current: true }) {
-      value
+  mutation SetCurrentYear($id: Int!) {
+    updateYearByPk(pkColumns: { id: $id }, _set: { current: true }) {
+      id
     }
   }
 
@@ -39,14 +39,14 @@ graphql(`
     }
   }
 
-  mutation UpdateYear($value: Int!, $changes: YearSetInput!) {
-    updateYearByPk(pkColumns: { value: $value }, _set: $changes) {
+  mutation UpdateYear($id: Int!, $changes: YearSetInput!) {
+    updateYearByPk(pkColumns: { id: $id }, _set: $changes) {
       value
     }
   }
 
-  mutation DeleteYear($value: Int!) {
-    deleteYearByPk(value: $value) {
+  mutation DeleteYear($id: Int!) {
+    deleteYearByPk(id: $id) {
       value
     }
   }
@@ -268,9 +268,9 @@ const create = () => {
   isFormOpen.value = true;
 };
 
-const edit = (newYear: number) => {
-  selectedYear.value = newYear;
-  yearValue.value = newYear;
+const edit = (id: number, value: number) => {
+  selectedYear.value = id;
+  yearValue.value = value;
   isFormOpen.value = true;
 };
 </script>
@@ -296,7 +296,7 @@ const edit = (newYear: number) => {
           flat
           square
           dense
-          @click="selectedYear = year.value"
+          @click="selectedYear = year.id"
         >
           <QMenu square auto-close>
             <QList>
@@ -335,7 +335,7 @@ const edit = (newYear: number) => {
           flat
           square
           dense
-          @click="edit(year.value)"
+          @click="edit(year.id, year.value)"
         />
       </QItemSection>
       <QItemSection side>

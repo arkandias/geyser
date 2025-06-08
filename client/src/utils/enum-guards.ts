@@ -1,7 +1,7 @@
-import { PhaseEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
+import { PhaseTypeEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 
-export const isPhase = (phase: unknown): phase is PhaseEnum =>
-  Object.values(PhaseEnum).includes(phase as PhaseEnum);
+export const isPhaseType = (phase: unknown): phase is PhaseTypeEnum =>
+  Object.values(PhaseTypeEnum).includes(phase as PhaseTypeEnum);
 
 export const isRequestType = (rt: unknown): rt is RequestTypeEnum =>
   Object.values(RequestTypeEnum).includes(rt as RequestTypeEnum);

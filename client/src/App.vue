@@ -5,7 +5,11 @@ import { computed, inject, watch } from "vue";
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import { GetAppDataDocument, PhaseEnum, RoleTypeEnum } from "@/gql/graphql.ts";
+import {
+  GetAppDataDocument,
+  PhaseTypeEnum,
+  RoleTypeEnum,
+} from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
@@ -16,18 +20,22 @@ import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
 graphql(`
-  query GetAppData($userId: Int!) {
-    currentPhase: currentPhaseByPk(id: 1) {
-      value
-    }
-    years: year(orderBy: { value: DESC }) {
-      value
-      current
-      visible
-    }
-    customTexts: appSetting(orderBy: [{ key: ASC }]) {
-      key
-      value
+  query GetAppData($orgId: Int!, $userId: Int!) {
+    organization: organizationByPk(id: $orgId) {
+      currentPhase: phase {
+        value
+      }
+      years(orderBy: { value: DESC }) {
+        id
+        value
+        current
+        visible
+      }
+      customTexts: appSettings(orderBy: [{ key: ASC }]) {
+        id
+        key
+        value
+      }
     }
     profile: teacherByPk(id: $userId) {
       id
@@ -62,7 +70,7 @@ if (authManager.authError) {
 const getAppData = useQuery({
   query: GetAppDataDocument,
   variables: { userId: authManager.userId },
-  pause: () => !authManager.isAuthenticated,
+  pause: () => !authManager.hasAccess,
   context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
 });
 watch(
@@ -75,14 +83,10 @@ watch(
       });
       return;
     }
-    if (data?.currentPhase?.value) {
-      setCurrentPhase(data.currentPhase.value);
-    }
-    if (data?.years) {
-      setYears(data.years);
-    }
-    if (data?.customTexts) {
-      setCustomTexts(data.customTexts);
+    if (data?.organization) {
+      setCurrentPhase(data.organization.currentPhase?.value);
+      setYears(data.organization.years);
+      setCustomTexts(data.organization.customTexts);
     }
     if (data?.profile) {
       setProfile(data.profile);
@@ -94,14 +98,14 @@ watch(
 watch(
   currentPhase,
   (phase) => {
-    if (!authManager.isAuthenticated) {
+    if (!authManager.hasAccess) {
       return;
     }
     if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
       authManager.setActiveRole(RoleTypeEnum.Admin);
     } else if (
       authManager.allowedRoles.includes(RoleTypeEnum.Commissioner) &&
-      phase === PhaseEnum.Assignments
+      phase === PhaseTypeEnum.Assignments
     ) {
       authManager.setActiveRole(RoleTypeEnum.Commissioner);
     }
@@ -114,8 +118,8 @@ const accessDeniedMessage = computed(() => {
   if (authManager.isLoggedOut) {
     return t("home.alert.loggedOut");
   }
-  if (!authManager.isAuthenticated) {
-    return t("home.alert.notAuthenticated");
+  if (!authManager.hasAccess) {
+    return t("home.alert.noAccess");
   }
   if (getAppData.fetching.value) {
     return t("home.alert.loadingAppData");
@@ -124,7 +128,7 @@ const accessDeniedMessage = computed(() => {
     return t("home.alert.profileNotLoaded");
   }
   if (
-    currentPhase.value === PhaseEnum.Shutdown &&
+    currentPhase.value === PhaseTypeEnum.Shutdown &&
     authManager.activeRole.value !== RoleTypeEnum.Admin
   ) {
     return t("home.alert.shutdown");

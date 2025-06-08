@@ -12,7 +12,8 @@ import type { Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
-import { UsersService } from "../users/users.service";
+import { OrganizationService } from "../organization/organization.service";
+import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import { CookiesService } from "./cookies.service";
 import { JwtService } from "./jwt.service";
@@ -29,7 +30,8 @@ export class AuthController {
     private cookiesService: CookiesService,
     private jwtService: JwtService,
     private oidcService: OidcService,
-    private usersService: UsersService,
+    private organizationService: OrganizationService,
+    private userService: UserService,
   ) {
     this.loginCallbackUrl = new URL(
       "/auth/login/callback",
@@ -46,6 +48,10 @@ export class AuthController {
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ) {
+    if (!redirectUrl) {
+      throw new BadRequestException("Missing redirect URL");
+    }
+
     // Use state parameter to prevent CSRF attacks
     const stateId = this.authService.newState(redirectUrl);
 
@@ -73,9 +79,17 @@ export class AuthController {
       throw new BadRequestException("Missing code");
     }
 
-    let redirectUrl: URL | null = null;
+    const { redirectUrl } = this.authService.getState(state);
+    const subdomain = redirectUrl?.hostname.split(".")[0];
+
     try {
-      redirectUrl = this.authService.getState(state).redirectUrl;
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      const organization = await this.organizationService.findByKey(subdomain!);
+      if (!organization) {
+        throw new UnauthorizedException(
+          `Organization '${subdomain}' not found`,
+        );
+      }
 
       const { accessToken: identityToken } =
         await this.oidcService.requestToken({
@@ -88,14 +102,15 @@ export class AuthController {
 
       const { email } = await this.oidcService.verifyToken(identityToken);
 
-      const user = await this.usersService.findByEmail(email);
+      const user = await this.userService.findByEmail(email);
       if (!user) {
-        throw new UnauthorizedException("User not found");
+        throw new UnauthorizedException(`User '${email}' not found`);
       }
       if (!user.active) {
         throw new UnauthorizedException("User not active");
       }
-      await this.cookiesService.setAuthCookies(res, user.id);
+
+      await this.cookiesService.setAuthCookies(res, organization.id, user.id);
 
       if (redirectUrl) {
         res.redirect(redirectUrl.toString());
@@ -117,6 +132,10 @@ export class AuthController {
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ): void {
+    if (!redirectUrl) {
+      throw new BadRequestException("Missing redirect URL");
+    }
+
     // Use state parameter to prevent CSRF attacks
     const stateId = this.authService.newState(redirectUrl);
 
@@ -170,8 +189,9 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");
     }
-    const { sub } = await this.jwtService.verifyRefreshToken(refreshToken);
-    await this.cookiesService.setAuthCookies(res, sub);
+    const { orgId, userId } =
+      await this.jwtService.verifyRefreshToken(refreshToken);
+    await this.cookiesService.setAuthCookies(res, orgId, userId);
 
     res.status(200).json({ message: "Token refreshed successfully" });
   }

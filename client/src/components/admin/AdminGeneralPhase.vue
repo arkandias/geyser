@@ -1,30 +1,34 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
+import { inject } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import { PhaseEnum, SetCurrentPhaseDocument } from "@/gql/graphql.ts";
+import { PhaseTypeEnum, SetCurrentPhaseDocument } from "@/gql/graphql.ts";
 import { phaseLabel } from "@/locales/helpers.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { notify } = useNotify();
 const { currentPhase } = useCurrentPhaseStore();
 
 const phaseOptions = [
-  PhaseEnum.Requests,
-  PhaseEnum.Assignments,
-  PhaseEnum.Results,
-  PhaseEnum.Shutdown,
+  PhaseTypeEnum.Requests,
+  PhaseTypeEnum.Assignments,
+  PhaseTypeEnum.Results,
+  PhaseTypeEnum.Shutdown,
 ].map((phase) => ({
   value: phase,
   label: phaseLabel(t, phase),
 }));
 
 graphql(`
-  mutation SetCurrentPhase($phase: PhaseEnum!) {
-    updateCurrentPhaseByPk(pkColumns: { id: 1 }, _set: { value: $phase }) {
+  mutation SetCurrentPhase($oid: Int!, $phase: PhaseTypeEnum!) {
+    updatePhaseByPk(pkColumns: { oid: $oid }, _set: { value: $phase }) {
       value
     }
   }
@@ -32,8 +36,11 @@ graphql(`
 
 const setCurrentPhase = useMutation(SetCurrentPhaseDocument);
 
-const setCurrentPhaseHandle = async (phase: PhaseEnum): Promise<void> => {
-  const { error } = await setCurrentPhase.executeMutation({ phase });
+const setCurrentPhaseHandle = async (phase: PhaseTypeEnum): Promise<void> => {
+  const { error } = await setCurrentPhase.executeMutation({
+    oid: authManager.orgId,
+    phase,
+  });
   if (error) {
     notify(NotifyType.Error, {
       message: t("admin.general.phase.error.setCurrent"),

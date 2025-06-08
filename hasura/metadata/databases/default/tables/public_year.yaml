@@ -1,6 +1,10 @@
 table:
   name: year
   schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: courses
     using:
@@ -34,21 +38,25 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - id
+        - oid
         - current
         - value
         - visible
       filter:
         _exists:
           _table:
-            name: current_phase
+            name: phase
             schema: public
           _where:
             value:
               _eq: assignments
-    comment: Can view all years [during assignments phase only]
+    comment: Can view all the years of their organization [during assignments phase only]
   - role: teacher
     permission:
       columns:
+        - id
+        - oid
         - current
         - value
         - visible
@@ -56,11 +64,11 @@ select_permissions:
         _and:
           - _exists:
               _table:
-                name: current_phase
+                name: phase
                 schema: public
               _where:
                 value:
                   _neq: shutdown
           - visible:
               _eq: true
-    comment: Can view visible years [except during shutdown phase]
+    comment: Can view the visible years of their organization [except during shutdown phase]

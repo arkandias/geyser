@@ -2,44 +2,44 @@ import type { ComposerTranslation } from "vue-i18n";
 
 import type { CustomTextKey } from "@/config/custom-text-keys.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
-import { PhaseEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
+import { PhaseTypeEnum, RequestTypeEnum, RoleTypeEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
-export const phaseSubtitle = (t: ComposerTranslation, phase: PhaseEnum) => {
+export const phaseSubtitle = (t: ComposerTranslation, phase: PhaseTypeEnum) => {
   switch (phase) {
-    case PhaseEnum.Requests:
+    case PhaseTypeEnum.Requests:
       return t("home.subtitle.requests");
-    case PhaseEnum.Assignments:
+    case PhaseTypeEnum.Assignments:
       return t("home.subtitle.assignments");
-    case PhaseEnum.Results:
+    case PhaseTypeEnum.Results:
       return t("home.subtitle.results");
-    case PhaseEnum.Shutdown:
+    case PhaseTypeEnum.Shutdown:
       return t("home.subtitle.shutdown");
   }
 };
 
-export const phaseMessage = (t: ComposerTranslation, phase: PhaseEnum) => {
+export const phaseMessage = (t: ComposerTranslation, phase: PhaseTypeEnum) => {
   switch (phase) {
-    case PhaseEnum.Requests:
+    case PhaseTypeEnum.Requests:
       return t("home.message.requests");
-    case PhaseEnum.Assignments:
+    case PhaseTypeEnum.Assignments:
       return t("home.message.assignments");
-    case PhaseEnum.Results:
+    case PhaseTypeEnum.Results:
       return t("home.message.results");
-    case PhaseEnum.Shutdown:
+    case PhaseTypeEnum.Shutdown:
       return t("home.message.shutdown");
   }
 };
 
-export const phaseLabel = (t: ComposerTranslation, phase: PhaseEnum) => {
+export const phaseLabel = (t: ComposerTranslation, phase: PhaseTypeEnum) => {
   switch (phase) {
-    case PhaseEnum.Requests:
+    case PhaseTypeEnum.Requests:
       return t("phase.requests");
-    case PhaseEnum.Assignments:
+    case PhaseTypeEnum.Assignments:
       return t("phase.assignments");
-    case PhaseEnum.Results:
+    case PhaseTypeEnum.Results:
       return t("phase.results");
-    case PhaseEnum.Shutdown:
+    case PhaseTypeEnum.Shutdown:
       return t("phase.shutdown");
   }
 };
@@ -84,21 +84,21 @@ export const customTextDefault = (
   switch (key) {
     case "homeTitle":
       return t("home.title");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Requests))}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseTypeEnum.Requests))}`:
       return t("home.subtitle.requests");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseTypeEnum.Assignments))}`:
       return t("home.subtitle.assignments");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Results))}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseTypeEnum.Results))}`:
       return t("home.subtitle.results");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
+    case `homeSubtitle${capitalize(toLowerCase(PhaseTypeEnum.Shutdown))}`:
       return t("home.subtitle.shutdown");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Requests))}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseTypeEnum.Requests))}`:
       return t("home.message.requests");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseTypeEnum.Assignments))}`:
       return t("home.message.assignments");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Results))}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseTypeEnum.Results))}`:
       return t("home.message.results");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
+    case `homeMessage${capitalize(toLowerCase(PhaseTypeEnum.Shutdown))}`:
       return t("home.message.shutdown");
     case "contact":
       return t("header.info.contact.message");

@@ -33,19 +33,31 @@ export class CookiesService {
     };
   }
 
-  async setAccessCookie(res: Response, userId: number): Promise<void> {
-    const accessToken = await this.jwtService.makeAccessToken(userId);
+  async setAccessCookie(
+    res: Response,
+    orgId: number,
+    userId: number,
+  ): Promise<void> {
+    const accessToken = await this.jwtService.makeAccessToken(orgId, userId);
     res.cookie("access_token", accessToken, this.accessCookieOptions());
   }
 
-  async setRefreshCookie(res: Response, userId: number): Promise<void> {
-    const refreshToken = await this.jwtService.makeRefreshToken(userId);
+  async setRefreshCookie(
+    res: Response,
+    orgId: number,
+    userId: number,
+  ): Promise<void> {
+    const refreshToken = await this.jwtService.makeRefreshToken(orgId, userId);
     res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
-  async setAuthCookies(res: Response, userId: number): Promise<void> {
-    await this.setAccessCookie(res, userId);
-    await this.setRefreshCookie(res, userId);
+  async setAuthCookies(
+    res: Response,
+    orgId: number,
+    userId: number,
+  ): Promise<void> {
+    await this.setAccessCookie(res, orgId, userId);
+    await this.setRefreshCookie(res, orgId, userId);
   }
 
   unsetAccessCookie(res: Response): void {

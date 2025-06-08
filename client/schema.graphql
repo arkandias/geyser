@@ -18,16 +18,25 @@ type AppSetting {
   """Timestamp when the record was created"""
   createdAt: timestamptz!
 
-  """Text identifier"""
+  """Unique setting identifier"""
+  id: Int!
+
+  """Setting name"""
   key: String!
+
+  """Organization reference"""
+  oid: Int!
+
+  """An object relationship"""
+  organization: Organization!
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz!
 
-  """Text content"""
-  value: String
+  """Setting value"""
+  value: String!
 }
 
 """
@@ -38,13 +47,72 @@ type AppSettingAggregate {
   nodes: [AppSetting!]!
 }
 
+input AppSettingAggregateBoolExp {
+  count: appSettingAggregateBoolExpCount
+}
+
 """
 aggregate fields of "app_setting"
 """
 type AppSettingAggregateFields {
+  avg: AppSettingAvgFields
   count(columns: [AppSettingSelectColumn!], distinct: Boolean): Int!
   max: AppSettingMaxFields
   min: AppSettingMinFields
+  stddev: AppSettingStddevFields
+  stddevPop: AppSettingStddevPopFields
+  stddevSamp: AppSettingStddevSampFields
+  sum: AppSettingSumFields
+  varPop: AppSettingVarPopFields
+  varSamp: AppSettingVarSampFields
+  variance: AppSettingVarianceFields
+}
+
+"""
+order by aggregate values of table "app_setting"
+"""
+input AppSettingAggregateOrderBy {
+  avg: AppSettingAvgOrderBy
+  count: OrderBy
+  max: AppSettingMaxOrderBy
+  min: AppSettingMinOrderBy
+  stddev: AppSettingStddevOrderBy
+  stddevPop: AppSettingStddevPopOrderBy
+  stddevSamp: AppSettingStddevSampOrderBy
+  sum: AppSettingSumOrderBy
+  varPop: AppSettingVarPopOrderBy
+  varSamp: AppSettingVarSampOrderBy
+  variance: AppSettingVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "app_setting"
+"""
+input AppSettingArrRelInsertInput {
+  data: [AppSettingInsertInput!]!
+
+  """upsert condition"""
+  onConflict: AppSettingOnConflict
+}
+
+"""aggregate avg on columns"""
+type AppSettingAvgFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by avg() on columns of table "app_setting"
+"""
+input AppSettingAvgOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -55,7 +123,10 @@ input AppSettingBoolExp {
   _not: AppSettingBoolExp
   _or: [AppSettingBoolExp!]
   createdAt: TimestamptzComparisonExp
+  id: IntComparisonExp
   key: StringComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
   updatedAt: TimestamptzComparisonExp
   value: StringComparisonExp
 }
@@ -65,9 +136,17 @@ unique or primary key constraints on table "app_setting"
 """
 enum AppSettingConstraint {
   """
-  unique or primary key constraint on columns "key"
+  unique or primary key constraint on columns "id"
   """
   app_setting_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "app_setting"
+"""
+input AppSettingIncInput {
+  """Organization reference"""
+  oid: Int
 }
 
 """
@@ -77,15 +156,19 @@ input AppSettingInsertInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Text identifier"""
+  """Setting name"""
   key: String
+
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Text content"""
+  """Setting value"""
   value: String
 }
 
@@ -94,16 +177,47 @@ type AppSettingMaxFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Text identifier"""
+  """Unique setting identifier"""
+  id: Int
+
+  """Setting name"""
   key: String
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Text content"""
+  """Setting value"""
   value: String
+}
+
+"""
+order by max() on columns of table "app_setting"
+"""
+input AppSettingMaxOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Setting name"""
+  key: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Setting value"""
+  value: OrderBy
 }
 
 """aggregate min on columns"""
@@ -111,16 +225,47 @@ type AppSettingMinFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Text identifier"""
+  """Unique setting identifier"""
+  id: Int
+
+  """Setting name"""
   key: String
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Text content"""
+  """Setting value"""
   value: String
+}
+
+"""
+order by min() on columns of table "app_setting"
+"""
+input AppSettingMinOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Setting name"""
+  key: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Setting value"""
+  value: OrderBy
 }
 
 """
@@ -146,15 +291,18 @@ input AppSettingOnConflict {
 """Ordering options when selecting data from "app_setting"."""
 input AppSettingOrderBy {
   createdAt: OrderBy
+  id: OrderBy
   key: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
   updatedAt: OrderBy
   value: OrderBy
 }
 
 """primary key columns input for table: app_setting"""
 input AppSettingPkColumnsInput {
-  """Text identifier"""
-  key: String!
+  """Unique setting identifier"""
+  id: Int!
 }
 
 """
@@ -165,7 +313,13 @@ enum AppSettingSelectColumn {
   createdAt
 
   """column name"""
+  id
+
+  """column name"""
   key
+
+  """column name"""
+  oid
 
   """column name"""
   updatedAt
@@ -181,16 +335,79 @@ input AppSettingSetInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Text identifier"""
+  """Setting name"""
   key: String
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Text content"""
+  """Setting value"""
   value: String
+}
+
+"""aggregate stddev on columns"""
+type AppSettingStddevFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddev() on columns of table "app_setting"
+"""
+input AppSettingStddevOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevPop on columns"""
+type AppSettingStddevPopFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevPop() on columns of table "app_setting"
+"""
+input AppSettingStddevPopOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevSamp on columns"""
+type AppSettingStddevSampFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevSamp() on columns of table "app_setting"
+"""
+input AppSettingStddevSampOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -209,16 +426,42 @@ input AppSettingStreamCursorValueInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Text identifier"""
+  """Unique setting identifier"""
+  id: Int
+
+  """Setting name"""
   key: String
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Text content"""
+  """Setting value"""
   value: String
+}
+
+"""aggregate sum on columns"""
+type AppSettingSumFields {
+  """Unique setting identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+order by sum() on columns of table "app_setting"
+"""
+input AppSettingSumOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -232,6 +475,9 @@ enum AppSettingUpdateColumn {
   key
 
   """column name"""
+  oid
+
+  """column name"""
   updatedAt
 
   """column name"""
@@ -239,11 +485,74 @@ enum AppSettingUpdateColumn {
 }
 
 input AppSettingUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: AppSettingIncInput
+
   """sets the columns of the filtered rows to the given values"""
   _set: AppSettingSetInput
 
   """filter the rows which have to be updated"""
   where: AppSettingBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type AppSettingVarPopFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varPop() on columns of table "app_setting"
+"""
+input AppSettingVarPopOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate varSamp on columns"""
+type AppSettingVarSampFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varSamp() on columns of table "app_setting"
+"""
+input AppSettingVarSampOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate variance on columns"""
+type AppSettingVarianceFields {
+  """Unique setting identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by variance() on columns of table "app_setting"
+"""
+input AppSettingVarianceOrderBy {
+  """Unique setting identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -3434,433 +3743,6 @@ input CourseVarianceOrderBy {
   year: OrderBy
 }
 
-"""Singleton table that stores the active system phase reference"""
-type CurrentPhase {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz!
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int!
-
-  """An object relationship"""
-  phase: Phase
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz!
-
-  """Reference to the currently active phase identifier"""
-  value: PhaseEnum
-}
-
-"""
-aggregated selection of "current_phase"
-"""
-type CurrentPhaseAggregate {
-  aggregate: CurrentPhaseAggregateFields
-  nodes: [CurrentPhase!]!
-}
-
-input CurrentPhaseAggregateBoolExp {
-  count: currentPhaseAggregateBoolExpCount
-}
-
-"""
-aggregate fields of "current_phase"
-"""
-type CurrentPhaseAggregateFields {
-  avg: CurrentPhaseAvgFields
-  count(columns: [CurrentPhaseSelectColumn!], distinct: Boolean): Int!
-  max: CurrentPhaseMaxFields
-  min: CurrentPhaseMinFields
-  stddev: CurrentPhaseStddevFields
-  stddevPop: CurrentPhaseStddevPopFields
-  stddevSamp: CurrentPhaseStddevSampFields
-  sum: CurrentPhaseSumFields
-  varPop: CurrentPhaseVarPopFields
-  varSamp: CurrentPhaseVarSampFields
-  variance: CurrentPhaseVarianceFields
-}
-
-"""
-order by aggregate values of table "current_phase"
-"""
-input CurrentPhaseAggregateOrderBy {
-  avg: CurrentPhaseAvgOrderBy
-  count: OrderBy
-  max: CurrentPhaseMaxOrderBy
-  min: CurrentPhaseMinOrderBy
-  stddev: CurrentPhaseStddevOrderBy
-  stddevPop: CurrentPhaseStddevPopOrderBy
-  stddevSamp: CurrentPhaseStddevSampOrderBy
-  sum: CurrentPhaseSumOrderBy
-  varPop: CurrentPhaseVarPopOrderBy
-  varSamp: CurrentPhaseVarSampOrderBy
-  variance: CurrentPhaseVarianceOrderBy
-}
-
-"""
-input type for inserting array relation for remote table "current_phase"
-"""
-input CurrentPhaseArrRelInsertInput {
-  data: [CurrentPhaseInsertInput!]!
-
-  """upsert condition"""
-  onConflict: CurrentPhaseOnConflict
-}
-
-"""aggregate avg on columns"""
-type CurrentPhaseAvgFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by avg() on columns of table "current_phase"
-"""
-input CurrentPhaseAvgOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""
-Boolean expression to filter rows from the table "current_phase". All fields are combined with a logical 'AND'.
-"""
-input CurrentPhaseBoolExp {
-  _and: [CurrentPhaseBoolExp!]
-  _not: CurrentPhaseBoolExp
-  _or: [CurrentPhaseBoolExp!]
-  createdAt: TimestamptzComparisonExp
-  id: IntComparisonExp
-  phase: PhaseBoolExp
-  updatedAt: TimestamptzComparisonExp
-  value: PhaseEnumComparisonExp
-}
-
-"""
-unique or primary key constraints on table "current_phase"
-"""
-enum CurrentPhaseConstraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  current_phase_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "current_phase"
-"""
-input CurrentPhaseIncInput {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-}
-
-"""
-input type for inserting data into table "current_phase"
-"""
-input CurrentPhaseInsertInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-  phase: PhaseObjRelInsertInput
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Reference to the currently active phase identifier"""
-  value: PhaseEnum
-}
-
-"""aggregate max on columns"""
-type CurrentPhaseMaxFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""
-order by max() on columns of table "current_phase"
-"""
-input CurrentPhaseMaxOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-}
-
-"""aggregate min on columns"""
-type CurrentPhaseMinFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""
-order by min() on columns of table "current_phase"
-"""
-input CurrentPhaseMinOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-}
-
-"""
-response of any mutation on the table "current_phase"
-"""
-type CurrentPhaseMutationResponse {
-  """number of rows affected by the mutation"""
-  affectedRows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [CurrentPhase!]!
-}
-
-"""
-on_conflict condition type for table "current_phase"
-"""
-input CurrentPhaseOnConflict {
-  constraint: CurrentPhaseConstraint!
-  updateColumns: [CurrentPhaseUpdateColumn!]! = []
-  where: CurrentPhaseBoolExp
-}
-
-"""Ordering options when selecting data from "current_phase"."""
-input CurrentPhaseOrderBy {
-  createdAt: OrderBy
-  id: OrderBy
-  phase: PhaseOrderBy
-  updatedAt: OrderBy
-  value: OrderBy
-}
-
-"""primary key columns input for table: current_phase"""
-input CurrentPhasePkColumnsInput {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int!
-}
-
-"""
-select columns of table "current_phase"
-"""
-enum CurrentPhaseSelectColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  id
-
-  """column name"""
-  updatedAt
-
-  """column name"""
-  value
-}
-
-"""
-input type for updating data in table "current_phase"
-"""
-input CurrentPhaseSetInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Reference to the currently active phase identifier"""
-  value: PhaseEnum
-}
-
-"""aggregate stddev on columns"""
-type CurrentPhaseStddevFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by stddev() on columns of table "current_phase"
-"""
-input CurrentPhaseStddevOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""aggregate stddevPop on columns"""
-type CurrentPhaseStddevPopFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by stddevPop() on columns of table "current_phase"
-"""
-input CurrentPhaseStddevPopOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""aggregate stddevSamp on columns"""
-type CurrentPhaseStddevSampFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by stddevSamp() on columns of table "current_phase"
-"""
-input CurrentPhaseStddevSampOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""
-Streaming cursor of the table "current_phase"
-"""
-input CurrentPhaseStreamCursorInput {
-  """Stream column input with initial value"""
-  initialValue: CurrentPhaseStreamCursorValueInput!
-
-  """cursor ordering"""
-  ordering: CursorOrdering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input CurrentPhaseStreamCursorValueInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Reference to the currently active phase identifier"""
-  value: PhaseEnum
-}
-
-"""aggregate sum on columns"""
-type CurrentPhaseSumFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Int
-}
-
-"""
-order by sum() on columns of table "current_phase"
-"""
-input CurrentPhaseSumOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""
-update columns of table "current_phase"
-"""
-enum CurrentPhaseUpdateColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  id
-
-  """column name"""
-  updatedAt
-
-  """column name"""
-  value
-}
-
-input CurrentPhaseUpdates {
-  """increments the numeric columns with given value of the filtered values"""
-  _inc: CurrentPhaseIncInput
-
-  """sets the columns of the filtered rows to the given values"""
-  _set: CurrentPhaseSetInput
-
-  """filter the rows which have to be updated"""
-  where: CurrentPhaseBoolExp!
-}
-
-"""aggregate varPop on columns"""
-type CurrentPhaseVarPopFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by varPop() on columns of table "current_phase"
-"""
-input CurrentPhaseVarPopOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""aggregate varSamp on columns"""
-type CurrentPhaseVarSampFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by varSamp() on columns of table "current_phase"
-"""
-input CurrentPhaseVarSampOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
-"""aggregate variance on columns"""
-type CurrentPhaseVarianceFields {
-  """Primary key with constraint to ensure only one record exists"""
-  id: Float
-}
-
-"""
-order by variance() on columns of table "current_phase"
-"""
-input CurrentPhaseVarianceOrderBy {
-  """Primary key with constraint to ensure only one record exists"""
-  id: OrderBy
-}
-
 """ordering argument of a cursor"""
 enum CursorOrdering {
   """ascending ordering of the cursor"""
@@ -4689,12 +4571,12 @@ enum OrderBy {
   DESC_NULLS_LAST
 }
 
-"""System phases controlling the course assignment workflow"""
-type Phase {
+"""Organization information"""
+type Organization {
   """An array relationship"""
-  currentPhases(
+  appSettings(
     """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
+    distinctOn: [AppSettingSelectColumn!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -4703,16 +4585,16 @@ type Phase {
     offset: Int
 
     """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
+    orderBy: [AppSettingOrderBy!]
 
     """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): [CurrentPhase!]!
+    where: AppSettingBoolExp
+  ): [AppSetting!]!
 
   """An aggregate relationship"""
-  currentPhasesAggregate(
+  appSettingsAggregate(
     """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
+    distinctOn: [AppSettingSelectColumn!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -4721,17 +4603,429 @@ type Phase {
     offset: Int
 
     """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
+    orderBy: [AppSettingOrderBy!]
 
     """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): CurrentPhaseAggregate!
+    where: AppSettingBoolExp
+  ): AppSettingAggregate!
 
-  """Summary of activities and permissions during this phase"""
-  description: String
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
 
-  """Phase identifier"""
-  value: String!
+  """Unique identifier"""
+  id: Int!
+
+  """Human-readable identifier"""
+  key: String!
+
+  """Label for display purposes"""
+  label: String!
+
+  """An object relationship"""
+  phase: Phase
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
+
+  """An array relationship"""
+  years(
+    """distinct select on columns"""
+    distinctOn: [YearSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [YearOrderBy!]
+
+    """filter the rows returned"""
+    where: YearBoolExp
+  ): [Year!]!
+
+  """An aggregate relationship"""
+  yearsAggregate(
+    """distinct select on columns"""
+    distinctOn: [YearSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [YearOrderBy!]
+
+    """filter the rows returned"""
+    where: YearBoolExp
+  ): YearAggregate!
+}
+
+"""
+aggregated selection of "organization"
+"""
+type OrganizationAggregate {
+  aggregate: OrganizationAggregateFields
+  nodes: [Organization!]!
+}
+
+"""
+aggregate fields of "organization"
+"""
+type OrganizationAggregateFields {
+  avg: OrganizationAvgFields
+  count(columns: [OrganizationSelectColumn!], distinct: Boolean): Int!
+  max: OrganizationMaxFields
+  min: OrganizationMinFields
+  stddev: OrganizationStddevFields
+  stddevPop: OrganizationStddevPopFields
+  stddevSamp: OrganizationStddevSampFields
+  sum: OrganizationSumFields
+  varPop: OrganizationVarPopFields
+  varSamp: OrganizationVarSampFields
+  variance: OrganizationVarianceFields
+}
+
+"""aggregate avg on columns"""
+type OrganizationAvgFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""
+Boolean expression to filter rows from the table "organization". All fields are combined with a logical 'AND'.
+"""
+input OrganizationBoolExp {
+  _and: [OrganizationBoolExp!]
+  _not: OrganizationBoolExp
+  _or: [OrganizationBoolExp!]
+  appSettings: AppSettingBoolExp
+  appSettingsAggregate: AppSettingAggregateBoolExp
+  createdAt: TimestamptzComparisonExp
+  id: IntComparisonExp
+  key: StringComparisonExp
+  label: StringComparisonExp
+  phase: PhaseBoolExp
+  sublabel: StringComparisonExp
+  updatedAt: TimestamptzComparisonExp
+  years: YearBoolExp
+  yearsAggregate: YearAggregateBoolExp
+}
+
+"""
+unique or primary key constraints on table "organization"
+"""
+enum OrganizationConstraint {
+  """
+  unique or primary key constraint on columns "key"
+  """
+  organization_key_key
+
+  """
+  unique or primary key constraint on columns "id"
+  """
+  organization_pkey
+}
+
+"""
+input type for inserting data into table "organization"
+"""
+input OrganizationInsertInput {
+  appSettings: AppSettingArrRelInsertInput
+
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Human-readable identifier"""
+  key: String
+
+  """Label for display purposes"""
+  label: String
+  phase: PhaseObjRelInsertInput
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+  years: YearArrRelInsertInput
+}
+
+"""aggregate max on columns"""
+type OrganizationMaxFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique identifier"""
+  id: Int
+
+  """Human-readable identifier"""
+  key: String
+
+  """Label for display purposes"""
+  label: String
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate min on columns"""
+type OrganizationMinFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique identifier"""
+  id: Int
+
+  """Human-readable identifier"""
+  key: String
+
+  """Label for display purposes"""
+  label: String
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""
+response of any mutation on the table "organization"
+"""
+type OrganizationMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [Organization!]!
+}
+
+"""
+input type for inserting object relation for remote table "organization"
+"""
+input OrganizationObjRelInsertInput {
+  data: OrganizationInsertInput!
+
+  """upsert condition"""
+  onConflict: OrganizationOnConflict
+}
+
+"""
+on_conflict condition type for table "organization"
+"""
+input OrganizationOnConflict {
+  constraint: OrganizationConstraint!
+  updateColumns: [OrganizationUpdateColumn!]! = []
+  where: OrganizationBoolExp
+}
+
+"""Ordering options when selecting data from "organization"."""
+input OrganizationOrderBy {
+  appSettingsAggregate: AppSettingAggregateOrderBy
+  createdAt: OrderBy
+  id: OrderBy
+  key: OrderBy
+  label: OrderBy
+  phase: PhaseOrderBy
+  sublabel: OrderBy
+  updatedAt: OrderBy
+  yearsAggregate: YearAggregateOrderBy
+}
+
+"""primary key columns input for table: organization"""
+input OrganizationPkColumnsInput {
+  """Unique identifier"""
+  id: Int!
+}
+
+"""
+select columns of table "organization"
+"""
+enum OrganizationSelectColumn {
+  """column name"""
+  createdAt
+
+  """column name"""
+  id
+
+  """column name"""
+  key
+
+  """column name"""
+  label
+
+  """column name"""
+  sublabel
+
+  """column name"""
+  updatedAt
+}
+
+"""
+input type for updating data in table "organization"
+"""
+input OrganizationSetInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Human-readable identifier"""
+  key: String
+
+  """Label for display purposes"""
+  label: String
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate stddev on columns"""
+type OrganizationStddevFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""aggregate stddevPop on columns"""
+type OrganizationStddevPopFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""aggregate stddevSamp on columns"""
+type OrganizationStddevSampFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""
+Streaming cursor of the table "organization"
+"""
+input OrganizationStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: OrganizationStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input OrganizationStreamCursorValueInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Unique identifier"""
+  id: Int
+
+  """Human-readable identifier"""
+  key: String
+
+  """Label for display purposes"""
+  label: String
+
+  """Sublabel for display purposes"""
+  sublabel: String
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""aggregate sum on columns"""
+type OrganizationSumFields {
+  """Unique identifier"""
+  id: Int
+}
+
+"""
+update columns of table "organization"
+"""
+enum OrganizationUpdateColumn {
+  """column name"""
+  createdAt
+
+  """column name"""
+  key
+
+  """column name"""
+  label
+
+  """column name"""
+  sublabel
+
+  """column name"""
+  updatedAt
+}
+
+input OrganizationUpdates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: OrganizationSetInput
+
+  """filter the rows which have to be updated"""
+  where: OrganizationBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type OrganizationVarPopFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""aggregate varSamp on columns"""
+type OrganizationVarSampFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""aggregate variance on columns"""
+type OrganizationVarianceFields {
+  """Unique identifier"""
+  id: Float
+}
+
+"""Current active phase for each organization"""
+type Phase {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
+
+  """Organization reference"""
+  oid: Int!
+
+  """An object relationship"""
+  organization: Organization!
+
+  """An object relationship"""
+  phase: PhaseType!
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
+
+  """Active phase reference"""
+  value: PhaseTypeEnum!
 }
 
 """
@@ -4742,13 +5036,66 @@ type PhaseAggregate {
   nodes: [Phase!]!
 }
 
+input PhaseAggregateBoolExp {
+  count: phaseAggregateBoolExpCount
+}
+
 """
 aggregate fields of "phase"
 """
 type PhaseAggregateFields {
+  avg: PhaseAvgFields
   count(columns: [PhaseSelectColumn!], distinct: Boolean): Int!
   max: PhaseMaxFields
   min: PhaseMinFields
+  stddev: PhaseStddevFields
+  stddevPop: PhaseStddevPopFields
+  stddevSamp: PhaseStddevSampFields
+  sum: PhaseSumFields
+  varPop: PhaseVarPopFields
+  varSamp: PhaseVarSampFields
+  variance: PhaseVarianceFields
+}
+
+"""
+order by aggregate values of table "phase"
+"""
+input PhaseAggregateOrderBy {
+  avg: PhaseAvgOrderBy
+  count: OrderBy
+  max: PhaseMaxOrderBy
+  min: PhaseMinOrderBy
+  stddev: PhaseStddevOrderBy
+  stddevPop: PhaseStddevPopOrderBy
+  stddevSamp: PhaseStddevSampOrderBy
+  sum: PhaseSumOrderBy
+  varPop: PhaseVarPopOrderBy
+  varSamp: PhaseVarSampOrderBy
+  variance: PhaseVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "phase"
+"""
+input PhaseArrRelInsertInput {
+  data: [PhaseInsertInput!]!
+
+  """upsert condition"""
+  onConflict: PhaseOnConflict
+}
+
+"""aggregate avg on columns"""
+type PhaseAvgFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by avg() on columns of table "phase"
+"""
+input PhaseAvgOrderBy {
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -4758,10 +5105,12 @@ input PhaseBoolExp {
   _and: [PhaseBoolExp!]
   _not: PhaseBoolExp
   _or: [PhaseBoolExp!]
-  currentPhases: CurrentPhaseBoolExp
-  currentPhasesAggregate: CurrentPhaseAggregateBoolExp
-  description: StringComparisonExp
-  value: StringComparisonExp
+  createdAt: TimestamptzComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
+  phase: PhaseTypeBoolExp
+  updatedAt: TimestamptzComparisonExp
+  value: PhaseTypeEnumComparisonExp
 }
 
 """
@@ -4769,73 +5118,98 @@ unique or primary key constraints on table "phase"
 """
 enum PhaseConstraint {
   """
-  unique or primary key constraint on columns "value"
+  unique or primary key constraint on columns "oid"
   """
   phase_pkey
 }
 
-enum PhaseEnum {
-  """
-  The course assignment committee reviews requests and makes final teaching assignments, during which teachers can view but not modify their requests.
-  """
-  ASSIGNMENTS
-
-  """
-  Teachers submit their teaching preferences by making primary and secondary course requests, while also confirming their required teaching hours and any service modifications.
-  """
-  REQUESTS
-
-  """
-  Teachers can view their final course assignments for the upcoming year, along with historical assignments from previous years.
-  """
-  RESULTS
-
-  """
-  System is temporarily closed, typically between academic years or during maintenance periods.
-  """
-  SHUTDOWN
-}
-
 """
-Boolean expression to compare columns of type "PhaseEnum". All fields are combined with logical 'AND'.
+input type for incrementing numeric columns in table "phase"
 """
-input PhaseEnumComparisonExp {
-  _eq: PhaseEnum
-  _in: [PhaseEnum!]
-  _isNull: Boolean
-  _neq: PhaseEnum
-  _nin: [PhaseEnum!]
+input PhaseIncInput {
+  """Organization reference"""
+  oid: Int
 }
 
 """
 input type for inserting data into table "phase"
 """
 input PhaseInsertInput {
-  currentPhases: CurrentPhaseArrRelInsertInput
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
 
-  """Summary of activities and permissions during this phase"""
-  description: String
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
+  phase: PhaseTypeObjRelInsertInput
 
-  """Phase identifier"""
-  value: String
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Active phase reference"""
+  value: PhaseTypeEnum
 }
 
 """aggregate max on columns"""
 type PhaseMaxFields {
-  """Summary of activities and permissions during this phase"""
-  description: String
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
 
-  """Phase identifier"""
-  value: String
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""
+order by max() on columns of table "phase"
+"""
+input PhaseMaxOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
 }
 
 """aggregate min on columns"""
 type PhaseMinFields {
-  """Summary of activities and permissions during this phase"""
-  description: String
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
 
-  """Phase identifier"""
-  value: String
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+}
+
+"""
+order by min() on columns of table "phase"
+"""
+input PhaseMinOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
 }
 
 """
@@ -4870,15 +5244,18 @@ input PhaseOnConflict {
 
 """Ordering options when selecting data from "phase"."""
 input PhaseOrderBy {
-  currentPhasesAggregate: CurrentPhaseAggregateOrderBy
-  description: OrderBy
+  createdAt: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
+  phase: PhaseTypeOrderBy
+  updatedAt: OrderBy
   value: OrderBy
 }
 
 """primary key columns input for table: phase"""
 input PhasePkColumnsInput {
-  """Phase identifier"""
-  value: String!
+  """Organization reference"""
+  oid: Int!
 }
 
 """
@@ -4886,7 +5263,13 @@ select columns of table "phase"
 """
 enum PhaseSelectColumn {
   """column name"""
-  description
+  createdAt
+
+  """column name"""
+  oid
+
+  """column name"""
+  updatedAt
 
   """column name"""
   value
@@ -4896,11 +5279,61 @@ enum PhaseSelectColumn {
 input type for updating data in table "phase"
 """
 input PhaseSetInput {
-  """Summary of activities and permissions during this phase"""
-  description: String
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
 
-  """Phase identifier"""
-  value: String
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Active phase reference"""
+  value: PhaseTypeEnum
+}
+
+"""aggregate stddev on columns"""
+type PhaseStddevFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddev() on columns of table "phase"
+"""
+input PhaseStddevOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevPop on columns"""
+type PhaseStddevPopFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevPop() on columns of table "phase"
+"""
+input PhaseStddevPopOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevSamp on columns"""
+type PhaseStddevSampFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevSamp() on columns of table "phase"
+"""
+input PhaseStddevSampOrderBy {
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """
@@ -4916,17 +5349,250 @@ input PhaseStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input PhaseStreamCursorValueInput {
-  """Summary of activities and permissions during this phase"""
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Active phase reference"""
+  value: PhaseTypeEnum
+}
+
+"""aggregate sum on columns"""
+type PhaseSumFields {
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+order by sum() on columns of table "phase"
+"""
+input PhaseSumOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""
+Workflow phases that control system access and capabilities within an organization
+"""
+type PhaseType {
+  """Short description"""
   description: String
 
-  """Phase identifier"""
+  """An array relationship"""
+  phases(
+    """distinct select on columns"""
+    distinctOn: [PhaseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseBoolExp
+  ): [Phase!]!
+
+  """An aggregate relationship"""
+  phasesAggregate(
+    """distinct select on columns"""
+    distinctOn: [PhaseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseBoolExp
+  ): PhaseAggregate!
+
+  """Unique identifier"""
+  value: String!
+}
+
+"""
+aggregated selection of "phase_type"
+"""
+type PhaseTypeAggregate {
+  aggregate: PhaseTypeAggregateFields
+  nodes: [PhaseType!]!
+}
+
+"""
+aggregate fields of "phase_type"
+"""
+type PhaseTypeAggregateFields {
+  count(columns: [PhaseTypeSelectColumn!], distinct: Boolean): Int!
+  max: PhaseTypeMaxFields
+  min: PhaseTypeMinFields
+}
+
+"""
+Boolean expression to filter rows from the table "phase_type". All fields are combined with a logical 'AND'.
+"""
+input PhaseTypeBoolExp {
+  _and: [PhaseTypeBoolExp!]
+  _not: PhaseTypeBoolExp
+  _or: [PhaseTypeBoolExp!]
+  description: StringComparisonExp
+  phases: PhaseBoolExp
+  phasesAggregate: PhaseAggregateBoolExp
+  value: StringComparisonExp
+}
+
+"""
+unique or primary key constraints on table "phase_type"
+"""
+enum PhaseTypeConstraint {
+  """
+  unique or primary key constraint on columns "value"
+  """
+  phase_type_pkey
+}
+
+enum PhaseTypeEnum {
+  """
+  The course assignment committee reviews requests and makes final teaching assignments. Meanwhile, teachers can view but not modify their requests.
+  """
+  ASSIGNMENTS
+
+  """
+  Phase pendant laquelle la commission des services attribue les différents enseignements aux intervenants.
+  """
+  COMMISSION
+
+  """
+  Phase pendant laquelle les intervenants peuvent consulter les enseignements qui leur ont été attribués.
+  """
+  CONSULTATION
+
+  """
+  Phase pendant laquelle seuls les administrateurs peuvent accéder à Geyser.
+  """
+  FERMETURE
+
+  """
+  Teachers submit their teaching preferences by making primary and secondary course requests. They can also update their required teaching hours and leave a message to the assignment committee.
+  """
+  REQUESTS
+
+  """Teachers can view their final course assignments."""
+  RESULTS
+
+  """
+  System is temporarily closed, typically between academic years or during maintenance periods.
+  """
+  SHUTDOWN
+
+  """
+  Phase pendant laquelle les intervenants peuvent formuler leurs demandes.
+  """
+  VOEUX
+}
+
+"""
+Boolean expression to compare columns of type "PhaseTypeEnum". All fields are combined with logical 'AND'.
+"""
+input PhaseTypeEnumComparisonExp {
+  _eq: PhaseTypeEnum
+  _in: [PhaseTypeEnum!]
+  _isNull: Boolean
+  _neq: PhaseTypeEnum
+  _nin: [PhaseTypeEnum!]
+}
+
+"""
+input type for inserting data into table "phase_type"
+"""
+input PhaseTypeInsertInput {
+  """Short description"""
+  description: String
+  phases: PhaseArrRelInsertInput
+
+  """Unique identifier"""
+  value: String
+}
+
+"""aggregate max on columns"""
+type PhaseTypeMaxFields {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""aggregate min on columns"""
+type PhaseTypeMinFields {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
   value: String
 }
 
 """
-update columns of table "phase"
+response of any mutation on the table "phase_type"
 """
-enum PhaseUpdateColumn {
+type PhaseTypeMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [PhaseType!]!
+}
+
+"""
+input type for inserting object relation for remote table "phase_type"
+"""
+input PhaseTypeObjRelInsertInput {
+  data: PhaseTypeInsertInput!
+
+  """upsert condition"""
+  onConflict: PhaseTypeOnConflict
+}
+
+"""
+on_conflict condition type for table "phase_type"
+"""
+input PhaseTypeOnConflict {
+  constraint: PhaseTypeConstraint!
+  updateColumns: [PhaseTypeUpdateColumn!]! = []
+  where: PhaseTypeBoolExp
+}
+
+"""Ordering options when selecting data from "phase_type"."""
+input PhaseTypeOrderBy {
+  description: OrderBy
+  phasesAggregate: PhaseAggregateOrderBy
+  value: OrderBy
+}
+
+"""primary key columns input for table: phase_type"""
+input PhaseTypePkColumnsInput {
+  """Unique identifier"""
+  value: String!
+}
+
+"""
+select columns of table "phase_type"
+"""
+enum PhaseTypeSelectColumn {
   """column name"""
   description
 
@@ -4934,12 +5600,124 @@ enum PhaseUpdateColumn {
   value
 }
 
+"""
+input type for updating data in table "phase_type"
+"""
+input PhaseTypeSetInput {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""
+Streaming cursor of the table "phase_type"
+"""
+input PhaseTypeStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: PhaseTypeStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input PhaseTypeStreamCursorValueInput {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""
+update columns of table "phase_type"
+"""
+enum PhaseTypeUpdateColumn {
+  """column name"""
+  description
+
+  """column name"""
+  value
+}
+
+input PhaseTypeUpdates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: PhaseTypeSetInput
+
+  """filter the rows which have to be updated"""
+  where: PhaseTypeBoolExp!
+}
+
+"""
+update columns of table "phase"
+"""
+enum PhaseUpdateColumn {
+  """column name"""
+  createdAt
+
+  """column name"""
+  oid
+
+  """column name"""
+  updatedAt
+
+  """column name"""
+  value
+}
+
 input PhaseUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: PhaseIncInput
+
   """sets the columns of the filtered rows to the given values"""
   _set: PhaseSetInput
 
   """filter the rows which have to be updated"""
   where: PhaseBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type PhaseVarPopFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varPop() on columns of table "phase"
+"""
+input PhaseVarPopOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate varSamp on columns"""
+type PhaseVarSampFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varSamp() on columns of table "phase"
+"""
+input PhaseVarSampOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate variance on columns"""
+type PhaseVarianceFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by variance() on columns of table "phase"
+"""
+input PhaseVarianceOrderBy {
+  """Organization reference"""
+  oid: OrderBy
 }
 
 """Teaching positions with associated service hour requirements"""
@@ -7646,9 +8424,9 @@ input RequestSumOrderBy {
   year: OrderBy
 }
 
-"""Types of teaching assignment requests in workflow"""
+"""Course request types that categorize teacher-course relationships"""
 type RequestType {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
 
   """An array relationship"""
@@ -7687,7 +8465,7 @@ type RequestType {
     where: RequestBoolExp
   ): RequestAggregate!
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String!
 }
 
@@ -7737,10 +8515,10 @@ enum RequestTypeEnum {
   """
   ASSIGNMENT
 
-  """Teacher's preferred course choices submitted during the requests phase"""
+  """Teacher's preferred course choice submitted during the requests phase"""
   PRIMARY
 
-  """Teacher's backup course choices submitted during the requests phase"""
+  """Teacher's backup course choice submitted during the requests phase"""
   SECONDARY
 }
 
@@ -7759,29 +8537,29 @@ input RequestTypeEnumComparisonExp {
 input type for inserting data into table "request_type"
 """
 input RequestTypeInsertInput {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
   requests: RequestArrRelInsertInput
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String
 }
 
 """aggregate max on columns"""
 type RequestTypeMaxFields {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String
 }
 
 """aggregate min on columns"""
 type RequestTypeMinFields {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -7824,7 +8602,7 @@ input RequestTypeOrderBy {
 
 """primary key columns input for table: request_type"""
 input RequestTypePkColumnsInput {
-  """Request type identifier"""
+  """Unique identifier"""
   value: String!
 }
 
@@ -7843,10 +8621,10 @@ enum RequestTypeSelectColumn {
 input type for updating data in table "request_type"
 """
 input RequestTypeSetInput {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -7863,10 +8641,10 @@ input RequestTypeStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input RequestTypeStreamCursorValueInput {
-  """Description of the request type and its purpose"""
+  """Short description"""
   description: String
 
-  """Request type identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -8505,9 +9283,11 @@ input RoleSumOrderBy {
   teacherId: OrderBy
 }
 
-"""System roles for privileged access"""
+"""
+User roles that determine system access and capabilities within an organization
+"""
 type RoleType {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
 
   """An array relationship"""
@@ -8546,7 +9326,7 @@ type RoleType {
     where: RoleBoolExp
   ): RoleAggregate!
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String!
 }
 
@@ -8592,16 +9372,14 @@ enum RoleTypeConstraint {
 
 enum RoleTypeEnum {
   """
-  Full system administration access with ability to manage users, roles, and system configuration
+  Administrator with full capabilities including configuration and user management
   """
   ADMIN
 
-  """
-  Member of the course assignment committee with extra abilities during the assignments phase
-  """
+  """Committee member with extra capabilities during assignment phase"""
   COMMISSIONER
 
-  """Base role with limited abilities"""
+  """Standard user with basic capabilities"""
   TEACHER
 }
 
@@ -8620,29 +9398,29 @@ input RoleTypeEnumComparisonExp {
 input type for inserting data into table "role_type"
 """
 input RoleTypeInsertInput {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
   roles: RoleArrRelInsertInput
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String
 }
 
 """aggregate max on columns"""
 type RoleTypeMaxFields {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String
 }
 
 """aggregate min on columns"""
 type RoleTypeMinFields {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -8685,7 +9463,7 @@ input RoleTypeOrderBy {
 
 """primary key columns input for table: role_type"""
 input RoleTypePkColumnsInput {
-  """Role identifier"""
+  """Unique identifier"""
   value: String!
 }
 
@@ -8704,10 +9482,10 @@ enum RoleTypeSelectColumn {
 input type for updating data in table "role_type"
 """
 input RoleTypeSetInput {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -8724,10 +9502,10 @@ input RoleTypeStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input RoleTypeStreamCursorValueInput {
-  """Description of the role privileges and responsibilities"""
+  """Short description"""
   description: String
 
-  """Role identifier"""
+  """Unique identifier"""
   value: String
 }
 
@@ -12447,9 +13225,7 @@ input TrackVarianceOrderBy {
   programId: OrderBy
 }
 
-"""
-Academic year definitions with current year designation and visibility settings
-"""
+"""Academic years with current year designation and visibility control"""
 type Year {
   """An array relationship"""
   courses(
@@ -12490,10 +13266,17 @@ type Year {
   """Timestamp when the record was created"""
   createdAt: timestamptz!
 
-  """
-  Current academic year flag. Constrained to have at most one current year
-  """
+  """Current year flag"""
   current: Boolean!
+
+  """Unique identifier"""
+  id: Int!
+
+  """Organization reference"""
+  oid: Int
+
+  """An object relationship"""
+  organization: Organization
 
   """An array relationship"""
   priorities(
@@ -12608,10 +13391,10 @@ type Year {
   """
   updatedAt: timestamptz!
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int!
 
-  """Controls visibility of the year in the user interface and queries"""
+  """User access control flag"""
   visible: Boolean!
 }
 
@@ -12621,6 +13404,12 @@ aggregated selection of "year"
 type YearAggregate {
   aggregate: YearAggregateFields
   nodes: [Year!]!
+}
+
+input YearAggregateBoolExp {
+  bool_and: yearAggregateBoolExpBool_and
+  bool_or: yearAggregateBoolExpBool_or
+  count: yearAggregateBoolExpCount
 }
 
 """
@@ -12640,10 +13429,57 @@ type YearAggregateFields {
   variance: YearVarianceFields
 }
 
+"""
+order by aggregate values of table "year"
+"""
+input YearAggregateOrderBy {
+  avg: YearAvgOrderBy
+  count: OrderBy
+  max: YearMaxOrderBy
+  min: YearMinOrderBy
+  stddev: YearStddevOrderBy
+  stddevPop: YearStddevPopOrderBy
+  stddevSamp: YearStddevSampOrderBy
+  sum: YearSumOrderBy
+  varPop: YearVarPopOrderBy
+  varSamp: YearVarSampOrderBy
+  variance: YearVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "year"
+"""
+input YearArrRelInsertInput {
+  data: [YearInsertInput!]!
+
+  """upsert condition"""
+  onConflict: YearOnConflict
+}
+
 """aggregate avg on columns"""
 type YearAvgFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by avg() on columns of table "year"
+"""
+input YearAvgOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """
@@ -12657,6 +13493,9 @@ input YearBoolExp {
   coursesAggregate: CourseAggregateBoolExp
   createdAt: TimestamptzComparisonExp
   current: BooleanComparisonExp
+  id: IntComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
   priorities: PriorityBoolExp
   prioritiesAggregate: PriorityAggregateBoolExp
   requests: RequestBoolExp
@@ -12673,12 +13512,12 @@ unique or primary key constraints on table "year"
 """
 enum YearConstraint {
   """
-  unique or primary key constraint on columns "current"
+  unique or primary key constraint on columns "current", "oid"
   """
   unique_current_year
 
   """
-  unique or primary key constraint on columns "value"
+  unique or primary key constraint on columns "id"
   """
   year_pkey
 }
@@ -12687,7 +13526,10 @@ enum YearConstraint {
 input type for incrementing numeric columns in table "year"
 """
 input YearIncInput {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Organization reference"""
+  oid: Int
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
 }
 
@@ -12700,10 +13542,12 @@ input YearInsertInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """
-  Current academic year flag. Constrained to have at most one current year
-  """
+  """Current year flag"""
   current: Boolean
+
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
   priorities: PriorityArrRelInsertInput
   requests: RequestArrRelInsertInput
   services: ServiceArrRelInsertInput
@@ -12713,10 +13557,10 @@ input YearInsertInput {
   """
   updatedAt: timestamptz
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
 
-  """Controls visibility of the year in the user interface and queries"""
+  """User access control flag"""
   visible: Boolean
 }
 
@@ -12725,13 +13569,41 @@ type YearMaxFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
+}
+
+"""
+order by max() on columns of table "year"
+"""
+input YearMaxOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """aggregate min on columns"""
@@ -12739,13 +13611,41 @@ type YearMinFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
+}
+
+"""
+order by min() on columns of table "year"
+"""
+input YearMinOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """
@@ -12783,6 +13683,9 @@ input YearOrderBy {
   coursesAggregate: CourseAggregateOrderBy
   createdAt: OrderBy
   current: OrderBy
+  id: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
   requestsAggregate: RequestAggregateOrderBy
   servicesAggregate: ServiceAggregateOrderBy
@@ -12793,8 +13696,8 @@ input YearOrderBy {
 
 """primary key columns input for table: year"""
 input YearPkColumnsInput {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
-  value: Int!
+  """Unique identifier"""
+  id: Int!
 }
 
 """
@@ -12808,10 +13711,38 @@ enum YearSelectColumn {
   current
 
   """column name"""
+  id
+
+  """column name"""
+  oid
+
+  """column name"""
   updatedAt
 
   """column name"""
   value
+
+  """column name"""
+  visible
+}
+
+"""
+select "yearAggregateBoolExpBool_andArgumentsColumns" columns of table "year"
+"""
+enum YearSelectColumnYearAggregateBoolExpBool_andArgumentsColumns {
+  """column name"""
+  current
+
+  """column name"""
+  visible
+}
+
+"""
+select "yearAggregateBoolExpBool_orArgumentsColumns" columns of table "year"
+"""
+enum YearSelectColumnYearAggregateBoolExpBool_orArgumentsColumns {
+  """column name"""
+  current
 
   """column name"""
   visible
@@ -12824,39 +13755,100 @@ input YearSetInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """
-  Current academic year flag. Constrained to have at most one current year
-  """
+  """Current year flag"""
   current: Boolean
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
 
-  """Controls visibility of the year in the user interface and queries"""
+  """User access control flag"""
   visible: Boolean
 }
 
 """aggregate stddev on columns"""
 type YearStddevFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by stddev() on columns of table "year"
+"""
+input YearStddevOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """aggregate stddevPop on columns"""
 type YearStddevPopFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by stddevPop() on columns of table "year"
+"""
+input YearStddevPopOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
 type YearStddevSampFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by stddevSamp() on columns of table "year"
+"""
+input YearStddevSampOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """
@@ -12875,27 +13867,51 @@ input YearStreamCursorValueInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """
-  Current academic year flag. Constrained to have at most one current year
-  """
+  """Current year flag"""
   current: Boolean
+
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
   """
   updatedAt: timestamptz
 
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
 
-  """Controls visibility of the year in the user interface and queries"""
+  """User access control flag"""
   visible: Boolean
 }
 
 """aggregate sum on columns"""
 type YearSumFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Int
+}
+
+"""
+order by sum() on columns of table "year"
+"""
+input YearSumOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """
@@ -12907,6 +13923,9 @@ enum YearUpdateColumn {
 
   """column name"""
   current
+
+  """column name"""
+  oid
 
   """column name"""
   updatedAt
@@ -12931,20 +13950,87 @@ input YearUpdates {
 
 """aggregate varPop on columns"""
 type YearVarPopFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by varPop() on columns of table "year"
+"""
+input YearVarPopOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """aggregate varSamp on columns"""
 type YearVarSampFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by varSamp() on columns of table "year"
+"""
+input YearVarSampOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
 }
 
 """aggregate variance on columns"""
 type YearVarianceFields {
-  """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
   value: Float
+}
+
+"""
+order by variance() on columns of table "year"
+"""
+input YearVarianceOrderBy {
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Academic year (e.g., 2024 for 2024-2025)"""
+  value: OrderBy
+}
+
+input appSettingAggregateBoolExpCount {
+  arguments: [AppSettingSelectColumn!]
+  distinct: Boolean
+  filter: AppSettingBoolExp
+  predicate: IntComparisonExp!
 }
 
 input computeServicePrioritiesArgs {
@@ -12994,13 +14080,6 @@ input createTeacherServiceArgs {
 
 input createYearServicesArgs {
   p_year: Int
-}
-
-input currentPhaseAggregateBoolExpCount {
-  arguments: [CurrentPhaseSelectColumn!]
-  distinct: Boolean
-  filter: CurrentPhaseBoolExp
-  predicate: IntComparisonExp!
 }
 
 """mutation root"""
@@ -13142,8 +14221,8 @@ type mutation_root {
   delete single row from the table: "app_setting"
   """
   deleteAppSettingByPk(
-    """Text identifier"""
-    key: String!
+    """Unique setting identifier"""
+    id: Int!
   ): AppSetting
 
   """
@@ -13195,22 +14274,6 @@ type mutation_root {
   ): CourseType
 
   """
-  delete data from the table: "current_phase"
-  """
-  deleteCurrentPhase(
-    """filter the rows which have to be deleted"""
-    where: CurrentPhaseBoolExp!
-  ): CurrentPhaseMutationResponse
-
-  """
-  delete single row from the table: "current_phase"
-  """
-  deleteCurrentPhaseByPk(
-    """Primary key with constraint to ensure only one record exists"""
-    id: Int!
-  ): CurrentPhase
-
-  """
   delete data from the table: "degree"
   """
   deleteDegree(
@@ -13243,6 +14306,22 @@ type mutation_root {
   ): Message
 
   """
+  delete data from the table: "organization"
+  """
+  deleteOrganization(
+    """filter the rows which have to be deleted"""
+    where: OrganizationBoolExp!
+  ): OrganizationMutationResponse
+
+  """
+  delete single row from the table: "organization"
+  """
+  deleteOrganizationByPk(
+    """Unique identifier"""
+    id: Int!
+  ): Organization
+
+  """
   delete data from the table: "phase"
   """
   deletePhase(
@@ -13254,9 +14333,25 @@ type mutation_root {
   delete single row from the table: "phase"
   """
   deletePhaseByPk(
-    """Phase identifier"""
-    value: String!
+    """Organization reference"""
+    oid: Int!
   ): Phase
+
+  """
+  delete data from the table: "phase_type"
+  """
+  deletePhaseType(
+    """filter the rows which have to be deleted"""
+    where: PhaseTypeBoolExp!
+  ): PhaseTypeMutationResponse
+
+  """
+  delete single row from the table: "phase_type"
+  """
+  deletePhaseTypeByPk(
+    """Unique identifier"""
+    value: String!
+  ): PhaseType
 
   """
   delete data from the table: "position"
@@ -13334,7 +14429,7 @@ type mutation_root {
   delete single row from the table: "request_type"
   """
   deleteRequestTypeByPk(
-    """Request type identifier"""
+    """Unique identifier"""
     value: String!
   ): RequestType
 
@@ -13366,7 +14461,7 @@ type mutation_root {
   delete single row from the table: "role_type"
   """
   deleteRoleTypeByPk(
-    """Role identifier"""
+    """Unique identifier"""
     value: String!
   ): RoleType
 
@@ -13462,8 +14557,8 @@ type mutation_root {
   delete single row from the table: "year"
   """
   deleteYearByPk(
-    """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
-    value: Int!
+    """Unique identifier"""
+    id: Int!
   ): Year
 
   """
@@ -13575,28 +14670,6 @@ type mutation_root {
   ): CourseType
 
   """
-  insert data into the table: "current_phase"
-  """
-  insertCurrentPhase(
-    """the rows to be inserted"""
-    objects: [CurrentPhaseInsertInput!]!
-
-    """upsert condition"""
-    onConflict: CurrentPhaseOnConflict
-  ): CurrentPhaseMutationResponse
-
-  """
-  insert a single row into the table: "current_phase"
-  """
-  insertCurrentPhaseOne(
-    """the row to be inserted"""
-    object: CurrentPhaseInsertInput!
-
-    """upsert condition"""
-    onConflict: CurrentPhaseOnConflict
-  ): CurrentPhase
-
-  """
   insert data into the table: "degree"
   """
   insertDegree(
@@ -13641,6 +14714,28 @@ type mutation_root {
   ): Message
 
   """
+  insert data into the table: "organization"
+  """
+  insertOrganization(
+    """the rows to be inserted"""
+    objects: [OrganizationInsertInput!]!
+
+    """upsert condition"""
+    onConflict: OrganizationOnConflict
+  ): OrganizationMutationResponse
+
+  """
+  insert a single row into the table: "organization"
+  """
+  insertOrganizationOne(
+    """the row to be inserted"""
+    object: OrganizationInsertInput!
+
+    """upsert condition"""
+    onConflict: OrganizationOnConflict
+  ): Organization
+
+  """
   insert data into the table: "phase"
   """
   insertPhase(
@@ -13661,6 +14756,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: PhaseOnConflict
   ): Phase
+
+  """
+  insert data into the table: "phase_type"
+  """
+  insertPhaseType(
+    """the rows to be inserted"""
+    objects: [PhaseTypeInsertInput!]!
+
+    """upsert condition"""
+    onConflict: PhaseTypeOnConflict
+  ): PhaseTypeMutationResponse
+
+  """
+  insert a single row into the table: "phase_type"
+  """
+  insertPhaseTypeOne(
+    """the row to be inserted"""
+    object: PhaseTypeInsertInput!
+
+    """upsert condition"""
+    onConflict: PhaseTypeOnConflict
+  ): PhaseType
 
   """
   insert data into the table: "position"
@@ -13952,6 +15069,9 @@ type mutation_root {
   update data of the table: "app_setting"
   """
   updateAppSetting(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: AppSettingIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: AppSettingSetInput
 
@@ -13963,6 +15083,9 @@ type mutation_root {
   update single row of the table: "app_setting"
   """
   updateAppSettingByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: AppSettingIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: AppSettingSetInput
     pkColumns: AppSettingPkColumnsInput!
@@ -14079,40 +15202,6 @@ type mutation_root {
   ): [CourseTypeMutationResponse]
 
   """
-  update data of the table: "current_phase"
-  """
-  updateCurrentPhase(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: CurrentPhaseIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: CurrentPhaseSetInput
-
-    """filter the rows which have to be updated"""
-    where: CurrentPhaseBoolExp!
-  ): CurrentPhaseMutationResponse
-
-  """
-  update single row of the table: "current_phase"
-  """
-  updateCurrentPhaseByPk(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: CurrentPhaseIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: CurrentPhaseSetInput
-    pkColumns: CurrentPhasePkColumnsInput!
-  ): CurrentPhase
-
-  """
-  update multiples rows of table: "current_phase"
-  """
-  updateCurrentPhaseMany(
-    """updates to execute, in order"""
-    updates: [CurrentPhaseUpdates!]!
-  ): [CurrentPhaseMutationResponse]
-
-  """
   update data of the table: "degree"
   """
   updateDegree(
@@ -14175,9 +15264,40 @@ type mutation_root {
   ): [MessageMutationResponse]
 
   """
+  update data of the table: "organization"
+  """
+  updateOrganization(
+    """sets the columns of the filtered rows to the given values"""
+    _set: OrganizationSetInput
+
+    """filter the rows which have to be updated"""
+    where: OrganizationBoolExp!
+  ): OrganizationMutationResponse
+
+  """
+  update single row of the table: "organization"
+  """
+  updateOrganizationByPk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: OrganizationSetInput
+    pkColumns: OrganizationPkColumnsInput!
+  ): Organization
+
+  """
+  update multiples rows of table: "organization"
+  """
+  updateOrganizationMany(
+    """updates to execute, in order"""
+    updates: [OrganizationUpdates!]!
+  ): [OrganizationMutationResponse]
+
+  """
   update data of the table: "phase"
   """
   updatePhase(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: PhaseIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: PhaseSetInput
 
@@ -14189,6 +15309,9 @@ type mutation_root {
   update single row of the table: "phase"
   """
   updatePhaseByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: PhaseIncInput
+
     """sets the columns of the filtered rows to the given values"""
     _set: PhaseSetInput
     pkColumns: PhasePkColumnsInput!
@@ -14201,6 +15324,34 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [PhaseUpdates!]!
   ): [PhaseMutationResponse]
+
+  """
+  update data of the table: "phase_type"
+  """
+  updatePhaseType(
+    """sets the columns of the filtered rows to the given values"""
+    _set: PhaseTypeSetInput
+
+    """filter the rows which have to be updated"""
+    where: PhaseTypeBoolExp!
+  ): PhaseTypeMutationResponse
+
+  """
+  update single row of the table: "phase_type"
+  """
+  updatePhaseTypeByPk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: PhaseTypeSetInput
+    pkColumns: PhaseTypePkColumnsInput!
+  ): PhaseType
+
+  """
+  update multiples rows of table: "phase_type"
+  """
+  updatePhaseTypeMany(
+    """updates to execute, in order"""
+    updates: [PhaseTypeUpdates!]!
+  ): [PhaseTypeMutationResponse]
 
   """
   update data of the table: "position"
@@ -14627,6 +15778,13 @@ type mutation_root {
   ): [YearMutationResponse]
 }
 
+input phaseAggregateBoolExpCount {
+  arguments: [PhaseSelectColumn!]
+  distinct: Boolean
+  filter: PhaseBoolExp
+  predicate: IntComparisonExp!
+}
+
 input priorityAggregateBoolExpBool_and {
   arguments: PrioritySelectColumnPriorityAggregateBoolExpBool_andArgumentsColumns!
   distinct: Boolean
@@ -14712,8 +15870,8 @@ type query_root {
 
   """fetch data from the table: "app_setting" using primary key columns"""
   appSettingByPk(
-    """Text identifier"""
-    key: String!
+    """Unique setting identifier"""
+    id: Int!
   ): AppSetting
 
   """
@@ -14855,52 +16013,6 @@ type query_root {
   ): CourseType
 
   """
-  fetch data from the table: "current_phase"
-  """
-  currentPhase(
-    """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
-
-    """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): [CurrentPhase!]!
-
-  """
-  fetch aggregated fields from the table: "current_phase"
-  """
-  currentPhaseAggregate(
-    """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
-
-    """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): CurrentPhaseAggregate!
-
-  """fetch data from the table: "current_phase" using primary key columns"""
-  currentPhaseByPk(
-    """Primary key with constraint to ensure only one record exists"""
-    id: Int!
-  ): CurrentPhase
-
-  """
   fetch data from the table: "degree"
   """
   degree(
@@ -14993,6 +16105,52 @@ type query_root {
   ): Message
 
   """
+  fetch data from the table: "organization"
+  """
+  organization(
+    """distinct select on columns"""
+    distinctOn: [OrganizationSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [OrganizationOrderBy!]
+
+    """filter the rows returned"""
+    where: OrganizationBoolExp
+  ): [Organization!]!
+
+  """
+  fetch aggregated fields from the table: "organization"
+  """
+  organizationAggregate(
+    """distinct select on columns"""
+    distinctOn: [OrganizationSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [OrganizationOrderBy!]
+
+    """filter the rows returned"""
+    where: OrganizationBoolExp
+  ): OrganizationAggregate!
+
+  """fetch data from the table: "organization" using primary key columns"""
+  organizationByPk(
+    """Unique identifier"""
+    id: Int!
+  ): Organization
+
+  """
   fetch data from the table: "phase"
   """
   phase(
@@ -15034,9 +16192,55 @@ type query_root {
 
   """fetch data from the table: "phase" using primary key columns"""
   phaseByPk(
-    """Phase identifier"""
-    value: String!
+    """Organization reference"""
+    oid: Int!
   ): Phase
+
+  """
+  fetch data from the table: "phase_type"
+  """
+  phaseType(
+    """distinct select on columns"""
+    distinctOn: [PhaseTypeSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseTypeOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseTypeBoolExp
+  ): [PhaseType!]!
+
+  """
+  fetch aggregated fields from the table: "phase_type"
+  """
+  phaseTypeAggregate(
+    """distinct select on columns"""
+    distinctOn: [PhaseTypeSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseTypeOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseTypeBoolExp
+  ): PhaseTypeAggregate!
+
+  """fetch data from the table: "phase_type" using primary key columns"""
+  phaseTypeByPk(
+    """Unique identifier"""
+    value: String!
+  ): PhaseType
 
   """
   fetch data from the table: "position"
@@ -15264,7 +16468,7 @@ type query_root {
 
   """fetch data from the table: "request_type" using primary key columns"""
   requestTypeByPk(
-    """Request type identifier"""
+    """Unique identifier"""
     value: String!
   ): RequestType
 
@@ -15356,7 +16560,7 @@ type query_root {
 
   """fetch data from the table: "role_type" using primary key columns"""
   roleTypeByPk(
-    """Role identifier"""
+    """Unique identifier"""
     value: String!
   ): RoleType
 
@@ -15636,8 +16840,8 @@ type query_root {
 
   """fetch data from the table: "year" using primary key columns"""
   yearByPk(
-    """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
-    value: Int!
+    """Unique identifier"""
+    id: Int!
   ): Year
 }
 
@@ -15714,8 +16918,8 @@ type subscription_root {
 
   """fetch data from the table: "app_setting" using primary key columns"""
   appSettingByPk(
-    """Text identifier"""
-    key: String!
+    """Unique setting identifier"""
+    id: Int!
   ): AppSetting
 
   """
@@ -15913,66 +17117,6 @@ type subscription_root {
   ): [CourseType!]!
 
   """
-  fetch data from the table: "current_phase"
-  """
-  currentPhase(
-    """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
-
-    """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): [CurrentPhase!]!
-
-  """
-  fetch aggregated fields from the table: "current_phase"
-  """
-  currentPhaseAggregate(
-    """distinct select on columns"""
-    distinctOn: [CurrentPhaseSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [CurrentPhaseOrderBy!]
-
-    """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): CurrentPhaseAggregate!
-
-  """fetch data from the table: "current_phase" using primary key columns"""
-  currentPhaseByPk(
-    """Primary key with constraint to ensure only one record exists"""
-    id: Int!
-  ): CurrentPhase
-
-  """
-  fetch data from the table in a streaming manner: "current_phase"
-  """
-  currentPhaseStream(
-    """maximum number of rows returned in a single batch"""
-    batchSize: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [CurrentPhaseStreamCursorInput]!
-
-    """filter the rows returned"""
-    where: CurrentPhaseBoolExp
-  ): [CurrentPhase!]!
-
-  """
   fetch data from the table: "degree"
   """
   degree(
@@ -16093,6 +17237,66 @@ type subscription_root {
   ): [Message!]!
 
   """
+  fetch data from the table: "organization"
+  """
+  organization(
+    """distinct select on columns"""
+    distinctOn: [OrganizationSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [OrganizationOrderBy!]
+
+    """filter the rows returned"""
+    where: OrganizationBoolExp
+  ): [Organization!]!
+
+  """
+  fetch aggregated fields from the table: "organization"
+  """
+  organizationAggregate(
+    """distinct select on columns"""
+    distinctOn: [OrganizationSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [OrganizationOrderBy!]
+
+    """filter the rows returned"""
+    where: OrganizationBoolExp
+  ): OrganizationAggregate!
+
+  """fetch data from the table: "organization" using primary key columns"""
+  organizationByPk(
+    """Unique identifier"""
+    id: Int!
+  ): Organization
+
+  """
+  fetch data from the table in a streaming manner: "organization"
+  """
+  organizationStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [OrganizationStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: OrganizationBoolExp
+  ): [Organization!]!
+
+  """
   fetch data from the table: "phase"
   """
   phase(
@@ -16134,8 +17338,8 @@ type subscription_root {
 
   """fetch data from the table: "phase" using primary key columns"""
   phaseByPk(
-    """Phase identifier"""
-    value: String!
+    """Organization reference"""
+    oid: Int!
   ): Phase
 
   """
@@ -16151,6 +17355,66 @@ type subscription_root {
     """filter the rows returned"""
     where: PhaseBoolExp
   ): [Phase!]!
+
+  """
+  fetch data from the table: "phase_type"
+  """
+  phaseType(
+    """distinct select on columns"""
+    distinctOn: [PhaseTypeSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseTypeOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseTypeBoolExp
+  ): [PhaseType!]!
+
+  """
+  fetch aggregated fields from the table: "phase_type"
+  """
+  phaseTypeAggregate(
+    """distinct select on columns"""
+    distinctOn: [PhaseTypeSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [PhaseTypeOrderBy!]
+
+    """filter the rows returned"""
+    where: PhaseTypeBoolExp
+  ): PhaseTypeAggregate!
+
+  """fetch data from the table: "phase_type" using primary key columns"""
+  phaseTypeByPk(
+    """Unique identifier"""
+    value: String!
+  ): PhaseType
+
+  """
+  fetch data from the table in a streaming manner: "phase_type"
+  """
+  phaseTypeStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [PhaseTypeStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: PhaseTypeBoolExp
+  ): [PhaseType!]!
 
   """
   fetch data from the table: "position"
@@ -16434,7 +17698,7 @@ type subscription_root {
 
   """fetch data from the table: "request_type" using primary key columns"""
   requestTypeByPk(
-    """Request type identifier"""
+    """Unique identifier"""
     value: String!
   ): RequestType
 
@@ -16554,7 +17818,7 @@ type subscription_root {
 
   """fetch data from the table: "role_type" using primary key columns"""
   roleTypeByPk(
-    """Role identifier"""
+    """Unique identifier"""
     value: String!
   ): RoleType
 
@@ -16918,8 +18182,8 @@ type subscription_root {
 
   """fetch data from the table: "year" using primary key columns"""
   yearByPk(
-    """Academic year identifier (e.g., 2024 for 2024-2025 academic year)"""
-    value: Int!
+    """Unique identifier"""
+    id: Int!
   ): Year
 
   """
@@ -16978,5 +18242,26 @@ input trackAggregateBoolExpCount {
   arguments: [TrackSelectColumn!]
   distinct: Boolean
   filter: TrackBoolExp
+  predicate: IntComparisonExp!
+}
+
+input yearAggregateBoolExpBool_and {
+  arguments: YearSelectColumnYearAggregateBoolExpBool_andArgumentsColumns!
+  distinct: Boolean
+  filter: YearBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input yearAggregateBoolExpBool_or {
+  arguments: YearSelectColumnYearAggregateBoolExpBool_orArgumentsColumns!
+  distinct: Boolean
+  filter: YearBoolExp
+  predicate: BooleanComparisonExp!
+}
+
+input yearAggregateBoolExpCount {
+  arguments: [YearSelectColumn!]
+  distinct: Boolean
+  filter: YearBoolExp
   predicate: IntComparisonExp!
 }

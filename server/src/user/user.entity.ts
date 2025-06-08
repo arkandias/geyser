@@ -1,11 +1,4 @@
-import {
-  Column,
-  Entity,
-  Index,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-  Unique,
-} from "typeorm";
+import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from "typeorm";
 
 @Entity({ name: "teacher", schema: "public" })
 @Unique(["email"])
@@ -14,7 +7,7 @@ export class User {
   @PrimaryGeneratedColumn("identity")
   id!: number;
 
-  @PrimaryColumn("text")
+  @Column("text")
   email!: string;
 
   @Column("text")

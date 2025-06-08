@@ -46,8 +46,8 @@ graphql(`
     }
   }
 
-  mutation DeleteCustomText($key: String!) {
-    deleteAppSettingByPk(key: $key) {
+  mutation DeleteCustomText($id: Int!) {
+    deleteAppSettingByPk(id: $id) {
       key
     }
   }

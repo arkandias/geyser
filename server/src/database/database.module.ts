@@ -3,8 +3,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
+import { Organization } from "../organization/organization.entity";
 import { Role } from "../roles/role.entity";
-import { User } from "../users/user.entity";
+import { User } from "../user/user.entity";
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { User } from "../users/user.entity";
       useFactory: (configService: ConfigService) => ({
         type: "postgres",
         url: configService.databaseUrl.href,
-        entities: [Role, User],
+        entities: [Organization, Role, User],
       }),
     }),
   ],

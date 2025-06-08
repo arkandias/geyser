@@ -1,52 +1,54 @@
-CREATE TABLE public.app_setting
+CREATE TABLE public.organization
 (
-    key   text PRIMARY KEY,
-    value text
+    id       integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    key      text NOT NULL UNIQUE,
+    label    text NOT NULL,
+    sublabel text
 );
 
-COMMENT ON TABLE public.app_setting IS 'Application settings (e.g., custom UI parameters)';
-COMMENT ON COLUMN public.app_setting.key IS 'Text identifier';
-COMMENT ON COLUMN public.app_setting.value IS 'Text content';
-
-CREATE TABLE public.phase
-(
-    value       text PRIMARY KEY,
-    description text
-);
-
-COMMENT ON TABLE public.phase IS 'System phases controlling the course assignment workflow';
-COMMENT ON COLUMN public.phase.value IS 'Phase identifier';
-COMMENT ON COLUMN public.phase.description IS 'Summary of activities and permissions during this phase';
+COMMENT ON TABLE public.organization IS 'Organization information';
+COMMENT ON COLUMN public.organization.id IS 'Unique identifier';
+COMMENT ON COLUMN public.organization.key IS 'Human-readable identifier (unique)';
+COMMENT ON COLUMN public.organization.label IS 'Label for display purposes';
+COMMENT ON COLUMN public.organization.sublabel IS 'Sublabel for display purposes';
 
 CREATE TABLE public.current_phase
 (
-    id    integer PRIMARY KEY DEFAULT 1 CHECK ( id = 1 ),
-    value text REFERENCES public.phase ON UPDATE CASCADE
+    oid   integer PRIMARY KEY REFERENCES public.organization ON UPDATE CASCADE,
+    value text NOT NULL REFERENCES public.phase ON UPDATE CASCADE
 );
+CREATE INDEX idx_current_phase_oid ON public.current_phase (oid);
 CREATE INDEX idx_current_phase_value ON public.current_phase (value);
 
-COMMENT ON TABLE public.current_phase IS 'Singleton table that stores the active system phase reference';
-COMMENT ON COLUMN public.current_phase.id IS 'Primary key with constraint to ensure only one record exists';
-COMMENT ON COLUMN public.current_phase.value IS 'Reference to the currently active phase identifier';
+COMMENT ON TABLE public.current_phase IS 'Current active phase for each organization';
+COMMENT ON COLUMN public.current_phase.oid IS 'Organization reference';
+COMMENT ON COLUMN public.current_phase.value IS 'Active phase reference';
 
 CREATE TABLE public.year
 (
-    value   integer PRIMARY KEY,
+    oid     integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    value   integer NOT NULL,
     current boolean NOT NULL DEFAULT FALSE,
     visible boolean NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (oid, value),
     CONSTRAINT year_current_visible_check CHECK (NOT current OR visible)
 );
-CREATE UNIQUE INDEX unique_current_year ON public.year (current) WHERE current = TRUE;
+CREATE UNIQUE INDEX unique_current_year ON public.year (oid, current) WHERE current = TRUE;
+CREATE INDEX idx_year_oid ON public.year (oid);
 
-COMMENT ON TABLE public.year IS 'Academic year definitions with current year designation and visibility settings';
-COMMENT ON COLUMN public.year.value IS 'Academic year identifier (e.g., 2024 for 2024-2025 academic year)';
-COMMENT ON COLUMN public.year.current IS 'Current academic year flag. Constrained to have at most one current year';
-COMMENT ON COLUMN public.year.visible IS 'Controls visibility of the year in the user interface and queries';
+COMMENT ON TABLE public.year IS 'Academic years with current year designation and visibility control';
+COMMENT ON COLUMN public.year.oid IS 'Organization reference';
+COMMENT ON COLUMN public.year.value IS 'Academic year identifier, unique (e.g., 2025 for 2025-2026)';
+COMMENT ON COLUMN public.year.current IS 'Current year flag';
+COMMENT ON COLUMN public.year.visible IS 'User access control flag';
 
 CREATE FUNCTION public.clear_current_year_flag_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
-    UPDATE public.year SET current = FALSE WHERE current IS TRUE;
+    UPDATE public.year
+    SET current = FALSE
+    WHERE oid = new.oid
+      AND current IS TRUE;
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
@@ -58,3 +60,17 @@ CREATE TRIGGER year_before_update_clear_current_flag_trigger
     FOR EACH ROW
     WHEN (new.current = TRUE)
 EXECUTE FUNCTION clear_current_year_flag_trigger_fn();
+
+CREATE TABLE public.app_setting
+(
+    oid   integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    key   text    NOT NULL,
+    value text    NOT NULL,
+    PRIMARY KEY (oid, key)
+);
+CREATE INDEX idx_app_setting_oid ON public.app_setting (oid);
+
+COMMENT ON TABLE public.app_setting IS 'Application settings (e.g., custom UI parameters)';
+COMMENT ON COLUMN public.app_setting.oid IS 'Organization reference';
+COMMENT ON COLUMN public.app_setting.key IS 'Setting name (unique)';
+COMMENT ON COLUMN public.app_setting.value IS 'Setting value';

@@ -1,126 +1,157 @@
 CREATE TABLE public.position
 (
-    id                 integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    label              text NOT NULL UNIQUE,
+    oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id                 integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    label              text NOT NULL,
     description        text,
-    base_service_hours real
+    base_service_hours real,
+    PRIMARY KEY (oid, id),
+    UNIQUE (oid, label)
 );
+CREATE INDEX idx_position_oid ON public.position (oid);
 
 COMMENT ON TABLE public.position IS 'Teaching positions with associated service hour requirements';
-COMMENT ON COLUMN public.position.id IS 'Unique position identifier';
-COMMENT ON COLUMN public.position.label IS 'Human-readable position name for display purposes, unique';
-COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours required for this position, can be overridden per teacher';
-COMMENT ON COLUMN public.position.description IS 'Optional description of the position';
+COMMENT ON COLUMN public.position.oid IS 'Organization reference';
+COMMENT ON COLUMN public.position.id IS 'Unique identifier';
+COMMENT ON COLUMN public.position.label IS 'Position name (unique)';
+COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours';
+COMMENT ON COLUMN public.position.description IS 'Optional description';
 
 CREATE TABLE public.teacher
 (
-    id                 integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    email              text    NOT NULL UNIQUE,
+    oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id                 integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    email              text    NOT NULL,
     firstname          text    NOT NULL,
     lastname           text    NOT NULL,
     alias              text,
     displayname        text GENERATED ALWAYS AS (firstname || ' ' || lastname || coalesce(' (' || alias || ')', '')) STORED,
-    position_id        integer REFERENCES public.position ON UPDATE CASCADE,
+    position_id        integer,
     base_service_hours real,
     visible            boolean NOT NULL DEFAULT TRUE,
-    active             boolean NOT NULL DEFAULT TRUE
+    active             boolean NOT NULL DEFAULT TRUE,
+    access             boolean NOT NULL DEFAULT TRUE,
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, position_id) REFERENCES public.position ON UPDATE CASCADE,
+    UNIQUE (oid, email)
 );
-CREATE INDEX idx_teacher_position_id ON public.teacher (position_id);
+CREATE INDEX idx_teacher_oid ON public.teacher (oid);
+CREATE INDEX idx_teacher_oid_position_id ON public.teacher (oid, position_id);
 
-COMMENT ON TABLE public.teacher IS 'Core teacher information and status';
-COMMENT ON COLUMN public.teacher.id IS 'Unique teacher identifier';
+COMMENT ON TABLE public.teacher IS 'Teachers information and status';
+COMMENT ON COLUMN public.teacher.oid IS 'Organization reference';
+COMMENT ON COLUMN public.teacher.id IS 'Unique identifier';
 COMMENT ON COLUMN public.teacher.email IS 'Teacher''s email address (unique)';
 COMMENT ON COLUMN public.teacher.firstname IS 'Teacher''s first name';
 COMMENT ON COLUMN public.teacher.lastname IS 'Teacher''s last name';
-COMMENT ON COLUMN public.teacher.alias IS 'Optional display name, used instead of first/last name when set';
-COMMENT ON COLUMN public.teacher.displayname IS 'Preferred display name, using alias when available, otherwise full name';
-COMMENT ON COLUMN public.teacher.position_id IS 'Reference to teacher''s position, determines default service hours';
-COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual override for annual teaching hours, takes precedence over position''s base hours';
-COMMENT ON COLUMN public.teacher.visible IS 'Controls teacher visibility in the user interface and queries';
-COMMENT ON COLUMN public.teacher.active IS 'Controls system access and automatic service creation for upcoming years';
+COMMENT ON COLUMN public.teacher.alias IS 'Optional alias';
+COMMENT ON COLUMN public.teacher.displayname IS 'Computed display name';
+COMMENT ON COLUMN public.teacher.position_id IS 'Teacher''s position reference';
+COMMENT ON COLUMN public.teacher.base_service_hours IS 'Individual teaching hour override';
+COMMENT ON COLUMN public.teacher.visible IS 'Controls visibility to other teachers';
+COMMENT ON COLUMN public.teacher.active IS 'Controls automatic service creation for upcoming years';
+COMMENT ON COLUMN public.teacher.access IS 'Controls teacher login access';
 
-CREATE TABLE public.role_type
+CREATE TABLE public.teacher_role
 (
-    value       text PRIMARY KEY,
-    description text
-);
-
-COMMENT ON TABLE public.role_type IS 'System roles for privileged access';
-COMMENT ON COLUMN public.role_type.value IS 'Role identifier';
-COMMENT ON COLUMN public.role_type.description IS 'Description of the role privileges and responsibilities';
-
-CREATE TABLE public.role
-(
-    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    teacher_id integer NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
-    type       text    NOT NULL REFERENCES public.role_type ON UPDATE CASCADE,
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    teacher_id integer NOT NULL,
+    role       text    NOT NULL REFERENCES public.role ON UPDATE CASCADE,
     comment    text,
-    UNIQUE (teacher_id, type)
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, teacher_id) REFERENCES public.teacher ON UPDATE CASCADE,
+    UNIQUE (oid, teacher_id, role)
 );
-CREATE INDEX idx_role_teacher_id ON public.role (teacher_id);
-CREATE INDEX idx_role_type ON public.role (type);
+CREATE INDEX idx_teacher_role_oid ON public.teacher_role (oid);
+CREATE INDEX idx_teacher_role_role ON public.teacher_role (role);
+CREATE INDEX idx_teacher_role_oid_teacher_id ON public.teacher_role (oid, teacher_id);
 
-COMMENT ON TABLE public.role IS 'Teacher role assignments for system privileges';
-COMMENT ON COLUMN public.role.id IS 'Unique role assignment identifier';
-COMMENT ON COLUMN public.role.teacher_id IS 'Teacher identifier with role access';
-COMMENT ON COLUMN public.role.type IS 'Type of privileged role';
-COMMENT ON COLUMN public.role.comment IS 'Additional information about this privilege assignment';
+COMMENT ON TABLE public.teacher_role IS 'Teacher role assignments';
+COMMENT ON COLUMN public.teacher_role.oid IS 'Organization reference';
+COMMENT ON COLUMN public.teacher_role.id IS 'Unique identifier';
+COMMENT ON COLUMN public.teacher_role.teacher_id IS 'Teacher reference';
+COMMENT ON COLUMN public.teacher_role.role IS 'Role reference';
+COMMENT ON COLUMN public.teacher_role.comment IS 'Additional information about this assignment';
 
 CREATE TABLE public.service
 (
-    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    year integer NOT NULL REFERENCES public.year ON UPDATE CASCADE,
-    teacher_id integer NOT NULL REFERENCES public.teacher ON UPDATE CASCADE,
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    year       integer NOT NULL,
+    teacher_id integer NOT NULL,
     hours      real    NOT NULL,
-    UNIQUE (year, teacher_id),
-    UNIQUE (id, year) -- referenced in requests and priorities to ensure data consistency
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
+    FOREIGN KEY (oid, teacher_id) REFERENCES public.teacher ON UPDATE CASCADE,
+    UNIQUE (oid, year, teacher_id),
+    UNIQUE (oid, id, year) -- referenced in requests and priorities to ensure data consistency
 );
-CREATE INDEX idx_service_year ON public.service (year);
-CREATE INDEX idx_service_teacher_id ON public.service (teacher_id);
+CREATE INDEX idx_service_oid ON public.service (oid);
+CREATE INDEX idx_service_oid_year ON public.service (oid, year);
+CREATE INDEX idx_service_oid_teacher_id ON public.service (oid, teacher_id);
 
-COMMENT ON TABLE public.service IS 'Annual teaching service records tracking required hours and modifications';
-COMMENT ON COLUMN public.service.id IS 'Unique service identifier';
-COMMENT ON COLUMN public.service.year IS 'Academic year for this service record';
-COMMENT ON COLUMN public.service.teacher_id IS 'Teacher identifier linking to teacher table';
-COMMENT ON COLUMN public.service.hours IS 'Required teaching hours for the year before modifications';
+COMMENT ON TABLE public.service IS 'Annual teaching service records';
+COMMENT ON COLUMN public.service.oid IS 'Organization reference';
+COMMENT ON COLUMN public.service.id IS 'Unique identifier';
+COMMENT ON COLUMN public.service.year IS 'Academic year reference';
+COMMENT ON COLUMN public.service.teacher_id IS 'Teacher reference';
+COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifications';
 
 CREATE TABLE public.message
 (
-    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    service_id integer NOT NULL UNIQUE REFERENCES public.service ON UPDATE CASCADE,
-    content    text    NOT NULL
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    service_id integer NOT NULL,
+    content    text    NOT NULL,
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
+    UNIQUE (oid, service_id)
 );
-CREATE INDEX idx_message_service_id ON public.message (service_id);
+CREATE INDEX idx_message_oid ON public.message (oid);
+CREATE INDEX idx_message_oid_service_id ON public.message (oid, service_id);
 
-COMMENT ON TABLE public.message IS 'Message to the assignment committee attached to a service';
-COMMENT ON COLUMN public.message.id IS 'Unique message identifier';
-COMMENT ON COLUMN public.message.service_id IS 'Identifier of the corresponding service';
-COMMENT ON COLUMN public.message.content IS 'Content of the message';
+COMMENT ON TABLE public.message IS 'Messages to the assignment committee';
+COMMENT ON COLUMN public.message.oid IS 'Organization reference';
+COMMENT ON COLUMN public.message.id IS 'Unique identifier';
+COMMENT ON COLUMN public.message.service_id IS 'Service reference';
+COMMENT ON COLUMN public.message.content IS 'Message content';
 
 CREATE TABLE public.service_modification_type
 (
-    id          integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    label       text NOT NULL UNIQUE,
-    description text
+    oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id          integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    label       text NOT NULL,
+    description text,
+    PRIMARY KEY (oid, id),
+    UNIQUE (oid, label)
 );
+CREATE INDEX idx_service_modification_type_oid ON public.service_modification_type (oid);
 
-COMMENT ON TABLE public.service_modification_type IS 'Categories of service hour modifications';
-COMMENT ON COLUMN public.service_modification_type.id IS 'Unique modification type identifier';
-COMMENT ON COLUMN public.service_modification_type.label IS 'Human-readable type name for display purposes, unique';
-COMMENT ON COLUMN public.service_modification_type.description IS 'Detailed explanation of the modification type and its application';
+COMMENT ON TABLE public.service_modification_type IS 'Categories of service modifications';
+COMMENT ON COLUMN public.service_modification_type.oid IS 'Organization reference';
+COMMENT ON COLUMN public.service_modification_type.id IS 'Unique identifier';
+COMMENT ON COLUMN public.service_modification_type.label IS 'Modification type name (unique)';
+COMMENT ON COLUMN public.service_modification_type.description IS 'Optional description';
 
 CREATE TABLE public.service_modification
 (
-    id         integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    service_id integer NOT NULL REFERENCES public.service ON UPDATE CASCADE,
-    type_id    integer NOT NULL REFERENCES public.service_modification_type ON UPDATE CASCADE,
-    hours      real    NOT NULL
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    service_id integer NOT NULL,
+    type_id    integer NOT NULL,
+    hours      real    NOT NULL,
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
+    FOREIGN KEY (oid, type_id) REFERENCES public.service_modification_type ON UPDATE CASCADE
 );
-CREATE INDEX idx_service_modification_service_id ON public.service_modification (service_id);
-CREATE INDEX idx_service_modification_type_id ON public.service_modification (type_id);
+CREATE INDEX idx_service_modification_oid ON public.service_modification (oid);
+CREATE INDEX idx_service_modification_oid_service_id ON public.service_modification (oid, service_id);
+CREATE INDEX idx_service_modification_oid_type_id ON public.service_modification (oid, type_id);
 
 COMMENT ON TABLE public.service_modification IS 'Individual modifications to base teaching service hours';
-COMMENT ON COLUMN public.service_modification.id IS 'Unique modification identifier';
-COMMENT ON COLUMN public.service_modification.service_id IS 'Reference to affected service record';
-COMMENT ON COLUMN public.service_modification.type_id IS 'Reference to service modification type';
-COMMENT ON COLUMN public.service_modification.hours IS 'Hour adjustment amount (negative values increase required hours)';
+COMMENT ON COLUMN public.service_modification.oid IS 'Organization reference';
+COMMENT ON COLUMN public.service_modification.id IS 'Unique identifier';
+COMMENT ON COLUMN public.service_modification.service_id IS 'Service reference';
+COMMENT ON COLUMN public.service_modification.type_id IS 'Modification type reference';
+COMMENT ON COLUMN public.service_modification.hours IS 'Hour deduction amount';
