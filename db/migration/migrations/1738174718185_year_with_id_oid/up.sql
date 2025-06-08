@@ -4,52 +4,39 @@ CREATE TABLE public.organization
     key      text NOT NULL UNIQUE,
     label    text NOT NULL,
     sublabel text,
-    CHECK (id == 1)
+    CHECK (id = 1)
 );
 
 INSERT INTO public.organization(key, label, sublabel)
 VALUES ('univ-lille-dpt-math', 'Université de Lille', 'Département de mathématiques');
 
-ALTER TABLE public.course
-    DROP CONSTRAINT enseignement_annee_fkey;
-
-ALTER TABLE public.service
-    DROP CONSTRAINT service_annee_fkey;
-
 ALTER TABLE public.year
-    DROP CONSTRAINT annee_pkey,
-    ADD COLUMN id  integer GENERATED ALWAYS AS IDENTITY,
-    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization,
-    ADD PRIMARY KEY (id);
-
-UPDATE public.course
-SET year = y.id
-FROM public.year y
-WHERE y.value = public.course.year;
-
-UPDATE public.service
-SET year = y.id
-FROM public.year y
-WHERE y.value = public.service.year;
-
-UPDATE public.priority
-SET year = y.id
-FROM public.year y
-WHERE y.value = public.priority.year;
-
-UPDATE public.request
-SET year = y.id
-FROM public.year y
-WHERE y.value = public.request.year;
-
-ALTER TABLE public.course
-    ADD CONSTRAINT course_year_fkey FOREIGN KEY (year) REFERENCES public.year;
-
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.position
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.teacher
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
 ALTER TABLE public.service
-    ADD CONSTRAINT service_year_fkey FOREIGN KEY (year) REFERENCES public.year;
-
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.message
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.service_modification_type
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.service_modification
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.coordination
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.degree
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.program
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.track
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.course_type
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
+ALTER TABLE public.course
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
 ALTER TABLE public.priority
-    ADD CONSTRAINT priority_year_fkey FOREIGN KEY (year) REFERENCES public.year;
-
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
 ALTER TABLE public.request
-    ADD CONSTRAINT request_year_fkey FOREIGN KEY (year) REFERENCES public.year;
+    ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;
