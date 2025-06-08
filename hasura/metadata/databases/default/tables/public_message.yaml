@@ -2,9 +2,14 @@ table:
   name: message
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: service
     using:
-      foreign_key_constraint_on: service_id
+      foreign_key_constraint_on:
+        - oid
+        - service_id
 insert_permissions:
   - role: teacher
     permission:
@@ -31,6 +36,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - id
         - service_id
         - content
@@ -47,6 +53,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - id
         - service_id
         - content

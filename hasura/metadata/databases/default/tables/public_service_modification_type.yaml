@@ -1,11 +1,17 @@
 table:
   name: service_modification_type
   schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: service_modifications
     using:
       foreign_key_constraint_on:
-        column: type_id
+        columns:
+          - oid
+          - type_id
         table:
           name: service_modification
           schema: public
@@ -13,9 +19,10 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - description
+        - oid
         - id
         - label
+        - description
       filter:
         _exists:
           _table:
@@ -28,9 +35,10 @@ select_permissions:
   - role: teacher
     permission:
       columns:
-        - description
+        - oid
         - id
         - label
+        - description
       filter:
         _exists:
           _table:

@@ -1,11 +1,17 @@
 table:
   name: course_type
   schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: courses
     using:
       foreign_key_constraint_on:
-        column: type_id
+        columns:
+          - oid
+          - type_id
         table:
           name: course
           schema: public
@@ -13,6 +19,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - coefficient
         - description
         - id
@@ -29,6 +36,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - coefficient
         - description
         - id

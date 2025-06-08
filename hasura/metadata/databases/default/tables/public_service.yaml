@@ -2,24 +2,35 @@ table:
   name: service
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: message
     using:
       foreign_key_constraint_on:
-        column: service_id
+        columns:
+          - oid
+          - service_id
         table:
           name: message
           schema: public
   - name: teacher
     using:
-      foreign_key_constraint_on: teacher_id
+      foreign_key_constraint_on:
+        - oid
+        - teacher_id
   - name: yearByYear
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on:
+        - oid
+        - year
 array_relationships:
   - name: modifications
     using:
       foreign_key_constraint_on:
-        column: service_id
+        columns:
+          - oid
+          - service_id
         table:
           name: service_modification
           schema: public
@@ -27,8 +38,9 @@ array_relationships:
     using:
       foreign_key_constraint_on:
         columns:
-          - service_id
+          - oid
           - year
+          - service_id
         table:
           name: priority
           schema: public
@@ -36,8 +48,9 @@ array_relationships:
     using:
       foreign_key_constraint_on:
         columns:
-          - service_id
+          - oid
           - year
+          - service_id
         table:
           name: request
           schema: public
@@ -45,6 +58,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - hours
         - id
         - teacher_id
@@ -62,6 +76,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - hours
         - id
         - teacher_id

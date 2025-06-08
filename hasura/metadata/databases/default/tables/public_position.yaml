@@ -1,11 +1,17 @@
 table:
   name: position
   schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: teachers
     using:
       foreign_key_constraint_on:
-        column: position_id
+        columns:
+          - oid
+          - position_id
         table:
           name: teacher
           schema: public
@@ -13,6 +19,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - base_service_hours
         - description
         - id
@@ -29,6 +36,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - base_service_hours
         - description
         - id

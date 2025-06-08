@@ -2,9 +2,13 @@ table:
   name: request
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: course
     using:
       foreign_key_constraint_on:
+        - oid
         - course_id
         - year
   - name: requestType
@@ -13,11 +17,14 @@ object_relationships:
   - name: service
     using:
       foreign_key_constraint_on:
-        - service_id
+        - oid
         - year
+        - service_id
   - name: yearByYear
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on:
+        - oid
+        - year
 computed_fields:
   - name: hoursWeighted
     definition:
@@ -34,6 +41,8 @@ insert_permissions:
     permission:
       check:
         _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
           - _exists:
               _table:
                 name: phase
@@ -58,6 +67,8 @@ insert_permissions:
     permission:
       check:
         _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
           - _exists:
               _table:
                 name: phase
@@ -117,11 +128,12 @@ insert_permissions:
         - service_id
         - type
         - year
-    comment: 'During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities'
+    comment: "During requests phase, can create primary and secondary requests for themselves for current year courses that are either: (1) visible with visible year/degree/program/track, (2) under their coordination, or (3) linked to their own requests/priorities"
 select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - course_id
         - hours
         - id
@@ -144,6 +156,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - course_id
         - hours
         - id
@@ -225,7 +238,7 @@ select_permissions:
               - type:
                   _neq: assignment
       allow_aggregations: true
-    comment: 'Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase'
+    comment: "Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase"
 update_permissions:
   - role: commissioner
     permission:

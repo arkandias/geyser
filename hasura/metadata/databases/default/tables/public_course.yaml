@@ -2,25 +2,37 @@ table:
   name: course
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: program
     using:
-      foreign_key_constraint_on: program_id
+      foreign_key_constraint_on:
+        - oid
+        - program_id
   - name: track
     using:
       foreign_key_constraint_on:
+        - oid
         - track_id
         - program_id
   - name: type
     using:
-      foreign_key_constraint_on: type_id
+      foreign_key_constraint_on:
+        - oid
+        - type_id
   - name: yearByYear
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on:
+        - oid
+        - year
 array_relationships:
   - name: coordinations
     using:
       foreign_key_constraint_on:
-        column: course_id
+        columns:
+          - oid
+          - course_id
         table:
           name: coordination
           schema: public
@@ -28,8 +40,9 @@ array_relationships:
     using:
       foreign_key_constraint_on:
         columns:
-          - course_id
+          - oid
           - year
+          - course_id
         table:
           name: priority
           schema: public
@@ -37,8 +50,9 @@ array_relationships:
     using:
       foreign_key_constraint_on:
         columns:
-          - course_id
+          - oid
           - year
+          - course_id
         table:
           name: request
           schema: public
@@ -46,6 +60,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - cycle_year
         - description
         - groups
@@ -77,6 +92,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - cycle_year
         - description
         - groups
@@ -141,7 +157,7 @@ select_permissions:
                   service:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-    comment: 'Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities'
+    comment: "Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities"
 update_permissions:
   - role: teacher
     permission:

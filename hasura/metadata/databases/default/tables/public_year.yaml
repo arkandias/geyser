@@ -9,28 +9,36 @@ array_relationships:
   - name: courses
     using:
       foreign_key_constraint_on:
-        column: year
+        columns:
+          - oid
+          - year
         table:
           name: course
           schema: public
   - name: priorities
     using:
       foreign_key_constraint_on:
-        column: year
+        columns:
+          - oid
+          - year
         table:
           name: priority
           schema: public
   - name: requests
     using:
       foreign_key_constraint_on:
-        column: year
+        columns:
+          - oid
+          - year
         table:
           name: request
           schema: public
   - name: services
     using:
       foreign_key_constraint_on:
-        column: year
+        columns:
+          - oid
+          - year
         table:
           name: service
           schema: public
@@ -38,10 +46,9 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
-        - id
         - oid
-        - current
         - value
+        - current
         - visible
       filter:
         _exists:
@@ -55,10 +62,9 @@ select_permissions:
   - role: teacher
     permission:
       columns:
-        - id
         - oid
-        - current
         - value
+        - current
         - visible
       filter:
         _and:

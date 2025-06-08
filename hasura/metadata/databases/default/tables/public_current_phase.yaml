@@ -1,28 +1,29 @@
 table:
-  name: app_setting
+  name: current_phase
   schema: public
 object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: phase
+    using:
+      foreign_key_constraint_on: value
 select_permissions:
   - role: commissioner
     permission:
       columns:
         - oid
-        - key
         - value
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: Can view the app settings of their organization
+    comment: Can view the phase of their organization
   - role: teacher
     permission:
       columns:
         - oid
-        - key
         - value
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: Can view the app settings of their organization
+    comment: Can view the phase of their organization

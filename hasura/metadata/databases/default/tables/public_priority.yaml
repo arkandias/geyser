@@ -2,23 +2,31 @@ table:
   name: priority
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: course
     using:
       foreign_key_constraint_on:
-        - course_id
+        - oid
         - year
+        - course_id
   - name: service
     using:
       foreign_key_constraint_on:
-        - service_id
+        - oid
         - year
+        - service_id
   - name: yearByYear
     using:
-      foreign_key_constraint_on: year
+      foreign_key_constraint_on:
+        - oid
+        - year
 select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - computed
         - course_id
         - id
@@ -38,6 +46,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - computed
         - course_id
         - id
@@ -102,4 +111,4 @@ select_permissions:
                             service:
                               teacher_id:
                                 _eq: X-Hasura-User-Id
-    comment: 'Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities'
+    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"

@@ -2,28 +2,39 @@ table:
   name: teacher
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: position
     using:
-      foreign_key_constraint_on: position_id
+      foreign_key_constraint_on:
+        - oid
+        - position_id
 array_relationships:
   - name: coordinations
     using:
       foreign_key_constraint_on:
-        column: teacher_id
+        columns:
+          - oid
+          - teacher_id
         table:
           name: coordination
           schema: public
   - name: roles
     using:
       foreign_key_constraint_on:
-        column: teacher_id
+        columns:
+          - oid
+          - teacher_id
         table:
-          name: role
+          name: teacher_role
           schema: public
   - name: services
     using:
       foreign_key_constraint_on:
-        column: teacher_id
+        columns:
+          - oid
+          - teacher_id
         table:
           name: service
           schema: public
@@ -31,6 +42,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - active
         - alias
         - base_service_hours
@@ -53,6 +65,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - active
         - alias
         - base_service_hours

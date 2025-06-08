@@ -1,14 +1,6 @@
 table:
   name: organization
   schema: public
-object_relationships:
-  - name: phase
-    using:
-      foreign_key_constraint_on:
-        column: oid
-        table:
-          name: phase
-          schema: public
 array_relationships:
   - name: appSettings
     using:
@@ -16,6 +8,13 @@ array_relationships:
         column: oid
         table:
           name: app_setting
+          schema: public
+  - name: currentPhases
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: current_phase
           schema: public
   - name: years
     using:

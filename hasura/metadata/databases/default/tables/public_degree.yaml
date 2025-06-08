@@ -1,11 +1,17 @@
 table:
   name: degree
   schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: programs
     using:
       foreign_key_constraint_on:
-        column: degree_id
+        columns:
+          - oid
+          - degree_id
         table:
           name: program
           schema: public
@@ -13,6 +19,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - id
         - name
         - name_display
@@ -30,6 +37,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - id
         - name
         - name_display

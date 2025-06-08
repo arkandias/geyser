@@ -2,17 +2,26 @@ table:
   name: service_modification
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: service
     using:
-      foreign_key_constraint_on: service_id
+      foreign_key_constraint_on:
+        - oid
+        - service_id
   - name: type
     using:
-      foreign_key_constraint_on: type_id
+      foreign_key_constraint_on:
+        - oid
+        - type_id
 insert_permissions:
   - role: teacher
     permission:
       check:
         _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
           - _exists:
               _table:
                 name: phase

@@ -2,14 +2,21 @@ table:
   name: track
   schema: public
 object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: program
     using:
-      foreign_key_constraint_on: program_id
+      foreign_key_constraint_on:
+        - oid
+        - program_id
 array_relationships:
   - name: coordinations
     using:
       foreign_key_constraint_on:
-        column: track_id
+        columns:
+          - oid
+          - track_id
         table:
           name: coordination
           schema: public
@@ -17,8 +24,9 @@ array_relationships:
     using:
       foreign_key_constraint_on:
         columns:
-          - track_id
+          - oid
           - program_id
+          - track_id
         table:
           name: course
           schema: public
@@ -26,6 +34,7 @@ select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - id
         - name
         - name_display
@@ -44,6 +53,7 @@ select_permissions:
   - role: teacher
     permission:
       columns:
+        - oid
         - id
         - name
         - name_display
