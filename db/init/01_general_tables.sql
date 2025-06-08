@@ -40,7 +40,7 @@ COMMENT ON TABLE public.year IS 'Academic years with current year designation an
 COMMENT ON COLUMN public.year.oid IS 'Organization reference';
 COMMENT ON COLUMN public.year.value IS 'Academic year identifier, unique (e.g., 2025 for 2025-2026)';
 COMMENT ON COLUMN public.year.current IS 'Current year flag';
-COMMENT ON COLUMN public.year.visible IS 'User access control flag';
+COMMENT ON COLUMN public.year.visible IS 'Controls visibility to teachers';
 
 CREATE FUNCTION public.clear_current_year_flag_trigger_fn() RETURNS trigger AS
 $$

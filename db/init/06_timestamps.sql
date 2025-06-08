@@ -21,7 +21,7 @@ BEGIN
         CREATE TRIGGER %s_before_update_set_timestamp_trigger
         BEFORE UPDATE ON public.%I
         FOR EACH ROW
-        EXECUTE FUNCTION public.set_timestamp_trigger_fn()
+        EXECUTE FUNCTION public.set_timestamp_trigger_fn();
     ', p_table, p_table, p_table, p_table, p_table);
 
     RAISE NOTICE 'Added created_at and updated_at columns to table %', p_table;

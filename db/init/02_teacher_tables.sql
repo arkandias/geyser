@@ -1,12 +1,13 @@
 CREATE TABLE public.position
 (
     oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id                 integer UNIQUE GENERATED ALWAYS AS IDENTITY,
-    label              text NOT NULL,
+    id                 integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    label              text    NOT NULL,
     description        text,
     base_service_hours real,
     PRIMARY KEY (oid, id),
-    UNIQUE (oid, label)
+    UNIQUE (oid, label),
+    CONSTRAINT position_base_service_hours_non_negative CHECK (base_service_hours >= 0)
 );
 CREATE INDEX idx_position_oid ON public.position (oid);
 
@@ -20,7 +21,7 @@ COMMENT ON COLUMN public.position.description IS 'Optional description';
 CREATE TABLE public.teacher
 (
     oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id                 integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id                 integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     email              text    NOT NULL,
     firstname          text    NOT NULL,
     lastname           text    NOT NULL,
@@ -33,7 +34,8 @@ CREATE TABLE public.teacher
     access             boolean NOT NULL DEFAULT TRUE,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, position_id) REFERENCES public.position ON UPDATE CASCADE,
-    UNIQUE (oid, email)
+    UNIQUE (oid, email),
+    CONSTRAINT teacher_base_service_hours_non_negative CHECK (base_service_hours >= 0)
 );
 CREATE INDEX idx_teacher_oid ON public.teacher (oid);
 CREATE INDEX idx_teacher_oid_position_id ON public.teacher (oid, position_id);
@@ -55,7 +57,7 @@ COMMENT ON COLUMN public.teacher.access IS 'Controls teacher login access';
 CREATE TABLE public.teacher_role
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     teacher_id integer NOT NULL,
     role       text    NOT NULL REFERENCES public.role ON UPDATE CASCADE,
     comment    text,
@@ -77,7 +79,7 @@ COMMENT ON COLUMN public.teacher_role.comment IS 'Additional information about t
 CREATE TABLE public.service
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     year       integer NOT NULL,
     teacher_id integer NOT NULL,
     hours      real    NOT NULL,
@@ -85,7 +87,8 @@ CREATE TABLE public.service
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, teacher_id) REFERENCES public.teacher ON UPDATE CASCADE,
     UNIQUE (oid, year, teacher_id),
-    UNIQUE (oid, id, year) -- referenced in requests and priorities to ensure data consistency
+    UNIQUE (oid, id, year), -- referenced in requests and priorities to ensure data consistency
+    CONSTRAINT service_hours_non_negative CHECK (hours >= 0)
 );
 CREATE INDEX idx_service_oid ON public.service (oid);
 CREATE INDEX idx_service_oid_year ON public.service (oid, year);
@@ -101,7 +104,7 @@ COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifi
 CREATE TABLE public.message
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     service_id integer NOT NULL,
     content    text    NOT NULL,
     PRIMARY KEY (oid, id),
@@ -120,8 +123,8 @@ COMMENT ON COLUMN public.message.content IS 'Message content';
 CREATE TABLE public.service_modification_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id          integer UNIQUE GENERATED ALWAYS AS IDENTITY,
-    label       text NOT NULL,
+    id          integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    label       text    NOT NULL,
     description text,
     PRIMARY KEY (oid, id),
     UNIQUE (oid, label)
@@ -137,7 +140,7 @@ COMMENT ON COLUMN public.service_modification_type.description IS 'Optional desc
 CREATE TABLE public.service_modification
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     service_id integer NOT NULL,
     type_id    integer NOT NULL,
     hours      real    NOT NULL,

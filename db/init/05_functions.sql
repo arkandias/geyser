@@ -1,20 +1,23 @@
 CREATE FUNCTION public.dummy_function() RETURNS setof public.app_setting AS
 $$
-SELECT * FROM public.app_setting WHERE FALSE;
+SELECT *
+FROM public.app_setting
+WHERE FALSE;
 $$ LANGUAGE sql VOLATILE;
-COMMENT ON FUNCTION public.dummy_function() IS 'Dummy function that does nothing (useful for GraphQL clients)';
+COMMENT ON FUNCTION public.dummy_function() IS 'Dummy function that does nothing (used by GraphQL clients)';
 
-CREATE FUNCTION public.create_teacher_service(p_year integer, p_teacher_id integer) RETURNS setof public.service AS
+CREATE FUNCTION public.create_teacher_service(p_oid integer, p_year integer, p_teacher_id integer) RETURNS setof public.service AS
 $$
-INSERT INTO public.service (year, teacher_id, hours)
-SELECT p_year, p_teacher_id, coalesce(t.base_service_hours, p.base_service_hours, 0)
+INSERT INTO public.service (oid, year, teacher_id, hours)
+SELECT p_oid, p_year, p_teacher_id, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
-         LEFT JOIN public.position p ON p.id = t.position_id
+         LEFT JOIN public.position p
+                   ON p.id = t.position_id
 WHERE t.id = p_teacher_id
-ON CONFLICT (year, id) DO NOTHING
+ON CONFLICT (oid, year, teacher_id) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.create_teacher_service(integer, integer) IS 'Creates a new service entry for a specific year and teacher with default base hours, using personal base_service_hours if set and position''s base_service_hours otherwise';
+COMMENT ON FUNCTION public.create_teacher_service(integer, integer, integer) IS 'Creates service entry for teacher with default hours from position or personal override';
 
 CREATE FUNCTION public.compute_service_priorities(service_row service) RETURNS setof public.priority AS
 $$
@@ -23,13 +26,17 @@ FROM public.priority
 WHERE service_id = service_row.id
   AND computed IS TRUE;
 
-INSERT INTO public.priority (year, service_id, course_id, seniority, computed)
-SELECT service_row.year, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
+INSERT INTO public.priority (oid, year, service_id, course_id, seniority, computed)
+SELECT service_row.oid, service_row.year, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
 FROM public.service s
-         JOIN public.request r ON r.service_id = s.id AND r.type = 'assignment'
+         JOIN public.request r
+              ON r.service_id = s.id
+                  AND r.type = 'assignment'
          LEFT JOIN public.priority p
-                   ON p.service_id = r.service_id AND p.course_id = r.course_id
-         JOIN public.course c ON c.id = r.course_id
+                   ON p.service_id = r.service_id
+                       AND p.course_id = r.course_id
+         JOIN public.course c
+              ON c.id = r.course_id
          JOIN public.course child
               ON child.year = c.year + 1
                   AND child.program_id = c.program_id
@@ -39,7 +46,7 @@ FROM public.service s
                   AND child.type_id = c.type_id
 WHERE s.year = service_row.year - 1
   AND s.teacher_id = service_row.teacher_id
-ON CONFLICT (service_id, course_id)
+ON CONFLICT (oid, service_id, course_id)
     DO UPDATE SET seniority = excluded.seniority
 WHERE priority.computed IS TRUE;
 
@@ -76,20 +83,22 @@ EXECUTE FUNCTION public.compute_service_priorities_trigger_fn();
 
 -- Year Management
 
-CREATE FUNCTION public.create_year_services(p_year integer) RETURNS setof public.service AS
+CREATE FUNCTION public.create_year_services(p_oid integer, p_year integer) RETURNS setof public.service AS
 $$
 SELECT s.*
 FROM public.teacher t
-         CROSS JOIN LATERAL public.create_teacher_service(p_year, t.id) s
-WHERE t.active IS TRUE;
+         CROSS JOIN LATERAL public.create_teacher_service(p_oid, p_year, t.id) s
+WHERE t.oid = p_oid
+  AND t.active IS TRUE;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers for a specific year, using personal base_service_hours if set and position''s base_service_hours otherwise';
+COMMENT ON FUNCTION public.create_year_services(integer, integer) IS 'Creates service entries for all active teachers in organization for specified year';
 
-CREATE FUNCTION public.copy_year_courses(p_year integer) RETURNS setof public.course AS
+CREATE FUNCTION public.copy_year_courses(p_oid integer, p_year integer) RETURNS setof public.course AS
 $$
-INSERT INTO public.course (year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
+INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
                            groups, groups_adjusted, description, priority_rule, visible)
-SELECT p_year,
+SELECT p_oid,
+       p_year,
        c.program_id,
        c.track_id,
        c.name,
@@ -104,17 +113,19 @@ SELECT p_year,
        c.priority_rule,
        c.visible
 FROM public.course c
-WHERE c.year = p_year - 1
+WHERE c.oid = p_oid
+  AND c.year = p_year - 1
 ON CONFLICT DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.copy_year_courses(integer) IS 'Creates copies of all courses from the previous year into the specified year';
+COMMENT ON FUNCTION public.copy_year_courses(integer, integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
-CREATE FUNCTION public.compute_year_priorities(p_year integer) RETURNS setof public.priority AS
+CREATE FUNCTION public.compute_year_priorities(p_oid integer, p_year integer) RETURNS setof public.priority AS
 $$
 SELECT p.*
 FROM public.service s
          CROSS JOIN LATERAL public.compute_service_priorities(s) p
-WHERE s.year = p_year;
+WHERE s.oid = p_oid
+  AND s.year = p_year;
 $$ LANGUAGE sql;
-COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniority and priority status for all services in a given year';
+COMMENT ON FUNCTION public.compute_year_priorities(integer, integer) IS 'Computes seniority and priority status for all services in a given year';

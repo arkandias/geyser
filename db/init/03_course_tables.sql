@@ -1,7 +1,7 @@
 CREATE TABLE public.degree
 (
     oid          integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id           integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id           integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     name         text    NOT NULL,
     name_short   text,
     name_display text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
@@ -22,7 +22,7 @@ COMMENT ON COLUMN public.degree.visible IS 'Controls visibility to teachers';
 CREATE TABLE public.program
 (
     oid          integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id           integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id           integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     degree_id    integer NOT NULL,
     name         text    NOT NULL,
     name_short   text,
@@ -47,7 +47,7 @@ COMMENT ON COLUMN public.program.visible IS 'Controls visibility to teachers';
 CREATE TABLE public.track
 (
     oid          integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id           integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id           integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     program_id   integer NOT NULL,
     name         text    NOT NULL,
     name_short   text,
@@ -73,7 +73,7 @@ COMMENT ON COLUMN public.track.visible IS 'Controls visibility to teachers';
 CREATE TABLE public.course_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id          integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id          integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     label       text    NOT NULL,
     coefficient real    NOT NULL DEFAULT 1,
     description text,
@@ -92,7 +92,7 @@ COMMENT ON COLUMN public.course_type.description IS 'Optional description';
 CREATE TABLE public.course
 (
     oid              integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id               integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id               integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     year             integer NOT NULL,
     program_id       integer NOT NULL,
     track_id         integer,
@@ -153,7 +153,7 @@ COMMENT ON COLUMN public.course.visible IS 'Controls visibility to teachers';
 CREATE TABLE public.coordination
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer UNIQUE GENERATED ALWAYS AS IDENTITY,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     teacher_id integer NOT NULL,
     program_id integer,
     track_id   integer,
