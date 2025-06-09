@@ -4,7 +4,7 @@ export type ColName = "label" | "description" | "baseServiceHours";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -19,6 +19,7 @@ import {
   UpdatePositionsDocument,
   UpsertPositionsDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -35,6 +36,8 @@ const { positionFragments } = defineProps<{
   positionFragments: FragmentType<typeof AdminPositionFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 const rowDescriptor = {
@@ -66,6 +69,7 @@ graphql(`
   mutation InsertPositions($objects: [PositionInsertInput!]!) {
     insertData: insertPosition(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -77,6 +81,7 @@ graphql(`
   ) {
     upsertData: insertPosition(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -85,6 +90,7 @@ graphql(`
   mutation UpdatePositions($ids: [Int!]!, $changes: PositionSetInput!) {
     updateData: updatePosition(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -93,6 +99,7 @@ graphql(`
   mutation DeletePositions($ids: [Int!]!) {
     deleteData: deletePosition(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -107,8 +114,9 @@ const upsertPositions = useMutation(UpsertPositionsDocument);
 const updatePositions = useMutation(UpdatePositionsDocument);
 const deletePositions = useMutation(DeletePositionsDocument);
 
-const importConstraint = PositionConstraint.PositionLabelKey;
+const importConstraint = PositionConstraint.PositionOidLabelKey;
 const importUpdateColumns = [
+  PositionUpdateColumn.Oid,
   PositionUpdateColumn.Label,
   PositionUpdateColumn.Description,
   PositionUpdateColumn.BaseServiceHours,
@@ -117,8 +125,9 @@ const importUpdateColumns = [
 const formatRow = (row: Row) => row.label;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.label !== undefined) {
     object.label = flatRow.label;
   }

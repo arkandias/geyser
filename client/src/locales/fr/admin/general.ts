@@ -1,4 +1,4 @@
-import { RoleTypeEnum } from "@/gql/graphql.ts";
+import { RoleEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type { ColName as AdminRolesRolesColName } from "@/components/admin/AdminGeneralRoles.vue";
@@ -75,7 +75,7 @@ la supprimer.`,
         },
         error: {
           teacherNotFound: `Il n'existe pas d'intervenant avec l'email « {email} »`,
-          invalidRole: `Le type de rôle doit être ${RoleTypeEnum.Admin} ou ${RoleTypeEnum.Commissioner}`,
+          invalidRole: `Le type de rôle doit être ${RoleEnum.Admin} ou ${RoleEnum.Commissioner}`,
         },
       },
       data: {

@@ -7,12 +7,13 @@ export type ColName =
   | "positionLabel"
   | "baseServiceHours"
   | "visible"
-  | "active";
+  | "active"
+  | "access";
 </script>
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -28,6 +29,7 @@ import {
   UpdateTeachersDocument,
   UpsertTeachersDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -45,6 +47,8 @@ const { teacherFragments, positionFragments } = defineProps<{
   positionFragments: FragmentType<typeof AdminTeachersPositionFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 
 const rowDescriptor = {
@@ -88,6 +92,11 @@ const rowDescriptor = {
     format: (val: boolean) => (val ? "✓" : "✗"),
     formComponent: "toggle",
   },
+  access: {
+    type: "boolean",
+    format: (val: boolean) => (val ? "✓" : "✗"),
+    formComponent: "toggle",
+  },
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 
 graphql(`
@@ -103,6 +112,7 @@ graphql(`
     baseServiceHours
     visible
     active
+    access
   }
 
   fragment AdminTeachersPosition on Position {
@@ -113,6 +123,7 @@ graphql(`
   mutation InsertTeachers($objects: [TeacherInsertInput!]!) {
     insertData: insertTeacher(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -124,6 +135,7 @@ graphql(`
   ) {
     upsertData: insertTeacher(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -132,6 +144,7 @@ graphql(`
   mutation UpdateTeachers($ids: [Int!]!, $changes: TeacherSetInput!) {
     updateData: updateTeacher(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -140,6 +153,7 @@ graphql(`
   mutation DeleteTeachers($ids: [Int!]!) {
     deleteData: deleteTeacher(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -161,6 +175,7 @@ const deleteTeachers = useMutation(DeleteTeachersDocument);
 
 const importConstraint = TeacherConstraint.TeacherPkey;
 const importUpdateColumns = [
+  TeacherUpdateColumn.Oid,
   TeacherUpdateColumn.Email,
   TeacherUpdateColumn.Firstname,
   TeacherUpdateColumn.Lastname,
@@ -169,13 +184,15 @@ const importUpdateColumns = [
   TeacherUpdateColumn.BaseServiceHours,
   TeacherUpdateColumn.Visible,
   TeacherUpdateColumn.Active,
+  TeacherUpdateColumn.Access,
 ];
 
 const formatRow = (row: Row) => row.email;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.email !== undefined) {
     object.email = flatRow.email;
   }
@@ -219,6 +236,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   if (flatRow.active !== undefined) {
     object.active = flatRow.active;
+  }
+
+  if (flatRow.access !== undefined) {
+    object.access = flatRow.access;
   }
 
   return object;

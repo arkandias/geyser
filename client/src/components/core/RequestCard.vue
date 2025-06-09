@@ -24,6 +24,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment RequestCardData on Request {
+    oid
     id
     year
     service {
@@ -52,12 +53,14 @@ graphql(`
       }
       limit: 1 # unique
     ) {
+      oid
       id
       hours
     }
   }
 
   mutation InsertAssignment(
+    $oid: Int!
     $year: Int!
     $serviceId: Int!
     $courseId: Int!
@@ -65,6 +68,7 @@ graphql(`
   ) {
     insertRequestOne(
       object: {
+        oid: $oid
         year: $year
         serviceId: $serviceId
         courseId: $courseId
@@ -72,18 +76,24 @@ graphql(`
         hours: $hours
       }
     ) {
+      oid
       id
     }
   }
 
-  mutation UpdateAssignment($id: Int!, $hours: Float!) {
-    updateRequestByPk(pkColumns: { id: $id }, _set: { hours: $hours }) {
+  mutation UpdateAssignment($oid: Int!, $id: Int!, $hours: Float!) {
+    updateRequestByPk(
+      pkColumns: { oid: $oid, id: $id }
+      _set: { hours: $hours }
+    ) {
+      oid
       id
     }
   }
 
-  mutation DeleteRequestCard($id: Int!) {
-    deleteRequestByPk(id: $id) {
+  mutation DeleteRequestCard($oid: Int!, $id: Int!) {
+    deleteRequestByPk(oid: $oid, id: $id) {
+      oid
       id
     }
   }
@@ -154,6 +164,7 @@ const validateRequest = async (): Promise<void> => {
     }
 
     const { data, error } = await updateAssignment.executeMutation({
+      oid: assignment.oid,
       id: assignment.id,
       hours: request.value.hours,
     });
@@ -170,6 +181,7 @@ const validateRequest = async (): Promise<void> => {
     }
   } else {
     const { data, error } = await insertAssignment.executeMutation({
+      oid: request.value.oid,
       year: request.value.year,
       serviceId: request.value.service.id,
       courseId: request.value.course.id,
@@ -191,6 +203,7 @@ const validateRequest = async (): Promise<void> => {
 
 const deleteRequest = async (): Promise<void> => {
   const { data, error } = await deleteRequestCard.executeMutation({
+    oid: request.value.oid,
     id: request.value.id,
   });
 

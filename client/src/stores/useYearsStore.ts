@@ -3,7 +3,6 @@ import { computed, readonly, ref } from "vue";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 
 type Year = {
-  id: number;
   value: number;
   current: boolean;
   visible: boolean;

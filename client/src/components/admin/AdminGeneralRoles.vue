@@ -4,7 +4,7 @@ export type ColName = "teacherEmail" | "type" | "comment";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -14,14 +14,15 @@ import {
   AdminRolesTeacherFragmentDoc,
   DeleteRolesDocument,
   InsertRolesDocument,
-  RoleConstraint,
-  type RoleInsertInput,
-  RoleTypeEnum,
-  RoleUpdateColumn,
+  RoleEnum,
+  TeacherRoleConstraint,
+  type TeacherRoleInsertInput,
+  TeacherRoleUpdateColumn,
   UpdateRolesDocument,
   UpsertRolesDocument,
 } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -32,13 +33,15 @@ import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRoleFragment;
 type FlatRow = NullableParsedRow<typeof rowDescriptor>;
-type InsertInput = RoleInsertInput;
+type InsertInput = TeacherRoleInsertInput;
 
 const { roleFragments, teacherFragments } = defineProps<{
   roleFragments: FragmentType<typeof AdminRoleFragmentDoc>[];
   teacherFragments: FragmentType<typeof AdminRolesTeacherFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 const rowDescriptor = {
@@ -51,7 +54,7 @@ const rowDescriptor = {
   },
   type: {
     type: "string",
-    format: (val: RoleTypeEnum) => roleTypeLabel(t, val),
+    format: (val: RoleEnum) => roleTypeLabel(t, val),
     formComponent: "select",
   },
   comment: {
@@ -62,12 +65,12 @@ const rowDescriptor = {
 } as const satisfies RowDescriptorExtra<ColName, Row>;
 
 graphql(`
-  fragment AdminRole on Role {
+  fragment AdminRole on TeacherRole {
     id
     teacher {
       email
     }
-    type
+    role
     comment
   }
 
@@ -77,27 +80,32 @@ graphql(`
     displayname
   }
 
-  mutation InsertRoles($objects: [RoleInsertInput!]!) {
-    insertData: insertRole(objects: $objects) {
+  mutation InsertRoles($objects: [TeacherRoleInsertInput!]!) {
+    insertData: insertTeacherRole(objects: $objects) {
       returning {
+        oid
         id
       }
     }
   }
 
   mutation UpsertRoles(
-    $objects: [RoleInsertInput!]!
-    $onConflict: RoleOnConflict
+    $objects: [TeacherRoleInsertInput!]!
+    $onConflict: TeacherRoleOnConflict
   ) {
-    upsertData: insertRole(objects: $objects, onConflict: $onConflict) {
+    upsertData: insertTeacherRole(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
   }
 
-  mutation UpdateRoles($ids: [Int!]!, $changes: RoleSetInput!) {
-    updateData: updateRole(where: { id: { _in: $ids } }, _set: $changes) {
+  mutation UpdateRoles($ids: [Int!]!, $changes: TeacherRoleSetInput!) {
+    updateData: updateTeacherRole(
+      where: { id: { _in: $ids } }
+      _set: $changes
+    ) {
       returning {
         id
       }
@@ -105,8 +113,9 @@ graphql(`
   }
 
   mutation DeleteRoles($ids: [Int!]!) {
-    deleteData: deleteRole(where: { id: { _in: $ids } }) {
+    deleteData: deleteTeacherRole(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -124,19 +133,21 @@ const upsertServices = useMutation(UpsertRolesDocument);
 const updateServices = useMutation(UpdateRolesDocument);
 const deleteServices = useMutation(DeleteRolesDocument);
 
-const importConstraint = RoleConstraint.RoleTeacherIdTypeKey;
+const importConstraint = TeacherRoleConstraint.TeacherRoleOidTeacherIdRoleKey;
 const importUpdateColumns = [
-  RoleUpdateColumn.TeacherId,
-  RoleUpdateColumn.Type,
-  RoleUpdateColumn.Comment,
+  TeacherRoleUpdateColumn.Oid,
+  TeacherRoleUpdateColumn.TeacherId,
+  TeacherRoleUpdateColumn.Role,
+  TeacherRoleUpdateColumn.Comment,
 ];
 
 const formatRow = (row: Row) =>
-  `${roleTypeLabel(t, row.type)} — ${row.teacher.email}`;
+  `${roleTypeLabel(t, row.role)} — ${row.teacher.email}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   // teacherId
   if (flatRow.teacherEmail !== undefined) {
     const teacher = teachers.value.find(
@@ -154,12 +165,12 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   if (flatRow.type !== undefined) {
     if (
-      flatRow.type !== RoleTypeEnum.Admin &&
-      flatRow.type !== RoleTypeEnum.Commissioner
+      flatRow.type !== RoleEnum.Admin &&
+      flatRow.type !== RoleEnum.Commissioner
     ) {
       throw new Error(t("admin.general.roles.form.error.invalidRole"));
     }
-    object.type = flatRow.type;
+    object.role = flatRow.type;
   }
 
   if (flatRow.comment !== undefined) {
@@ -175,7 +186,7 @@ const formOptions = computed(() => ({
     value: t.email,
     label: t.displayname,
   })),
-  type: Object.values(RoleTypeEnum).map((type) => ({
+  type: Object.values(RoleEnum).map((type) => ({
     value: type,
     label: roleTypeLabel(t, type),
   })),

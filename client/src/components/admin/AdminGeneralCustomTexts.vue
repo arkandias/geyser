@@ -4,6 +4,7 @@ import {
   type ComponentPublicInstance,
   type ShallowRef,
   computed,
+  inject,
   shallowRef,
 } from "vue";
 
@@ -19,10 +20,13 @@ import {
   UpdateCustomTextDocument,
 } from "@/gql/graphql.ts";
 import { customTextDefault, customTextLabel } from "@/locales/helpers.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 
 import EditableText from "@/components/core/EditableText.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { getCustomText } = useCustomTextsStore();
 
@@ -46,8 +50,8 @@ graphql(`
     }
   }
 
-  mutation DeleteCustomText($id: Int!) {
-    deleteAppSettingByPk(id: $id) {
+  mutation DeleteCustomText($oid: Int!, $key: String!) {
+    deleteAppSettingByPk(oid: $oid, key: $key) {
       key
     }
   }
@@ -56,13 +60,13 @@ graphql(`
 const updateCustomText = useMutation(UpdateCustomTextDocument);
 const deleteCustomText = useMutation(DeleteCustomTextDocument);
 
-const updateCustomTextHandle = (key: string, value: string) =>
+const updateCustomTextHandle = (oid: number, key: string, value: string) =>
   value
     ? updateCustomText.executeMutation({ key, value }).then((result) => ({
         returnId: result.data?.insertAppSettingOne?.key,
         error: result.error,
       }))
-    : deleteCustomText.executeMutation({ key }).then((result) => ({
+    : deleteCustomText.executeMutation({ oid, key }).then((result) => ({
         returnId: result.data?.deleteAppSettingByPk?.key,
         error: result.error,
       }));
@@ -111,7 +115,10 @@ const callOnDelete = async (key: CustomTextKey, label: string) => {
             :ref="(el) => setRef(opt.key, el)"
             v-model="opt.edit"
             :text="opt.value"
-            :set-text="(value) => updateCustomTextHandle(opt.key, value)"
+            :set-text="
+              (value) =>
+                updateCustomTextHandle(authManager.orgId, opt.key, value)
+            "
             :default-text="opt.default"
           />
         </QCardSection>

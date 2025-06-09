@@ -15,8 +15,8 @@ import ServiceRequests from "@/components/service/ServiceRequests.vue";
 import ServiceTeacher from "@/components/service/ServiceTeacher.vue";
 
 graphql(`
-  query GetServiceDetails($id: Int!) {
-    service: serviceByPk(id: $id) {
+  query GetServiceDetails($oid: Int!, $id: Int!) {
+    service: serviceByPk(oid: $oid, id: $id) {
       teacher {
         ...ServiceTeacher
       }

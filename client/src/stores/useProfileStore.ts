@@ -11,20 +11,20 @@ type Profile = {
   }[];
 };
 
-const profile = ref<Profile>({
-  id: NaN,
+const profile = ref<Profile & { isLoaded: boolean }>({
+  id: -1,
   displayname: "",
   services: [],
+  isLoaded: false,
 });
 
-const setProfile = (newProfile: Profile) => {
-  profile.value = newProfile;
+const setProfile = (newProfile: Omit<Profile, "isLoaded">) => {
+  profile.value = { ...newProfile, isLoaded: true };
 };
 
 export const useProfileStore = () => {
   const { activeYear } = useYearsStore();
 
-  const isLoaded = computed(() => !Number.isNaN(profile.value.id));
   const currentServiceId = computed(
     () =>
       profile.value.services.find((s) => s.year === activeYear.value)?.id ??
@@ -34,7 +34,6 @@ export const useProfileStore = () => {
 
   return {
     profile: readonly(profile),
-    isLoaded,
     currentServiceId,
     hasService,
     setProfile,

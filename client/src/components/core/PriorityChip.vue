@@ -20,6 +20,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment PriorityChipData on Priority {
+    oid
     id
     service {
       teacher {
@@ -31,17 +32,19 @@ graphql(`
     computed
   }
 
-  mutation DeletePriority($id: Int!) {
-    deletePriorityByPk(id: $id) {
+  mutation DeletePriority($oid: Int!, $id: Int!) {
+    deletePriorityByPk(oid: $oid, id: $id) {
+      oid
       id
     }
   }
 
-  mutation DeleteComputedPriority($id: Int!) {
+  mutation DeleteComputedPriority($oid: Int!, $id: Int!) {
     updatePriorityByPk(
-      pkColumns: { id: $id }
+      pkColumns: { oid: $oid, id: $id }
       _set: { seniority: null, isPriority: null, computed: false }
     ) {
+      oid
       id
     }
   }
@@ -61,6 +64,7 @@ const priority = computed(() =>
 const remove = async () => {
   if (priority.value.computed) {
     const { data, error } = await deleteComputedPriority.executeMutation({
+      oid: priority.value.oid,
       id: priority.value.id,
     });
     if (data?.updatePriorityByPk && !error) {
@@ -76,6 +80,7 @@ const remove = async () => {
     }
   } else {
     const { data, error } = await deletePriority.executeMutation({
+      oid: priority.value.oid,
       id: priority.value.id,
     });
     if (data?.deletePriorityByPk && !error) {

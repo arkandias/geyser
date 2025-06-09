@@ -4,7 +4,7 @@ export type ColName = "degreeName" | "name" | "nameShort" | "visible";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -20,6 +20,7 @@ import {
   UpdateProgramsDocument,
   UpsertProgramsDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -37,6 +38,8 @@ const { degreeFragments, programFragments } = defineProps<{
   programFragments: FragmentType<typeof AdminProgramFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 const rowDescriptor = {
@@ -85,6 +88,7 @@ graphql(`
   mutation InsertPrograms($objects: [ProgramInsertInput!]!) {
     insertData: insertProgram(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -96,6 +100,7 @@ graphql(`
   ) {
     upsertData: insertProgram(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -104,6 +109,7 @@ graphql(`
   mutation UpdatePrograms($ids: [Int!]!, $changes: ProgramSetInput!) {
     updateData: updateProgram(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -112,6 +118,7 @@ graphql(`
   mutation DeletePrograms($ids: [Int!]!) {
     deleteData: deleteProgram(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -129,8 +136,9 @@ const upsertPrograms = useMutation(UpsertProgramsDocument);
 const updatePrograms = useMutation(UpdateProgramsDocument);
 const deletePrograms = useMutation(DeleteProgramsDocument);
 
-const importConstraint = ProgramConstraint.ProgramDegreeIdNameKey;
+const importConstraint = ProgramConstraint.ProgramOidDegreeIdNameKey;
 const importUpdateColumns = [
+  ProgramUpdateColumn.Oid,
   ProgramUpdateColumn.DegreeId,
   ProgramUpdateColumn.Name,
   ProgramUpdateColumn.NameShort,
@@ -140,8 +148,9 @@ const importUpdateColumns = [
 const formatRow = (row: Row) => `${row.degree.nameDisplay} ${row.nameDisplay}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   // degreeId
   if (flatRow.degreeName !== undefined) {
     const degree = degrees.value.find((d) => d.name === flatRow.degreeName);

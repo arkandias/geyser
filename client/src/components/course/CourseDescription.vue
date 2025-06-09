@@ -20,6 +20,7 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment CourseDescription on Course {
+    oid
     courseId: id
     description
     coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
@@ -37,11 +38,16 @@ graphql(`
     }
   }
 
-  mutation UpdateDescription($courseId: Int!, $description: String) {
+  mutation UpdateDescription(
+    $oid: Int!
+    $courseId: Int!
+    $description: String
+  ) {
     updateCourseByPk(
-      pkColumns: { id: $courseId }
+      pkColumns: { oid: $oid, id: $courseId }
       _set: { description: $description }
     ) {
+      oid
       id
     }
   }
@@ -56,7 +62,7 @@ const data = computed(() =>
   useFragment(CourseDescriptionFragmentDoc, dataFragment),
 );
 
-const description = computed(() =>
+const descriptionSanitized = computed(() =>
   DOMPurify.sanitize(data.value.description ?? ""),
 );
 const coordinators = computed(() => [
@@ -66,10 +72,10 @@ const coordinators = computed(() => [
 ]);
 
 const editDescription = ref(false);
-
 const setDescription = (text: string) =>
   updateDescription
     .executeMutation({
+      oid: data.value.oid,
       courseId: data.value.courseId,
       description: text || null,
     })
@@ -87,7 +93,7 @@ const setDescription = (text: string) =>
   >
     <EditableText
       v-model="editDescription"
-      :text="description"
+      :text="descriptionSanitized"
       :set-text="setDescription"
       :default-text="t('courses.expansion.description.defaultText')"
     />

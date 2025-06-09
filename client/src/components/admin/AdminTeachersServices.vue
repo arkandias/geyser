@@ -4,7 +4,7 @@ export type ColName = "year" | "teacherEmail" | "hours";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -20,6 +20,7 @@ import {
   UpdateServicesDocument,
   UpsertServicesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -38,6 +39,8 @@ const { serviceFragments, teacherFragments } = defineProps<{
   teacherFragments: FragmentType<typeof AdminServicesTeacherFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
@@ -80,6 +83,7 @@ graphql(`
   mutation InsertServices($objects: [ServiceInsertInput!]!) {
     insertData: insertService(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -91,6 +95,7 @@ graphql(`
   ) {
     upsertData: insertService(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -99,6 +104,7 @@ graphql(`
   mutation UpdateServices($ids: [Int!]!, $changes: ServiceSetInput!) {
     updateData: updateService(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -107,6 +113,7 @@ graphql(`
   mutation DeleteServices($ids: [Int!]!) {
     deleteData: deleteService(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -124,8 +131,9 @@ const upsertServices = useMutation(UpsertServicesDocument);
 const updateServices = useMutation(UpdateServicesDocument);
 const deleteServices = useMutation(DeleteServicesDocument);
 
-const importConstraint = ServiceConstraint.ServiceYearTeacherIdKey;
+const importConstraint = ServiceConstraint.ServiceOidYearTeacherIdKey;
 const importUpdateColumns = [
+  ServiceUpdateColumn.Oid,
   ServiceUpdateColumn.Year,
   ServiceUpdateColumn.TeacherId,
   ServiceUpdateColumn.Hours,
@@ -135,8 +143,9 @@ const formatRow = (row: Row): string =>
   `${row.year} — ${row.teacher.displayname}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.year !== undefined) {
     object.year = flatRow.year;
   }

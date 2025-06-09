@@ -16,9 +16,9 @@ const { t } = useTypedI18n();
 
 graphql(`
   query GetAdminRoles {
-    roles: role(
+    teacherRoles: teacherRole(
       orderBy: [
-        { type: ASC }
+        { role: ASC }
         { teacher: { lastname: ASC } }
         { teacher: { firstname: ASC } }
       ]
@@ -38,7 +38,7 @@ const { data } = useQuery({
     additionalTypenames: ["All", "Roles", "Teacher"],
   },
 });
-const roles = computed(() => data.value?.roles ?? []);
+const roles = computed(() => data.value?.teacherRoles ?? []);
 const teachers = computed(() => data.value?.teachers ?? []);
 </script>
 

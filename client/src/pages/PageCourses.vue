@@ -55,8 +55,8 @@ graphql(`
     }
   }
 
-  query GetCourseDetails($courseId: Int!) {
-    course: courseByPk(id: $courseId) {
+  query GetCourseDetails($oid: Int!, $courseId: Int!) {
+    course: courseByPk(oid: $oid, id: $courseId) {
       ...CourseDetails
     }
   }

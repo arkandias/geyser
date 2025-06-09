@@ -9,7 +9,7 @@ export type ColName =
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -26,6 +26,7 @@ import {
   UpdateTracksDocument,
   UpsertTracksDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -43,6 +44,9 @@ const { degreeFragments, programFragments, trackFragments } = defineProps<{
   programFragments: FragmentType<typeof AdminTracksProgramFragmentDoc>[];
   trackFragments: FragmentType<typeof AdminTrackFragmentDoc>[];
 }>();
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 
 const { t } = useTypedI18n();
 
@@ -113,6 +117,7 @@ graphql(`
   mutation InsertTracks($objects: [TrackInsertInput!]!) {
     insertData: insertTrack(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -124,6 +129,7 @@ graphql(`
   ) {
     upsertData: insertTrack(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -132,6 +138,7 @@ graphql(`
   mutation UpdateTracks($ids: [Int!]!, $changes: TrackSetInput!) {
     updateData: updateTrack(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -140,6 +147,7 @@ graphql(`
   mutation DeleteTracks($ids: [Int!]!) {
     deleteData: deleteTrack(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -160,8 +168,9 @@ const upsertTracks = useMutation(UpsertTracksDocument);
 const updateTracks = useMutation(UpdateTracksDocument);
 const deleteTracks = useMutation(DeleteTracksDocument);
 
-const importConstraint = TrackConstraint.TrackProgramIdNameKey;
+const importConstraint = TrackConstraint.TrackOidProgramIdNameKey;
 const importUpdateColumns = [
+  TrackUpdateColumn.Oid,
   TrackUpdateColumn.ProgramId,
   TrackUpdateColumn.Name,
   TrackUpdateColumn.NameShort,
@@ -172,8 +181,9 @@ const formatRow = (row: Row) =>
   `${row.nameDisplay} (${row.program.degree.nameDisplay} — ${row.program.nameDisplay})`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   // programId
   if (flatRow.degreeName !== undefined || flatRow.programName !== undefined) {
     if (flatRow.programName === undefined) {

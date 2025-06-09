@@ -106,8 +106,8 @@ export class AuthController {
       if (!user) {
         throw new UnauthorizedException(`User '${email}' not found`);
       }
-      if (!user.active) {
-        throw new UnauthorizedException("User not active");
+      if (!user.access) {
+        throw new UnauthorizedException("User does not have access");
       }
 
       await this.cookiesService.setAuthCookies(res, organization.id, user.id);

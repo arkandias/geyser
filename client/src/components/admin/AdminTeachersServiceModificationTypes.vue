@@ -4,7 +4,7 @@ export type ColName = "label" | "description";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
@@ -18,6 +18,7 @@ import {
   UpdateServiceModificationTypesDocument,
   UpsertServiceModificationTypesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -35,6 +36,9 @@ const { serviceModificationTypeFragments } = defineProps<{
     typeof AdminServiceModificationTypeFragmentDoc
   >[];
 }>();
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 
 const rowDescriptor = {
   label: {
@@ -60,6 +64,7 @@ graphql(`
   ) {
     insertData: insertServiceModificationType(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -74,6 +79,7 @@ graphql(`
       onConflict: $onConflict
     ) {
       returning {
+        oid
         id
       }
     }
@@ -88,6 +94,7 @@ graphql(`
       _set: $changes
     ) {
       returning {
+        oid
         id
       }
     }
@@ -96,6 +103,7 @@ graphql(`
   mutation DeleteServiceModificationTypes($ids: [Int!]!) {
     deleteData: deleteServiceModificationType(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -121,8 +129,9 @@ const deleteServiceModificationTypes = useMutation(
 );
 
 const importConstraint =
-  ServiceModificationTypeConstraint.ServiceModificationTypeLabelKey;
+  ServiceModificationTypeConstraint.ServiceModificationTypeOidLabelKey;
 const importUpdateColumns = [
+  ServiceModificationTypeUpdateColumn.Oid,
   ServiceModificationTypeUpdateColumn.Label,
   ServiceModificationTypeUpdateColumn.Description,
 ];
@@ -130,8 +139,9 @@ const importUpdateColumns = [
 const formatRow = (row: Row) => row.label;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.label !== undefined) {
     object.label = flatRow.label;
   }

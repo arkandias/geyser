@@ -12,7 +12,7 @@ import {
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
 import { apiUrl } from "@/config/env.ts";
-import { RoleTypeEnum } from "@/gql/graphql.ts";
+import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
 const api = axios.create({
@@ -28,8 +28,8 @@ export class AuthManager {
   private _postLogout = false;
   authError: string | null = null;
 
-  readonly activeRole: ComputedRef<RoleTypeEnum> = computed(
-    () => RoleTypeEnum[capitalize(this._role.value)],
+  readonly activeRole: ComputedRef<RoleEnum> = computed(
+    () => RoleEnum[capitalize(this._role.value)],
   );
 
   async init(): Promise<void> {
@@ -191,22 +191,21 @@ export class AuthManager {
   }
 
   get orgId(): number {
-    return this._payload?.orgId ?? NaN;
+    return this._payload?.orgId ?? -1;
   }
 
   get userId(): number {
-    return this._payload?.userId ?? NaN;
+    return this._payload?.userId ?? -1;
   }
 
-  get allowedRoles(): RoleTypeEnum[] {
+  get allowedRoles(): RoleEnum[] {
     return (
-      this._payload?.allowedRoles.map(
-        (role) => RoleTypeEnum[capitalize(role)],
-      ) ?? []
+      this._payload?.allowedRoles.map((role) => RoleEnum[capitalize(role)]) ??
+      []
     );
   }
 
-  setActiveRole(role: RoleTypeEnum): void {
+  setActiveRole(role: RoleEnum): void {
     if (this.allowedRoles.includes(role)) {
       this._role.value = toLowerCase(role);
     } else {

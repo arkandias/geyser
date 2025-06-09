@@ -45,6 +45,10 @@ export default {
           label: "Active",
           tooltip: "",
         },
+        access: {
+          label: "Access",
+          tooltip: "",
+        },
       } satisfies Record<AdminTeachersTeachersColName, AdminColNameOptions>,
       form: {
         title: {

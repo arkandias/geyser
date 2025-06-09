@@ -4,7 +4,7 @@ export type ColName = "label" | "coefficient" | "description";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -19,6 +19,7 @@ import {
   UpdateCourseTypesDocument,
   UpsertCourseTypesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -35,6 +36,8 @@ const { courseTypeFragments } = defineProps<{
   courseTypeFragments: FragmentType<typeof AdminCourseTypeFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { n } = useTypedI18n();
 
 const rowDescriptor = {
@@ -66,6 +69,7 @@ graphql(`
   mutation InsertCourseTypes($objects: [CourseTypeInsertInput!]!) {
     insertData: insertCourseType(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -77,6 +81,7 @@ graphql(`
   ) {
     upsertData: insertCourseType(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -85,6 +90,7 @@ graphql(`
   mutation UpdateCourseTypes($ids: [Int!]!, $changes: CourseTypeSetInput!) {
     updateData: updateCourseType(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -93,6 +99,7 @@ graphql(`
   mutation DeleteCourseTypes($ids: [Int!]!) {
     deleteData: deleteCourseType(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -107,8 +114,9 @@ const upsertCourseTypes = useMutation(UpsertCourseTypesDocument);
 const updateCourseTypes = useMutation(UpdateCourseTypesDocument);
 const deleteCourseTypes = useMutation(DeleteCourseTypesDocument);
 
-const importConstraint = CourseTypeConstraint.CourseTypeLabelKey;
+const importConstraint = CourseTypeConstraint.CourseTypeOidLabelKey;
 const importUpdateColumns = [
+  CourseTypeUpdateColumn.Oid,
   CourseTypeUpdateColumn.Label,
   CourseTypeUpdateColumn.Coefficient,
   CourseTypeUpdateColumn.Description,
@@ -117,8 +125,9 @@ const importUpdateColumns = [
 const formatRow = (row: Row) => row.label;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.label !== undefined) {
     object.label = flatRow.label;
   }

@@ -5,11 +5,7 @@ import { computed, inject, watch } from "vue";
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
-import {
-  GetAppDataDocument,
-  PhaseTypeEnum,
-  RoleTypeEnum,
-} from "@/gql/graphql.ts";
+import { GetAppDataDocument, PhaseEnum, RoleEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
@@ -22,22 +18,21 @@ import PageHome from "@/pages/PageHome.vue";
 graphql(`
   query GetAppData($orgId: Int!, $userId: Int!) {
     organization: organizationByPk(id: $orgId) {
-      currentPhase: phase {
+      currentPhases {
         value
       }
       years(orderBy: { value: DESC }) {
-        id
         value
         current
         visible
       }
       customTexts: appSettings(orderBy: [{ key: ASC }]) {
-        id
         key
         value
       }
     }
-    profile: teacherByPk(id: $userId) {
+
+    profile: teacherByPk(oid: $orgId, id: $userId) {
       id
       displayname
       services {
@@ -53,7 +48,7 @@ const { notify } = useNotify();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
-const { isLoaded, setProfile } = useProfileStore();
+const { profile, setProfile } = useProfileStore();
 
 const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
@@ -84,7 +79,9 @@ watch(
       return;
     }
     if (data?.organization) {
-      setCurrentPhase(data.organization.currentPhase?.value);
+      setCurrentPhase(
+        data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,
+      );
       setYears(data.organization.years);
       setCustomTexts(data.organization.customTexts);
     }
@@ -101,13 +98,13 @@ watch(
     if (!authManager.hasAccess) {
       return;
     }
-    if (authManager.allowedRoles.includes(RoleTypeEnum.Admin)) {
-      authManager.setActiveRole(RoleTypeEnum.Admin);
+    if (authManager.allowedRoles.includes(RoleEnum.Admin)) {
+      authManager.setActiveRole(RoleEnum.Admin);
     } else if (
-      authManager.allowedRoles.includes(RoleTypeEnum.Commissioner) &&
-      phase === PhaseTypeEnum.Assignments
+      authManager.allowedRoles.includes(RoleEnum.Commissioner) &&
+      phase === PhaseEnum.Assignments
     ) {
-      authManager.setActiveRole(RoleTypeEnum.Commissioner);
+      authManager.setActiveRole(RoleEnum.Commissioner);
     }
   },
   { immediate: true },
@@ -122,8 +119,8 @@ const accessDeniedMessage = computed(() => {
     return t("home.alert.noAccess");
   }
   if (
-    currentPhase.value === PhaseTypeEnum.Shutdown &&
-    authManager.activeRole.value !== RoleTypeEnum.Admin
+    currentPhase.value === PhaseEnum.Shutdown &&
+    authManager.activeRole.value !== RoleEnum.Admin
   ) {
     return t("home.alert.shutdown");
   }
@@ -132,7 +129,7 @@ const accessDeniedMessage = computed(() => {
     return t("home.alert.loadingAppData");
   }
   // TODO: error loading data & isLoading...
-  if (!isLoaded.value) {
+  if (!profile.value.isLoaded) {
     return t("home.alert.profileNotLoaded");
   }
   return "";

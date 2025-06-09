@@ -21,30 +21,37 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment ServiceMessage on Service {
+    oid
     id
     year
     teacherId
-    message {
+    messages {
       id
       content
     }
   }
 
-  mutation UpsertMessage($serviceId: Int!, $content: String!) {
+  mutation UpsertMessage($oid: Int!, $serviceId: Int!, $content: String!) {
     insertMessageOne(
-      object: { serviceId: $serviceId, content: $content }
+      object: { oid: $oid, serviceId: $serviceId, content: $content }
       onConflict: {
-        constraint: message_service_id_key
+        constraint: message_oid_service_id_key
         updateColumns: [content]
       }
     ) {
+      oid
       id
     }
   }
 
-  mutation DeleteMessage($serviceId: Int!) {
-    deleteMessage(where: { serviceId: { _eq: $serviceId } }) {
+  mutation DeleteMessage($oid: Int!, $serviceId: Int!) {
+    deleteMessage(
+      where: {
+        _and: [{ oid: { _eq: $oid } }, { serviceId: { _eq: $serviceId } }]
+      }
+    ) {
       returning {
+        oid
         id
       }
     }
@@ -61,15 +68,17 @@ const data = computed(() =>
   useFragment(ServiceMessageFragmentDoc, dataFragment),
 );
 
-const editMessage = ref(false);
-const message = computed(() =>
-  DOMPurify.sanitize(data.value.message?.content ?? ""),
+const messageSanitized = computed(() =>
+  DOMPurify.sanitize(data.value.messages[0]?.content ?? ""),
 );
+
+const editMessage = ref(false);
 const setMessage = computed(
   () => (message: string) =>
     message
       ? upsertMessage
           .executeMutation({
+            oid: data.value.oid,
             serviceId: data.value.id,
             content: message,
           })
@@ -79,6 +88,7 @@ const setMessage = computed(
           }))
       : deleteMessage
           .executeMutation({
+            oid: data.value.oid,
             serviceId: data.value.id,
           })
           .then((result) => ({
@@ -97,7 +107,7 @@ const setMessage = computed(
   >
     <EditableText
       v-model="editMessage"
-      :text="message"
+      :text="messageSanitized"
       :set-text="setMessage"
       text-class="q-pa-md"
     />

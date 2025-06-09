@@ -14,7 +14,6 @@ WORKDIR /app
 
 ARG VITE_BUILD_VERSION="${VERSION}"
 ARG VITE_API_URL
-ARG VITE_GRAPHQL_URL
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build

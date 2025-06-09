@@ -4,7 +4,7 @@ export type ColName = "name" | "nameShort" | "visible";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
@@ -18,6 +18,7 @@ import {
   UpdateDegreesDocument,
   UpsertDegreesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -33,6 +34,9 @@ type InsertInput = DegreeInsertInput;
 const { degreeFragments } = defineProps<{
   degreeFragments: FragmentType<typeof AdminDegreeFragmentDoc>[];
 }>();
+
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 
 const rowDescriptor = {
   name: {
@@ -62,6 +66,7 @@ graphql(`
   mutation InsertDegrees($objects: [DegreeInsertInput!]!) {
     insertData: insertDegree(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -73,6 +78,7 @@ graphql(`
   ) {
     upsertData: insertDegree(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -81,6 +87,7 @@ graphql(`
   mutation UpdateDegrees($ids: [Int!]!, $changes: DegreeSetInput!) {
     updateData: updateDegree(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -89,6 +96,7 @@ graphql(`
   mutation DeleteDegrees($ids: [Int!]!) {
     deleteData: deleteDegree(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -103,8 +111,9 @@ const upsertDegrees = useMutation(UpsertDegreesDocument);
 const updateDegrees = useMutation(UpdateDegreesDocument);
 const deleteDegrees = useMutation(DeleteDegreesDocument);
 
-const importConstraint = DegreeConstraint.DegreeNameKey;
+const importConstraint = DegreeConstraint.DegreeOidNameKey;
 const importUpdateColumns = [
+  DegreeUpdateColumn.Oid,
   DegreeUpdateColumn.Name,
   DegreeUpdateColumn.NameShort,
   DegreeUpdateColumn.Visible,
@@ -113,8 +122,9 @@ const importUpdateColumns = [
 const formatRow = (row: Row) => row.name;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.name !== undefined) {
     object.name = flatRow.name;
   }

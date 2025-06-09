@@ -19,11 +19,13 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment PriorityFormData on Course {
+    oid
     year
     courseId: id
   }
 
   mutation UpsertPriority(
+    $oid: Int!
     $year: Int!
     $serviceId: Int!
     $courseId: Int!
@@ -32,6 +34,7 @@ graphql(`
   ) {
     insertPriorityOne(
       object: {
+        oid: $oid
         year: $year
         serviceId: $serviceId
         courseId: $courseId
@@ -40,10 +43,11 @@ graphql(`
         computed: false
       }
       onConflict: {
-        constraint: priority_service_id_course_id_key
+        constraint: priority_oid_service_id_course_id_key
         updateColumns: [seniority, isPriority, computed]
       }
     ) {
+      oid
       id
     }
   }
@@ -88,6 +92,7 @@ const submitForm = async (): Promise<void> => {
   }
 
   const result = await upsertPriority.executeMutation({
+    oid: data.value.oid,
     year: data.value.year,
     serviceId: serviceId.value,
     courseId: data.value.courseId,

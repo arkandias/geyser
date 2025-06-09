@@ -33,4 +33,7 @@ export class User {
 
   @Column("boolean", { default: true })
   active!: boolean;
+
+  @Column("boolean", { default: true })
+  access!: boolean;
 }

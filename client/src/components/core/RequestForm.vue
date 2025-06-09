@@ -23,12 +23,14 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment RequestFormData on Course {
+    oid
     year
     courseId: id
     hoursPerGroup: hoursEffective
   }
 
   mutation UpsertRequest(
+    $oid: Int!
     $year: Int!
     $serviceId: Int!
     $courseId: Int!
@@ -37,6 +39,7 @@ graphql(`
   ) {
     insertRequestOne(
       object: {
+        oid: $oid
         year: $year
         serviceId: $serviceId
         courseId: $courseId
@@ -44,15 +47,17 @@ graphql(`
         hours: $hours
       }
       onConflict: {
-        constraint: request_service_id_course_id_type_key
+        constraint: request_oid_service_id_course_id_type_key
         updateColumns: [hours]
       }
     ) {
+      oid
       id
     }
   }
 
   mutation DeleteRequest(
+    $oid: Int!
     $serviceId: Int!
     $courseId: Int!
     $requestType: RequestTypeEnum!
@@ -60,6 +65,7 @@ graphql(`
     deleteRequest(
       where: {
         _and: [
+          { oid: { _eq: $oid } }
           { serviceId: { _eq: $serviceId } }
           { courseId: { _eq: $courseId } }
           { type: { _eq: $requestType } }
@@ -67,6 +73,7 @@ graphql(`
       }
     ) {
       returning {
+        oid
         id
       }
     }
@@ -188,6 +195,7 @@ const submitForm = async (): Promise<void> => {
 
   if (hours.value === 0) {
     const result = await deleteRequest.executeMutation({
+      oid: data.value.oid,
       serviceId: serviceId.value,
       courseId: data.value.courseId,
       requestType: requestType.value,
@@ -205,6 +213,7 @@ const submitForm = async (): Promise<void> => {
     }
   } else {
     const result = await upsertRequest.executeMutation({
+      oid: data.value.oid,
       year: data.value.year,
       serviceId: serviceId.value,
       courseId: data.value.courseId,

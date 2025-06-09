@@ -12,7 +12,7 @@ import {
   GetModificationTypesDocument,
   InsertModificationDocument,
   ServiceDetailsFragmentDoc,
-  UpdateServiceDocument,
+  UpdateServiceHoursDocument,
 } from "@/gql/graphql.ts";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
@@ -25,11 +25,13 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment ServiceDetails on Service {
+    oid
     id
     year
     teacherId
     hours
     modifications(orderBy: [{ type: { label: ASC } }, { hours: ASC }]) {
+      oid
       id
       modificationType: type {
         label
@@ -38,14 +40,13 @@ graphql(`
     }
   }
 
-  mutation UpdateService($year: Int!, $teacherId: Int!, $hours: Float!) {
-    updateService(
-      where: { year: { _eq: $year }, id: { _eq: $teacherId } }
+  mutation UpdateServiceHours($oid: Int!, $id: Int!, $hours: Float!) {
+    updateServiceByPk(
+      pkColumns: { oid: $oid, id: $id }
       _set: { hours: $hours }
     ) {
-      returning {
-        id
-      }
+      oid
+      id
     }
   }
 
@@ -58,23 +59,27 @@ graphql(`
   }
 
   mutation InsertModification(
+    $oid: Int!
     $serviceId: Int!
     $modificationTypeId: Int!
     $hours: Float!
   ) {
     insertServiceModificationOne(
       object: {
+        oid: $oid
         serviceId: $serviceId
         typeId: $modificationTypeId
         hours: $hours
       }
     ) {
+      oid
       id
     }
   }
 
-  mutation DeleteModification($id: Int!) {
-    deleteServiceModificationByPk(id: $id) {
+  mutation DeleteModification($oid: Int!, $id: Int!) {
+    deleteServiceModificationByPk(oid: $oid, id: $id) {
+      oid
       id
     }
   }
@@ -84,7 +89,7 @@ const { t, n } = useTypedI18n();
 const { notify } = useNotify();
 const perm = usePermissions();
 
-const updateService = useMutation(UpdateServiceDocument);
+const updateServiceHours = useMutation(UpdateServiceHoursDocument);
 const insertModification = useMutation(InsertModificationDocument);
 const deleteModification = useMutation(DeleteModificationDocument);
 
@@ -117,12 +122,12 @@ const submitBaseServiceForm = async (): Promise<void> => {
       message: t("service.details.baseServiceForm.noChanges"),
     });
   } else {
-    const { data, error } = await updateService.executeMutation({
-      year: service.value.year,
-      teacherId: service.value.teacherId,
+    const { data, error } = await updateServiceHours.executeMutation({
+      oid: service.value.oid,
+      id: service.value.id,
       hours: baseServiceHours.value,
     });
-    if (data?.updateService?.returning[0] && !error) {
+    if (data?.updateServiceByPk && !error) {
       notify(NotifyType.Success, {
         message: t("service.details.baseServiceForm.success"),
       });
@@ -171,6 +176,7 @@ const submitModificationForm = async (): Promise<void> => {
     return;
   }
   const { data, error } = await insertModification.executeMutation({
+    oid: service.value.oid,
     serviceId: service.value.id,
     modificationTypeId: modificationTypeId.value,
     hours: modificationHours.value,
@@ -188,8 +194,14 @@ const submitModificationForm = async (): Promise<void> => {
   resetModificationForm();
 };
 
-const handleModificationDeletion = async (id: number): Promise<void> => {
-  const { data, error } = await deleteModification.executeMutation({ id });
+const handleModificationDeletion = async (
+  oid: number,
+  id: number,
+): Promise<void> => {
+  const { data, error } = await deleteModification.executeMutation({
+    oid,
+    id,
+  });
   if (data?.deleteServiceModificationByPk && !error) {
     notify(NotifyType.Success, {
       message: t("service.details.modificationForm.success.delete"),
@@ -363,7 +375,7 @@ const formatWH = (hours: number) =>
               flat
               square
               dense
-              @click="handleModificationDeletion(m.id)"
+              @click="handleModificationDeletion(m.oid, m.id)"
             >
               <QTooltip :delay="TOOLTIP_DELAY">
                 {{ t("service.details.modificationForm.tooltip.delete") }}

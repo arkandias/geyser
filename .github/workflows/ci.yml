@@ -50,15 +50,12 @@ jobs:
         run: |
           echo "date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "${GITHUB_OUTPUT}"
           if [[ "${GITHUB_REF_TYPE}" == tag ]]; then
-            # Remove 'v' prefix for the version tag
-            VERSION=${GITHUB_REF_NAME#v}
+            VERSION=${GITHUB_REF_NAME}
             echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
-            echo "frontend_tags=${FRONTEND_REPOSITORY}:${VERSION},${FRONTEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
-            echo "backend_tags=${BACKEND_REPOSITORY}:${VERSION},${BACKEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
+            echo "tags=${FRONTEND_REPOSITORY}:${VERSION},${FRONTEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
           else
             echo "version=${GITHUB_SHA::8}" >> "${GITHUB_OUTPUT}"
-            echo "frontend_tags=${FRONTEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
-            echo "backend_tags=${BACKEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
+            echo "tags=${FRONTEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
           fi
 
       - name: Checkout repository
@@ -83,7 +80,7 @@ jobs:
           context: .
           target: backend
           push: true
-          tags: ${{ steps.vars.outputs.backend_tags }}
+          tags: ${{ steps.vars.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
@@ -97,7 +94,7 @@ jobs:
           context: .
           target: frontend
           push: true
-          tags: ${{ steps.vars.outputs.frontend_tags }}
+          tags: ${{ steps.vars.outputs.tags }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |

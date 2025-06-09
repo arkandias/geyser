@@ -4,7 +4,7 @@ export type ColName = "year" | "teacherEmail" | "content";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -21,6 +21,7 @@ import {
   UpdateMessagesDocument,
   UpsertMessagesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -40,6 +41,8 @@ const { messageFragments, serviceFragments, teacherFragments } = defineProps<{
   teacherFragments: FragmentType<typeof AdminMessagesTeacherFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { years } = useYearsStore();
 
@@ -93,6 +96,7 @@ graphql(`
   mutation InsertMessages($objects: [MessageInsertInput!]!) {
     insertData: insertMessage(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -104,6 +108,7 @@ graphql(`
   ) {
     upsertData: insertMessage(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -112,6 +117,7 @@ graphql(`
   mutation UpdateMessages($ids: [Int!]!, $changes: MessageSetInput!) {
     updateData: updateMessage(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -120,6 +126,7 @@ graphql(`
   mutation DeleteMessages($ids: [Int!]!) {
     deleteData: deleteMessage(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -142,6 +149,7 @@ const deleteMessages = useMutation(DeleteMessagesDocument);
 
 const importConstraint = MessageConstraint.MessagePkey;
 const importUpdateColumns = [
+  MessageUpdateColumn.Oid,
   MessageUpdateColumn.ServiceId,
   MessageUpdateColumn.Content,
 ];
@@ -150,8 +158,9 @@ const formatRow = (row: Row): string =>
   `${row.service.year} — ${row.service.teacher.displayname}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   // serviceId
   if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
     if (flatRow.teacherEmail === undefined) {

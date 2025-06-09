@@ -19,7 +19,7 @@ export type ColName =
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { type ComputedRef, computed, ref } from "vue";
+import { type ComputedRef, computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -38,6 +38,7 @@ import {
   UpdateCoursesDocument,
   UpsertCoursesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -66,6 +67,8 @@ const {
   courseTypeFragments: FragmentType<typeof AdminCoursesCourseTypeFragmentDoc>[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
@@ -227,6 +230,7 @@ graphql(`
   mutation InsertCourses($objects: [CourseInsertInput!]!) {
     insertData: insertCourse(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -238,6 +242,7 @@ graphql(`
   ) {
     upsertData: insertCourse(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -246,6 +251,7 @@ graphql(`
   mutation UpdateCourses($ids: [Int!]!, $changes: CourseSetInput!) {
     updateData: updateCourse(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -254,6 +260,7 @@ graphql(`
   mutation DeleteCourses($ids: [Int!]!) {
     deleteData: deleteCourse(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -283,8 +290,9 @@ const updateCourses = useMutation(UpdateCoursesDocument);
 const deleteCourses = useMutation(DeleteCoursesDocument);
 
 const importConstraint =
-  CourseConstraint.CourseYearProgramIdTrackIdNameSemesterTypeIdKey;
+  CourseConstraint.CourseOidYearProgramIdTrackIdNameSemesterTypeIdKey;
 const importUpdateColumns = [
+  CourseUpdateColumn.Oid,
   CourseUpdateColumn.Year,
   CourseUpdateColumn.ProgramId,
   CourseUpdateColumn.TrackId,
@@ -307,8 +315,9 @@ const formatRow = (row: Row) =>
   (row.track ? ` — ${row.track.nameDisplay})` : `)`);
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.year !== undefined) {
     object.year = flatRow.year;
   }

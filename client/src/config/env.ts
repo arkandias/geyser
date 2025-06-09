@@ -7,7 +7,4 @@ export const apiUrl = new URL(
     `${window.location.protocol}//api.${window.location.hostname.replace(/^[^.]+\./, "")}`,
 );
 
-export const graphqlUrl = new URL(
-  import.meta.env.VITE_GRAPHQL_URL ?? "/graphql",
-  apiUrl.origin,
-);
+export const graphqlUrl = new URL("/graphql", apiUrl.origin);

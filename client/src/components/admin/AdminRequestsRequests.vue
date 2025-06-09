@@ -14,7 +14,7 @@ export type ColName =
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -38,6 +38,7 @@ import {
   UpsertRequestsDocument,
 } from "@/gql/graphql.ts";
 import { requestTypeLabel } from "@/locales/helpers.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -74,6 +75,8 @@ const {
   >[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
@@ -243,6 +246,7 @@ graphql(`
   mutation InsertRequests($objects: [RequestInsertInput!]!) {
     insertData: insertRequest(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -254,6 +258,7 @@ graphql(`
   ) {
     upsertData: insertRequest(objects: $objects, onConflict: $onConflict) {
       returning {
+        oid
         id
       }
     }
@@ -262,6 +267,7 @@ graphql(`
   mutation UpdateRequests($ids: [Int!]!, $changes: RequestSetInput!) {
     updateData: updateRequest(where: { id: { _in: $ids } }, _set: $changes) {
       returning {
+        oid
         id
       }
     }
@@ -270,6 +276,7 @@ graphql(`
   mutation DeleteRequests($ids: [Int!]!) {
     deleteData: deleteRequest(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -307,8 +314,9 @@ const upsertRequests = useMutation(UpsertRequestsDocument);
 const updateRequests = useMutation(UpdateRequestsDocument);
 const deleteRequests = useMutation(DeleteRequestsDocument);
 
-const importConstraint = RequestConstraint.RequestServiceIdCourseIdTypeKey;
+const importConstraint = RequestConstraint.RequestOidServiceIdCourseIdTypeKey;
 const importUpdateColumns = [
+  RequestUpdateColumn.Oid,
   RequestUpdateColumn.ServiceId,
   RequestUpdateColumn.CourseId,
   RequestUpdateColumn.Type,
@@ -323,8 +331,9 @@ const formatRow = (row: Row) =>
   `— ${row.course.name} — ${row.course.semester} — ${row.course.type.label}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   if (flatRow.year !== undefined) {
     object.year = flatRow.year;
   }

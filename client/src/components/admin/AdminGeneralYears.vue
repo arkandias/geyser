@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { ref } from "vue";
+import { inject, ref } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
@@ -14,10 +14,13 @@ import {
   SetCurrentYearDocument,
   UpdateYearDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import NumInput from "@/components/core/NumInput.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { notify } = useNotify();
 const { years, currentYear } = useYearsStore();
@@ -27,26 +30,29 @@ const isFormOpen = ref(false);
 const yearValue = ref<number | null>(null);
 
 graphql(`
-  mutation SetCurrentYear($id: Int!) {
-    updateYearByPk(pkColumns: { id: $id }, _set: { current: true }) {
-      id
-    }
-  }
-
-  mutation InsertYear($value: Int!, $visible: Boolean!) {
-    insertYearOne(object: { value: $value, visible: $visible }) {
+  mutation SetCurrentYear($oid: Int!, $value: Int!) {
+    updateYearByPk(
+      pkColumns: { oid: $oid, value: $value }
+      _set: { current: true }
+    ) {
       value
     }
   }
 
-  mutation UpdateYear($id: Int!, $changes: YearSetInput!) {
-    updateYearByPk(pkColumns: { id: $id }, _set: $changes) {
+  mutation InsertYear($oid: Int!, $value: Int!, $visible: Boolean!) {
+    insertYearOne(object: { oid: $oid, value: $value, visible: $visible }) {
       value
     }
   }
 
-  mutation DeleteYear($id: Int!) {
-    deleteYearByPk(id: $id) {
+  mutation UpdateYear($oid: Int!, $value: Int!, $changes: YearSetInput!) {
+    updateYearByPk(pkColumns: { oid: $oid, value: $value }, _set: $changes) {
+      value
+    }
+  }
+
+  mutation DeleteYear($oid: Int!, $value: Int!) {
+    deleteYearByPk(oid: $oid, value: $value) {
       value
     }
   }
@@ -80,6 +86,7 @@ const computePriorities = useMutation(ComputePrioritiesDocument);
 
 const setCurrentYearHandle = async (year: number): Promise<void> => {
   const { error } = await setCurrentYear.executeMutation({
+    oid: authManager.orgId,
     value: year,
   });
 
@@ -105,6 +112,7 @@ const insertYearHandle = async () => {
   }
 
   const { data, error } = await insertYear.executeMutation({
+    oid: authManager.orgId,
     value: yearValue.value,
     visible: false,
   });
@@ -133,6 +141,7 @@ const updateYearHandle = async (
   },
 ) => {
   const { data, error } = await updateYear.executeMutation({
+    oid: authManager.orgId,
     value,
     changes,
   });
@@ -178,7 +187,10 @@ const deleteYearHandle = async (value: number) => {
     return;
   }
 
-  const { data, error } = await deleteYear.executeMutation({ value });
+  const { data, error } = await deleteYear.executeMutation({
+    oid: authManager.orgId,
+    value,
+  });
   if (error || data?.deleteYearByPk?.value === undefined) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.deleteFailed"),
@@ -268,8 +280,8 @@ const create = () => {
   isFormOpen.value = true;
 };
 
-const edit = (id: number, value: number) => {
-  selectedYear.value = id;
+const edit = (value: number) => {
+  selectedYear.value = value;
   yearValue.value = value;
   isFormOpen.value = true;
 };
@@ -296,7 +308,7 @@ const edit = (id: number, value: number) => {
           flat
           square
           dense
-          @click="selectedYear = year.id"
+          @click="selectedYear = year.value"
         >
           <QMenu square auto-close>
             <QList>
@@ -335,7 +347,7 @@ const edit = (id: number, value: number) => {
           flat
           square
           dense
-          @click="edit(year.id, year.value)"
+          @click="edit(year.value)"
         />
       </QItemSection>
       <QItemSection side>

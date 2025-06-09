@@ -4,7 +4,7 @@ export type ColName = "year" | "teacherEmail" | "typeLabel" | "hours";
 
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -22,6 +22,7 @@ import {
   UpdateServiceModificationsDocument,
   UpsertServiceModificationsDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -55,6 +56,8 @@ const {
   >[];
 }>();
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { years } = useYearsStore();
 
@@ -124,6 +127,7 @@ graphql(`
   ) {
     insertData: insertServiceModification(objects: $objects) {
       returning {
+        oid
         id
       }
     }
@@ -138,6 +142,7 @@ graphql(`
       onConflict: $onConflict
     ) {
       returning {
+        oid
         id
       }
     }
@@ -152,6 +157,7 @@ graphql(`
       _set: $changes
     ) {
       returning {
+        oid
         id
       }
     }
@@ -160,6 +166,7 @@ graphql(`
   mutation DeleteServiceModifications($ids: [Int!]!) {
     deleteData: deleteServiceModification(where: { id: { _in: $ids } }) {
       returning {
+        oid
         id
       }
     }
@@ -201,6 +208,7 @@ const deleteServiceModifications = useMutation(
 
 const importConstraint = ServiceModificationConstraint.ServiceModificationPkey;
 const importUpdateColumns = [
+  ServiceModificationUpdateColumn.Oid,
   ServiceModificationUpdateColumn.ServiceId,
   ServiceModificationUpdateColumn.TypeId,
   ServiceModificationUpdateColumn.Hours,
@@ -210,8 +218,9 @@ const formatRow = (row: Row): string =>
   `${row.service.year} — ${row.service.teacher.displayname} — ${row.type.label}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
-  const object: InsertInput = {};
-
+  const object: InsertInput = {
+    oid: authManager.orgId,
+  };
   // serviceId
   if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
     if (flatRow.teacherEmail === undefined) {

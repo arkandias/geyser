@@ -1,4 +1,4 @@
-import { RoleTypeEnum } from "@/gql/graphql.ts";
+import { RoleEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type { ColName as AdminRolesRolesColName } from "@/components/admin/AdminGeneralRoles.vue";
@@ -75,7 +75,7 @@ If courses or services are associated with this year, you will not be able to de
         },
         error: {
           teacherNotFound: `No teacher with email '{email}'`,
-          invalidRole: `Role type must be ${RoleTypeEnum.Admin} or ${RoleTypeEnum.Commissioner}`,
+          invalidRole: `Role type must be ${RoleEnum.Admin} or ${RoleEnum.Commissioner}`,
         },
       },
       data: {
