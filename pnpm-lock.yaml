@@ -56,7 +56,7 @@ importers:
     dependencies:
       '@geyser/shared':
         specifier: workspace:*
-        version: link:../shared
+        version: file:shared
       '@urql/exchange-auth':
         specifier: ^2.2.1
         version: 2.2.1(@urql/core@5.1.1(graphql@16.11.0))
@@ -577,6 +577,9 @@ packages:
 
   '@fastify/busboy@3.1.1':
     resolution: {integrity: sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw==}
+
+  '@geyser/shared@file:shared':
+    resolution: {directory: shared, type: directory}
 
   '@graphql-codegen/add@5.0.3':
     resolution: {integrity: sha512-SxXPmramkth8XtBlAHu4H4jYcYXM/o3p01+psU+0NADQowA8jtYkK6MW5rV6T+CxkEaNZItfSmZRPgIuypcqnA==}
@@ -4525,6 +4528,10 @@ snapshots:
       levn: 0.4.1
 
   '@fastify/busboy@3.1.1': {}
+
+  '@geyser/shared@file:shared':
+    dependencies:
+      zod: 3.25.56
 
   '@graphql-codegen/add@5.0.3(graphql@16.11.0)':
     dependencies:
