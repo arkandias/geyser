@@ -7,20 +7,22 @@ import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
 import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
 import type { SimpleObject } from "@/types/data.ts";
 
-import type { ColName as AdminCoursesCourseTypesColName } from "@/components/admin/AdminCoursesCourseTypes.vue";
-import type { ColName as AdminCoursesCoursesColName } from "@/components/admin/AdminCoursesCourses.vue";
-import type { ColName as AdminCoursesDegreesColName } from "@/components/admin/AdminCoursesDegrees.vue";
-import type { ColName as AdminCoursesProgramsColName } from "@/components/admin/AdminCoursesPrograms.vue";
-import type { ColName as AdminCoursesTracksColName } from "@/components/admin/AdminCoursesTracks.vue";
-import type { ColName as AdminRolesRolesColName } from "@/components/admin/AdminGeneralRoles.vue";
-import type { ColName as AdminRequestsPrioritiesColNames } from "@/components/admin/AdminRequestsPriorities.vue";
-import type { ColName as AdminRequestsRequestsColNames } from "@/components/admin/AdminRequestsRequests.vue";
-import type { ColName as AdminTeachersMessagesColNames } from "@/components/admin/AdminTeachersMessages.vue";
-import type { ColName as AdminTeachersPositionsColNames } from "@/components/admin/AdminTeachersPositions.vue";
-import type { ColName as AdminTeachersServiceModificationTypesColNames } from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
-import type { ColName as AdminTeachersServiceModificationsColNames } from "@/components/admin/AdminTeachersServiceModifications.vue";
-import type { ColName as AdminTeachersServicesColNames } from "@/components/admin/AdminTeachersServices.vue";
-import type { ColName as AdminTeachersTeachersColNames } from "@/components/admin/AdminTeachersTeachers.vue";
+import {
+  adminCoursesCourseTypesColNames,
+  adminCoursesCoursesColNames,
+  adminCoursesDegreesColNames,
+  adminCoursesProgramsColNames,
+  adminCoursesTracksColNames,
+  adminGeneralRolesColNames,
+  adminRequestsPrioritiesColNames,
+  adminRequestsRequestsColNames,
+  adminTeachersMessagesColNames,
+  adminTeachersPositionsColNames,
+  adminTeachersServiceModificationTypesColNames,
+  adminTeachersServiceModificationsColNames,
+  adminTeachersServicesColNames,
+  adminTeachersTeachersColNames,
+} from "@/components/admin/col-names.ts";
 
 const locales = [
   { label: "fr-FR", messages: fr },
@@ -138,119 +140,28 @@ const findKeysInFiles = async (): Promise<string[]> => {
   });
   templateStringsKeys.delete("primitiveTypeName.${type}");
 
-  const adminColNames: Record<string, Record<string, string[]>> = {
+  const adminColNames: Record<string, Record<string, readonly string[]>> = {
     general: {
-      roles: [
-        "teacherEmail",
-        "type",
-        "comment",
-      ] satisfies AdminRolesRolesColName[],
+      roles: adminGeneralRolesColNames,
     },
     teachers: {
-      teachers: [
-        "email",
-        "firstname",
-        "lastname",
-        "alias",
-        "positionLabel",
-        "baseServiceHours",
-        "visible",
-        "active",
-      ] satisfies AdminTeachersTeachersColNames[],
-      positions: [
-        "label",
-        "description",
-        "baseServiceHours",
-      ] satisfies AdminTeachersPositionsColNames[],
-      services: [
-        "year",
-        "teacherEmail",
-        "hours",
-      ] satisfies AdminTeachersServicesColNames[],
-      serviceModifications: [
-        "year",
-        "teacherEmail",
-        "typeLabel",
-        "hours",
-      ] satisfies AdminTeachersServiceModificationsColNames[],
-      serviceModificationTypes: [
-        "label",
-        "description",
-      ] satisfies AdminTeachersServiceModificationTypesColNames[],
-      messages: [
-        "year",
-        "teacherEmail",
-        "content",
-      ] satisfies AdminTeachersMessagesColNames[],
+      teachers: adminTeachersTeachersColNames,
+      positions: adminTeachersPositionsColNames,
+      services: adminTeachersServicesColNames,
+      serviceModifications: adminTeachersServiceModificationsColNames,
+      serviceModificationTypes: adminTeachersServiceModificationTypesColNames,
+      messages: adminTeachersMessagesColNames,
     },
     courses: {
-      degrees: [
-        "name",
-        "nameShort",
-        "visible",
-      ] satisfies AdminCoursesDegreesColName[],
-      programs: [
-        "degreeName",
-        "name",
-        "nameShort",
-        "visible",
-      ] satisfies AdminCoursesProgramsColName[],
-      tracks: [
-        "degreeName",
-        "programName",
-        "name",
-        "nameShort",
-        "visible",
-      ] satisfies AdminCoursesTracksColName[],
-      courses: [
-        "year",
-        "degreeName",
-        "programName",
-        "trackName",
-        "name",
-        "nameShort",
-        "semester",
-        "typeLabel",
-        "hours",
-        "hoursAdjusted",
-        "groups",
-        "groupsAdjusted",
-        "description",
-        "priorityRule",
-        "visible",
-      ] satisfies AdminCoursesCoursesColName[],
-      courseTypes: [
-        "label",
-        "coefficient",
-        "description",
-      ] satisfies AdminCoursesCourseTypesColName[],
+      degrees: adminCoursesDegreesColNames,
+      programs: adminCoursesProgramsColNames,
+      tracks: adminCoursesTracksColNames,
+      courses: adminCoursesCoursesColNames,
+      courseTypes: adminCoursesCourseTypesColNames,
     },
     requests: {
-      requests: [
-        "year",
-        "teacherEmail",
-        "degreeName",
-        "programName",
-        "trackName",
-        "courseName",
-        "courseSemester",
-        "courseType",
-        "type",
-        "hours",
-      ] satisfies AdminRequestsRequestsColNames[],
-      priorities: [
-        "year",
-        "teacherEmail",
-        "degreeName",
-        "programName",
-        "trackName",
-        "courseName",
-        "courseSemester",
-        "courseType",
-        "seniority",
-        "isPriority",
-        "computed",
-      ] satisfies AdminRequestsPrioritiesColNames[],
+      requests: adminRequestsRequestsColNames,
+      priorities: adminRequestsPrioritiesColNames,
     },
   };
 

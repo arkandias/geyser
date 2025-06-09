@@ -1,11 +1,13 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type { ColName as AdminTeachersMessagesColName } from "@/components/admin/AdminTeachersMessages.vue";
-import type { ColName as AdminTeachersPositionsColName } from "@/components/admin/AdminTeachersPositions.vue";
-import type { ColName as AdminTeachersServiceModificationTypesColName } from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
-import type { ColName as AdminTeachersServiceModificationsColName } from "@/components/admin/AdminTeachersServiceModifications.vue";
-import type { ColName as AdminTeachersServicesColName } from "@/components/admin/AdminTeachersServices.vue";
-import type { ColName as AdminTeachersTeachersColName } from "@/components/admin/AdminTeachersTeachers.vue";
+import type {
+  AdminTeachersMessagesColName,
+  AdminTeachersPositionsColName,
+  AdminTeachersServiceModificationTypesColName,
+  AdminTeachersServiceModificationsColName,
+  AdminTeachersServicesColName,
+  AdminTeachersTeachersColName,
+} from "@/components/admin/col-names.ts";
 
 export default {
   teachers: {

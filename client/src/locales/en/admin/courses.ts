@@ -1,10 +1,12 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type { ColName as AdminCoursesCourseTypesColName } from "@/components/admin/AdminCoursesCourseTypes.vue";
-import type { ColName as AdminCoursesCoursesColName } from "@/components/admin/AdminCoursesCourses.vue";
-import type { ColName as AdminCoursesDegreesColName } from "@/components/admin/AdminCoursesDegrees.vue";
-import type { ColName as AdminCoursesProgramsColName } from "@/components/admin/AdminCoursesPrograms.vue";
-import type { ColName as AdminCoursesTracksColName } from "@/components/admin/AdminCoursesTracks.vue";
+import type {
+  AdminCoursesCourseTypesColName,
+  AdminCoursesCoursesColName,
+  AdminCoursesDegreesColName,
+  AdminCoursesProgramsColName,
+  AdminCoursesTracksColName,
+} from "@/components/admin/col-names.ts";
 
 export default {
   courses: {

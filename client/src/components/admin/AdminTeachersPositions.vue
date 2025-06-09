@@ -1,7 +1,3 @@
-<script lang="ts">
-export type ColName = "label" | "description" | "baseServiceHours";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -26,6 +22,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
+import type { AdminTeachersPositionsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminPositionFragment;
@@ -56,7 +53,7 @@ const rowDescriptor = {
     formComponent: "input",
     inputType: "number",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminTeachersPositionsColName, Row>;
 
 graphql(`
   fragment AdminPosition on Position {

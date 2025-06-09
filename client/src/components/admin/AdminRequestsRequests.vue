@@ -1,17 +1,3 @@
-<script lang="ts">
-export type ColName =
-  | "year"
-  | "teacherEmail"
-  | "degreeName"
-  | "programName"
-  | "trackName"
-  | "courseName"
-  | "courseSemester"
-  | "courseType"
-  | "type"
-  | "hours";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -47,6 +33,7 @@ import type {
 } from "@/types/data.ts";
 import { isRequestType, unique } from "@/utils";
 
+import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRequestFragment;
@@ -144,7 +131,7 @@ const rowDescriptor = {
     formComponent: "input",
     inputType: "number",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminRequestsRequestsColName, Row>;
 
 graphql(`
   fragment AdminRequest on Request {

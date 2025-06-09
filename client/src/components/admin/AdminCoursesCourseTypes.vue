@@ -1,7 +1,3 @@
-<script lang="ts">
-export type ColName = "label" | "coefficient" | "description";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -26,6 +22,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
+import type { AdminCoursesCourseTypesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseTypeFragment;
@@ -56,7 +53,7 @@ const rowDescriptor = {
     nullable: true,
     formComponent: "input",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoursesCourseTypesColName, Row>;
 
 graphql(`
   fragment AdminCourseType on CourseType {

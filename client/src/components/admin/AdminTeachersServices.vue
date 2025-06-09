@@ -1,7 +1,3 @@
-<script lang="ts">
-export type ColName = "year" | "teacherEmail" | "hours";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -28,6 +24,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
+import type { AdminTeachersServicesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminServiceFragment;
@@ -61,7 +58,7 @@ const rowDescriptor = {
     formComponent: "input",
     inputType: "number",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminTeachersServicesColName, Row>;
 
 graphql(`
   fragment AdminService on Service {

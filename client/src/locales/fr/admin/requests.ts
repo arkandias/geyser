@@ -1,8 +1,10 @@
 import { RequestTypeEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type { ColName as AdminRequestsPrioritiesColNames } from "@/components/admin/AdminRequestsPriorities.vue";
-import type { ColName as AdminRequestsRequestsColNames } from "@/components/admin/AdminRequestsRequests.vue";
+import type {
+  AdminRequestsPrioritiesColName,
+  AdminRequestsRequestsColName,
+} from "@/components/admin/col-names.ts";
 
 export default {
   requests: {
@@ -50,7 +52,7 @@ export default {
           label: "Type ens.",
           tooltip: "Type d'enseignement",
         },
-      } satisfies Record<AdminRequestsRequestsColNames, AdminColNameOptions>,
+      } satisfies Record<AdminRequestsRequestsColName, AdminColNameOptions>,
       form: {
         title: {
           none: "Nouvelle demande",
@@ -140,7 +142,7 @@ export default {
           label: "Type ens.",
           tooltip: "Type d'enseignement",
         },
-      } satisfies Record<AdminRequestsPrioritiesColNames, AdminColNameOptions>,
+      } satisfies Record<AdminRequestsPrioritiesColName, AdminColNameOptions>,
       form: {
         title: {
           none: "Nouvelle priorité",

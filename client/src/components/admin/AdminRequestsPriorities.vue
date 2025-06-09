@@ -1,18 +1,3 @@
-<script lang="ts">
-export type ColName =
-  | "year"
-  | "teacherEmail"
-  | "degreeName"
-  | "programName"
-  | "trackName"
-  | "courseName"
-  | "courseSemester"
-  | "courseType"
-  | "seniority"
-  | "isPriority"
-  | "computed";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -46,6 +31,7 @@ import type {
 } from "@/types/data.ts";
 import { unique } from "@/utils";
 
+import type { AdminRequestsPrioritiesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminPriorityFragment;
@@ -148,7 +134,7 @@ const rowDescriptor = {
     format: (val: boolean) => (val ? "✓" : "✗"),
     formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminRequestsPrioritiesColName, Row>;
 
 graphql(`
   fragment AdminPriority on Priority {

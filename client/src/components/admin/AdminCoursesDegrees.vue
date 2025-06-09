@@ -1,7 +1,3 @@
-<script lang="ts">
-export type ColName = "name" | "nameShort" | "visible";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -25,6 +21,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
+import type { AdminCoursesDegreesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminDegreeFragment;
@@ -53,7 +50,7 @@ const rowDescriptor = {
     format: (val: boolean) => (val ? "✓" : "✗"),
     formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoursesDegreesColName, Row>;
 
 graphql(`
   fragment AdminDegree on Degree {

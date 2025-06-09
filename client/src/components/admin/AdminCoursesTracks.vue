@@ -1,12 +1,3 @@
-<script lang="ts">
-export type ColName =
-  | "degreeName"
-  | "programName"
-  | "name"
-  | "nameShort"
-  | "visible";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, inject, ref } from "vue";
@@ -33,6 +24,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
+import type { AdminCoursesTracksColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminTrackFragment;
@@ -79,7 +71,7 @@ const rowDescriptor = {
     format: (val: boolean) => (val ? "✓" : "✗"),
     formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoursesTracksColName, Row>;
 
 graphql(`
   fragment AdminTrack on Track {

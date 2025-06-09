@@ -1,7 +1,7 @@
 import { RoleEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type { ColName as AdminRolesRolesColName } from "@/components/admin/AdminGeneralRoles.vue";
+import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
 
 export default {
   general: {
@@ -66,7 +66,7 @@ If courses or services are associated with this year, you will not be able to de
           label: "Comment",
           tooltip: "",
         },
-      } satisfies Record<AdminRolesRolesColName, AdminColNameOptions>,
+      } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
       form: {
         title: {
           none: "New role",

@@ -1,22 +1,3 @@
-<script lang="ts">
-export type ColName =
-  | "year"
-  | "degreeName"
-  | "programName"
-  | "trackName"
-  | "name"
-  | "nameShort"
-  | "semester"
-  | "typeLabel"
-  | "hours"
-  | "hoursAdjusted"
-  | "groups"
-  | "groupsAdjusted"
-  | "description"
-  | "priorityRule"
-  | "visible";
-</script>
-
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { type ComputedRef, computed, inject, ref } from "vue";
@@ -47,6 +28,7 @@ import type {
   SelectOptions,
 } from "@/types/data.ts";
 
+import type { AdminCoursesCoursesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseFragment;
@@ -162,7 +144,7 @@ const rowDescriptor = {
     format: (val: boolean) => (val ? "✓" : "✗"),
     formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<ColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoursesCoursesColName, Row>;
 
 graphql(`
   fragment AdminCourse on Course {
