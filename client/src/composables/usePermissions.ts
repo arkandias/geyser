@@ -1,38 +1,37 @@
-import { computed, inject, readonly } from "vue";
+import { computed, readonly } from "vue";
 
 import { PhaseEnum, RoleEnum } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-  const { activeRole } = inject<AuthManager>("authManager")!;
   const { currentYear, isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
   const { profile, hasService } = useProfileStore();
 
-  const toAdmin = computed(() => activeRole.value === RoleEnum.Admin);
+  const toAdmin = computed(() => profile.activeRole === RoleEnum.Admin);
 
   const toSubmitRequestsForSelf = computed(
     () =>
-      activeRole.value === RoleEnum.Admin ||
-      (activeRole.value === RoleEnum.Teacher &&
+      profile.activeRole === RoleEnum.Admin ||
+      (profile.activeRole === RoleEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
         hasService.value),
   );
 
   const toSubmitRequestsForOthers = computed(
-    () => activeRole.value === RoleEnum.Admin,
+    () => profile.activeRole === RoleEnum.Admin,
   );
 
   const toSubmitRequests = computed(
     () => toSubmitRequestsForSelf.value || toSubmitRequestsForOthers.value,
   );
 
-  const toDeleteRequests = computed(() => activeRole.value === RoleEnum.Admin);
+  const toDeleteRequests = computed(
+    () => profile.activeRole === RoleEnum.Admin,
+  );
 
   const toViewAssignments = computed(
     () =>
@@ -43,34 +42,36 @@ export const usePermissions = () => {
 
   const toEditAssignments = computed(
     () =>
-      activeRole.value === RoleEnum.Admin ||
-      (activeRole.value === RoleEnum.Commissioner &&
+      profile.activeRole === RoleEnum.Admin ||
+      (profile.activeRole === RoleEnum.Commissioner &&
         currentPhase.value === PhaseEnum.Assignments &&
         isCurrentYearActive.value),
   );
 
-  const toEditPriorities = computed(() => activeRole.value === RoleEnum.Admin);
+  const toEditPriorities = computed(
+    () => profile.activeRole === RoleEnum.Admin,
+  );
 
   const toEditADescription = computed(
     () => (coordinators: number[]) =>
-      activeRole.value === RoleEnum.Admin ||
-      (isCurrentYearActive.value && coordinators.includes(profile.value.id)),
+      profile.activeRole === RoleEnum.Admin ||
+      (isCurrentYearActive.value && coordinators.includes(profile.id)),
   );
 
   const toViewAllServices = computed(
     () =>
-      activeRole.value === RoleEnum.Admin ||
-      (activeRole.value === RoleEnum.Commissioner &&
+      profile.activeRole === RoleEnum.Admin ||
+      (profile.activeRole === RoleEnum.Commissioner &&
         currentPhase.value === PhaseEnum.Assignments),
   );
 
   const toEditAService = computed(
     () => (service: { year: number; teacherId: number }) =>
-      activeRole.value === RoleEnum.Admin ||
-      (activeRole.value === RoleEnum.Teacher &&
+      profile.activeRole === RoleEnum.Admin ||
+      (profile.activeRole === RoleEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         service.year === currentYear.value &&
-        service.teacherId === profile.value.id),
+        service.teacherId === profile.id),
   );
 
   const toEditAMessage = computed(

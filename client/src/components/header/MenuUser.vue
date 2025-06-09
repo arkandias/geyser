@@ -3,7 +3,7 @@ import { computed, inject } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { RoleEnum } from "@/gql/graphql.ts";
+import type { RoleEnum } from "@/gql/graphql.ts";
 import { roleTypeLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
@@ -14,19 +14,17 @@ import MenuBase from "@/components/header/MenuBase.vue";
 const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
-const { profile } = useProfileStore();
+const { profile, setActiveRole } = useProfileStore();
 
 const roleOptions = computed(() =>
-  [RoleEnum.Admin, RoleEnum.Commissioner, RoleEnum.Teacher]
-    .filter((role) => authManager.allowedRoles.includes(role))
-    .map((role) => ({
-      value: role,
-      label: roleTypeLabel(t, role),
-    })),
+  profile.roles.toSorted().map((role) => ({
+    value: role,
+    label: roleTypeLabel(t, role),
+  })),
 );
 
 const updateRole = async (value: RoleEnum) => {
-  authManager.setActiveRole(value);
+  setActiveRole(value);
   await refreshData();
 };
 </script>
@@ -34,7 +32,7 @@ const updateRole = async (value: RoleEnum) => {
 <template>
   <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
     <QList>
-      <template v-if="authManager.hasAccess && profile.isLoaded">
+      <template v-if="profile.isLoaded">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
             {{ profile.displayname }}
@@ -43,7 +41,7 @@ const updateRole = async (value: RoleEnum) => {
         <QSeparator />
         <QItem class="q-pl-sm">
           <QOptionGroup
-            :model-value="authManager.activeRole.value"
+            :model-value="profile.activeRole"
             :options="roleOptions"
             type="radio"
             @update:model-value="updateRole"

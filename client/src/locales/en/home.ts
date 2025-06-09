@@ -42,9 +42,13 @@ export default {
     alert: {
       loggedOut: "You are logged out",
       noAccess: "You don't have access",
-      loadingAppData: "Loading application settings…",
-      profileNotLoaded: "Profile not loaded",
+      appDataFetching: "Loading…",
+      appDataError: "Error while loading",
+      organizationNotLoaded: "Could not load organization data",
+      profileNotLoaded: "Could not load profile data",
       shutdown: "Geyser is currently closed",
+      commissioner:
+        "Commissioners have access to Geyser during the assignments phase only",
       pageNotFound: "Page not found",
     },
   },

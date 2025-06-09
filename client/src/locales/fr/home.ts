@@ -42,9 +42,13 @@ export default {
     alert: {
       loggedOut: "Vous êtes déconnecté",
       noAccess: "Vous n'avez pas accès",
-      loadingAppData: "Chargement des paramètres de l'application…",
-      profileNotLoaded: "Votre profil n'a pas pu être chargé",
+      appDataFetching: "Chargement…",
+      appDataError: "Erreur durant le chargement",
+      organizationNotLoaded: "L'organisation n'a pas pu être chargée",
+      profileNotLoaded: "Le profil n'a pas pu être chargé",
       shutdown: "Geyser est actuellement fermé",
+      commissioner:
+        "Les commissaires ont accès à Geyser uniquement durant la phase de commission",
       pageNotFound: "Page non trouvée",
     },
   },

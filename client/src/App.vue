@@ -15,6 +15,48 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
+const { t } = useTypedI18n();
+const { notify } = useNotify();
+const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
+const { setYears } = useYearsStore();
+const { setCustomTexts } = useCustomTextsStore();
+const { profile, setProfile, setActiveRole } = useProfileStore();
+
+const authManager = inject<AuthManager>("authManager");
+if (!authManager) {
+  throw new Error("Authentication manager is not provided to the app");
+}
+if (authManager.authError) {
+  notify(NotifyType.Error, {
+    message: t("app.auth.error"),
+    caption: authManager.authError,
+  });
+}
+
+// Sync profile's activeRole with authManager role
+watch(
+  () => profile.activeRole,
+  (role) => {
+    authManager.setRole(role);
+  },
+);
+
+// Update active role on phase update
+watch(
+  currentPhase,
+  (phase) => {
+    if (profile.roles.includes(RoleEnum.Admin)) {
+      setActiveRole(RoleEnum.Admin);
+    } else if (
+      profile.roles.includes(RoleEnum.Commissioner) &&
+      phase === PhaseEnum.Assignments
+    ) {
+      setActiveRole(RoleEnum.Commissioner);
+    }
+  },
+  { immediate: true },
+);
+
 graphql(`
   query GetAppData($orgId: Int!, $userId: Int!) {
     organization: organizationByPk(id: $orgId) {
@@ -31,9 +73,7 @@ graphql(`
         value
       }
     }
-
     profile: teacherByPk(oid: $orgId, id: $userId) {
-      id
       displayname
       services {
         id
@@ -43,31 +83,23 @@ graphql(`
   }
 `);
 
-const { t } = useTypedI18n();
-const { notify } = useNotify();
-const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
-const { setYears } = useYearsStore();
-const { setCustomTexts } = useCustomTextsStore();
-const { profile, setProfile } = useProfileStore();
-
-const authManager = inject<AuthManager>("authManager");
-if (!authManager) {
-  throw new Error("Authentication manager is not provided to the app");
-}
-if (authManager.authError) {
-  notify(NotifyType.Error, {
-    message: t("app.auth.error"),
-    caption: authManager.authError,
-  });
-}
-
 // Fetch app data
 const getAppData = useQuery({
   query: GetAppDataDocument,
   variables: { userId: authManager.userId },
   pause: () => !authManager.hasAccess,
-  context: { additionalTypenames: ["All", "AppSetting", "Phase", "Year"] },
+  context: {
+    additionalTypenames: [
+      "All",
+      "AppSetting",
+      "CurrentPhase",
+      "Service",
+      "Year",
+    ],
+  },
 });
+
+// Sync the stores on data update
 watch(
   [getAppData.data, getAppData.error],
   ([data, error]) => {
@@ -86,25 +118,14 @@ watch(
       setCustomTexts(data.organization.customTexts);
     }
     if (data?.profile) {
-      setProfile(data.profile);
-    }
-  },
-  { immediate: true },
-);
-
-watch(
-  currentPhase,
-  (phase) => {
-    if (!authManager.hasAccess) {
-      return;
-    }
-    if (authManager.allowedRoles.includes(RoleEnum.Admin)) {
-      authManager.setActiveRole(RoleEnum.Admin);
-    } else if (
-      authManager.allowedRoles.includes(RoleEnum.Commissioner) &&
-      phase === PhaseEnum.Assignments
-    ) {
-      authManager.setActiveRole(RoleEnum.Commissioner);
+      setProfile({
+        oid: authManager.orgId,
+        id: authManager.userId,
+        roles: authManager.allowedRoles,
+        activeRole: authManager.role,
+        displayname: data.profile.displayname ?? "",
+        services: data.profile.services,
+      });
     }
   },
   { immediate: true },
@@ -118,19 +139,29 @@ const accessDeniedMessage = computed(() => {
   if (!authManager.hasAccess) {
     return t("home.alert.noAccess");
   }
+  if (getAppData.fetching.value) {
+    return t("home.alert.appDataFetching");
+  }
+  if (getAppData.error.value) {
+    return t("home.alert.appDataError");
+  }
+  if (!getAppData.data.value?.organization) {
+    return t("home.alert.organizationNotLoaded");
+  }
+  if (!getAppData.data.value.profile) {
+    return t("home.alert.profileNotLoaded");
+  }
   if (
     currentPhase.value === PhaseEnum.Shutdown &&
-    authManager.activeRole.value !== RoleEnum.Admin
+    profile.activeRole !== RoleEnum.Admin
   ) {
     return t("home.alert.shutdown");
   }
-  // TODO: commissioner not during assignments phase
-  if (getAppData.fetching.value) {
-    return t("home.alert.loadingAppData");
-  }
-  // TODO: error loading data & isLoading...
-  if (!profile.value.isLoaded) {
-    return t("home.alert.profileNotLoaded");
+  if (
+    profile.activeRole === RoleEnum.Commissioner &&
+    currentPhase.value !== PhaseEnum.Assignments
+  ) {
+    return t("home.alert.commissioner");
   }
   return "";
 });

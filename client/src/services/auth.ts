@@ -4,7 +4,6 @@ import {
   accessTokenPayloadSchema,
 } from "@geyser/shared";
 import axios from "axios";
-import { type ComputedRef, type Ref, computed, ref } from "vue";
 import { z } from "zod/v4";
 
 import {
@@ -23,23 +22,19 @@ const api = axios.create({
 
 export class AuthManager {
   private _payload?: AccessTokenPayload;
-  private _role: Ref<RoleType> = ref("teacher");
+  private _role: RoleType = "teacher";
   private _postLogin = false;
   private _postLogout = false;
-  authError: string | null = null;
-
-  readonly activeRole: ComputedRef<RoleEnum> = computed(
-    () => RoleEnum[capitalize(this._role.value)],
-  );
+  private _authError: string | null = null;
 
   async init(): Promise<void> {
     console.debug("[AuthManager] Initializing authentication...");
     const url = new URL(window.location.href);
 
     // Step 1: Check for authentication errors from API
-    this.authError = url.searchParams.get("auth_error");
-    if (this.authError) {
-      console.error(`[AuthManager] Authentication error: ${this.authError}`);
+    this._authError = url.searchParams.get("auth_error");
+    if (this._authError) {
+      console.error(`[AuthManager] Authentication error: ${this._authError}`);
       return;
     }
 
@@ -49,9 +44,9 @@ export class AuthManager {
 
     // Validate that both post_login and post_logout aren't set simultaneously
     if (this._postLogin && this._postLogout) {
-      this.authError =
+      this._authError =
         "Query parameters 'post_login' and 'post_logout' cannot be simultaneously set to 'true'";
-      console.error(`[AuthManager] Authentication error: ${this.authError}`);
+      console.error(`[AuthManager] Authentication error: ${this._authError}`);
       return;
     }
 
@@ -133,7 +128,7 @@ export class AuthManager {
     try {
       const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
-      this._role.value = this._payload.defaultRole;
+      this._role = this._payload.defaultRole;
       console.debug("[AuthManager] Verification succeeded:", this._payload);
       return true;
     } catch (error) {
@@ -182,6 +177,17 @@ export class AuthManager {
     }
   }
 
+  shouldRefresh(): boolean {
+    return (
+      !this._payload ||
+      this._payload.exp - Math.floor(Date.now() / 1000) < API_TOKEN_MIN_VALIDITY
+    );
+  }
+
+  get authError(): string | null {
+    return this._authError;
+  }
+
   get hasAccess(): boolean {
     return !!this._payload;
   }
@@ -205,24 +211,21 @@ export class AuthManager {
     );
   }
 
-  setActiveRole(role: RoleEnum): void {
+  get role(): RoleEnum {
+    return RoleEnum[capitalize(this._role)];
+  }
+
+  setRole(role: RoleEnum) {
     if (this.allowedRoles.includes(role)) {
-      this._role.value = toLowerCase(role);
+      this._role = toLowerCase(role);
     } else {
       console.warn("[AuthManager] Role not allowed");
     }
   }
 
-  getRoleHeader(): Record<string, string> {
+  get headers(): Record<string, string> {
     return {
-      "X-User-Role": this._role.value,
+      "X-User-Role": this._role,
     };
-  }
-
-  shouldRefresh(): boolean {
-    return (
-      !this._payload ||
-      this._payload.exp - Math.floor(Date.now() / 1000) < API_TOKEN_MIN_VALIDITY
-    );
   }
 }

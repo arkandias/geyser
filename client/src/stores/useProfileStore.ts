@@ -1,34 +1,45 @@
-import { computed, readonly, ref } from "vue";
+import { computed, reactive, readonly } from "vue";
 
+import { RoleEnum } from "@/gql/graphql.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 type Profile = {
+  oid: number;
   id: number;
-  displayname?: string | null;
+  roles: RoleEnum[];
+  activeRole: RoleEnum;
+  displayname: string;
   services: {
     id: number;
     year: number;
   }[];
+  isLoaded: boolean;
 };
 
-const profile = ref<Profile & { isLoaded: boolean }>({
+const profile = reactive<Profile>({
+  oid: -1,
   id: -1,
   displayname: "",
+  roles: [],
+  activeRole: RoleEnum.Teacher,
   services: [],
   isLoaded: false,
 });
 
 const setProfile = (newProfile: Omit<Profile, "isLoaded">) => {
-  profile.value = { ...newProfile, isLoaded: true };
+  Object.assign(profile, newProfile);
+  profile.isLoaded = true;
+};
+
+const setActiveRole = (role: RoleEnum) => {
+  profile.activeRole = role;
 };
 
 export const useProfileStore = () => {
   const { activeYear } = useYearsStore();
 
   const currentServiceId = computed(
-    () =>
-      profile.value.services.find((s) => s.year === activeYear.value)?.id ??
-      null,
+    () => profile.services.find((s) => s.year === activeYear.value)?.id ?? null,
   );
   const hasService = computed(() => currentServiceId.value !== null);
 
@@ -37,5 +48,6 @@ export const useProfileStore = () => {
     currentServiceId,
     hasService,
     setProfile,
+    setActiveRole,
   };
 };

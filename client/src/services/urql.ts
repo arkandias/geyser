@@ -21,7 +21,7 @@ const authInit =
   (utils: AuthUtilities): Promise<AuthConfig> =>
     Promise.resolve({
       addAuthToOperation(operation: Operation): Operation {
-        return utils.appendHeaders(operation, authManager.getRoleHeader());
+        return utils.appendHeaders(operation, authManager.headers);
       },
       didAuthError(error: CombinedError): boolean {
         return error.graphQLErrors.some((e) => {
