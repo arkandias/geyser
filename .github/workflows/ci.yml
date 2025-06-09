@@ -3,7 +3,8 @@ name: CI
 on:
   workflow_dispatch:
   push:
-    branches: [master]
+    branches:
+      - "**"
     tags:
       - "*"
 
@@ -12,12 +13,13 @@ permissions:
   packages: write
 
 concurrency:
-  group: docker-${{ github.ref_name }}
-  cancel-in-progress: ${{ github.ref_type != 'tag' }}
+  group: ci-${{ github.ref_name }}
+  cancel-in-progress: ${{ github.ref_type == 'branch' }}
 
 env:
-  FRONTEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-frontend
-  BACKEND_REPOSITORY: ghcr.io/${{ github.repository_owner }}/geyser-backend
+  BUILD_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
+  FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/geyser-frontend
+  BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/geyser-backend
 
 jobs:
   format:
@@ -45,19 +47,6 @@ jobs:
     needs: [format, lint, test]
     runs-on: ubuntu-latest
     steps:
-      - name: Set variables
-        id: vars
-        run: |
-          echo "date=$(date -u +"%Y-%m-%dT%H:%M:%SZ")" >> "${GITHUB_OUTPUT}"
-          if [[ "${GITHUB_REF_TYPE}" == tag ]]; then
-            VERSION=${GITHUB_REF_NAME}
-            echo "version=${VERSION}" >> "${GITHUB_OUTPUT}"
-            echo "tags=${FRONTEND_REPOSITORY}:${VERSION},${FRONTEND_REPOSITORY}:latest" >> "${GITHUB_OUTPUT}"
-          else
-            echo "version=${GITHUB_SHA::8}" >> "${GITHUB_OUTPUT}"
-            echo "tags=${FRONTEND_REPOSITORY}:edge" >> "${GITHUB_OUTPUT}"
-          fi
-
       - name: Checkout repository
         uses: actions/checkout@v4
 
@@ -74,19 +63,57 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ github.token }}
 
-      - name: Build and push Backend Docker image
-        uses: docker/build-push-action@v6
+      - name: Extract Backend metadata
+        id: backend-meta
+        uses: docker/metadata-action@v5
         with:
-          context: .
-          target: backend
-          push: true
-          tags: ${{ steps.vars.outputs.tags }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            BUILD_DATE=${{ steps.vars.outputs.date }}
-            VERSION=${{ steps.vars.outputs.version }}
-            VCS_REF=${{ github.sha }}
+          images: ${{ env.BACKEND_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=Geyser Backend
+            org.opencontainers.image.description=A NestJS server for Geyser
+            org.opencontainers.image.version=${{ env.BUILD_VERSION }}
+            org.opencontainers.image.created=${{ github.run_started_at }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.authors=Julien Hauseux <julien.hauseux@gmail.com>
+            org.opencontainers.image.vendor=Julien Hauseux
+            org.opencontainers.image.licenses=AGPL-3.0-only
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.documentation=${{ github.server_url }}/${{ github.repository }}/README.md
+            org.opencontainers.image.ref.name=${{ github.sha }}
+
+      - name: Extract Frontend metadata
+        id: frontend-meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.FRONTEND_IMAGE }}
+          tags: |
+            type=ref,event=branch
+            type=ref,event=tag
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=sha
+            type=raw,value=latest,enable={{is_default_branch}}
+          labels: |
+            org.opencontainers.image.title=Geyser Frontend
+            org.opencontainers.image.description=An Nginx reverse proxy for Geyser with a Vue 3 web client
+            org.opencontainers.image.version=${{ env.BUILD_VERSION }}
+            org.opencontainers.image.created=${{ github.run_started_at }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.authors=Julien Hauseux <julien.hauseux@gmail.com>
+            org.opencontainers.image.vendor=Julien Hauseux
+            org.opencontainers.image.licenses=AGPL-3.0-only
+            org.opencontainers.image.url=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.documentation=${{ github.server_url }}/${{ github.repository }}/README.md
+            org.opencontainers.image.ref.name=${{ github.sha }}
 
       - name: Build and push Frontend Docker image
         uses: docker/build-push-action@v6
@@ -94,10 +121,21 @@ jobs:
           context: .
           target: frontend
           push: true
-          tags: ${{ steps.vars.outputs.tags }}
+          tags: ${{ steps.frontend-meta.outputs.tags }}
+          labels: ${{ steps.frontend-meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            BUILD_DATE=${{ steps.vars.outputs.date }}
-            VERSION=${{ steps.vars.outputs.version }}
-            VCS_REF=${{ github.sha }}
+            VITE_BUILD_VERSION=${{ env.BUILD_VERSION }}
+            VITE_API_URL=${{ vars.API_URL }}
+
+      - name: Build and push Backend Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          target: backend
+          push: true
+          tags: ${{ steps.backend-meta.outputs.tags }}
+          labels: ${{ steps.backend-meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
