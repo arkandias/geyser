@@ -27,7 +27,7 @@ COMMENT ON COLUMN public.priority.year IS 'Academic year reference';
 COMMENT ON COLUMN public.priority.service_id IS 'Teacher''s service reference';
 COMMENT ON COLUMN public.priority.course_id IS 'Course reference';
 COMMENT ON COLUMN public.priority.seniority IS 'Number of consecutive years teaching this course before current year';
-COMMENT ON COLUMN public.priority.computed IS 'Indicates if seniority was automatically computed';
+COMMENT ON COLUMN public.priority.computed IS 'Indicates if seniority was computed automatically';
 COMMENT ON COLUMN public.priority.is_priority IS 'Current priority status based on seniority and course rules';
 
 CREATE TABLE public.request
@@ -70,7 +70,8 @@ CREATE FUNCTION public.request_hours_weighted(request_row request) RETURNS real 
 $$
 SELECT request_row.hours * ct.coefficient
 FROM public.course c
-         JOIN public.course_type ct ON ct.id = c.type_id
+         JOIN public.course_type ct
+              ON ct.id = c.type_id
 WHERE c.id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.request_hours_weighted(request) IS 'Calculates a request''s weighted hours by multiplying the request''s hours with the course type coefficient';
@@ -80,7 +81,8 @@ CREATE FUNCTION public.request_is_priority(request_row request) RETURNS boolean 
 $$
 SELECT is_priority
 FROM public.priority
-WHERE service_id = request_row.service_id
+WHERE oid = request_row.oid
+  AND service_id = request_row.service_id
   AND course_id = request_row.course_id;
 $$ LANGUAGE sql STABLE;
 COMMENT ON FUNCTION public.request_is_priority(request) IS 'Determines a request''s priority status based on the priority table';

@@ -88,15 +88,15 @@ select_permissions:
               currentPhases:
                 value:
                   _neq: shutdown
+          - yearByYear:
+              visible:
+                _eq: true
           - teacher:
               _or:
                 - id:
                     _eq: X-Hasura-User-Id
                 - visible:
                     _eq: true
-          - yearByYear:
-              visible:
-                _eq: true
     comment: Can view their own services and visible teachers services for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
@@ -111,10 +111,10 @@ update_permissions:
               currentPhases:
                 value:
                   _eq: requests
-          - teacher_id:
-              _eq: X-Hasura-User-Id
           - yearByYear:
               current:
                 _eq: true
+          - teacher_id:
+              _eq: X-Hasura-User-Id
       check: null
     comment: During requests phase, can update their own service hours for the current year

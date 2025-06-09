@@ -74,6 +74,10 @@ select_permissions:
                   visible:
                     _eq: true
               - program:
-                  visible:
-                    _eq: true
-    comment: Can view coordinations by visible teachers of visible courses/tracks/programs [except during shutdown phase]
+                  _and:
+                    - visible:
+                        _eq: true
+                    - degree:
+                        visible:
+                          _eq: true
+    comment: Can view coordinations by visible teachers of visible courses/tracks/programs/degrees [except during shutdown phase]

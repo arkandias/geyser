@@ -27,12 +27,12 @@ insert_permissions:
                 value:
                   _eq: requests
           - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
-          - service:
-              yearByYear:
-                current:
-                  _eq: true
+              _and:
+                - yearByYear:
+                    current:
+                      _eq: true
+                - teacher_id:
+                    _eq: X-Hasura-User-Id
       columns:
         - oid
         - service_id
@@ -74,12 +74,12 @@ select_permissions:
                 value:
                   _neq: shutdown
           - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
-          - service:
-              yearByYear:
-                visible:
-                  _eq: true
+              _and:
+                - yearByYear:
+                    current:
+                      _eq: true
+                - teacher_id:
+                    _eq: X-Hasura-User-Id
     comment: Can view their own service modifications for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
@@ -96,12 +96,12 @@ update_permissions:
                 value:
                   _eq: requests
           - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
-          - service:
-              yearByYear:
-                current:
-                  _eq: true
+              _and:
+                - yearByYear:
+                    current:
+                      _eq: true
+                - teacher_id:
+                    _eq: X-Hasura-User-Id
       check: null
     comment: During requests phase, can update their own service modifications type and hours for the current year
 delete_permissions:
@@ -116,10 +116,10 @@ delete_permissions:
                 value:
                   _eq: requests
           - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
-          - service:
-              yearByYear:
-                current:
-                  _eq: true
+              _and:
+                - yearByYear:
+                    current:
+                      _eq: true
+                - teacher_id:
+                    _eq: X-Hasura-User-Id
     comment: During requests phase, can delete their own service modifications for the current year

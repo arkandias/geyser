@@ -120,6 +120,9 @@ select_permissions:
               currentPhases:
                 value:
                   _neq: shutdown
+          - yearByYear:
+              visible:
+                _eq: true
           - _or:
               - _and:
                   - visible:
@@ -153,9 +156,6 @@ select_permissions:
                   service:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-          - yearByYear:
-              visible:
-                _eq: true
     comment: "Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request"
 update_permissions:
   - role: teacher
@@ -170,6 +170,9 @@ update_permissions:
               currentPhases:
                 value:
                   _neq: shutdown
+          - yearByYear:
+              visible:
+                _eq: true
           - _or:
               - coordinations:
                   teacher_id:
@@ -182,8 +185,5 @@ update_permissions:
                   coordinations:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-          - yearByYear:
-              visible:
-                _eq: true
       check: null
     comment: Can update description of courses that they coordinate (directly or via program/track) [except during shutdown phase]

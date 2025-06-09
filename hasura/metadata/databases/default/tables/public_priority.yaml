@@ -27,39 +27,44 @@ select_permissions:
     permission:
       columns:
         - oid
-        - computed
-        - course_id
         - id
-        - is_priority
-        - seniority
-        - service_id
         - year
+        - service_id
+        - course_id
+        - seniority
+        - is_priority
+        - computed
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all priorities [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
-        - computed
-        - course_id
         - id
-        - is_priority
-        - seniority
-        - service_id
         - year
+        - service_id
+        - course_id
+        - seniority
+        - is_priority
+        - computed
       filter:
         _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
           - organization:
               currentPhases:
                 value:
                   _neq: shutdown
+          - yearByYear:
+              visible:
+                _eq: true
           - _or:
               - service:
                   teacher_id:
@@ -87,7 +92,7 @@ select_permissions:
                         - _and:
                             - visible:
                                 _eq: true
-                            - yearByYear:
+                            - track:
                                 visible:
                                   _eq: true
                             - program:
@@ -97,15 +102,4 @@ select_permissions:
                                   - degree:
                                       visible:
                                         _eq: true
-                            - track:
-                                visible:
-                                  _eq: true
-                        - requests:
-                            service:
-                              teacher_id:
-                                _eq: X-Hasura-User-Id
-                        - priorities:
-                            service:
-                              teacher_id:
-                                _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) their own priorities, (2) priorities for courses that they coordinate (directly or via program/track), and (3) priorities of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities"
+    comment: "Can view [except during shutdown phase]: (1) their own priorities for visible years, (2) priorities for visible years for courses that they coordinate (directly or via program/track), and (3) priorities for visible years of visible teachers for visible courses with visible degree/program/track"
