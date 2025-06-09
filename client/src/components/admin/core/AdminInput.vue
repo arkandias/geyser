@@ -7,7 +7,12 @@ import { inputToNumber } from "@/utils";
 const modelValue = defineModel<string | number | null>();
 const selectedFields = defineModel<string[]>("selectedFields");
 
-const { keyPrefix, name, type, multipleSelection } = defineProps<{
+const {
+  keyPrefix,
+  name,
+  type = "text",
+  multipleSelection,
+} = defineProps<{
   keyPrefix: string;
   name: string;
   type?: "text" | "textarea" | "number";
