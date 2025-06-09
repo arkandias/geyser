@@ -5,6 +5,11 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
   - name: program
     using:
       foreign_key_constraint_on:
@@ -14,18 +19,13 @@ object_relationships:
     using:
       foreign_key_constraint_on:
         - oid
-        - track_id
         - program_id
+        - track_id
   - name: type
     using:
       foreign_key_constraint_on:
         - oid
         - type_id
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
 array_relationships:
   - name: coordinations
     using:
@@ -61,71 +61,70 @@ select_permissions:
     permission:
       columns:
         - oid
+        - id
+        - year
+        - program_id
+        - track_id
+        - name
+        - name_short
+        - name_display
+        - semester
+        - type_id
         - cycle_year
-        - description
-        - groups
-        - groups_adjusted
-        - groups_effective
         - hours
         - hours_adjusted
         - hours_effective
-        - id
-        - name
-        - name_display
-        - name_short
-        - program_id
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - description
         - priority_rule
-        - semester
-        - track_id
-        - type_id
         - visible
-        - year
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all courses [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
+        - id
+        - year
+        - program_id
+        - track_id
+        - name
+        - name_short
+        - name_display
+        - semester
+        - type_id
         - cycle_year
-        - description
-        - groups
-        - groups_adjusted
-        - groups_effective
         - hours
         - hours_adjusted
         - hours_effective
-        - id
-        - name
-        - name_display
-        - name_short
-        - program_id
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - description
         - priority_rule
-        - semester
-        - track_id
-        - type_id
         - visible
-        - year
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - _or:
               - _and:
                   - visible:
                       _eq: true
-                  - yearByYear:
+                  - track:
                       visible:
                         _eq: true
                   - program:
@@ -135,9 +134,6 @@ select_permissions:
                         - degree:
                             visible:
                               _eq: true
-                  - track:
-                      visible:
-                        _eq: true
               - coordinations:
                   teacher_id:
                     _eq: X-Hasura-User-Id
@@ -149,15 +145,18 @@ select_permissions:
                   coordinations:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-              - requests:
-                  service:
-                    teacher_id:
-                      _eq: X-Hasura-User-Id
               - priorities:
                   service:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) visible courses with visible year/degree/program/track, (2) courses that they coordinate (directly or via program/track), and (3) courses linked to their own requests/priorities"
+              - requests:
+                  service:
+                    teacher_id:
+                      _eq: X-Hasura-User-Id
+          - yearByYear:
+              visible:
+                _eq: true
+    comment: "Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request"
 update_permissions:
   - role: teacher
     permission:
@@ -165,11 +164,10 @@ update_permissions:
         - description
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - _or:
@@ -184,5 +182,8 @@ update_permissions:
                   coordinations:
                     teacher_id:
                       _eq: X-Hasura-User-Id
+          - yearByYear:
+              visible:
+                _eq: true
       check: null
-    comment: Can update course description of courses that they coordinate (directly or via program/track) [except during shutdown phase]
+    comment: Can update description of courses that they coordinate (directly or via program/track) [except during shutdown phase]

@@ -51,13 +51,13 @@ select_permissions:
         - current
         - visible
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all the years of their organization [during assignments phase only]
   - role: teacher
     permission:
@@ -68,11 +68,10 @@ select_permissions:
         - visible
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - visible:

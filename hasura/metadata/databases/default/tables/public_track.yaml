@@ -36,39 +36,45 @@ select_permissions:
       columns:
         - oid
         - id
-        - name
-        - name_display
-        - name_short
         - program_id
+        - name
+        - name_short
+        - name_display
         - visible
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all tracks [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
         - id
-        - name
-        - name_display
-        - name_short
         - program_id
+        - name
+        - name_short
+        - name_display
         - visible
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - visible:
               _eq: true
-    comment: Can view visible tracks [except during shutdown phase]
+          - program:
+              _and:
+                - visible:
+                    _eq: true
+                - degree:
+                    visible:
+                      _eq: true
+    comment: Can view visible tracks of visible programs of visible degrees [except during shutdown phase]

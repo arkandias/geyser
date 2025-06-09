@@ -22,107 +22,104 @@ insert_permissions:
         _and:
           - oid:
               _eq: X-Hasura-Org-Id
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 current:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
       columns:
-        - hours
+        - oid
         - service_id
         - type_id
+        - hours
     comment: During requests phase, can create service modifications for their own service for the current year
 select_permissions:
   - role: commissioner
     permission:
       columns:
+        - oid
         - id
-        - hours
         - service_id
         - type_id
+        - hours
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all service modifications [during assignments phase only]
   - role: teacher
     permission:
       columns:
+        - oid
         - id
-        - hours
         - service_id
         - type_id
+        - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 visible:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
     comment: Can view their own service modifications for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
     permission:
       columns:
-        - hours
         - type_id
+        - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 current:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
       check: null
-    comment: During requests phase, can update their own service modifications hours and type for the current year
+    comment: During requests phase, can update their own service modifications type and hours for the current year
 delete_permissions:
   - role: teacher
     permission:
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 current:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
     comment: During requests phase, can delete their own service modifications for the current year

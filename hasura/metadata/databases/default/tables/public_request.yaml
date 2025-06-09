@@ -5,6 +5,17 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
+  - name: service
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
+        - service_id
   - name: course
     using:
       foreign_key_constraint_on:
@@ -14,17 +25,6 @@ object_relationships:
   - name: requestType
     using:
       foreign_key_constraint_on: type
-  - name: service
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-        - service_id
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
 computed_fields:
   - name: hoursWeighted
     definition:
@@ -43,11 +43,8 @@ insert_permissions:
         _and:
           - oid:
               _eq: X-Hasura-Org-Id
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: assignments
           - course:
@@ -69,11 +66,8 @@ insert_permissions:
         _and:
           - oid:
               _eq: X-Hasura-Org-Id
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
           - service:
@@ -151,7 +145,6 @@ select_permissions:
           _where:
             value:
               _eq: assignments
-      allow_aggregations: true
     comment: Can view all requests [during assignments phase only]
   - role: teacher
     permission:
@@ -168,11 +161,8 @@ select_permissions:
         - isPriority
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - _or:
@@ -224,20 +214,16 @@ select_permissions:
                               teacher_id:
                                 _eq: X-Hasura-User-Id
           - _or:
-              - _exists:
-                  _table:
-                    name: phase
-                    schema: public
-                  _where:
+              - organization:
+                  currentPhases:
                     value:
-                      _eq: results
+                      _eq: requests
               - course:
                   yearByYear:
                     current:
                       _eq: false
               - type:
                   _neq: assignment
-      allow_aggregations: true
     comment: "Can view [except during shutdown phase]: (1) their own requests, (2) requests for courses that they coordinate (directly or via program/track), and (3) requests of visible teachers for courses that are either visible with visible year/degree/program/track or linked to their own requests/priorities. Can only view current year assignments during results phase"
 update_permissions:
   - role: commissioner
@@ -246,11 +232,8 @@ update_permissions:
         - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: assignments
           - course:
@@ -267,11 +250,8 @@ update_permissions:
         - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
           - service:
@@ -327,11 +307,10 @@ delete_permissions:
     permission:
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: assignments
           - course:
@@ -345,11 +324,8 @@ delete_permissions:
     permission:
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
           - service:

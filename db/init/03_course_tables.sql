@@ -56,7 +56,7 @@ CREATE TABLE public.track
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, program_id) REFERENCES public.program ON UPDATE CASCADE,
     UNIQUE (oid, program_id, name),
-    UNIQUE (oid, id, program_id) -- referenced in courses to ensure data consistency
+    UNIQUE (oid, program_id, id) -- referenced in courses to ensure data consistency
 );
 CREATE INDEX idx_track_oid ON public.track (oid);
 CREATE INDEX idx_track_oid_program_id ON public.track (oid, program_id);
@@ -114,7 +114,7 @@ CREATE TABLE public.course
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id) REFERENCES public.program ON UPDATE CASCADE,
-    FOREIGN KEY (oid, track_id, program_id) REFERENCES public.track (oid, id, program_id) ON UPDATE CASCADE,
+    FOREIGN KEY (oid, program_id, track_id) REFERENCES public.track (oid, program_id, id) ON UPDATE CASCADE,
     FOREIGN KEY (oid, type_id) REFERENCES public.course_type ON UPDATE CASCADE,
     UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, semester, type_id),
     UNIQUE (oid, id, year),   -- referenced in requests and priorities to ensure data consistency

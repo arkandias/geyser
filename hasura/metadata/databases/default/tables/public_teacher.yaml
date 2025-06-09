@@ -43,51 +43,52 @@ select_permissions:
     permission:
       columns:
         - oid
-        - active
-        - alias
-        - base_service_hours
-        - displayname
+        - id
         - email
         - firstname
-        - id
         - lastname
+        - alias
+        - displayname
         - position_id
+        - base_service_hours
         - visible
+        - active
+        - access
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all teachers [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
-        - active
-        - alias
-        - base_service_hours
-        - displayname
+        - id
         - email
         - firstname
-        - id
         - lastname
+        - alias
+        - displayname
         - position_id
+        - base_service_hours
         - visible
+        - active
+        - access
       filter:
-        _or:
-          - id:
-              _eq: X-Hasura-User-Id
-          - _and:
-              - _exists:
-                  _table:
-                    name: phase
-                    schema: public
-                  _where:
-                    value:
-                      _neq: shutdown
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _neq: shutdown
+          - _or:
+              - id:
+                  _eq: X-Hasura-User-Id
               - visible:
                   _eq: true
-    comment: Can always view themselves. Can view visible teachers [except during shutdown phase]
+    comment: Can view themselves and visible teachers [except during shutdown phase]

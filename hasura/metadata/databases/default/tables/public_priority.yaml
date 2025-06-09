@@ -5,23 +5,23 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
-  - name: course
+  - name: yearByYear
     using:
       foreign_key_constraint_on:
         - oid
         - year
-        - course_id
   - name: service
     using:
       foreign_key_constraint_on:
         - oid
         - year
         - service_id
-  - name: yearByYear
+  - name: course
     using:
       foreign_key_constraint_on:
         - oid
         - year
+        - course_id
 select_permissions:
   - role: commissioner
     permission:
@@ -56,11 +56,8 @@ select_permissions:
         - year
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - _or:

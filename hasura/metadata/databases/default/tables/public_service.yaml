@@ -5,6 +5,17 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
+  - name: teacher
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - teacher_id
+array_relationships:
   - name: message
     using:
       foreign_key_constraint_on:
@@ -14,17 +25,6 @@ object_relationships:
         table:
           name: message
           schema: public
-  - name: teacher
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - teacher_id
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-array_relationships:
   - name: modifications
     using:
       foreign_key_constraint_on:
@@ -59,42 +59,45 @@ select_permissions:
     permission:
       columns:
         - oid
-        - hours
         - id
-        - teacher_id
         - year
+        - teacher_id
+        - hours
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
-      allow_aggregations: true
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all services [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
-        - hours
         - id
-        - teacher_id
         - year
+        - teacher_id
+        - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
+          - teacher:
+              _or:
+                - id:
+                    _eq: X-Hasura-User-Id
+                - visible:
+                    _eq: true
           - yearByYear:
               visible:
                 _eq: true
-      allow_aggregations: true
-    comment: Can view services for visible years [except during shutdown phase]
+    comment: Can view their own services and visible teachers services for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
     permission:
@@ -102,17 +105,16 @@ update_permissions:
         - hours
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - teacher_id:
+              _eq: X-Hasura-User-Id
           - yearByYear:
               current:
                 _eq: true
-          - teacher_id:
-              _eq: X-Hasura-User-Id
       check: null
     comment: During requests phase, can update their own service hours for the current year

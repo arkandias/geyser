@@ -15,21 +15,22 @@ insert_permissions:
     permission:
       check:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 current:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
       columns:
+        - oid
+        - service_id
         - content
     comment: During requests phase, can insert a message for the current year
 select_permissions:
@@ -41,14 +42,13 @@ select_permissions:
         - service_id
         - content
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
-      allow_aggregations: true
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all messages [during assignments phase only]
   - role: teacher
     permission:
@@ -59,21 +59,19 @@ select_permissions:
         - content
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - service:
-              yearByYear:
-                visible:
-                  _eq: true
-          - service:
               teacher_id:
                 _eq: X-Hasura-User-Id
-      allow_aggregations: true
+          - service:
+              yearByYear:
+                current:
+                  _eq: true
     comment: Can view their own messages for visible years [except during shutdown phase]
 update_permissions:
   - role: teacher
@@ -82,20 +80,19 @@ update_permissions:
         - content
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
           - service:
-              yearByYear:
-                visible:
-                  _eq: true
-          - service:
               teacher_id:
                 _eq: X-Hasura-User-Id
+          - service:
+              yearByYear:
+                current:
+                  _eq: true
       check: null
     comment: During requests phase, can update their message for the current year
 delete_permissions:
@@ -103,18 +100,17 @@ delete_permissions:
     permission:
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _eq: requests
+          - service:
+              teacher_id:
+                _eq: X-Hasura-User-Id
           - service:
               yearByYear:
                 current:
                   _eq: true
-          - service:
-              teacher_id:
-                _eq: X-Hasura-User-Id
     comment: During requests phase, can delete their message for the current year

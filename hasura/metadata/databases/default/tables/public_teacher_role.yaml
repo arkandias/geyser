@@ -5,41 +5,11 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
-  - name: roleByRole
-    using:
-      foreign_key_constraint_on: role
   - name: teacher
     using:
       foreign_key_constraint_on:
         - oid
         - teacher_id
-select_permissions:
-  - role: commissioner
-    permission:
-      columns:
-        - oid
-        - id
-        - teacher_id
-        - role
-        - comment
-      filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
-    comment: Can view all roles [during assignments phase only]
-  - role: teacher
-    permission:
-      columns:
-        - oid
-        - id
-        - teacher_id
-        - role
-        - comment
-      filter:
-        teacher_id:
-          _eq: X-Hasura-User-Id
-    comment: Can view their own role
+  - name: roleByRole
+    using:
+      foreign_key_constraint_on: role

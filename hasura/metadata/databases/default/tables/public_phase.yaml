@@ -9,11 +9,11 @@ select_permissions:
         - value
         - description
       filter: {}
-    comment: Can view all phase types
+    comment: Can view all phases
   - role: teacher
     permission:
       columns:
         - value
         - description
       filter: {}
-    comment: Can view all phase types
+    comment: Can view all phases

@@ -5,6 +5,11 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: teacher
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - teacher_id
   - name: course
     using:
       foreign_key_constraint_on:
@@ -15,11 +20,6 @@ object_relationships:
       foreign_key_constraint_on:
         - oid
         - program_id
-  - name: teacher
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - teacher_id
   - name: track
     using:
       foreign_key_constraint_on:
@@ -37,14 +37,14 @@ select_permissions:
         - course_id
         - comment
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
-    comment: Can view all coordination roles [during assignments phase only]
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
+    comment: Can view all coordinations [during assignments phase only]
   - role: teacher
     permission:
       columns:
@@ -57,11 +57,10 @@ select_permissions:
         - comment
       filter:
         _and:
-          - _exists:
-              _table:
-                name: phase
-                schema: public
-              _where:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
                 value:
                   _neq: shutdown
           - teacher:
@@ -77,4 +76,4 @@ select_permissions:
               - program:
                   visible:
                     _eq: true
-    comment: Can view visible coordination roles [except during shutdown phase]
+    comment: Can view coordinations by visible teachers of visible courses/tracks/programs [except during shutdown phase]

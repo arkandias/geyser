@@ -20,33 +20,33 @@ select_permissions:
     permission:
       columns:
         - oid
-        - coefficient
-        - description
         - id
         - label
+        - coefficient
+        - description
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _eq: assignments
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
     comment: Can view all course types [during assignments phase only]
   - role: teacher
     permission:
       columns:
         - oid
-        - coefficient
-        - description
         - id
         - label
+        - coefficient
+        - description
       filter:
-        _exists:
-          _table:
-            name: phase
-            schema: public
-          _where:
-            value:
-              _neq: shutdown
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _neq: shutdown
     comment: Can view all course types [except during shutdown phase]

@@ -121,17 +121,19 @@ const accessDeniedMessage = computed(() => {
   if (!authManager.hasAccess) {
     return t("home.alert.noAccess");
   }
-  if (getAppData.fetching.value) {
-    return t("home.alert.loadingAppData");
-  }
-  if (!isLoaded.value) {
-    return t("home.alert.profileNotLoaded");
-  }
   if (
     currentPhase.value === PhaseTypeEnum.Shutdown &&
     authManager.activeRole.value !== RoleTypeEnum.Admin
   ) {
     return t("home.alert.shutdown");
+  }
+  // TODO: commissioner not during assignments phase
+  if (getAppData.fetching.value) {
+    return t("home.alert.loadingAppData");
+  }
+  // TODO: error loading data & isLoading...
+  if (!isLoaded.value) {
+    return t("home.alert.profileNotLoaded");
   }
   return "";
 });
