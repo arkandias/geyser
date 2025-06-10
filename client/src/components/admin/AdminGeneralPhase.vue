@@ -27,19 +27,24 @@ const phaseOptions = [
 }));
 
 graphql(`
-  mutation SetCurrentPhase($oid: Int!, $phase: PhaseEnum!) {
-    updateCurrentPhaseByPk(pkColumns: { oid: $oid }, _set: { value: $phase }) {
-      value
+  mutation SetCurrentPhase($oid: Int!, $value: PhaseEnum!) {
+    insertCurrentPhase(
+      objects: { oid: $oid, value: $value }
+      onConflict: { constraint: current_phase_pkey, updateColumns: [value] }
+    ) {
+      returning {
+        value
+      }
     }
   }
 `);
 
 const setCurrentPhase = useMutation(SetCurrentPhaseDocument);
 
-const setCurrentPhaseHandle = async (phase: PhaseEnum): Promise<void> => {
+const setCurrentPhaseHandle = async (value: PhaseEnum): Promise<void> => {
   const { error } = await setCurrentPhase.executeMutation({
     oid: authManager.orgId,
-    phase,
+    value,
   });
   if (error) {
     notify(NotifyType.Error, {
