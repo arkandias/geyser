@@ -72,15 +72,14 @@ _webdav_check_env() {
         "WEBDAV_PASS"
         "WEBDAV_DIR"
     )
+
     local -a missing_vars=()
     local var
-
     for var in "${required_vars[@]}"; do
         if [[ -z "${!var}" ]]; then
             missing_vars+=("${var}")
         else
-            # shellcheck disable=SC2163
-            export "${var}"
+            declare -gr "${var}"
         fi
     done
 
@@ -168,6 +167,11 @@ _webdav_upload_file() {
 _webdav_handle_backup() {
     local backup="$1"
     local response_code
+
+    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
+        error "Backup directory ${backup} does not exist"
+        exit 1
+    fi
 
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \

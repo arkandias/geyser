@@ -44,8 +44,9 @@ handle_data_restore() {
 
     # Select backup directory
     if [[ -z "${backup}" ]]; then
-        # shellcheck disable=SC2046
-        select_backup_dir $(basename -a "${BACKUPS_DIR}"/*/)
+        local -a backup_dirs
+        mapfile -t backup_dirs < <(basename -a "${BACKUPS_DIR}"/*)
+        select_backup_dir "${backup_dirs[@]}"
         backup="${SELECTED_BACKUP_DIR}"
     fi
 
@@ -76,10 +77,11 @@ handle_data_restore() {
         exit 1
         ;;
     "")
-        _compose run --rm db \
+        _compose run --rm db bash -c "
             dropdb -U postgres --if-exists --force geyser &&
             createdb -U postgres geyser &&
-            pg_restore -U postgres -d geyser --clean --if-exists -v "/backups/${backup}/db.dump"
+            pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump
+        "
         ;;
     esac
     success "Backup restored successfully"

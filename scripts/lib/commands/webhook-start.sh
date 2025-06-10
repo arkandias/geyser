@@ -46,7 +46,7 @@ handle_webhook_start() {
         exit 1
     fi
 
-    if [[ "${GEYSER_RUNNING_AS_SERVICE}" == "true" ]]; then
+    if [[ "${GEYSER_AS_SERVICE}" == "true" ]]; then
         _webhook -verbose
     else
         if command -v systemd-cat &>/dev/null; then

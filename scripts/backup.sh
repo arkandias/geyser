@@ -24,7 +24,7 @@ set -e
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
 readonly SCRIPT_DIR
 
-timestamp="$(date +'%Y-%m-%d %H:%M:%S')"
+timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
 
 "${SCRIPT_DIR}/geyser" stop
 "${SCRIPT_DIR}/geyser" data-dump --name "${timestamp}"

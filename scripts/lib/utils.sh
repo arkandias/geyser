@@ -9,7 +9,7 @@
 # Displays a prompt and stores user input in global INPUT variable
 prompt() {
     local message="$1"
-    INPUT= # global
+    declare -g INPUT=
 
     debug "Prompt: ${message}"
     echo -n "${message} "
@@ -39,7 +39,7 @@ confirm() {
 # Prompts user to select a backup directory and stores result in SELECTED_BACKUP_DIR
 select_backup_dir() {
     local -a backups=("$@")
-    SELECTED_BACKUP_DIR= # global
+    declare -g SELECTED_BACKUP_DIR=
 
     if ((${#backups[@]} == 0)); then
         error "No backup directories found"
@@ -112,7 +112,7 @@ wait_until_healthy() {
 }
 
 #------------------------------------------------------------------------------
-# Text Manipulation
+# Miscellaneous
 #------------------------------------------------------------------------------
 
 # Cross-platform sed -i replacement
@@ -123,4 +123,17 @@ sed_i() {
     else
         sed -i "$@"
     fi
+}
+
+# Runs command with specified environment variables, skipping empty ones
+with_env_vars() {
+    local -a env_vars_with_values
+    local var
+    for var in "${ENV_VARS[@]}"; do
+        if [[ -n "${!var:-}" ]]; then
+            env_vars_with_values+=("${var}=${!var}")
+        fi
+    done
+
+    env "${env_vars_with_values[@]}" "$@"
 }

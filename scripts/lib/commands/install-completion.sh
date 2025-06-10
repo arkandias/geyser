@@ -6,7 +6,7 @@ show_install_completion_help() {
     cat <<EOF
 Install zsh completion (using oh-my-zsh)
 
-Usage: geyser completion
+Usage: geyser install-completion
 
 - Add zsh completion scripts for geyser, docker, hasura, and keycloak into the
 dedicated Oh My Zsh directory ($ZSH/completions).

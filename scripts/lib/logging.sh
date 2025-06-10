@@ -31,7 +31,7 @@ log() {
     local level_num
     level_num="$(log_level "${level}")"
 
-    if [[ "${GEYSER_RUNNING_AS_SERVICE}" == "true" ]]; then
+    if [[ "${GEYSER_AS_SERVICE}" == "true" ]]; then
         # Running as service: simple output, no colors, no timestamp systemd
         # will add timestamps and parse <N> for journal priority levels
         if [[ "${level_num}" -le "$(log_level "${GEYSER_LOG_LEVEL}")" ]]; then
@@ -57,7 +57,7 @@ log() {
                 --priority="$(log_level "${level}")"
         else
             # Add entry to log file
-            echo "${log_entry}" >>"${LOGS_DIR}/geyser.log"
+            echo "[$(date +'%Y-%m-%d %H:%M:%S')] [${level^^}] ${message}" >>"${LOGS_DIR}/geyser.log"
         fi
     fi
 }

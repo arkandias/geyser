@@ -1,5 +1,4 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2034
 
 #######################################
 # Geyser Administration Script
@@ -40,21 +39,29 @@ Data Management:
   webdav-upload     Upload backup directories to a WebDAV server
 
 Development Tools:
-  compose           Docker Compose wrapper
-  hasura            Hasura CLI wrapper
-  kc                Keycloak CLI access
-  kcadm             Keycloak Admin CLI access
-  webhook-start     Start a webhook on port 9000
-  webhook-stop      Terminate any process listening on port 9000
-  deploy            Deploy Geyser from remote repository
+  compose               Docker Compose wrapper
+  hasura                Hasura CLI wrapper
+  kc                    Keycloak CLI access
+  kcadm                 Keycloak Admin CLI access
+  webhook               Webhook wrapper
+  webhook-start         Start a webhook on port 9000
+  webhook-stop          Terminate any process listening on port 9000
+  deploy                Deploy Geyser from remote repository
 
 Setup:
   install-completion    Install zsh completion (using oh-my-zsh)
 
 Options:
-  -h, --help        Show this help message
-  -v, --version     Show version information
-  -q, --quiet       Disable log messages
+  -h, --help            Show this help message
+  -v, --version         Show version information
+  -q, --quiet           Disable log messages
+  --domain DOMAIN       Set Geyser domain
+  --mode MODE           Set Geyser mode (development|production)
+  --dev                 Set Geyser mode to development
+  --prod                Set Geyser mode to production
+  --tag TAG             Set Geyser tag
+  --log-level LEVEL     Set Geyser log level (silent|debug|info|warn|error)
+  --as-service          Run as a systemd service (affects logging)
 
 Run 'geyser COMMAND --help' for more information on a command.
 EOF
@@ -117,6 +124,39 @@ main() {
             ;;
         -q | --quiet)
             GEYSER_LOG_LEVEL="silent"
+            shift
+            ;;
+        --domain)
+            # shellcheck disable=SC2034
+            GEYSER_DOMAIN="$2"
+            shift 2
+            ;;
+        --mode)
+            GEYSER_MODE="$2"
+            shift 2
+            ;;
+        --dev)
+            GEYSER_MODE="development"
+            shift
+            ;;
+        --prod)
+            # shellcheck disable=SC2034
+            GEYSER_MODE="production"
+            shift
+            ;;
+        --tag)
+            # shellcheck disable=SC2034
+            GEYSER_TAG="$2"
+            shift 2
+            ;;
+        --log-level)
+            # shellcheck disable=SC2034
+            GEYSER_LOG_LEVEL="$2"
+            shift 2
+            ;;
+        --as-service)
+            # shellcheck disable=SC2034
+            GEYSER_AS_SERVICE="true"
             shift
             ;;
         *)

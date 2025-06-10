@@ -1,8 +1,25 @@
 services:
+  kc-db:
+    restart: unless-stopped
+
+  keycloak:
+    restart: unless-stopped
+    environment:
+      KC_HOSTNAME_DEBUG: "true"
+
+  db:
+    restart: unless-stopped
+
+  hasura:
+    restart: unless-stopped
+    environment:
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true"
+
   backend: !reset []
 
   frontend:
     image: nginx:1.27
+    restart: unless-stopped
     depends_on:
       backend: !reset []
     environment:

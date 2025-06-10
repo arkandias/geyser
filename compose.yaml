@@ -2,7 +2,7 @@ name: geyser
 services:
   kc-db:
     image: postgres:17
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: "pg_isready -U postgres -d keycloak || exit 1"
       interval: 30s
@@ -25,7 +25,7 @@ services:
 
   keycloak:
     build: keycloak
-    restart: unless-stopped
+    restart: always
     depends_on:
       kc-db:
         condition: service_healthy
@@ -45,7 +45,7 @@ services:
       KC_DB_SCHEMA: "public"
       KC_HOSTNAME: "${KC_HOSTNAME}"
       KC_HOSTNAME_ADMIN: "${KC_HOSTNAME_ADMIN}"
-      KC_HOSTNAME_DEBUG: "true"
+      KC_HOSTNAME_DEBUG: "false"
       KC_HOSTNAME_STRICT: "true"
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
@@ -60,7 +60,7 @@ services:
 
   db:
     image: postgres:17
-    restart: unless-stopped
+    restart: always
     healthcheck:
       test: "pg_isready -U postgres -d geyser || exit 1"
       interval: 30s
@@ -84,7 +84,7 @@ services:
 
   hasura:
     image: hasura/graphql-engine:v2.48.0.ubuntu
-    restart: unless-stopped
+    restart: always
     depends_on:
       db:
         condition: service_healthy
@@ -107,8 +107,8 @@ services:
       - private-db
 
   backend:
-    image: ghcr.io/arkandias/geyser-backend:edge
-    restart: unless-stopped
+    image: ghcr.io/arkandias/geyser-backend:${GEYSER_TAG}
+    restart: always
     depends_on:
       keycloak:
         condition: service_healthy
@@ -139,8 +139,8 @@ services:
       - public
 
   frontend:
-    image: ghcr.io/arkandias/geyser-frontend:edge
-    restart: unless-stopped
+    image: ghcr.io/arkandias/geyser-frontend:${GEYSER_TAG}
+    restart: always
     depends_on:
       keycloak:
         condition: service_healthy

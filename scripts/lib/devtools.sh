@@ -7,17 +7,35 @@ _compose() {
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
-    [[ "${GEYSER_MODE}" == "production" ]] &&
-        compose_files+=("-f" "${GEYSER_HOME}/compose.prod.yaml")
     [[ "${GEYSER_MODE}" == "development" ]] &&
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
 
-    docker compose --env-file /dev/null "${compose_files[@]}" "$@"
+    local -a ENV_VARS=(
+        "GEYSER_DOMAIN"
+        "GEYSER_TAG"
+        "GEYSER_ORIGIN"
+        "API_URL"
+        "KC_HOSTNAME"
+        "KC_HOSTNAME_ADMIN"
+        "KC_BOOTSTRAP_ADMIN_PASSWORD"
+        "POSTGRES_KC_PASSWORD"
+        "POSTGRES_PASSWORD"
+        "HASURA_GRAPHQL_ADMIN_SECRET"
+        "API_ADMIN_SECRET"
+        "CLIENT_SECRET"
+    )
+
+    with_env_vars docker compose --env-file /dev/null "${compose_files[@]}" "$@"
 }
 
 # Run Hasura CLI with project configuration and admin secret
 _hasura() {
-    hasura --project "${GEYSER_HOME}/hasura" "$@"
+    # shellcheck disable=SC2034
+    local -a ENV_VARS=(
+        "HASURA_GRAPHQL_ADMIN_SECRET"
+    )
+
+    with_env_vars hasura --project "${GEYSER_HOME}/hasura" "$@"
 }
 
 # Run Keycloak server CLI
@@ -33,7 +51,7 @@ _kcadm() {
             --user admin --password "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
         shift
         if [[ "$#" -ne 0 ]]; then
-            kcadm "$@"
+            _kcadm "$@"
         fi
     else
         _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
@@ -54,7 +72,7 @@ _webhook() {
     fi
 
     webhook -port 9000 -secure \
-        -template "/home/arkandias/geyser-monorepo/config/hooks.json" \
+        -template "${GEYSER_HOME}/config/hooks.json" \
         -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
         -key "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
         "$@"
