@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, inject, ref } from "vue";
 
 import { useDownloadAssignments } from "@/composables/useDownloadAssignments.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -13,6 +13,7 @@ import {
   RequestTypeEnum,
   TableCoursesServiceFragmentDoc,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type { Column } from "@/types/column.ts";
 import {
@@ -72,6 +73,8 @@ graphql(`
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { activeYear } = useYearsStore();
 const perm = usePermissions();
@@ -458,6 +461,7 @@ const downloadTeacherAssignments = async () => {
   }
   await downloadAssignments(
     {
+      oid: authManager.orgId,
       year: activeYear.value,
       where: { serviceId: { _eq: selectedService.value } },
     },

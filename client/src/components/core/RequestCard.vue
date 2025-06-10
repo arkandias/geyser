@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -15,6 +15,7 @@ import {
   RequestTypeEnum,
   UpdateAssignmentDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { priorityColor } from "@/utils";
 
 const { dataFragment } = defineProps<{
@@ -42,10 +43,11 @@ graphql(`
     isPriority
   }
 
-  query GetAssignment($serviceId: Int!, $courseId: Int!) {
+  query GetAssignment($oid: Int!, $serviceId: Int!, $courseId: Int!) {
     requests: request(
       where: {
         _and: [
+          { oid: { _eq: $oid } }
           { serviceId: { _eq: $serviceId } }
           { courseId: { _eq: $courseId } }
           { type: { _eq: ASSIGNMENT } }
@@ -99,6 +101,8 @@ graphql(`
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
 const perm = usePermissions();
@@ -110,6 +114,7 @@ const request = computed(() =>
 const getAssignment = useQuery({
   query: GetAssignmentDocument,
   variables: () => ({
+    oid: authManager.orgId,
     serviceId: request.value.service.id,
     courseId: request.value.course.id,
   }),

@@ -39,7 +39,6 @@ const { degreeFragments, programFragments, trackFragments } = defineProps<{
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const authManager = inject<AuthManager>("authManager")!;
-
 const { t } = useTypedI18n();
 
 const rowDescriptor = {

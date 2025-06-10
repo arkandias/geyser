@@ -11,10 +11,11 @@ import {
 import { downloadCSV } from "@/utils";
 
 graphql(`
-  query GetAssignments($year: Int!, $where: RequestBoolExp = {}) {
+  query GetAssignments($oid: Int!, $year: Int!, $where: RequestBoolExp = {}) {
     assignments: request(
       where: {
         _and: [
+          { oid: { _eq: $oid } }
           { service: { year: { _eq: $year } } }
           { type: { _eq: ASSIGNMENT } }
           $where

@@ -104,6 +104,7 @@ graphql(`
       _set: $changes
     ) {
       returning {
+        oid
         id
       }
     }

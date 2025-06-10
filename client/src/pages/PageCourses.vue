@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, watch } from "vue";
+import { computed, inject, watch } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
@@ -11,6 +11,7 @@ import {
   GetCourseRowsDocument,
   GetServiceRowsDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import {
   hSplitterRatio,
   useLeftPanelStore,
@@ -23,10 +24,11 @@ import TableServices from "@/components/TableServices.vue";
 import CourseDetails from "@/components/course/CourseDetails.vue";
 
 graphql(`
-  query GetCourseRows($year: Int!) {
+  query GetCourseRows($oid: Int!, $year: Int!) {
     courses: course(
       where: {
         _and: [
+          { oid: { _eq: $oid } }
           { year: { _eq: $year } }
           { hoursEffective: { _gt: 0 } }
           { groupsEffective: { _gt: 0 } }
@@ -45,9 +47,9 @@ graphql(`
     }
   }
 
-  query GetServiceRows($year: Int!) {
+  query GetServiceRows($oid: Int!, $year: Int!) {
     services: service(
-      where: { year: { _eq: $year } }
+      where: { _and: [{ oid: { _eq: $oid } }, { year: { _eq: $year } }] }
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...ServiceRow
@@ -55,13 +57,15 @@ graphql(`
     }
   }
 
-  query GetCourseDetails($oid: Int!, $courseId: Int!) {
-    course: courseByPk(oid: $oid, id: $courseId) {
+  query GetCourseDetails($oid: Int!, $id: Int!) {
+    course: courseByPk(oid: $oid, id: $id) {
       ...CourseDetails
     }
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { activeYear, isCurrentYearActive } = useYearsStore();
 const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
@@ -70,7 +74,10 @@ const perm = usePermissions();
 // Course rows
 const getCourseRows = useQuery({
   query: GetCourseRowsDocument,
-  variables: () => ({ year: activeYear.value ?? -1 }),
+  variables: () => ({
+    oid: authManager.orgId,
+    year: activeYear.value ?? -1,
+  }),
   pause: () => activeYear.value === null,
   context: { additionalTypenames: ["All", "Priority", "Request"] },
 });
@@ -81,6 +88,7 @@ const courseRows = computed(() => getCourseRows.data.value?.courses ?? []);
 const getServiceRows = useQuery({
   query: GetServiceRowsDocument,
   variables: () => ({
+    oid: authManager.orgId,
     year: activeYear.value ?? -1,
   }),
   pause: () => activeYear.value === null,
@@ -101,7 +109,10 @@ const serviceRows = computed(() => getServiceRows.data.value?.services ?? []);
 const { getValue: selectedCourse } = useQueryParam("courseId", true);
 const getCourseDetails = useQuery({
   query: GetCourseDetailsDocument,
-  variables: () => ({ courseId: selectedCourse.value ?? -1 }),
+  variables: () => ({
+    oid: authManager.orgId,
+    id: selectedCourse.value ?? -1,
+  }),
   pause: () => selectedCourse.value === null,
   context: {
     additionalTypenames: [

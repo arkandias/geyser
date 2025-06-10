@@ -7758,7 +7758,7 @@ input PositionVarianceOrderBy {
 
 """Teacher course assignments"""
 type Priority {
-  """Indicates if seniority was automatically computed"""
+  """Indicates if seniority was computed automatically"""
   computed: Boolean!
 
   """An object relationship"""
@@ -7972,7 +7972,7 @@ input PriorityIncInput {
 input type for inserting data into table "priority"
 """
 input PriorityInsertInput {
-  """Indicates if seniority was automatically computed"""
+  """Indicates if seniority was computed automatically"""
   computed: Boolean
   course: CourseObjRelInsertInput
 
@@ -8234,7 +8234,7 @@ enum PrioritySelectColumnPriorityAggregateBoolExpBool_orArgumentsColumns {
 input type for updating data in table "priority"
 """
 input PrioritySetInput {
-  """Indicates if seniority was automatically computed"""
+  """Indicates if seniority was computed automatically"""
   computed: Boolean
 
   """Course reference"""
@@ -8409,7 +8409,7 @@ input PriorityStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input PriorityStreamCursorValueInput {
-  """Indicates if seniority was automatically computed"""
+  """Indicates if seniority was computed automatically"""
   computed: Boolean
 
   """Course reference"""
@@ -15104,7 +15104,7 @@ enum TrackConstraint {
   """
   unique or primary key constraint on columns "id", "program_id", "oid"
   """
-  track_oid_id_program_id_key
+  track_oid_program_id_id_key
 
   """
   unique or primary key constraint on columns "program_id", "name", "oid"

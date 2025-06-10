@@ -1,20 +1,24 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminRequestsDocument } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 
 import AdminRequestsPriorities from "@/components/admin/AdminRequestsPriorities.vue";
 import AdminRequestsRequests from "@/components/admin/AdminRequestsRequests.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 graphql(`
-  query GetAdminRequests {
+  query GetAdminRequests($oid: Int!) {
     requests: request(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { type: ASC }
@@ -31,6 +35,7 @@ graphql(`
       ...AdminRequest
     }
     priorities: priority(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { service: { teacher: { lastname: ASC } } }
@@ -46,6 +51,7 @@ graphql(`
       ...AdminPriority
     }
     services: service(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { teacher: { lastname: ASC } }
@@ -55,11 +61,15 @@ graphql(`
       ...AdminRequestsService
       ...AdminPrioritiesService
     }
-    teachers: teacher(orderBy: [{ lastname: ASC }, { firstname: ASC }]) {
+    teachers: teacher(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ lastname: ASC }, { firstname: ASC }]
+    ) {
       ...AdminRequestsTeacher
       ...AdminPrioritiesTeacher
     }
     courses: course(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { program: { degree: { name: ASC } } }
@@ -73,15 +83,19 @@ graphql(`
       ...AdminRequestsCourse
       ...AdminPrioritiesCourse
     }
-    degrees: degree(orderBy: [{ name: ASC }]) {
+    degrees: degree(where: { oid: { _eq: $oid } }, orderBy: [{ name: ASC }]) {
       ...AdminRequestsDegree
       ...AdminPrioritiesDegree
     }
-    programs: program(orderBy: [{ degree: { name: ASC } }, { name: ASC }]) {
+    programs: program(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ degree: { name: ASC } }, { name: ASC }]
+    ) {
       ...AdminRequestsProgram
       ...AdminPrioritiesProgram
     }
     tracks: track(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
@@ -91,7 +105,10 @@ graphql(`
       ...AdminRequestsTrack
       ...AdminPrioritiesTrack
     }
-    courseTypes: courseType(orderBy: { label: ASC }) {
+    courseTypes: courseType(
+      where: { oid: { _eq: $oid } }
+      orderBy: { label: ASC }
+    ) {
       ...AdminRequestsCourseType
       ...AdminPrioritiesCourseType
     }
@@ -100,7 +117,7 @@ graphql(`
 
 const { data } = useQuery({
   query: GetAdminRequestsDocument,
-  variables: {},
+  variables: { oid: authManager.orgId },
   context: {
     additionalTypenames: ["All", "Course", "Priority", "Request", "Service"],
   },

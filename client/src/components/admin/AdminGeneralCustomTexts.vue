@@ -41,17 +41,19 @@ const customTextOptions = computed(() =>
 );
 
 graphql(`
-  mutation UpdateCustomText($key: String!, $value: String) {
+  mutation UpdateCustomText($oid: Int!, $key: String!, $value: String) {
     insertAppSettingOne(
-      object: { key: $key, value: $value }
+      object: { oid: $oid, key: $key, value: $value }
       onConflict: { constraint: app_setting_pkey, updateColumns: [value] }
     ) {
+      oid
       key
     }
   }
 
   mutation DeleteCustomText($oid: Int!, $key: String!) {
     deleteAppSettingByPk(oid: $oid, key: $key) {
+      oid
       key
     }
   }
@@ -62,7 +64,7 @@ const deleteCustomText = useMutation(DeleteCustomTextDocument);
 
 const updateCustomTextHandle = (oid: number, key: string, value: string) =>
   value
-    ? updateCustomText.executeMutation({ key, value }).then((result) => ({
+    ? updateCustomText.executeMutation({ oid, key, value }).then((result) => ({
         returnId: result.data?.insertAppSettingOne?.key,
         error: result.error,
       }))

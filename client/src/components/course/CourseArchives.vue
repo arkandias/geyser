@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -8,6 +8,7 @@ import {
   CourseArchivesDataFragmentDoc,
   GetCourseArchivesDocument,
 } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
 import DetailsSubsection from "@/components/core/DetailsSubsection.vue";
@@ -28,6 +29,7 @@ graphql(`
   }
 
   query GetCourseArchives(
+    $oid: Int!
     $year: Int!
     $programId: Int!
     $trackIdComp: IntComparisonExp
@@ -38,6 +40,7 @@ graphql(`
     courses: course(
       where: {
         _and: [
+          { oid: { _eq: $oid } }
           { year: { _lt: $year } }
           { programId: { _eq: $programId } }
           { trackId: $trackIdComp }
@@ -60,6 +63,8 @@ graphql(`
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 const data = computed(() =>
@@ -69,6 +74,7 @@ const data = computed(() =>
 const getCourseArchives = useQuery({
   query: GetCourseArchivesDocument,
   variables: () => ({
+    oid: authManager.orgId,
     year: data.value.year,
     programId: data.value.programId,
     trackIdComp:

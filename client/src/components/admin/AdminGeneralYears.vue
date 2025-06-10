@@ -36,48 +36,56 @@ graphql(`
       pkColumns: { oid: $oid, value: $value }
       _set: { current: true }
     ) {
+      oid
       value
     }
   }
 
   mutation InsertYear($oid: Int!, $value: Int!, $visible: Boolean!) {
     insertYearOne(object: { oid: $oid, value: $value, visible: $visible }) {
+      oid
       value
     }
   }
 
   mutation UpdateYear($oid: Int!, $value: Int!, $changes: YearSetInput!) {
     updateYearByPk(pkColumns: { oid: $oid, value: $value }, _set: $changes) {
+      oid
       value
     }
   }
 
   mutation DeleteYear($oid: Int!, $value: Int!) {
     deleteYearByPk(oid: $oid, value: $value) {
+      oid
       value
     }
   }
 
-  mutation CreateServices($year: Int!) {
-    createYearServices(args: { p_year: $year }) {
+  mutation CreateServices($oid: Int!, $year: Int!) {
+    createYearServices(args: { p_oid: $oid, p_year: $year }) {
+      oid
       id
     }
   }
 
-  mutation CopyServices($year: Int!) {
-    copyYearServices(args: { p_year: $year }) {
+  mutation CopyServices($oid: Int!, $year: Int!) {
+    copyYearServices(args: { p_oid: $oid, p_year: $year }) {
+      oid
       id
     }
   }
 
-  mutation CopyCourses($year: Int!) {
-    copyYearCourses(args: { p_year: $year }) {
+  mutation CopyCourses($oid: Int!, $year: Int!) {
+    copyYearCourses(args: { p_oid: $oid, p_year: $year }) {
+      oid
       id
     }
   }
 
-  mutation ComputePriorities($year: Int!) {
-    computeYearPriorities(args: { p_year: $year }) {
+  mutation ComputePriorities($oid: Int!, $year: Int!) {
+    computeYearPriorities(args: { p_oid: $oid, p_year: $year }) {
+      oid
       id
     }
   }
@@ -217,6 +225,7 @@ const createServicesHandle = async () => {
   }
 
   const { data, error } = await createServices.executeMutation({
+    oid: authManager.orgId,
     year: selectedYear.value,
   });
 
@@ -241,6 +250,7 @@ const copyServicesHandle = async () => {
   }
 
   const { data, error } = await copyServices.executeMutation({
+    oid: authManager.orgId,
     year: selectedYear.value,
   });
 
@@ -265,6 +275,7 @@ const copyCoursesHandle = async () => {
   }
 
   const { data, error } = await copyCourses.executeMutation({
+    oid: authManager.orgId,
     year: selectedYear.value,
   });
 
@@ -289,6 +300,7 @@ const computePrioritiesHandle = async () => {
   }
 
   const { data, error } = await computePriorities.executeMutation({
+    oid: authManager.orgId,
     year: selectedYear.value,
   });
 

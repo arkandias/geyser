@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminCoursesDocument } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 
 import AdminCoursesCourseTypes from "@/components/admin/AdminCoursesCourseTypes.vue";
 import AdminCoursesCourses from "@/components/admin/AdminCoursesCourses.vue";
@@ -13,22 +14,28 @@ import AdminCoursesPrograms from "@/components/admin/AdminCoursesPrograms.vue";
 import AdminCoursesTracks from "@/components/admin/AdminCoursesTracks.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 graphql(`
-  query GetAdminCourses {
-    degrees: degree(orderBy: [{ name: ASC }]) {
+  query GetAdminCourses($oid: Int!) {
+    degrees: degree(where: { oid: { _eq: $oid } }, orderBy: [{ name: ASC }]) {
       ...AdminDegree
       ...AdminProgramsDegree
       ...AdminTracksDegree
       ...AdminCoursesDegree
     }
-    programs: program(orderBy: [{ degree: { name: ASC } }, { name: ASC }]) {
+    programs: program(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ degree: { name: ASC } }, { name: ASC }]
+    ) {
       ...AdminProgram
       ...AdminTracksProgram
       ...AdminCoursesProgram
     }
     tracks: track(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
@@ -39,6 +46,7 @@ graphql(`
       ...AdminCoursesTrack
     }
     courses: course(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { program: { degree: { name: ASC } } }
@@ -51,7 +59,7 @@ graphql(`
     ) {
       ...AdminCourse
     }
-    types: courseType(orderBy: { label: ASC }) {
+    types: courseType(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
       ...AdminCourseType
       ...AdminCoursesCourseType
     }
@@ -60,7 +68,7 @@ graphql(`
 
 const { data } = useQuery({
   query: GetAdminCoursesDocument,
-  variables: {},
+  variables: { oid: authManager.orgId },
   context: {
     additionalTypenames: [
       "All",

@@ -33,6 +33,7 @@ graphql(`
       onConflict: { constraint: current_phase_pkey, updateColumns: [value] }
     ) {
       returning {
+        oid
         value
       }
     }

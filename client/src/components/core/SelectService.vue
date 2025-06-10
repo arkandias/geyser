@@ -1,19 +1,20 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, ref, watch } from "vue";
+import { computed, inject, ref, watch } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetServicesDocument } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import { normalizeForSearch } from "@/utils";
 
 const id = defineModel<number | null>();
 
 graphql(`
-  query GetServices($year: Int!) {
+  query GetServices($oid: Int!, $year: Int!) {
     services: service(
-      where: { year: { _eq: $year } }
+      where: { _and: [{ oid: { _eq: $oid } }, { year: { _eq: $year } }] }
       orderBy: [{ teacher: { displayname: ASC } }]
     ) {
       id
@@ -24,12 +25,14 @@ graphql(`
   }
 `);
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { activeYear } = useYearsStore();
 
 const { data } = useQuery({
   query: GetServicesDocument,
-  variables: () => ({ year: activeYear.value ?? 0 }),
+  variables: () => ({ oid: authManager.orgId, year: activeYear.value ?? 0 }),
   pause: () => activeYear.value === null,
   context: { additionalTypenames: ["All", "Service"] },
 });

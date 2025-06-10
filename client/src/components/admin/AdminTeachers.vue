@@ -1,10 +1,11 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed } from "vue";
+import { computed, inject } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminTeachersDocument } from "@/gql/graphql.ts";
+import type { AuthManager } from "@/services/auth.ts";
 
 import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
@@ -14,21 +15,30 @@ import AdminTeachersServices from "@/components/admin/AdminTeachersServices.vue"
 import AdminTeachersTeachers from "@/components/admin/AdminTeachersTeachers.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 
 graphql(`
-  query GetAdminTeachers {
-    teachers: teacher(orderBy: [{ lastname: ASC }, { firstname: ASC }]) {
+  query GetAdminTeachers($oid: Int!) {
+    teachers: teacher(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ lastname: ASC }, { firstname: ASC }]
+    ) {
       ...AdminTeacher
       ...AdminServicesTeacher
       ...AdminServiceModificationsTeacher
       ...AdminMessagesTeacher
     }
-    positions: position(orderBy: [{ label: ASC }]) {
+    positions: position(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ label: ASC }]
+    ) {
       ...AdminPosition
       ...AdminTeachersPosition
     }
     services: service(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { year: DESC }
         { teacher: { lastname: ASC } }
@@ -40,6 +50,7 @@ graphql(`
       ...AdminMessagesService
     }
     serviceModifications: serviceModification(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { service: { year: DESC } }
         { service: { teacher: { lastname: ASC } } }
@@ -50,12 +61,14 @@ graphql(`
       ...AdminServiceModification
     }
     serviceModificationTypes: serviceModificationType(
+      where: { oid: { _eq: $oid } }
       orderBy: [{ label: ASC }]
     ) {
       ...AdminServiceModificationType
       ...AdminServiceModificationsServiceModificationType
     }
     messages: message(
+      where: { oid: { _eq: $oid } }
       orderBy: [
         { service: { year: DESC } }
         { service: { teacher: { lastname: ASC } } }
@@ -69,7 +82,7 @@ graphql(`
 
 const { data } = useQuery({
   query: GetAdminTeachersDocument,
-  variables: {},
+  variables: { oid: authManager.orgId },
   context: {
     additionalTypenames: [
       "All",
