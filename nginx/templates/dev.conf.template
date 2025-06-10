@@ -13,7 +13,7 @@ server {
 # Keycloak admin server
 server {
     listen 80;
-    server_name auth-admin.geyser.localhost;
+    server_name auth-admin.${NGINX_DOMAIN};
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak-admin.conf;
@@ -22,7 +22,7 @@ server {
 # Keycloak server
 server {
     listen 80;
-    server_name auth.geyser.localhost;
+    server_name auth.${NGINX_DOMAIN};
     
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak.conf;
@@ -31,7 +31,7 @@ server {
 # API server
 server {
     listen 80;
-    server_name api.geyser.localhost;
+    server_name api.${NGINX_DOMAIN};
     
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
@@ -40,7 +40,7 @@ server {
 # Dev client server
 server {
     listen 80;
-    server_name dev.geyser.localhost;
+    server_name dev.${NGINX_DOMAIN};
     
     set $client_url ${NGINX_PROXY_DEV_CLIENT_URL};
     include /etc/nginx/includes/locations/dev.conf;
@@ -49,7 +49,7 @@ server {
 # App preview server
 server {
     listen 80;
-    server_name preview.geyser.localhost;
+    server_name preview.${NGINX_DOMAIN};
     
     location / {
         root /usr/share/nginx/html;

@@ -80,11 +80,15 @@ export class AuthController {
     }
 
     const { redirectUrl } = this.authService.getState(state);
-    const subdomain = redirectUrl?.hostname.split(".")[0];
+    const subdomain = redirectUrl?.hostname.split(".")[0] ?? "";
+    const key =
+      this.configService.nodeEnv === "development" &&
+      this.configService.organizationKey
+        ? this.configService.organizationKey
+        : subdomain;
 
     try {
-      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const organization = await this.organizationService.findByKey(subdomain!);
+      const organization = await this.organizationService.findByKey(key);
       if (!organization) {
         throw new UnauthorizedException(
           `Organization '${subdomain}' not found`,

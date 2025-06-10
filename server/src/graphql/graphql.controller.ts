@@ -2,7 +2,7 @@ import { Body, Controller, Post, Res } from "@nestjs/common";
 import axios from "axios";
 import { Response } from "express";
 
-import { UserId, UserRole } from "../auth/auth.decorators";
+import { OrgId, UserId, UserRole } from "../auth/auth.decorators";
 import { Auth } from "../auth/guards/auth.guard";
 import { ZodValidationPipe } from "../common/zod-validation.pipe";
 import { ConfigService } from "../config/config.service";
@@ -16,6 +16,7 @@ export class GraphqlController {
   @Auth()
   async graphql(
     @Body(new ZodValidationPipe(graphqlRequestSchema)) request: GraphqlRequest,
+    @OrgId() orgId: string | undefined,
     @UserId() userId: string | undefined,
     @UserRole() userRole: string | undefined,
     @Res() res: Response,
@@ -25,6 +26,9 @@ export class GraphqlController {
       "Content-Type": "application/json",
       "X-Hasura-Admin-Secret": this.configService.graphql.adminSecret,
     };
+    if (orgId) {
+      headers["X-Hasura-Org-Id"] = orgId;
+    }
     if (userId) {
       headers["X-Hasura-User-Id"] = userId;
     }

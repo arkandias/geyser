@@ -14,6 +14,7 @@ export class ConfigService {
   };
   readonly parentDomain: string;
   readonly originRegex: RegExp;
+  readonly organizationKey: string;
   readonly databaseUrl: URL;
   readonly graphql: {
     url: URL;
@@ -53,6 +54,11 @@ export class ConfigService {
       `^${this.api.url.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
     );
     this.logger.log(`Origin regex: ${this.originRegex}`);
+
+    this.organizationKey = this.configService.getOrThrow<string | undefined>(
+      "API_ORGANIZATION_KEY",
+    );
+    this.logger.log(`Organization key: ${this.organizationKey}`);
 
     this.databaseUrl = new URL(
       this.configService.getOrThrow<string>("API_DATABASE_URL"),

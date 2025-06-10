@@ -31,7 +31,7 @@ export default defineConfig(() => ({
   },
   server: {
     host: "0.0.0.0",
-    allowedHosts: ["dev.geyser.localhost"],
+    allowedHosts: [],
     port: 5173,
     strictPort: true,
   },
