@@ -34,7 +34,7 @@ handle_deploy() {
 
     # Deploy application
     _compose pull
-    COMPOSE_BAKE=true _compose build --pull --no-cache
+    _compose build --pull --no-cache
     _compose up -d
 
     # Cleanup

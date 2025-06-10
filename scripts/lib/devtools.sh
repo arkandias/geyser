@@ -25,6 +25,7 @@ _compose() {
         "CLIENT_SECRET"
     )
 
+    export COMPOSE_BAKE=true
     with_env_vars docker compose --env-file /dev/null "${compose_files[@]}" "$@"
 }
 
