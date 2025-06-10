@@ -16,8 +16,7 @@ import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
 defineProps<{
   disable: boolean;
-  title?: string;
-  subtitle?: string;
+  organization?: { label: string; sublabel?: string | null } | null;
 }>();
 
 const { t } = useTypedI18n();
@@ -38,15 +37,14 @@ const { hasService } = useProfileStore();
           {{ version }}
         </QBadge>
       </QToolbarTitle>
-      <div class="instance-name">
+      <div class="organization-info">
         <QSeparator vertical inset />
-        <!-- TODO: remove default values and replace v-if condition -->
-        <div class="instance-text">
-          <div class="title">
-            {{ title || "Université de Lille" }}
+        <div v-if="organization" class="organization-text">
+          <div class="label">
+            {{ organization.label }}
           </div>
-          <div v-if="true" class="subtitle">
-            {{ subtitle || "Département de mathématiques" }}
+          <div v-if="organization.sublabel" class="sublabel">
+            {{ organization.sublabel }}
           </div>
         </div>
       </div>
@@ -126,7 +124,7 @@ const { hasService } = useProfileStore();
   background-color: $secondary;
 }
 
-.instance-name {
+.organization-info {
   display: flex;
   align-items: center;
   margin: 0 12px;
@@ -135,18 +133,18 @@ const { hasService } = useProfileStore();
     margin: 0;
   }
 
-  .instance-text {
+  .organization-text {
     margin-left: 12px;
     line-height: 1.2;
     white-space: nowrap;
 
-    .title {
+    .label {
       font-size: 0.875rem;
       font-weight: 500;
       color: rgba(255, 255, 255, 0.9);
     }
 
-    .subtitle {
+    .sublabel {
       font-size: 0.75rem;
       color: rgba(255, 255, 255, 0.7);
       margin-top: 1px;

@@ -47,8 +47,7 @@ export default {
       organizationNotLoaded: "L'organisation n'a pas pu être chargée",
       profileNotLoaded: "Le profil n'a pas pu être chargé",
       shutdown: "Geyser est actuellement fermé",
-      commissioner:
-        "Les commissaires ont accès à Geyser uniquement durant la phase de commission",
+      commissioner: "Geyser n'est pas en phase de commission",
       pageNotFound: "Page non trouvée",
     },
   },

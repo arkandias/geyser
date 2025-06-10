@@ -20,7 +20,7 @@ const { notify } = useNotify();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
-const { profile, setProfile, setActiveRole } = useProfileStore();
+const { profile, setProfile } = useProfileStore();
 
 const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
@@ -41,25 +41,11 @@ watch(
   },
 );
 
-// Update active role on phase update
-watch(
-  currentPhase,
-  (phase) => {
-    if (profile.roles.includes(RoleEnum.Admin)) {
-      setActiveRole(RoleEnum.Admin);
-    } else if (
-      profile.roles.includes(RoleEnum.Commissioner) &&
-      phase === PhaseEnum.Assignments
-    ) {
-      setActiveRole(RoleEnum.Commissioner);
-    }
-  },
-  { immediate: true },
-);
-
 graphql(`
   query GetAppData($orgId: Int!, $userId: Int!) {
     organization: organizationByPk(id: $orgId) {
+      label
+      sublabel
       currentPhases {
         value
       }
@@ -86,7 +72,10 @@ graphql(`
 // Fetch app data
 const getAppData = useQuery({
   query: GetAppDataDocument,
-  variables: { userId: authManager.userId },
+  variables: {
+    orgId: authManager.orgId,
+    userId: authManager.userId,
+  },
   pause: () => !authManager.hasAccess,
   context: {
     additionalTypenames: [
@@ -110,6 +99,7 @@ watch(
       });
       return;
     }
+
     if (data?.organization) {
       setCurrentPhase(
         data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,
@@ -117,16 +107,15 @@ watch(
       setYears(data.organization.years);
       setCustomTexts(data.organization.customTexts);
     }
-    if (data?.profile) {
-      setProfile({
-        oid: authManager.orgId,
-        id: authManager.userId,
-        roles: authManager.allowedRoles,
-        activeRole: authManager.role,
-        displayname: data.profile.displayname ?? "",
-        services: data.profile.services,
-      });
-    }
+
+    setProfile({
+      oid: authManager.orgId,
+      id: authManager.userId,
+      roles: authManager.allowedRoles,
+      activeRole: authManager.role,
+      displayname: (profile.displayname || data?.profile?.displayname) ?? "",
+      services: data?.profile?.services ?? [],
+    });
   },
   { immediate: true },
 );
@@ -148,9 +137,6 @@ const accessDeniedMessage = computed(() => {
   if (!getAppData.data.value?.organization) {
     return t("home.alert.organizationNotLoaded");
   }
-  if (!getAppData.data.value.profile) {
-    return t("home.alert.profileNotLoaded");
-  }
   if (
     currentPhase.value === PhaseEnum.Shutdown &&
     profile.activeRole !== RoleEnum.Admin
@@ -162,6 +148,9 @@ const accessDeniedMessage = computed(() => {
     currentPhase.value !== PhaseEnum.Assignments
   ) {
     return t("home.alert.commissioner");
+  }
+  if (!getAppData.data.value.profile) {
+    return t("home.alert.profileNotLoaded");
   }
   return "";
 });
@@ -176,7 +165,10 @@ const devClass = {
 
 <template>
   <QLayout view="hHh lpR fFf" class="text-body-1" :class="devClass">
-    <TheHeader :disable="!accessGranted" />
+    <TheHeader
+      :disable="!accessGranted"
+      :organization="getAppData.data.value?.organization"
+    />
     <QPageContainer>
       <RouterView v-if="accessGranted" />
       <PageHome v-else :alert="accessDeniedMessage" />

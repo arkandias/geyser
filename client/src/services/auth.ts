@@ -22,7 +22,7 @@ const api = axios.create({
 
 export class AuthManager {
   private _payload?: AccessTokenPayload;
-  private _role: RoleType = "teacher";
+  private _role: RoleType | null = null;
   private _postLogin = false;
   private _postLogout = false;
   private _authError: string | null = null;
@@ -129,7 +129,8 @@ export class AuthManager {
       const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
       this._role = this._payload.defaultRole;
-      console.debug("[AuthManager] Verification succeeded:", this._payload);
+      console.debug("[AuthManager] Verification succeeded:");
+      console.debug(this._payload);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
@@ -211,11 +212,16 @@ export class AuthManager {
     );
   }
 
-  get role(): RoleEnum {
-    return RoleEnum[capitalize(this._role)];
+  get role(): RoleEnum | null {
+    return this._role ? RoleEnum[capitalize(this._role)] : null;
   }
 
-  setRole(role: RoleEnum) {
+  setRole(role?: RoleEnum | null) {
+    if (!role) {
+      this._role = null;
+      return;
+    }
+
     if (this.allowedRoles.includes(role)) {
       this._role = toLowerCase(role);
     } else {
@@ -224,8 +230,6 @@ export class AuthManager {
   }
 
   get headers(): Record<string, string> {
-    return {
-      "X-User-Role": this._role,
-    };
+    return this._role ? { "X-User-Role": this._role } : {};
   }
 }

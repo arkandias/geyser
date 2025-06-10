@@ -1,19 +1,18 @@
 import { computed, reactive, readonly } from "vue";
 
-import { RoleEnum } from "@/gql/graphql.ts";
+import type { RoleEnum } from "@/gql/graphql.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 type Profile = {
   oid: number;
   id: number;
   roles: RoleEnum[];
-  activeRole: RoleEnum;
+  activeRole: RoleEnum | null;
   displayname: string;
   services: {
     id: number;
     year: number;
   }[];
-  isLoaded: boolean;
 };
 
 const profile = reactive<Profile>({
@@ -21,14 +20,12 @@ const profile = reactive<Profile>({
   id: -1,
   displayname: "",
   roles: [],
-  activeRole: RoleEnum.Teacher,
+  activeRole: null,
   services: [],
-  isLoaded: false,
 });
 
-const setProfile = (newProfile: Omit<Profile, "isLoaded">) => {
+const setProfile = (newProfile: Profile) => {
   Object.assign(profile, newProfile);
-  profile.isLoaded = true;
 };
 
 const setActiveRole = (role: RoleEnum) => {

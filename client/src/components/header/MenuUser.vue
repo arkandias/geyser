@@ -32,13 +32,15 @@ const updateRole = async (value: RoleEnum) => {
 <template>
   <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
     <QList>
-      <template v-if="profile.isLoaded">
+      <template v-if="profile.displayname">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
             {{ profile.displayname }}
           </QItemLabel>
         </QItem>
         <QSeparator />
+      </template>
+      <template v-if="roleOptions.length">
         <QItem class="q-pl-sm">
           <QOptionGroup
             :model-value="profile.activeRole"

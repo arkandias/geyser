@@ -47,8 +47,7 @@ export default {
       organizationNotLoaded: "Could not load organization data",
       profileNotLoaded: "Could not load profile data",
       shutdown: "Geyser is currently closed",
-      commissioner:
-        "Commissioners have access to Geyser during the assignments phase only",
+      commissioner: "Geyser is not in assignments phase",
       pageNotFound: "Page not found",
     },
   },
