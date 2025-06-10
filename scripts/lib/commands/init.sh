@@ -33,7 +33,7 @@ handle_init() {
         esac
     done
 
-   if docker volume ls --format '{{.Name}}' | grep -qE '^geyser_(data|kc-data)$'; then
+    if docker volume ls --format '{{.Name}}' | grep -qE '^geyser_(data|kc-data)$'; then
         warn "Existing data volumes found (this may cause conflicts). You should purge Geyser first with 'geyser purge'"
         if ! confirm "Initialize anyway?"; then
             info "Initialization cancelled: purge Geyser first with 'geyser purge'"

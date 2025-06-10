@@ -28,7 +28,7 @@ handle_webhook_stop() {
             ;;
         esac
     done
-    
+
     local webhook_pid
     webhook_pid="$(lsof -i :9000 -t 2>/dev/null)"
 

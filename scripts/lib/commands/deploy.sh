@@ -31,12 +31,12 @@ handle_deploy() {
 
     # Pull latest version
     git pull
-    
+
     # Deploy application
     _compose pull
     COMPOSE_BAKE=true _compose build --pull --no-cache
     _compose up -d
-    
+
     # Cleanup
     docker system prune -f
 }

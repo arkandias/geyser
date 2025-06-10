@@ -55,6 +55,6 @@ handle_webhook_start() {
             _webhook -verbose &>>"${LOGS_DIR}/webhook.log" &
         fi
     fi
-    
+
     info "Webhook listening on port 9000. Run 'geyser webhook-stop' to stop it"
 }

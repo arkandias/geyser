@@ -32,7 +32,7 @@ handle_install_completion() {
             ;;
         esac
     done
-    
+
     if [[ -z "${ZSH}" ]]; then
         error "Oh My Zsh is not installed. You can install it with \
 'sh -c \"\$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)\"'"
