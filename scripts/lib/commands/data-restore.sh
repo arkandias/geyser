@@ -62,27 +62,22 @@ handle_data_restore() {
         exit 1
     fi
 
+    if [[ -n "$(_compose ps db --format '{{.Status}}')" ]]; then
+        warn "Database must be stopped before import"
+        if ! confirm "Continue?"; then
+            info "Data import cancelled"
+            return
+        fi
+        info "Stopping database..."
+        _compose rm -s -f db
+    fi
+
     info "Restoring database..."
-    case "$(_compose ps -a db --format '{{.Health}}' 2>/dev/null)" in
-    "starting")
-        wait_until_healthy db
-        ;&
-    "healthy")
-        _compose exec -T db bash -c "dropdb -U postgres --if-exists --force geyser"
-        _compose exec -T db bash -c "createdb -U postgres geyser"
-        _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
-        ;;
-    "unhealthy")
-        error "Service db is unhealthy"
-        exit 1
-        ;;
-    "")
-        _compose run --rm db bash -c "
-            dropdb -U postgres --if-exists --force geyser &&
-            createdb -U postgres geyser &&
-            pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump
-        "
-        ;;
-    esac
+    _compose up -d db
+    wait_until_healthy db
+    _compose exec -T db bash -c "dropdb -U postgres --if-exists --force geyser"
+    _compose exec -T db bash -c "createdb -U postgres geyser"
+    _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
+    _compose rm -s -f db
     success "Backup restored successfully"
 }

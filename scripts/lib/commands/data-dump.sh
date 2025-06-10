@@ -64,6 +64,9 @@ handle_data_dump() {
 
     info "Dumping database..."
     case "$(_compose ps db --format '{{.Health}}' 2>/dev/null)" in
+    "")
+        _compose up -d db
+        ;&
     "starting")
         wait_until_healthy db
         ;&
@@ -73,9 +76,6 @@ handle_data_dump() {
     "unhealthy")
         error "Service db is unhealthy"
         exit 1
-        ;;
-    "")
-        _compose run --rm db pg_dump -U postgres -d geyser -Fc >"/backups/${backup}/db.dump"
         ;;
     esac
     success "Dump created successfully in ${backup_path}"
