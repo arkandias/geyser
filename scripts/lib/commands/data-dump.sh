@@ -17,7 +17,7 @@ EOF
 }
 
 handle_data_dump() {
-    local backup backup_path
+    local backup
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -59,7 +59,7 @@ handle_data_dump() {
     fi
 
     # Create backup directory
-    backup_path="${BACKUPS_DIR}/${backup}/"
+    local backup_path="${BACKUPS_DIR}/${backup}/"
     mkdir -p "${backup_path}"
 
     info "Dumping database..."

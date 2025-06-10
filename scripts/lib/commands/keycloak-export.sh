@@ -19,7 +19,7 @@ EOF
 }
 
 handle_keycloak_export() {
-    local backup backup_path
+    local backup
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -74,7 +74,7 @@ handle_keycloak_export() {
     fi
 
     # Create backup directory
-    backup_path="${BACKUPS_DIR}/${backup}"
+    local backup_path="${BACKUPS_DIR}/${backup}"
     mkdir -p "${backup_path}"
 
     info "Exporting Keycloak realms and users..."

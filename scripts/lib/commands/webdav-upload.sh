@@ -91,7 +91,6 @@ _webdav_check_env() {
 
 _webdav_test_connection() {
     local response_code
-
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
         -X PROPFIND \
@@ -107,9 +106,8 @@ _webdav_test_connection() {
 # shellcheck disable=SC2120
 _webdav_mkdir() {
     local dir_path="$1"
-    local full_url
-    local response_code
 
+    local full_url
     if [[ -z "${dir_path}" ]]; then
         # Create base directory
         full_url="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}"
@@ -120,6 +118,7 @@ _webdav_mkdir() {
         info "Creating subdirectory ${dir_path}..."
     fi
 
+    local response_code
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
         -X MKCOL \
@@ -143,7 +142,6 @@ _webdav_mkdir() {
 _webdav_upload_file() {
     local local_file="$1"
     local remote_path="$2"
-    local response_code
 
     if [[ ! -f "${local_file}" ]]; then
         error "Local file ${local_file} does not exist"
@@ -151,6 +149,7 @@ _webdav_upload_file() {
     fi
 
     info "Uploading file ${local_file} to ${remote_path}..."
+    local response_code
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
         -T "${local_file}" \
@@ -166,13 +165,13 @@ _webdav_upload_file() {
 
 _webdav_handle_backup() {
     local backup="$1"
-    local response_code
 
     if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
         error "Backup directory ${backup} does not exist"
         exit 1
     fi
 
+    local response_code
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
         -X PROPFIND \
