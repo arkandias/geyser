@@ -1,18 +1,22 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, Index, PrimaryColumn, Unique } from "typeorm";
 
-@Entity({ name: "role", schema: "public" })
-@Unique(["teacher_id", "type"])
-@Index("idx_role_teacher_id", ["teacher_id"])
-@Index("idx_role_type", ["type"])
+@Entity({ name: "teacher_role", schema: "public" })
+@Unique(["oid", "teacher_id", "role"])
+@Index("idx_teacher_role_oid", ["oid"])
+@Index("idx_teacher_role_role", ["role"])
+@Index("idx_teacher_role_oid_teacher_id", ["oid", "teacher_id"])
 export class Role {
-  @PrimaryGeneratedColumn("identity")
+  @PrimaryColumn("integer")
+  oid!: number;
+
+  @PrimaryColumn("integer", { generated: "identity" })
   id!: number;
 
-  @Column("text")
+  @Column("integer")
   teacher_id!: number;
 
   @Column("text")
-  type!: string;
+  role!: string;
 
   @Column("text", { nullable: true })
   comment: string | null = null;

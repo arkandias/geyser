@@ -1,10 +1,14 @@
-import { Column, Entity, Index, PrimaryGeneratedColumn, Unique } from "typeorm";
+import { Column, Entity, Index, PrimaryColumn, Unique } from "typeorm";
 
 @Entity({ name: "teacher", schema: "public" })
-@Unique(["email"])
-@Index("idx_teacher_position_id", ["position_id"])
+@Unique(["oid", "email"])
+@Index("idx_teacher_oid", ["oid"])
+@Index("idx_teacher_oid_position_id", ["oid", "position_id"])
 export class User {
-  @PrimaryGeneratedColumn("identity")
+  @PrimaryColumn("integer")
+  oid!: number;
+
+  @PrimaryColumn("integer", { generated: "identity" })
   id!: number;
 
   @Column("text")
@@ -19,7 +23,7 @@ export class User {
   @Column("text", { nullable: true })
   alias: string | null = null;
 
-  @Column({ type: "text" })
+  @Column("text")
   displayname!: string;
 
   @Column("integer", { nullable: true })

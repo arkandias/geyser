@@ -69,12 +69,12 @@ export class JwtService {
   }
 
   async makeAccessToken(orgId: number, userId: number): Promise<string> {
-    const roles = await this.rolesService.findByUserId(userId);
-    const roleTypes = roles.map((role) => roleTypeSchema.parse(role.type));
-    if (!roleTypes.includes("teacher")) {
-      roleTypes.push("teacher");
+    const userRoles = await this.rolesService.findByUserId(userId);
+    const roles = userRoles.map((role) => roleTypeSchema.parse(role.role));
+    if (!roles.includes("teacher")) {
+      roles.push("teacher");
     }
-    roleTypes.sort();
+    roles.sort();
 
     return this.makeToken({
       sub: userId,
@@ -85,8 +85,8 @@ export class JwtService {
       typ: "Bearer",
       orgId,
       userId,
-      allowedRoles: roleTypes,
-      defaultRole: "teacher",
+      allowedRoles: roles,
+      defaultRole: roles.includes("admin") ? "admin" : "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
