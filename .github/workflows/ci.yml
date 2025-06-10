@@ -25,23 +25,31 @@ jobs:
   format:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm run format:check
+      - name: Format check with Prettier
+        run: pnpm run format:check
 
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm run lint
+      - name: Build shared package
+        run: pnpm --filter @geyser/shared build
+      - name: Lint with ESLint
+        run: pnpm run lint
 
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - run: pnpm run test
+      - name: Run tests with Vitest
+        run: pnpm run test
 
   build-and-publish:
     needs: [format, lint, test]

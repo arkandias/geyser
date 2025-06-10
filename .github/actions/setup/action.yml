@@ -3,10 +3,13 @@ description: "Checkout repository, setup Node.js and PNPM with caching"
 runs:
   using: composite
   steps:
-    - uses: pnpm/action-setup@v4
-    - uses: actions/setup-node@v4
+    - name: Install pnpm
+      uses: pnpm/action-setup@v4
+    - name: Setup Node.js
+      uses: actions/setup-node@v4
       with:
         node-version-file: "package.json"
         cache: "pnpm"
-    - run: pnpm install
+    - name: Install dependencies
+      run: pnpm install
       shell: bash
