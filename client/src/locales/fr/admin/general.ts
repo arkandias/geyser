@@ -24,6 +24,7 @@ export default {
         create: "Créer",
         update: "Mettre à jour",
         createServices: "Créer les services des intervenants actifs",
+        copyServices: "Copier les services de l'année précédente",
         copyCourses: "Copier les enseignements de l'année précédente",
         computePriorities: "Calculer les priorités",
       },
@@ -35,6 +36,7 @@ la supprimer.`,
       error: {
         setCurrent: "Échec de la mise à jour de l'année en cours",
         createServices: "Échec de la création des services",
+        copyServices: "Échec de la copie des services",
         copyCourses: "Échec de la copie des enseignements",
         computePriorities: "Échec du calcul des priorités",
         emptyValue: "Entrez une valeur pour l'année",
@@ -46,7 +48,9 @@ la supprimer.`,
         delete: "Année supprimée",
         createServices:
           "0 service créé | 1 service créé | {count} services créés",
-        copyCourses: "0 cours copié | 1 cours copié | {count} cours copié",
+        copyServices:
+          "0 service copié | 1 service copié | {count} services copiés",
+        copyCourses: "0 cours copié | 1 cours copié | {count} cours copiés",
         computePriorities:
           "0 priorité calculée | 1 priorité calculée | {count} priorités calculées",
       },

@@ -16464,6 +16464,11 @@ input copyYearCoursesArgs {
   p_year: Int
 }
 
+input copyYearServicesArgs {
+  p_oid: Int
+  p_year: Int
+}
+
 input courseAggregateBoolExpBool_and {
   arguments: CourseSelectColumnCourseAggregateBoolExpBool_andArgumentsColumns!
   distinct: Boolean
@@ -16614,6 +16619,31 @@ type mutation_root {
     """filter the rows returned"""
     where: CourseBoolExp
   ): [Course!]!
+
+  """
+  execute VOLATILE function "copy_year_services" which returns "service"
+  """
+  copyYearServices(
+    """
+    input parameters for function "copyYearServices"
+    """
+    args: copyYearServicesArgs!
+
+    """distinct select on columns"""
+    distinctOn: [ServiceSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ServiceOrderBy!]
+
+    """filter the rows returned"""
+    where: ServiceBoolExp
+  ): [Service!]!
 
   """
   execute VOLATILE function "create_teacher_service" which returns "service"

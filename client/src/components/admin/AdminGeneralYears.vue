@@ -8,6 +8,7 @@ import { graphql } from "@/gql";
 import {
   ComputePrioritiesDocument,
   CopyCoursesDocument,
+  CopyServicesDocument,
   CreateServicesDocument,
   DeleteYearDocument,
   InsertYearDocument,
@@ -63,6 +64,12 @@ graphql(`
     }
   }
 
+  mutation CopyServices($year: Int!) {
+    copyYearServices(args: { p_year: $year }) {
+      id
+    }
+  }
+
   mutation CopyCourses($year: Int!) {
     copyYearCourses(args: { p_year: $year }) {
       id
@@ -81,6 +88,7 @@ const insertYear = useMutation(InsertYearDocument);
 const updateYear = useMutation(UpdateYearDocument);
 const deleteYear = useMutation(DeleteYearDocument);
 const createServices = useMutation(CreateServicesDocument);
+const copyServices = useMutation(CopyServicesDocument);
 const copyCourses = useMutation(CopyCoursesDocument);
 const computePriorities = useMutation(ComputePrioritiesDocument);
 
@@ -227,6 +235,30 @@ const createServicesHandle = async () => {
   }
 };
 
+const copyServicesHandle = async () => {
+  if (selectedYear.value === null) {
+    return;
+  }
+
+  const { data, error } = await copyServices.executeMutation({
+    year: selectedYear.value,
+  });
+
+  if (error || !data?.copyYearServices) {
+    notify(NotifyType.Error, {
+      message: t("admin.general.years.error.copyServices"),
+      caption: error?.message ?? t("admin.data.error.noReturnData"),
+    });
+  } else {
+    notify(NotifyType.Success, {
+      message: t(
+        "admin.general.years.success.copyServices",
+        data.copyYearServices.length,
+      ),
+    });
+  }
+};
+
 const copyCoursesHandle = async () => {
   if (selectedYear.value === null) {
     return;
@@ -320,9 +352,17 @@ const edit = (value: number) => {
                   {{ t("admin.general.years.button.createServices") }}
                 </QItemSection>
               </QItem>
+              <QItem clickable @click="copyServicesHandle()">
+                <QItemSection side>
+                  <QIcon name="sym_s_content_copy" color="primary" />
+                </QItemSection>
+                <QItemSection>
+                  {{ t("admin.general.years.button.copyServices") }}
+                </QItemSection>
+              </QItem>
               <QItem clickable @click="copyCoursesHandle()">
                 <QItemSection side>
-                  <QIcon name="sym_s_menu_book" color="primary" />
+                  <QIcon name="sym_s_content_copy" color="primary" />
                 </QItemSection>
                 <QItemSection>
                   {{ t("admin.general.years.button.copyCourses") }}

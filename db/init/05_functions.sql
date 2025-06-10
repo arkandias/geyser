@@ -12,8 +12,11 @@ INSERT INTO public.service (oid, year, teacher_id, hours)
 SELECT p_oid, p_year, p_teacher_id, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
          LEFT JOIN public.position p
-                   ON p.id = t.position_id
-WHERE t.id = p_teacher_id
+                   ON p.oid = t.oid
+                       AND p.id = t.position_id
+WHERE t.oid = p_oid
+  AND t.id = p_teacher_id
+  AND t.active IS TRUE
 ON CONFLICT (oid, year, teacher_id) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
@@ -30,15 +33,19 @@ INSERT INTO public.priority (oid, year, service_id, course_id, seniority, comput
 SELECT service_row.oid, service_row.year, service_row.id, child.id, coalesce(p.seniority, 0) + 1, TRUE
 FROM public.service s
          JOIN public.request r
-              ON r.service_id = s.id
+              ON r.oid = s.oid
+                  AND r.service_id = s.id
                   AND r.type = 'assignment'
          LEFT JOIN public.priority p
-                   ON p.service_id = r.service_id
+                   ON p.oid = r.oid
+                       AND p.service_id = r.service_id
                        AND p.course_id = r.course_id
          JOIN public.course c
-              ON c.id = r.course_id
+              ON c.oid = r.oid
+                  AND c.id = r.course_id
          JOIN public.course child
-              ON child.year = c.year + 1
+              ON child.oid = c.oid
+                  AND child.year = c.year + 1
                   AND child.program_id = c.program_id
                   AND child.track_id = c.track_id
                   AND child.name = c.name
@@ -93,6 +100,22 @@ WHERE t.oid = p_oid
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.create_year_services(integer, integer) IS 'Creates service entries for all active teachers in organization for specified year';
 
+CREATE FUNCTION public.copy_year_services(p_oid integer, p_year integer) RETURNS setof public.service AS
+$$
+INSERT INTO public.service (oid, year, teacher_id, hours)
+SELECT p_oid, p_year, s.teacher_id, s.hours
+FROM public.service s
+         JOIN public.teacher t
+              ON t.oid = s.oid
+                  AND t.id = s.teacher_id
+WHERE s.oid = p_oid
+  AND s.year = p_year - 1
+  AND t.active IS TRUE
+ON CONFLICT (oid, year, teacher_id) DO NOTHING
+RETURNING *;
+$$ LANGUAGE sql;
+COMMENT ON FUNCTION public.copy_year_services(integer, integer) IS 'Creates copies of active teacher services from the previous year into the specified year';
+
 CREATE FUNCTION public.copy_year_courses(p_oid integer, p_year integer) RETURNS setof public.course AS
 $$
 INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
@@ -115,7 +138,7 @@ SELECT p_oid,
 FROM public.course c
 WHERE c.oid = p_oid
   AND c.year = p_year - 1
-ON CONFLICT DO NOTHING
+ON CONFLICT (oid, year, program_id, track_id, name, semester, type_id) DO NOTHING
 RETURNING *;
 $$ LANGUAGE sql;
 COMMENT ON FUNCTION public.copy_year_courses(integer, integer) IS 'Creates copies of all courses from the previous year into the specified year';

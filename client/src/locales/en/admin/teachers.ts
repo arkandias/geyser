@@ -73,9 +73,9 @@ export default {
           delete:
             "No teacher deleted | Teacher deleted | {count} teachers deleted",
           import:
-            "0 teacher imported | 1 teacher imported | {count} teachers imported",
+            "0 teachers imported | 1 teacher imported | {count} teachers imported",
           export:
-            "0 teacher exported | 1 teacher exported | {count} teachers exported",
+            "0 teachers exported | 1 teacher exported | {count} teachers exported",
         },
         confirm: {
           delete: {
@@ -123,9 +123,9 @@ If there are services, responsibilities, or roles for these teachers, you will n
           delete:
             "No position deleted | Position deleted | {count} positions deleted",
           import:
-            "0 position imported | 1 position imported | {count} positions imported",
+            "0 positions imported | 1 position imported | {count} positions imported",
           export:
-            "0 position exported | 1 position exported | {count} positions exported",
+            "0 positions exported | 1 position exported | {count} positions exported",
         },
         confirm: {
           delete: {
@@ -173,9 +173,9 @@ If these positions are assigned to teachers, you will not be able to delete them
           delete:
             "No service deleted | Service deleted | {count} services deleted",
           import:
-            "0 service imported | 1 service imported | {count} services imported",
+            "0 services imported | 1 service imported | {count} services imported",
           export:
-            "0 service exported | 1 service exported | {count} services exported",
+            "0 services exported | 1 service exported | {count} services exported",
         },
         confirm: {
           delete: {
@@ -237,9 +237,9 @@ If there are modifications, requests, or priorities for these services, you will
           delete:
             "No service modification deleted | Service modification deleted | {count} service modifications deleted",
           import:
-            "0 service modification imported | 1 service modification imported | {count} service modifications imported",
+            "0 service modifications imported | 1 service modification imported | {count} service modifications imported",
           export:
-            "0 service modification exported | 1 service modification exported | {count} service modifications exported",
+            "0 service modifications exported | 1 service modification exported | {count} service modifications exported",
         },
         confirm: {
           delete: {
@@ -280,9 +280,9 @@ If there are modifications, requests, or priorities for these services, you will
           delete:
             "No modification type deleted | Modification type deleted | {count} modification types deleted",
           import:
-            "0 modification type imported | 1 modification type imported | {count} modification types imported",
+            "0 modification types imported | 1 modification type imported | {count} modification types imported",
           export:
-            "0 modification type exported | 1 modification type exported | {count} modification types exported",
+            "0 modification types exported | 1 modification type exported | {count} modification types exported",
         },
         confirm: {
           delete: {
@@ -335,9 +335,9 @@ If these types are assigned to modifications, you will not be able to delete the
           delete:
             "No message deleted | Message deleted | {count} messages deleted",
           import:
-            "0 message imported | 1 message imported | {count} messages imported",
+            "0 messages imported | 1 message imported | {count} messages imported",
           export:
-            "0 message exported | 1 message exported | {count} messages exported",
+            "0 messages exported | 1 message exported | {count} messages exported",
         },
         confirm: {
           delete: {

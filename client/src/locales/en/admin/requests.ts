@@ -81,9 +81,9 @@ export default {
           delete:
             "No request deleted | Request deleted | {count} requests deleted",
           import:
-            "0 request imported | 1 request imported | {count} requests imported",
+            "0 requests imported | 1 request imported | {count} requests imported",
           export:
-            "0 request exported | 1 request exported | {count} requests exported",
+            "0 requests exported | 1 request exported | {count} requests exported",
         },
         confirm: {
           delete: {
@@ -168,9 +168,9 @@ export default {
           delete:
             "No priority deleted | Priority deleted | {count} priorities deleted",
           import:
-            "0 priority imported | 1 priority imported | {count} priorities imported",
+            "0 priorities imported | 1 priority imported | {count} priorities imported",
           export:
-            "0 priority exported | 1 priority exported | {count} priorities exported",
+            "0 priorities exported | 1 priority exported | {count} priorities exported",
         },
         confirm: {
           delete: {

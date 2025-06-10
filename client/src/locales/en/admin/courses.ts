@@ -43,9 +43,9 @@ export default {
           delete:
             "No degree deleted | Degree deleted | {count} degrees deleted",
           import:
-            "0 degree imported | 1 degree imported | {count} degrees imported",
+            "0 degrees imported | 1 degree imported | {count} degrees imported",
           export:
-            "0 degree exported | 1 degree exported | {count} degrees exported",
+            "0 degrees exported | 1 degree exported | {count} degrees exported",
         },
         confirm: {
           delete: {
@@ -96,9 +96,9 @@ If these degrees contain programs, you will not be able to delete them.`,
           delete:
             "No program deleted | Program deleted | {count} programs deleted",
           import:
-            "0 program imported | 1 program imported | {count} programs imported",
+            "0 programs imported | 1 program imported | {count} programs imported",
           export:
-            "0 program exported | 1 program exported | {count} programs exported",
+            "0 programs exported | 1 program exported | {count} programs exported",
         },
         confirm: {
           delete: {
@@ -156,9 +156,9 @@ If there are tracks, courses, or coordinators for these programs, you will not b
           update: "No track updated | Track updated | {count} tracks updated",
           delete: "No track deleted | Track deleted | {count} tracks deleted",
           import:
-            "0 track imported | 1 track imported | {count} tracks imported",
+            "0 tracks imported | 1 track imported | {count} tracks imported",
           export:
-            "0 track exported | 1 track exported | {count} tracks exported",
+            "0 tracks exported | 1 track exported | {count} tracks exported",
         },
         confirm: {
           delete: {
@@ -273,9 +273,9 @@ If there are courses or coordinators for these tracks, you will not be able to d
           delete:
             "No course deleted | Course deleted | {count} courses deleted",
           import:
-            "0 course imported | 1 course imported | {count} courses imported",
+            "0 courses imported | 1 course imported | {count} courses imported",
           export:
-            "0 course exported | 1 course exported | {count} courses exported",
+            "0 courses exported | 1 course exported | {count} courses exported",
         },
         confirm: {
           delete: {
@@ -319,9 +319,9 @@ If there are requests, priorities, or coordinators for these courses, you will n
           delete:
             "No course type deleted | Course type deleted | {count} course types deleted",
           import:
-            "0 course type imported | 1 course type imported | {count} course types imported",
+            "0 course types imported | 1 course type imported | {count} course types imported",
           export:
-            "0 course type exported | 1 course type exported | {count} course types exported",
+            "0 course types exported | 1 course type exported | {count} course types exported",
         },
         confirm: {
           delete: {
