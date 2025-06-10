@@ -56,7 +56,7 @@ importers:
     dependencies:
       '@geyser/shared':
         specifier: workspace:*
-        version: file:shared
+        version: link:../shared
       '@urql/exchange-auth':
         specifier: ^2.2.1
         version: 2.2.1(@urql/core@5.1.1(graphql@16.11.0))
@@ -137,8 +137,8 @@ importers:
         specifier: ^6.3.5
         version: 6.3.5(@types/node@24.0.0)(jiti@2.4.2)(sass-embedded@1.89.1)(terser@5.42.0)(tsx@4.19.4)(yaml@2.8.0)
       vite-plugin-compression2:
-        specifier: ^1.4.0
-        version: 1.4.0(rollup@4.42.0)(vite@6.3.5(@types/node@24.0.0)(jiti@2.4.2)(sass-embedded@1.89.1)(terser@5.42.0)(tsx@4.19.4)(yaml@2.8.0))
+        specifier: ^2.0.1
+        version: 2.0.1(rollup@4.42.0)
       vitest:
         specifier: ^3.2.3
         version: 3.2.3(@types/node@24.0.0)(happy-dom@17.6.3)(jiti@2.4.2)(sass-embedded@1.89.1)(terser@5.42.0)(tsx@4.19.4)(yaml@2.8.0)
@@ -574,9 +574,6 @@ packages:
 
   '@fastify/busboy@3.1.1':
     resolution: {integrity: sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw==}
-
-  '@geyser/shared@file:shared':
-    resolution: {directory: shared, type: directory}
 
   '@graphql-codegen/add@5.0.3':
     resolution: {integrity: sha512-SxXPmramkth8XtBlAHu4H4jYcYXM/o3p01+psU+0NADQowA8jtYkK6MW5rV6T+CxkEaNZItfSmZRPgIuypcqnA==}
@@ -4003,10 +4000,8 @@ packages:
     engines: {node: ^18.0.0 || ^20.0.0 || >=22.0.0}
     hasBin: true
 
-  vite-plugin-compression2@1.4.0:
-    resolution: {integrity: sha512-UEk0Bq1IkkwqbDLoLOHZ8WTmN1QbvR28fvNl2liB88/6SG1oLrTVkxfjqW3pdla/rKQ6QXn+pJpv3GBbl+k56g==}
-    peerDependencies:
-      vite: ^2.0.0||^3.0.0||^4.0.0||^5.0.0 ||^6.0.0
+  vite-plugin-compression2@2.0.1:
+    resolution: {integrity: sha512-/eD8rKZeaajBoCo8SFUiXRzEqRZI3mzQdilzp86IHOvg2Mr+8XtE3e769kKxp26HaB9v/d4JWEfnlFeRqja4Dw==}
 
   vite@6.3.5:
     resolution: {integrity: sha512-cZn6NDFE7wdTpINgs++ZJ4N49W2vRp8LCKrn3Ob1kYNtOo21vfDoaV5GzBfLU4MovSAB8uNRm4jgzVQZ+mBzPQ==}
@@ -4584,10 +4579,6 @@ snapshots:
       levn: 0.4.1
 
   '@fastify/busboy@3.1.1': {}
-
-  '@geyser/shared@file:shared':
-    dependencies:
-      zod: 3.25.56
 
   '@graphql-codegen/add@5.0.3(graphql@16.11.0)':
     dependencies:
@@ -8258,11 +8249,10 @@ snapshots:
       - tsx
       - yaml
 
-  vite-plugin-compression2@1.4.0(rollup@4.42.0)(vite@6.3.5(@types/node@24.0.0)(jiti@2.4.2)(sass-embedded@1.89.1)(terser@5.42.0)(tsx@4.19.4)(yaml@2.8.0)):
+  vite-plugin-compression2@2.0.1(rollup@4.42.0):
     dependencies:
       '@rollup/pluginutils': 5.1.4(rollup@4.42.0)
       tar-mini: 0.2.0
-      vite: 6.3.5(@types/node@24.0.0)(jiti@2.4.2)(sass-embedded@1.89.1)(terser@5.42.0)(tsx@4.19.4)(yaml@2.8.0)
     transitivePeerDependencies:
       - rollup
 
