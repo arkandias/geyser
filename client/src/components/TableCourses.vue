@@ -21,6 +21,7 @@ import {
   getField,
   localeCompare,
   normalizeForSearch,
+  unique,
   uniqueValue,
 } from "@/utils";
 
@@ -392,9 +393,9 @@ const semesterOptions = computed(() =>
 const courseTypes = ref<string[]>([]);
 const courseTypeOptions = computed(() =>
   courses.value
-    .map((c) => c.type)
-    .filter(uniqueValue("label"))
-    .sort(compare("label")),
+    .map((c) => c.type.label)
+    .filter(unique)
+    .sort(),
 );
 
 // Search
@@ -578,8 +579,6 @@ const downloadTeacherAssignments = async () => {
           :options="courseTypeOptions"
           :disable="!!teacher"
           :label="t('courses.table.courses.filters.type')"
-          emit-value
-          map-options
           multiple
           use-chips
           square
