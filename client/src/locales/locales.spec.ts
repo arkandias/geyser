@@ -1,9 +1,11 @@
 import * as fs from "fs/promises";
 import { glob } from "glob";
+import { describe, expect, it } from "vitest";
 
 import en from "./en";
 import fr from "./fr";
 import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
+import type { AvailableLocale } from "@/config/locales.ts";
 import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
 import type { SimpleObject } from "@/types/data.ts";
 
@@ -24,19 +26,26 @@ import {
   adminTeachersTeachersColNames,
 } from "@/components/admin/col-names.ts";
 
-const locales = [
-  { label: "fr-FR", messages: fr },
-  { label: "en-US", messages: en },
-];
+const locales = { "fr-FR": fr, "en-US": en } satisfies Record<
+  AvailableLocale,
+  SimpleObject<string>
+>;
 
-async function main() {
-  const keysInFiles = await findKeysInFiles();
+describe("Translation Validation", () => {
+  it("should have all translation keys properly defined and used", async () => {
+    const keys = await findKeysInFiles();
 
-  locales.forEach((locale) => {
-    console.log(`Validating translations for locale ${locale.label}...`);
-    validateTranslations(locale.messages, keysInFiles);
+    Object.entries(locales).forEach(([label, messages]) => {
+      const definedKeys = flattenObject(messages);
+
+      const missingKeys = keys.filter((key) => !definedKeys.includes(key));
+      expect(missingKeys, `Missing translation keys in ${label}`).toEqual([]);
+
+      const unusedKeys = definedKeys.filter((key) => !keys.includes(key));
+      expect(unusedKeys, `Unused translation keys in ${label}`).toEqual([]);
+    });
   });
-}
+});
 
 const flattenObject = (obj: SimpleObject<string>, prefix = ""): string[] =>
   Object.keys(obj).flatMap((key) =>
@@ -44,28 +53,6 @@ const flattenObject = (obj: SimpleObject<string>, prefix = ""): string[] =>
       ? flattenObject(obj[key], prefix + key + ".")
       : [prefix + key],
   );
-
-const validateTranslations = (obj: SimpleObject<string>, keys: string[]) => {
-  const definedKeys = flattenObject(obj);
-
-  const missingKeys = keys.filter((key) => !definedKeys.includes(key));
-
-  if (missingKeys.length > 0) {
-    console.error(`* MISSING TRANSLATION KEYS:
-  - ${missingKeys.join("\n  - ")}`);
-  } else {
-    console.log("* All used keys are defined in the locale file");
-  }
-
-  const unusedKeys = definedKeys.filter((key) => !keys.includes(key));
-
-  if (unusedKeys.length > 0) {
-    console.warn(`* UNUSED TRANSLATION KEYS:
-  - ${unusedKeys.join("\n  - ")}`);
-  } else {
-    console.log("* All defined keys are used in the code");
-  }
-};
 
 const findKeysInFiles = async (): Promise<string[]> => {
   // Find all .vue and .ts files in src directory
@@ -123,10 +110,10 @@ const findKeysInFiles = async (): Promise<string[]> => {
     }
   }
 
-  if (nonStandardKeys.size > 0) {
-    console.error(`Found ${nonStandardKeys.size} non-standard keys:
-  - ${Array.from(nonStandardKeys).join("\n  - ")}`);
-  }
+  expect(
+    Array.from(nonStandardKeys),
+    "Found non-standard translation key patterns",
+  ).toEqual([]);
 
   // Manually add template string keys
 
@@ -200,14 +187,10 @@ const findKeysInFiles = async (): Promise<string[]> => {
     });
   });
 
-  if (templateStringsKeys.size > 0) {
-    console.warn(
-      `Found ${templateStringsKeys.size} template string keys (to be checked manually):
-  - ${Array.from(templateStringsKeys).join("\n  - ")}`,
-    );
-  }
+  expect(
+    Array.from(templateStringsKeys),
+    "Found unexpected template string keys",
+  ).toEqual([]);
 
   return [...standardKeys];
 };
-
-await main();

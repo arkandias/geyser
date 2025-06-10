@@ -13,8 +13,7 @@
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:app",
     "codegen:schema": "graphql-codegen --config codegen.schema.ts",
     "codegen:documents": "graphql-codegen --config codegen.documents.ts",
-    "codegen": "pnpm codegen:schema && pnpm codegen:documents",
-    "locales:check": "vite-node src/locales/check.ts"
+    "codegen": "pnpm codegen:schema && pnpm codegen:documents"
   },
   "dependencies": {
     "@geyser/shared": "workspace:*",
@@ -46,7 +45,6 @@
     "happy-dom": "^17.6.3",
     "sass-embedded": "^1.89.1",
     "vite": "^6.3.5",
-    "vite-node": "^3.2.3",
     "vite-plugin-compression2": "^1.4.0",
     "vitest": "^3.2.3",
     "vue-eslint-parser": "^10.1.3",

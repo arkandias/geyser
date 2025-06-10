@@ -17,5 +17,5 @@
     /* Project */
     "tsBuildInfoFile": "./node_modules/.cache/tsconfig.node.tsbuildinfo"
   },
-  "include": ["*.ts", "src/locales/check.ts"]
+  "include": ["*.ts"]
 }
