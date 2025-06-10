@@ -2,7 +2,7 @@
 # CONFIGURATION MANAGEMENT
 ###############################################################################
 
-readonly GEYSER_ENV_VARS=(
+declare -r GEYSER_ENV_VARS=(
     "GEYSER_DOMAIN"
     "GEYSER_MODE"
     "GEYSER_TAG"
@@ -10,7 +10,7 @@ readonly GEYSER_ENV_VARS=(
     "GEYSER_AS_SERVICE"
 )
 
-readonly REQUIRED_ENV_VARS=(
+declare -r REQUIRED_ENV_VARS=(
     "KC_BOOTSTRAP_ADMIN_PASSWORD"
     "POSTGRES_KC_PASSWORD"
     "POSTGRES_PASSWORD"
@@ -19,7 +19,7 @@ readonly REQUIRED_ENV_VARS=(
     "CLIENT_SECRET"
 )
 
-readonly OPTIONAL_ENV_VARS=(
+declare -r OPTIONAL_ENV_VARS=(
     "WEBHOOK_SECRET"
     "WEBDAV_URL"
     "WEBDAV_USER"
@@ -28,7 +28,7 @@ readonly OPTIONAL_ENV_VARS=(
 )
 
 # shellcheck disable=SC2034
-readonly ENV_FILES=(
+declare -r ENV_FILES=(
     "${GEYSER_HOME}/.env"
     "${GEYSER_HOME}/.env.local"
 )
@@ -37,6 +37,7 @@ load_environment() {
     _load_env_files
     _validate_geyser_env_vars
     _validate_required_env_vars
+    _validate_optional_env_vars
     _compute_additional_env_vars
     _env_summary
 }
@@ -158,6 +159,15 @@ _validate_required_env_vars() {
         error "Missing required environment variables: ${missing_vars[*]}"
         exit 1
     fi
+}
+
+_validate_optional_env_vars() {
+    local var
+    for var in "${OPTIONAL_ENV_VARS[@]}"; do
+        if [[ -z "${!var}" ]]; then
+            declare -gr "${var}"
+        fi
+    done
 }
 
 _compute_additional_env_vars() {

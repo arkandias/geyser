@@ -6,7 +6,7 @@
 # License: GNU AGPL v3.0
 #######################################
 
-readonly VERSION="1.0.0"
+declare -r VERSION="1.0.0"
 
 # Exit the script immediately if any command fails
 set -e
@@ -73,15 +73,15 @@ EOF
 
 # Absolute path to the directory containing the current script
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
-readonly SCRIPT_DIR
+declare -r SCRIPT_DIR
 
 # Absolute path to the directory containing the application
 : "${GEYSER_HOME:="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
-readonly GEYSER_HOME
+declare -r GEYSER_HOME
 
 # Directories paths
-readonly BACKUPS_DIR="${GEYSER_HOME}/backups"
-readonly LOGS_DIR="${GEYSER_HOME}/logs"
+declare -r BACKUPS_DIR="${GEYSER_HOME}/backups"
+declare -r LOGS_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
 mkdir -p "${BACKUPS_DIR}"
@@ -123,40 +123,41 @@ main() {
             exit 0
             ;;
         -q | --quiet)
-            GEYSER_LOG_LEVEL="silent"
+            # shellcheck disable=SC2034
+            declare -g GEYSER_LOG_LEVEL="silent"
             shift
             ;;
         --domain)
             # shellcheck disable=SC2034
-            GEYSER_DOMAIN="$2"
+            declare -g GEYSER_DOMAIN="$2"
             shift 2
             ;;
         --mode)
-            GEYSER_MODE="$2"
+            declare -g GEYSER_MODE="$2"
             shift 2
             ;;
         --dev)
-            GEYSER_MODE="development"
+            declare -g GEYSER_MODE="development"
             shift
             ;;
         --prod)
             # shellcheck disable=SC2034
-            GEYSER_MODE="production"
+            declare -g GEYSER_MODE="production"
             shift
             ;;
         --tag)
             # shellcheck disable=SC2034
-            GEYSER_TAG="$2"
+            declare -g GEYSER_TAG="$2"
             shift 2
             ;;
         --log-level)
             # shellcheck disable=SC2034
-            GEYSER_LOG_LEVEL="$2"
+            declare -g EYSER_LOG_LEVEL="$2"
             shift 2
             ;;
         --as-service)
             # shellcheck disable=SC2034
-            GEYSER_AS_SERVICE="true"
+            declare -g GEYSER_AS_SERVICE="true"
             shift
             ;;
         *)

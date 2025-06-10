@@ -3,17 +3,17 @@
 ###############################################################################
 
 # Constants for log levels (compatible with systemd)
-readonly LOG_LEVEL_ERROR=3
-readonly LOG_LEVEL_WARN=4
-readonly LOG_LEVEL_INFO=6
-readonly LOG_LEVEL_DEBUG=7
+declare -r LOG_LEVEL_ERROR=3
+declare -r LOG_LEVEL_WARN=4
+declare -r LOG_LEVEL_INFO=6
+declare -r LOG_LEVEL_DEBUG=7
 
 # ANSI color codes
-readonly COLOR_RED='\033[31m'
-readonly COLOR_GREEN='\033[32m'
-readonly COLOR_YELLOW='\033[33m'
-readonly COLOR_BLUE='\033[34m'
-readonly COLOR_RESET='\033[0m'
+declare -r COLOR_RED='\033[31m'
+declare -r COLOR_GREEN='\033[32m'
+declare -r COLOR_YELLOW='\033[33m'
+declare -r COLOR_BLUE='\033[34m'
+declare -r COLOR_RESET='\033[0m'
 
 log_level() {
     case "$1" in

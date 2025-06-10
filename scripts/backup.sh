@@ -22,7 +22,7 @@
 set -e
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
-readonly SCRIPT_DIR
+declare -r SCRIPT_DIR
 
 timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
 

@@ -25,7 +25,7 @@ services:
     environment:
       NGINX_DOMAIN: "${GEYSER_DOMAIN}"
       NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
-      NGINX_PROXY_DEV_CLIENT_URL: "http://host.docker.internal:5173"
+      NGINX_PROXY_DEV_SERVER_URL: "http://host.docker.internal:5173"
     extra_hosts:
       - "host.docker.internal:host-gateway"
     ports: !override

@@ -8,13 +8,13 @@ export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
   readonly nodeEnv: "development" | "production";
   readonly port: number;
+  readonly organizationKey?: string;
   readonly api: {
     url: URL;
     adminSecret: string;
   };
   readonly parentDomain: string;
   readonly originRegex: RegExp;
-  readonly organizationKey: string;
   readonly databaseUrl: URL;
   readonly graphql: {
     url: URL;
@@ -41,6 +41,13 @@ export class ConfigService {
     this.port = this.configService.getOrThrow<number>("API_PORT");
     this.logger.log(`Port: ${this.port}`);
 
+    this.organizationKey = this.configService.get<string | undefined>(
+      "API_ORGANIZATION_KEY",
+    );
+    if (this.organizationKey) {
+      this.logger.log(`Organization key: ${this.organizationKey}`);
+    }
+
     this.api = {
       url: new URL(this.configService.getOrThrow<string>("API_URL")),
       adminSecret: this.configService.getOrThrow<string>("API_ADMIN_SECRET"),
@@ -54,11 +61,6 @@ export class ConfigService {
       `^${this.api.url.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
     );
     this.logger.log(`Origin regex: ${this.originRegex}`);
-
-    this.organizationKey = this.configService.getOrThrow<string | undefined>(
-      "API_ORGANIZATION_KEY",
-    );
-    this.logger.log(`Organization key: ${this.organizationKey}`);
 
     this.databaseUrl = new URL(
       this.configService.getOrThrow<string>("API_DATABASE_URL"),

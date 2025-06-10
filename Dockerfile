@@ -26,8 +26,8 @@ RUN apt-get update && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 
-ENV NODE_ENV=production
-ENV PORT=3000
+ENV API_NODE_ENV=production
+ENV API_PORT=3000
 EXPOSE 3000
 CMD ["pnpm", "start:prod"]
 

@@ -5,7 +5,7 @@ resolver 127.0.0.11 valid=1y ipv6=off;
 server {
     listen 80 default_server;
     server_name _;
-    
+
     # Return no response and close connection
     return 444;
 }
@@ -42,7 +42,7 @@ server {
     listen 80;
     server_name dev.${NGINX_DOMAIN};
     
-    set $client_url ${NGINX_PROXY_DEV_CLIENT_URL};
+    set $client_url ${NGINX_PROXY_DEV_SERVER_URL};
     include /etc/nginx/includes/locations/dev.conf;
 }
 
