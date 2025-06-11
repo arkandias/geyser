@@ -30,7 +30,7 @@ const { hasService } = useProfileStore();
 <template>
   <QHeader id="header">
     <QToolbar>
-      <QToolbarTitle shrink>
+      <QToolbarTitle shrink class="title">
         <QAvatar icon="sym_s_spa" square size="xl" />
         Geyser
         <QBadge v-if="version" outline align="middle">
@@ -38,7 +38,7 @@ const { hasService } = useProfileStore();
         </QBadge>
       </QToolbarTitle>
       <div class="organization-info">
-        <QSeparator vertical inset />
+        <QSeparator vertical />
         <div v-if="organization" class="organization-text">
           <div class="label">
             {{ organization.label }}
@@ -122,6 +122,10 @@ const { hasService } = useProfileStore();
 }
 .dev #header {
   background-color: $secondary;
+}
+
+.title {
+  flex-shrink: 0;
 }
 
 .organization-info {
