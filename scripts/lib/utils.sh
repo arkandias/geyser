@@ -6,7 +6,7 @@
 # User Interaction
 #------------------------------------------------------------------------------
 
-# Displays a prompt and stores user input in global INPUT variable
+# Display a prompt and store user input in global INPUT variable
 prompt() {
     local message="$1"
     declare -g INPUT=
@@ -18,7 +18,7 @@ prompt() {
     debug "Input: ${INPUT}"
 }
 
-# Prompts for yes/no confirmation with optional default (returns true/false)
+# Prompt for yes/no confirmation with optional default (returns true/false)
 confirm() {
     local message="$1"
     local default="$2"
@@ -36,7 +36,7 @@ confirm() {
 # Backup Management
 #------------------------------------------------------------------------------
 
-# Prompts user to select a backup directory and stores result in SELECTED_BACKUP
+# Select a backup and store the result in SELECTED_BACKUP
 select_backup() {
     local -a backups=("$@")
     declare -g SELECTED_BACKUP=
@@ -46,22 +46,16 @@ select_backup() {
         exit 1
     fi
 
-    info "Backups found:"
-    for ((i = 1; i <= ${#backups[@]}; i++)); do
-        info "${i}) ${backups[i - 1]}"
-    done
-
-    while true; do
-        prompt "Select a backup (1-${#backups[@]}):"
-
-        if [[ ! "${INPUT}" =~ ^[0-9]+$ ]] || ! ((INPUT >= 1 && INPUT <= ${#backups[@]})); then
-            warn "Invalid input: enter a number between 1 and ${#backups[@]}"
-            continue
+    info "Select a backup:"
+    PS3="Enter your choice: "
+    select backup in "${backups[@]}"; do
+        if [[ -n "${backup}" ]]; then
+            # shellcheck disable=SC2034
+            SELECTED_BACKUP="${backup}"
+            break
+        else
+            warn "Invalid selection. Please try again"
         fi
-
-        # shellcheck disable=SC2034
-        SELECTED_BACKUP="${backups[INPUT - 1]}"
-        break
     done
 }
 
@@ -125,7 +119,7 @@ sed_i() {
     fi
 }
 
-# Runs command with specified environment variables, skipping empty ones
+# Run command with specified environment variables, skipping empty ones
 with_env_vars() {
     local -a env_vars_with_values
     local var

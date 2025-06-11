@@ -33,7 +33,7 @@ _geyser() {
         'data-restore:Restore Geyser main database'
         'keycloak-export:Export Keycloak realms and users'
         'keycloak-import:Import Keycloak realms and users'
-        'webdav-upload:Upload a backup to a WebDAV server'
+        'webdav-upload:Upload a file or a directory to a WebDAV server'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
@@ -90,7 +90,7 @@ _geyser() {
         webdav-upload)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--path[Set the path of the backup]:path'
+                '--path[Set the path of the file or directory]:path'
             ;;
         kcadm)
             _arguments '--login[Start an authenticated session]'

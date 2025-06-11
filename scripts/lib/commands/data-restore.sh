@@ -52,14 +52,14 @@ handle_data_restore() {
         _compose rm -s -f db
     fi
 
-    # Select backup file or check if the given file exists
+    # Select a backup file or check if file set with --name exists
     if [[ -z "${backup}" ]]; then
         local -a backups
         mapfile -t backups < <(basename -a "${DB_BACKUPS_DIR}"/*)
         select_backup "${backups[@]}"
         backup="${SELECTED_BACKUP}"
     elif [[ ! -f "${DB_BACKUPS_DIR}/${backup}" ]]; then
-        error "Backup file ${backup} does not exist"
+        error "Backup ${backup} does not exist"
         exit 1
     fi
 

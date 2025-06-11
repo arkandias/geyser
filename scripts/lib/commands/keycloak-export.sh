@@ -54,23 +54,13 @@ handle_keycloak_export() {
         _compose rm -s -f keycloak
     fi
 
-    # Prompt backup directory name
+    # Prompt backup name
     if [[ -z "${backup}" ]]; then
         backup="$(date +%Y-%m-%d-%H-%M-%S)"
-        while true; do
-            prompt "Enter a backup directory name [${backup}]:"
-
-            if [[ -z "${INPUT}" ]]; then
-                break
-            fi
-
-            if [[ "${INPUT}" =~ ^[A-Za-z0-9_-]+$ ]]; then
-                backup="${INPUT}"
-                break
-            fi
-
-            warn "Invalid input: enter a backup directory name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
-        done
+        prompt "Enter a backup directory name [${backup}]:"
+        if [[ -n "${INPUT}" ]]; then
+            backup="${INPUT}"
+        fi
     fi
 
     # Create backup directory

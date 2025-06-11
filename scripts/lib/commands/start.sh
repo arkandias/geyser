@@ -37,13 +37,12 @@ handle_start() {
         ! docker volume ls --format '{{.Name}}' | grep -qE '^geyser_data$'; then
         warn "Data volumes not found. You should initialize Geyser first with 'geyser init'"
         if ! confirm "Start anyway?"; then
-            info "Startup cancelled: init Geyser first with 'geyser init'"
+            info "Startup cancelled: Initialize Geyser first with 'geyser init'"
             return
         fi
     fi
 
     info "Starting services..."
     _compose up -d
-
     success "All services started successfully. Stop Geyser with 'geyser stop'"
 }

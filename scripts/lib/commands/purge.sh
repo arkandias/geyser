@@ -37,9 +37,9 @@ handle_purge() {
 
     warn "This will completely purge your Geyser installation"
     warn "You should backup Geyser first with 'geyser data-backup' and 'geyser keycloak-export'"
-    warn "Note: backup files will be preserved"
+    warn "Note: Backups will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Purge cancelled: backup Geyser first with 'geyser data-backup' and 'geyser keycloak-export'"
+        info "Purge cancelled: Backup Geyser first with 'geyser data-backup' and 'geyser keycloak-export'"
         return
     fi
 

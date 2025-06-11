@@ -32,6 +32,5 @@ handle_stop() {
 
     info "Stopping services..."
     _compose down
-
     success "All services stopped successfully. Restart Geyser with 'geyser start'"
 }

@@ -33,6 +33,5 @@ handle_cleanup() {
 
     info "Cleaning up..."
     docker system prune -f
-
     success "Cleanup completed successfully"
 }

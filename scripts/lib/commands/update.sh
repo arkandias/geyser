@@ -36,7 +36,7 @@ handle_update() {
     if [[ -n "$(_compose ps -q)" ]]; then
         warn "Running services need to be stopped for update"
         if ! confirm "Continue?"; then
-            info "Update cancelled: stop services first with 'geyser stop'"
+            info "Update cancelled: Stop services first with 'geyser stop'"
             return
         fi
         info "Stopping services..."
@@ -53,5 +53,5 @@ handle_update() {
     info "Cleaning up..."
     docker system prune -f
 
-    success "Update completed successfully. Restart Geyser with 'geyser start'"
+    success "Update completed successfully. Geyser is up and running"
 }

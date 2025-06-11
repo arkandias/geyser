@@ -36,7 +36,7 @@ handle_init() {
     if docker volume ls --format '{{.Name}}' | grep -qE '^geyser_(data|kc-data)$'; then
         warn "Existing data volumes found (this may cause conflicts). You should purge Geyser first with 'geyser purge'"
         if ! confirm "Initialize anyway?"; then
-            info "Initialization cancelled: purge Geyser first with 'geyser purge'"
+            info "Initialization cancelled: Purge Geyser first with 'geyser purge'"
             return
         fi
     fi
@@ -64,11 +64,11 @@ handle_init() {
     sleep 3
     _hasura metadata apply
 
-    info "Stopping services..."
-    _compose down
+    info "Starting all services..."
+    _compose up -d
 
     info "Cleaning up Docker..."
     docker system prune -f
 
-    success "Initialization completed successfully. Start Geyser with 'geyser start'"
+    success "Initialization completed successfully. Geyser is up and running"
 }
