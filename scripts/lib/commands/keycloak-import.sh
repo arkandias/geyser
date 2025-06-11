@@ -68,7 +68,7 @@ handle_keycloak_import() {
         exit 1
     fi
 
-    info "Importing Keycloak realms and users from ${KC_BACKUPS_DIR}/${backup}..."
+    info "Importing Keycloak realms and users from ${KC_BACKUPS_DIR}/${backup}/..."
     _compose run --rm keycloak import --dir "/opt/keycloak/data/backups/${backup}"
     success "Keycloak realms and users imported successfully"
 }
