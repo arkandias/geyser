@@ -44,14 +44,14 @@ handle_keycloak_export() {
         esac
     done
 
-    if [[ -n "$(_compose ps keycloak --format '{{.Status}}')" ]]; then
-        warn "Keycloak must be stopped before export"
+    if [[ -n "$(_compose ps -q)" ]]; then
+        warn "Services must be stopped before import"
         if ! confirm "Continue?"; then
-            info "Keycloak export cancelled"
+            info "Keycloak import cancelled"
             return
         fi
-        info "Stopping Keycloak..."
-        _compose rm -s -f keycloak
+        info "Stopping services..."
+        _compose down
     fi
 
     # Prompt backup name
