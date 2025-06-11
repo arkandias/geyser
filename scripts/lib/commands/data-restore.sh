@@ -42,14 +42,14 @@ handle_data_restore() {
         esac
     done
 
-    if [[ -n "$(_compose ps db --format '{{.Status}}')" ]]; then
-        warn "Database must be stopped before import"
+    if [[ -n "$(_compose ps -q)" ]]; then
+        warn "Services must be stopped before import"
         if ! confirm "Continue?"; then
             info "Data import cancelled"
             return
         fi
-        info "Stopping database..."
-        _compose rm -s -f db
+        info "Stopping services..."
+        _compose down
     fi
 
     # Select a backup file
