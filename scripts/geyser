@@ -54,13 +54,14 @@ Setup:
 Options:
   -h, --help            Show this help message
   -v, --version         Show version information
-  -q, --quiet           Disable log messages
   --domain DOMAIN       Set Geyser domain
   --mode MODE           Set Geyser mode (development|production)
   --dev                 Set Geyser mode to development
   --prod                Set Geyser mode to production
   --tag TAG             Set Geyser tag
   --log-level LEVEL     Set Geyser log level (silent|debug|info|warn|error)
+  --silent              Set Geyser log level to silent
+  --debug               Set Geyser log level to debug
   --as-service          Run as a systemd service (affects logging)
 
 Run 'geyser COMMAND --help' for more information on a command.
@@ -124,11 +125,6 @@ main() {
             echo "Geyser Administration Script v${VERSION}"
             exit 0
             ;;
-        -q | --quiet)
-            # shellcheck disable=SC2034
-            declare -g GEYSER_LOG_LEVEL="silent"
-            shift
-            ;;
         --domain)
             # shellcheck disable=SC2034
             declare -g GEYSER_DOMAIN="$2"
@@ -156,6 +152,16 @@ main() {
             # shellcheck disable=SC2034
             declare -g EYSER_LOG_LEVEL="$2"
             shift 2
+            ;;
+        --silent)
+            # shellcheck disable=SC2034
+            declare -g GEYSER_LOG_LEVEL="silent"
+            shift
+            ;;
+        --debug)
+            # shellcheck disable=SC2034
+            declare -g GEYSER_LOG_LEVEL="debug"
+            shift
             ;;
         --as-service)
             # shellcheck disable=SC2034

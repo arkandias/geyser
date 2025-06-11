@@ -50,13 +50,14 @@ _geyser() {
     _arguments -s -S -C \
         '(-h --help)'{-h,--help}'[Show help message]' \
         '(-v --version)'{-v,--version}'[Show version information]' \
-        '(-q --quiet)'{-q,--quiet}'[Disable log messages]' \
         '--domain[Set Geyser domain]:domain' \
         '--mode[Set Geyser mode]:mode:(development production)' \
         '--dev[Set Geyser mode to development]' \
         '--prod[Set Geyser mode to production]' \
         '--tag[Set Geyser tag]:tag' \
         '--log-level[Set Geyser log level]:level:(silent debug info warn error)' \
+        '--silent[Set Geyser log level to silent]' \
+        '--debug[Set Geyser log level to debug]' \
         '--as-service[Run as a systemd service]' \
         '1: :->cmds' \
         '*:: :->args'
