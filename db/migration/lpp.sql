@@ -8,3 +8,6 @@ ALTER TABLE public.program
 
 ALTER TABLE public.track
     ADD COLUMN nom_import text;
+
+INSERT INTO public.teacher_role(oid, teacher_id, role)
+VALUES (1, 95, 'admin');

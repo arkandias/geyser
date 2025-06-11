@@ -41,9 +41,9 @@ select_backup() {
     local -a backups=("$@")
     declare -g SELECTED_BACKUP=
 
-    if ((${#backups[@]} == 0)); then
-        error "No backup found"
-        exit 1
+    if ((${#backups[@]} == 0)) || [[ "${backups[0]}" == "*" ]]; then
+        info "No backup"
+        exit 0
     fi
 
     info "Select a backup:"

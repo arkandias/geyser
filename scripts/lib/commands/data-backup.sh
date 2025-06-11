@@ -45,10 +45,10 @@ handle_data_backup() {
     # Prompt backup file name
     if [[ -z "${backup}" ]]; then
         backup="$(date +%Y-%m-%d-%H-%M-%S)"
-            prompt "Enter a backup file name [${backup}]:"
-            if [[ -n "${INPUT}" ]]; then
-                backup="${INPUT}"
-            fi
+        prompt "Enter a backup file name [${backup}]:"
+        if [[ -n "${INPUT}" ]]; then
+            backup="${INPUT}"
+        fi
     fi
 
     info "Backing up database to ${DB_BACKUPS_DIR}/${backup}..."

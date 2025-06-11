@@ -1,9 +1,10 @@
 dist/
 node_modules/
 
-/backups/
+/db/backups/
 /db/migration/dumps/
 /db/migration/summaries/
+/keycloak/backups/
 /logs/
 /nginx/certs/*
 !/nginx/certs/default

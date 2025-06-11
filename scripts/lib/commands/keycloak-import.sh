@@ -54,13 +54,16 @@ handle_keycloak_import() {
         _compose rm -s -f keycloak
     fi
 
-    # Select a backup directory or check if directory set with --name exists
+    # Select a backup directory
     if [[ -z "${backup}" ]]; then
         local -a backups
         mapfile -t backups < <(basename -a "${KC_BACKUPS_DIR}"/*/)
         select_backup "${backups[@]}"
         backup="${SELECTED_BACKUP}"
-    elif [ ! -d "${KC_BACKUPS_DIR}/${backup}" ]; then
+    fi
+
+    # Check if backup directory exists
+    if [ ! -d "${KC_BACKUPS_DIR}/${backup}" ]; then
         error "Backup directory ${backup} does not exist"
         exit 1
     fi

@@ -11,13 +11,14 @@
       <excludeFolder url="file://$MODULE_DIR$/nginx/certs/geyser.univ-lille.fr" />
       <excludeFolder url="file://$MODULE_DIR$/nginx/certs/admin.geyserflow.org" />
       <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources" />
-      <excludeFolder url="file://$MODULE_DIR$/backups" />
       <excludeFolder url="file://$MODULE_DIR$/server/dist" />
       <excludeFolder url="file://$MODULE_DIR$/server/keys" />
       <excludeFolder url="file://$MODULE_DIR$/server/prod" />
       <excludeFolder url="file://$MODULE_DIR$/logs" />
       <excludeFolder url="file://$MODULE_DIR$/db/migration/dumps" />
       <excludeFolder url="file://$MODULE_DIR$/db/migration/summaries" />
+      <excludeFolder url="file://$MODULE_DIR$/db/backups" />
+      <excludeFolder url="file://$MODULE_DIR$/keycloak/backups" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
