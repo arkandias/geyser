@@ -23,20 +23,20 @@ Geyser Administration Script v${VERSION}
 Usage: geyser [OPTIONS] COMMAND
 
 Core Commands:
-  init              Initialize a fresh Geyser installation
-  start             Start Geyser services
-  stop              Stop Geyser services
-  show              Show Geyser services
-  update            Update Geyser services
-  cleanup           Cleanup Geyser services
-  purge             Completely remove Geyser installation and all data
+  init                  Initialize a fresh Geyser installation
+  start                 Start Geyser services
+  stop                  Stop Geyser services
+  show                  Show Geyser services
+  update                Update Geyser services
+  cleanup               Cleanup Geyser services
+  purge                 Completely remove Geyser installation and all data
 
 Data Management:
-  data-dump         Dump Geyser main database
-  data-restore      Restore Geyser main database
-  keycloak-export   Export Keycloak realms and users
-  keycloak-import   Import Keycloak realms and users
-  webdav-upload     Upload backup directories to a WebDAV server
+  data-backup           Backup Geyser main database
+  data-restore          Restore Geyser main database
+  keycloak-export       Export Keycloak realms and users
+  keycloak-import       Import Keycloak realms and users
+  webdav-upload         Upload a file or a directory to a WebDAV server
 
 Development Tools:
   compose               Docker Compose wrapper
@@ -80,11 +80,13 @@ declare -r SCRIPT_DIR
 declare -r GEYSER_HOME
 
 # Directories paths
-declare -r BACKUPS_DIR="${GEYSER_HOME}/backups"
+declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/db/backups"
+declare -r KC_BACKUPS_DIR="${GEYSER_HOME}/keycloak/backups"
 declare -r LOGS_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
-mkdir -p "${BACKUPS_DIR}"
+mkdir -p "${DB_BACKUPS_DIR}"
+mkdir -p "${KC_BACKUPS_DIR}"
 mkdir -p "${LOGS_DIR}"
 
 ###############################################################################
@@ -199,9 +201,9 @@ main() {
         shift
         handle_purge "$@"
         ;;
-    data-dump)
+    data-backup)
         shift
-        handle_data_dump "$@"
+        handle_data_backup "$@"
         ;;
     data-restore)
         shift

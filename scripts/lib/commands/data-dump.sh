@@ -1,52 +1,52 @@
 ###############################################################################
-# DATA-DUMP COMMAND
+# DATA-BACKUP COMMAND
 ###############################################################################
 
-show_data_dump_help() {
+show_data_backup_help() {
     cat <<EOF
-Dump Geyser main database
+Backup Geyser main database
 
-Usage: geyser data-dump
+Usage: geyser data-backup
 
-Dump Geyser main database in a backup directory.
+Dump Geyser main database to a backup file.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup directory (prompt otherwise)
+  --name NAME       Set the name of the backup file (prompt otherwise)
 EOF
 }
 
-handle_data_dump() {
+handle_data_backup() {
     local backup
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
         case "$1" in
         -h | --help)
-            show_data_dump_help
+            show_data_backup_help
             exit 0
             ;;
         --name)
             if [[ -z "$2" ]]; then
-                error "Missing parameter for option --name (see 'geyser data-dump --help')"
+                error "Missing parameter for option --name (see 'geyser data-backup --help')"
                 exit 1
             fi
             backup="$2"
-            debug "Backup directory name set to ${backup} with option --name"
+            debug "Backup file name set to ${backup} with option --name"
             shift 2
             ;;
         *)
-            error "Unknown parameter '$1' (see 'geyser data-dump --help')"
+            error "Unknown parameter '$1' (see 'geyser data-backup --help')"
             exit 1
             ;;
         esac
     done
 
-    # Prompt backup directory name
+    # Prompt backup file name
     if [[ -z "${backup}" ]]; then
-        backup="$(date +%Y-%m-%d-%H-%M-%S)"
+        backup="$(date +%Y-%m-%d-%H-%M-%S).dump"
         while true; do
-            prompt "Enter a backup directory name [${backup}]:"
+            prompt "Enter a backup file name [${backup}]:"
             if [[ -z "${INPUT}" ]]; then
                 break
             fi
@@ -54,15 +54,11 @@ handle_data_dump() {
                 backup="${INPUT}"
                 break
             fi
-            warn "Invalid input: enter a backup directory name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
+            warn "Invalid input: enter a backup file name using only letters, numbers, underscores, and hyphens, or leave empty to use timestamp"
         done
     fi
 
-    # Create backup directory
-    local backup_path="${BACKUPS_DIR}/${backup}/"
-    mkdir -p "${backup_path}"
-
-    info "Dumping database..."
+    info "Backing up database to ${DB_BACKUPS_DIR}/${backup}..."
     case "$(_compose ps db --format '{{.Health}}' 2>/dev/null)" in
     "")
         _compose up -d db
@@ -71,12 +67,12 @@ handle_data_dump() {
         wait_until_healthy db
         ;&
     "healthy")
-        _compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}/db.dump"
+        _compose exec -T db bash -c "pg_dump -U postgres -d geyser -Fc >/backups/${backup}"
         ;;
     "unhealthy")
         error "Service db is unhealthy"
         exit 1
         ;;
     esac
-    success "Dump created successfully in ${backup_path}"
+    success "Database backup completed successfully"
 }

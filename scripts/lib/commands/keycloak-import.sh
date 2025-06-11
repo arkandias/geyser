@@ -12,7 +12,7 @@ Import Keycloak realms and users from a previous export in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup directory (prompt otherwise)
+  --name NAME       Set the name of the backup directory (prompt otherwise)
 
 Note: Keycloak must be stopped before import.
 EOF
@@ -44,20 +44,6 @@ handle_keycloak_import() {
         esac
     done
 
-    # Select backup directory
-    if [[ -z "${backup}" ]]; then
-        local -a backup_dirs
-        mapfile -t backup_dirs < <(basename -a "${BACKUPS_DIR}"/*)
-        select_backup_dir "${backup_dirs[@]}"
-        backup="${SELECTED_BACKUP_DIR}"
-    fi
-
-    # Check if backup directory exists
-    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
-        error "Backup directory ${backup} does not exist"
-        exit 1
-    fi
-
     if [[ -n "$(_compose ps keycloak --format '{{.Status}}')" ]]; then
         warn "Keycloak must be stopped before import"
         if ! confirm "Continue?"; then
@@ -68,7 +54,18 @@ handle_keycloak_import() {
         _compose rm -s -f keycloak
     fi
 
-    info "Importing Keycloak realms and users..."
+    # Select a backup directory or check if the given directory exists
+    if [[ -z "${backup}" ]]; then
+        local -a backups
+        mapfile -t backups < <(basename -a "${KC_BACKUPS_DIR}"/*/)
+        select_backup "${backups[@]}"
+        backup="${SELECTED_BACKUP}"
+    elif [ ! -d "${KC_BACKUPS_DIR}/${backup}" ]; then
+        error "Backup directory ${backup} does not exist"
+        exit 1
+    fi
+
+    info "Importing Keycloak realms and users from ${KC_BACKUPS_DIR}/${backup}..."
     _compose run --rm keycloak import --dir "/opt/keycloak/data/backups/${backup}"
     success "Keycloak realms and users imported successfully"
 }

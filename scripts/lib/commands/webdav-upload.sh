@@ -4,24 +4,23 @@
 
 show_webdav_upload_help() {
     cat <<EOF
-Upload backup directories to a WebDAV server
+Upload a file or a directory to a WebDAV server
 
-Usage: geyser webdav-upload
+Usage: geyser webdav-upload --path PATH
 
-Upload either a single backup directory (if --name option is passed) or all of
-them to a WebDAV server. If a backup directory already exists on the WebDAV
-server, the corresponding upload is skipped.
+Upload a file or directory to a WebDAV server. Directories are compressed into
+tar.gz archives before upload.
 Requires WEBDAV_URL, WEBDAV_USER, WEBDAV_PASS, and WEBDAV_DIR environment
 variables.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup directory
+  --path PATH       Set the path to the file or directory (required)
 EOF
 }
 
 handle_webdav_upload() {
-    local backup
+    local path=
 
     # Parse options
     while [[ "$#" -gt 0 ]]; do
@@ -30,13 +29,13 @@ handle_webdav_upload() {
             show_webdav_upload_help
             exit 0
             ;;
-        --name)
+        --path)
             if [[ -z "$2" ]]; then
-                error "Missing parameter for option --name (see 'geyser webdav-upload --help')"
+                error "Missing parameter for option --path (see 'geyser webdav-upload --help')"
                 exit 1
             fi
-            backup="$2"
-            debug "Backup directory name set to ${backup} with option --name"
+            path="$2"
+            debug "Path set to ${path} with option --path"
             shift 2
             ;;
         *)
@@ -49,18 +48,13 @@ handle_webdav_upload() {
     info "Starting WebDAV upload..."
 
     _webdav_check_env
-    _webdav_test_connection
-    _webdav_mkdir
 
-    if [[ -n "${backup}" ]]; then
-        _webdav_handle_backup "${backup}"
-    else
-        shopt -s nullglob
-        for backup in "${BACKUPS_DIR}"/*/; do
-            _webdav_handle_backup "$(basename "${backup}")"
-        done
-        shopt -u nullglob
+    if [[ -z "${path}" ]]; then
+        error "Missing file or directory path (use option --path)"
+        exit 1
     fi
+
+    _webdav_handle "${path}"
 
     success "WebDAV upload completed successfully"
 }
@@ -89,105 +83,58 @@ _webdav_check_env() {
     fi
 }
 
-_webdav_test_connection() {
-    local response_code
-    response_code="$(curl -s -o /dev/null -w "%{http_code}" \
-        -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
-        -X PROPFIND \
-        -H "Depth: 0" \
-        "${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/")"
-
-    if [[ "${response_code}" != "207" ]]; then
-        error "WebDAV server not responding or authentication failed (response code: ${response_code})"
-        return 1
-    fi
-}
-
-# shellcheck disable=SC2120
-_webdav_mkdir() {
-    local dir_path="$1"
-
-    local full_url
-    if [[ -z "${dir_path}" ]]; then
-        # Create base directory
-        full_url="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}"
-        info "Creating base directory ${WEBDAV_DIR}..."
-    else
-        # Create subdirectory
-        full_url="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/${dir_path}"
-        info "Creating subdirectory ${dir_path}..."
-    fi
-
-    local response_code
-    response_code="$(curl -s -o /dev/null -w "%{http_code}" \
-        -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
-        -X MKCOL \
-        "${full_url}")"
-
-    if [[ "${response_code}" == "201" ]]; then
-        info "Created directory ${dir_path:-base}"
-        return 0
-    elif [[ "${response_code}" == "405" ]]; then
-        info "Directory ${dir_path:-base} already exists"
-        return 0
-    elif [[ "${response_code}" == "409" ]]; then
-        error "Parent directory doesn't exist for ${dir_path:-base}"
-        return 1
-    else
-        error "Failed to create directory ${dir_path:-base} (response code: ${response_code})"
-        return 1
-    fi
-}
-
 _webdav_upload_file() {
     local local_file="$1"
-    local remote_path="$2"
+    local remote_filename="$2"
 
     if [[ ! -f "${local_file}" ]]; then
         error "Local file ${local_file} does not exist"
         return 1
     fi
 
-    info "Uploading file ${local_file} to ${remote_path}..."
+    local remote_url="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/${remote_filename}"
+
+    info "Uploading file ${local_file} to ${remote_url}..."
     local response_code
     response_code="$(curl -s -o /dev/null -w "%{http_code}" \
         -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
         -T "${local_file}" \
-        "${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/${remote_path}")"
+        "${remote_url}")"
 
-    if [[ "${response_code}" == "201" || "${response_code}" == "204" ]]; then
-        return 0
-    else
+    if [[ "${response_code}" != "201" && "${response_code}" != "204" ]]; then
         error "Upload failed with response code ${response_code}"
         return 1
     fi
 }
 
-_webdav_handle_backup() {
-    local backup="$1"
+_webdav_handle() {
+    local path="$1"
 
-    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
-        error "Backup directory ${backup} does not exist"
-        exit 1
-    fi
-
-    local response_code
-    response_code="$(curl -s -o /dev/null -w "%{http_code}" \
-        -u "${WEBDAV_USER}:${WEBDAV_PASS}" \
-        -X PROPFIND \
-        -H "Depth: 0" \
-        "${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/${backup}.tar.gz")"
-
-    if [[ "${response_code}" == "207" ]]; then
-        info "Backup ${backup}.tar.gz already exists on server (skipped)"
-        return 0
-    elif [[ "${response_code}" == "404" ]]; then
-        info "Creating archive /tmp/${backup}.tar.gz..."
-        tar -czf "/tmp/${backup}.tar.gz" -C "${BACKUPS_DIR}" "$(basename "${backup}")"
-
-        _webdav_upload_file "/tmp/${backup}.tar.gz" "${backup}.tar.gz"
-    else
-        error "Unexpected response code ${response_code} when checking backup ${backup}"
+    [[ -e "${path}" ]] || {
+        error "${path} does not exist"
         return 1
+    }
+
+    local dir name
+    dir="$(dirname "${path}")"
+    name="$(basename "${path}")"
+
+    local local_file="${path}"
+    local remote_filename="${name}"
+
+    if [[ -d "${path}" ]]; then
+        local archive_path="/tmp/${name}.tar.gz"
+
+        info "Creating archive ${archive_path}..."
+        tar -czf "${archive_path}" -C "${dir}" "${name}"
+
+        local_file="${archive_path}"
+        remote_filename="${name}.tar.gz"
+        success "Archive created successfully"
+
+        # shellcheck disable=SC2064
+        trap "rm -f '${archive_path}'" EXIT
     fi
+
+    _webdav_upload_file "${local_file}" "${remote_filename}"
 }

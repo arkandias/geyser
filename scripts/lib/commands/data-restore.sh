@@ -8,11 +8,11 @@ Restore Geyser main database
 
 Usage: geyser data-restore
 
-Restore Geyser main database from a previous dump in a backup directory.
+Restore Geyser main database from a previous backup file.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup directory (prompt otherwise)
+  --name NAME       Set the name of the backup file (prompt otherwise)
 EOF
 }
 
@@ -32,7 +32,7 @@ handle_data_restore() {
                 exit 1
             fi
             backup="$2"
-            debug "Backup directory name set to ${backup} with option --name"
+            debug "Backup file name set to ${backup} with option --name"
             shift 2
             ;;
         *)
@@ -41,26 +41,6 @@ handle_data_restore() {
             ;;
         esac
     done
-
-    # Select backup directory
-    if [[ -z "${backup}" ]]; then
-        local -a backup_dirs
-        mapfile -t backup_dirs < <(basename -a "${BACKUPS_DIR}"/*)
-        select_backup_dir "${backup_dirs[@]}"
-        backup="${SELECTED_BACKUP_DIR}"
-    fi
-
-    # Check if backup directory exists
-    if [[ ! -d "${BACKUPS_DIR}/${backup}" ]]; then
-        error "Backup directory ${backup} does not exist"
-        exit 1
-    fi
-
-    # Check if dump file exists
-    if [[ ! -f "${BACKUPS_DIR}/${backup}/db.dump" ]]; then
-        error "Backup directory ${backup} does not contain a db.dump file"
-        exit 1
-    fi
 
     if [[ -n "$(_compose ps db --format '{{.Status}}')" ]]; then
         warn "Database must be stopped before import"
@@ -72,12 +52,23 @@ handle_data_restore() {
         _compose rm -s -f db
     fi
 
-    info "Restoring database..."
+    # Select backup file or check if the given file exists
+    if [[ -z "${backup}" ]]; then
+        local -a backups
+        mapfile -t backups < <(basename -a "${DB_BACKUPS_DIR}"/*)
+        select_backup "${backups[@]}"
+        backup="${SELECTED_BACKUP}"
+    elif [[ ! -f "${DB_BACKUPS_DIR}/${backup}" ]]; then
+        error "Backup file ${backup} does not exist"
+        exit 1
+    fi
+
+    info "Restoring database from ${DB_BACKUPS_DIR}/${backup}..."
     _compose up -d db
     wait_until_healthy db
     _compose exec -T db bash -c "dropdb -U postgres --if-exists --force geyser"
     _compose exec -T db bash -c "createdb -U postgres geyser"
-    _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}/db.dump"
+    _compose exec -T db bash -c "pg_restore -U postgres -d geyser --clean --if-exists -v /backups/${backup}"
     _compose rm -s -f db
-    success "Backup restored successfully"
+    success "Database restored successfully"
 }

@@ -27,7 +27,7 @@ declare -r SCRIPT_DIR
 timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
 
 "${SCRIPT_DIR}/geyser" stop
-"${SCRIPT_DIR}/geyser" data-dump --name "${timestamp}"
+"${SCRIPT_DIR}/geyser" data-backup --name "${timestamp}"
 "${SCRIPT_DIR}/geyser" keycloak-export --name "${timestamp}"
 "${SCRIPT_DIR}/geyser" webdav-upload --name "${timestamp}"
 "${SCRIPT_DIR}/geyser" start

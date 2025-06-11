@@ -12,7 +12,7 @@ Export Keycloak realms and users in a backup directory.
 
 Options:
   -h, --help        Show this help message
-  --name            Set the name of the backup directory (prompt otherwise)
+  --name NAME       Set the name of the backup directory (prompt otherwise)
 
 Note: Keycloak must be stopped before export.
 EOF
@@ -74,10 +74,9 @@ handle_keycloak_export() {
     fi
 
     # Create backup directory
-    local backup_path="${BACKUPS_DIR}/${backup}"
-    mkdir -p "${backup_path}"
+    mkdir -p "${KC_BACKUPS_DIR}/${backup}"
 
-    info "Exporting Keycloak realms and users..."
+    info "Exporting Keycloak realms and users to ${KC_BACKUPS_DIR}/${backup}..."
     _compose run --rm keycloak export --dir "/opt/keycloak/data/backups/${backup}"
-    success "Keycloak realms and users exported successfully in ${backup_path}"
+    success "Keycloak realms and users exported successfully"
 }

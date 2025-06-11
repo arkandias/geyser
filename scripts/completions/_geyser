@@ -29,11 +29,11 @@ _geyser() {
         'update:Update Geyser services'
         'cleanup:Cleanup Geyser services'
         'purge:Completely remove Geyser installation and all data'
-        'data-dump:Dump Geyser main database'
+        'data-backup:Backup Geyser main database'
         'data-restore:Restore Geyser main database'
         'keycloak-export:Export Keycloak realms and users'
         'keycloak-import:Import Keycloak realms and users'
-        'webdav-upload:Upload backup directories to a WebDAV server'
+        'webdav-upload:Upload a backup to a WebDAV server'
         'compose:Docker Compose wrapper'
         'hasura:Hasura CLI wrapper'
         'kc:Keycloak CLI access'
@@ -67,15 +67,15 @@ _geyser() {
         ;;
     args)
         case "${words[1]}" in
-        data-dump)
+        data-backup)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the dump]:name'
+                '--name[Set the name of the backup]:name'
             ;;
         data-restore)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the dump]:name'
+                '--name[Set the name of the backup]:name'
             ;;
         keycloak-export)
             _arguments \
@@ -90,7 +90,7 @@ _geyser() {
         webdav-upload)
             _arguments \
                 '(-h --help)'{-h,--help}'[Show help message]' \
-                '--name[Set the name of the backup]:name'
+                '--path[Set the path of the backup]:path'
             ;;
         kcadm)
             _arguments '--login[Start an authenticated session]'

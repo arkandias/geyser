@@ -15,7 +15,7 @@ Options:
   -h, --help        Show this help message
 
 Warning: This will delete all data. You should first run:
-- 'geyser data-dump' to save the application data, and
+- 'geyser data-backup' to save the application data, and
 - 'geyser keycloak-export' to save Keycloak configuration.
 EOF
 }
@@ -36,10 +36,10 @@ handle_purge() {
     done
 
     warn "This will completely purge your Geyser installation"
-    warn "You should backup Geyser first with 'geyser data-dump' and 'geyser keycloak-export'"
+    warn "You should backup Geyser first with 'geyser data-backup' and 'geyser keycloak-export'"
     warn "Note: backup files will be preserved"
     if ! confirm "Are you sure you want to proceed?"; then
-        info "Purge cancelled: backup Geyser first with 'geyser data-dump' and 'geyser keycloak-export'"
+        info "Purge cancelled: backup Geyser first with 'geyser data-backup' and 'geyser keycloak-export'"
         return
     fi
 
