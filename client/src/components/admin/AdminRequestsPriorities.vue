@@ -95,7 +95,7 @@ const rowDescriptor = {
     type: "string",
     nullable: true,
     field: (row) => row.course.track?.name,
-    format: (val: string) =>
+    format: (val: string | null) =>
       tracks.value.find((t) => t.name === val)?.nameDisplay,
     formComponent: "select",
   },

@@ -77,7 +77,7 @@ const rowDescriptor = {
     type: "string",
     nullable: true,
     field: (row) => row.track?.name,
-    format: (val: string) =>
+    format: (val: string | null) =>
       tracks.value.find((t) => t.name === val)?.nameDisplay,
     formComponent: "select",
   },
@@ -109,7 +109,7 @@ const rowDescriptor = {
   hoursAdjusted: {
     type: "number",
     nullable: true,
-    format: (val: number) => n(val, "decimal"),
+    format: (val: number | null) => (val === null ? null : n(val, "decimal")),
     formComponent: "input",
     inputType: "number",
   },
@@ -122,14 +122,14 @@ const rowDescriptor = {
   groupsAdjusted: {
     type: "number",
     nullable: true,
-    format: (val: number) => n(val, "decimal"),
+    format: (val: number | null) => (val === null ? null : n(val, "decimal")),
     formComponent: "input",
     inputType: "number",
   },
   description: {
     type: "string",
     nullable: true,
-    format: (val: string) => (val ? "✓" : "✗"),
+    format: (val: string | null) => (val ? "✓" : "✗"),
     formComponent: "input",
     inputType: "textarea",
   },
