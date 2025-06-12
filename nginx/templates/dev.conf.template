@@ -43,7 +43,7 @@ server {
     server_name dev.${NGINX_DOMAIN};
     
     set $client_url ${NGINX_PROXY_DEV_SERVER_URL};
-    include /etc/nginx/includes/locations/dev.conf;
+    include /etc/nginx/includes/locations/client.conf;
 }
 
 # Preview client server
@@ -52,7 +52,7 @@ server {
     server_name preview.${NGINX_DOMAIN};
     
     set $client_url ${NGINX_PROXY_PREVIEW_SERVER_URL};
-    include /etc/nginx/includes/locations/dev.conf;
+    include /etc/nginx/includes/locations/client.conf;
 }
 
 # App build server
