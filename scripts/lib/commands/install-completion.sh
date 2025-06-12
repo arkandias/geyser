@@ -58,6 +58,9 @@ Create it in ${omz_completions}?" "y"; then
     cp "${geyser_completions}/_kc" "${omz_completions}/" 2>/dev/null || {
         warn "Failed to install Keycloak CLI completion script"
     }
+    cp "${geyser_completions}/_kcadm" "${omz_completions}/" 2>/dev/null || {
+        warn "Failed to install Keycloak Admin CLI completion script"
+    }
     hasura completion zsh --file="${omz_completions}/_hasura" &>/dev/null || {
         warn "Failed to install Hasura CLI completion script"
     }
