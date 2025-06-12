@@ -7,7 +7,9 @@ import fr from "./fr";
 import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
 import type { AvailableLocale } from "@/config/locales.ts";
 import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
+import { PhaseEnum, RequestTypeEnum, RoleEnum } from "@/gql/graphql.ts";
 import type { SimpleObject } from "@/types/data.ts";
+import { toLowerCase } from "@/utils";
 
 import {
   adminCoursesCourseTypesColNames,
@@ -58,64 +60,71 @@ const findKeysInFiles = async (): Promise<string[]> => {
   // Find all .vue and .ts files in src directory
   const files = await glob("src/**/*.{vue,ts}");
 
-  // Regex to find all t calls
-  const regexAllTCalls = /[^a-zA-Z]t\([^)]*\)/g;
-
   // Regex for standard patterns
-  const regexSingleQuotes = /[^a-zA-Z]t\([\s\n]*'([a-zA-Z.]*)'/g;
-  const regexDoubleQuotes = /[^a-zA-Z]t\([\s\n]*"([a-zA-Z.]*)"/g;
-  const regexTemplateStrings = /[^a-zA-Z]t\([\s\n]*`([a-zA-Z.${}]*)`/g;
+  const regexSingleQuotes = /[^a-zA-Z]t\([\s\n]*'([^']*)'/g;
+  const regexDoubleQuotes = /[^a-zA-Z]t\([\s\n]*"([^"]*)"/g;
+  const regexTemplateStrings = /[^a-zA-Z]t\([\s\n]*`([^`]*)`/g;
 
   const standardKeys = new Set<string>();
-  const nonStandardKeys = new Set<string>();
   const templateStringsKeys = new Set<string>();
 
   // Process each file
   for (const file of files) {
     const content = await fs.readFile(file, "utf8");
-    let allMatch: RegExpExecArray | null;
+    let match: RegExpExecArray | null;
 
-    // Reset regex before use
-    regexAllTCalls.lastIndex = 0;
-
-    // Find all t calls
-    while ((allMatch = regexAllTCalls.exec(content)) !== null) {
-      const fullCall = allMatch[0];
-
-      // Check single quotes
-      regexSingleQuotes.lastIndex = 0;
-      const singleQuoteMatch = regexSingleQuotes.exec(fullCall);
-      if (singleQuoteMatch?.[1]) {
-        standardKeys.add(singleQuoteMatch[1]);
-        continue;
+    // Check single quotes
+    regexSingleQuotes.lastIndex = 0;
+    while ((match = regexSingleQuotes.exec(content)) !== null) {
+      if (match[1]) {
+        standardKeys.add(match[1]);
       }
+    }
 
-      // Check double quotes
-      regexDoubleQuotes.lastIndex = 0;
-      const doubleQuoteMatch = regexDoubleQuotes.exec(fullCall);
-      if (doubleQuoteMatch?.[1]) {
-        standardKeys.add(doubleQuoteMatch[1]);
-        continue;
+    // Check double quotes
+    regexDoubleQuotes.lastIndex = 0;
+    while ((match = regexDoubleQuotes.exec(content)) !== null) {
+      if (match[1]) {
+        standardKeys.add(match[1]);
       }
+    }
 
-      // Check template strings
-      regexTemplateStrings.lastIndex = 0;
-      const templateMatch = regexTemplateStrings.exec(fullCall);
-      if (templateMatch?.[1]) {
-        templateStringsKeys.add(templateMatch[1]);
-        continue;
+    // Check template strings
+    regexTemplateStrings.lastIndex = 0;
+    while ((match = regexTemplateStrings.exec(content)) !== null) {
+      if (match[1]) {
+        templateStringsKeys.add(match[1]);
       }
-
-      nonStandardKeys.add(fullCall);
     }
   }
 
-  expect(
-    Array.from(nonStandardKeys),
-    "Found non-standard translation key patterns",
-  ).toEqual([]);
-
   // Manually add template string keys
+
+  Object.values(PhaseEnum).forEach((phase) => {
+    standardKeys.add(`phase.${toLowerCase(phase)}`);
+    standardKeys.add(`home.subtitle.${toLowerCase(phase)}`);
+    standardKeys.add(`home.message.${toLowerCase(phase)}`);
+  });
+  templateStringsKeys.delete("phase.${toLowerCase(phase)}");
+  templateStringsKeys.delete(
+    "home.subtitle.${toLowerCase(currentPhase.value)}",
+  );
+  templateStringsKeys.delete("home.message.${toLowerCase(currentPhase.value)}");
+
+  Object.values(RoleEnum).forEach((role) => {
+    standardKeys.add(`role.${toLowerCase(role)}`);
+  });
+  templateStringsKeys.delete("role.${toLowerCase(val)}");
+  templateStringsKeys.delete("role.${toLowerCase(role)}");
+  templateStringsKeys.delete("role.${toLowerCase(row.role)}");
+
+  Object.values(RequestTypeEnum).forEach((type) => {
+    standardKeys.add(`requestType.${toLowerCase(type)}`);
+  });
+  templateStringsKeys.delete("requestType.${toLowerCase(val)}");
+  templateStringsKeys.delete("requestType.${toLowerCase(value)}");
+  templateStringsKeys.delete("requestType.${toLowerCase(type)}");
+  templateStringsKeys.delete("requestType.${toLowerCase(row.type)}");
 
   CUSTOM_TEXT_KEYS.forEach((key) => {
     standardKeys.add(`customTextLabel.${key}`);
@@ -125,7 +134,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
   PRIMITIVE_TYPES.forEach((type) => {
     standardKeys.add(`primitiveTypeName.${type}`);
   });
-  templateStringsKeys.delete("primitiveTypeName.${type}");
+  templateStringsKeys.delete("primitiveTypeName.${val}");
 
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
     general: {

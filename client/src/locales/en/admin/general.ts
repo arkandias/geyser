@@ -62,7 +62,7 @@ If courses or services are associated with this year, you will not be able to de
           label: "Teacher",
           tooltip: "",
         },
-        type: {
+        role: {
           label: "Type",
           tooltip: "",
         },

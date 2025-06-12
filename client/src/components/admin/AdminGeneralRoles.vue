@@ -49,7 +49,7 @@ const rowDescriptor = {
       teachers.value.find((t) => t.email === val)?.displayname,
     formComponent: "select",
   },
-  type: {
+  role: {
     type: "string",
     format: (val: RoleEnum) => t(`role.${toLowerCase(val)}`),
     formComponent: "select",
@@ -161,14 +161,14 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.teacherId = teacher.id;
   }
 
-  if (flatRow.type !== undefined) {
+  if (flatRow.role !== undefined) {
     if (
-      flatRow.type !== RoleEnum.Admin &&
-      flatRow.type !== RoleEnum.Commissioner
+      flatRow.role !== RoleEnum.Admin &&
+      flatRow.role !== RoleEnum.Commissioner
     ) {
       throw new Error(t("admin.general.roles.form.error.invalidRole"));
     }
-    object.role = flatRow.type;
+    object.role = flatRow.role;
   }
 
   if (flatRow.comment !== undefined) {
@@ -184,9 +184,9 @@ const formOptions = computed(() => ({
     value: t.email,
     label: t.displayname,
   })),
-  type: Object.values(RoleEnum).map((type) => ({
-    value: type,
-    label: t(`role.${toLowerCase(type)}`),
+  role: Object.values(RoleEnum).map((role) => ({
+    value: role,
+    label: t(`role.${toLowerCase(role)}`),
   })),
 }));
 

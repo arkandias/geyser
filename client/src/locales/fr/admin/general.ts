@@ -62,7 +62,7 @@ la supprimer.`,
           label: "Intervenant",
           tooltip: "",
         },
-        type: {
+        role: {
           label: "Type",
           tooltip: "",
         },

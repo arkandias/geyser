@@ -55,7 +55,7 @@ export type AdminCoursesTracksColName =
 
 export const adminGeneralRolesColNames = [
   "teacherEmail",
-  "type",
+  "role",
   "comment",
 ] as const;
 export type AdminGeneralRolesColName =
