@@ -187,13 +187,13 @@ export default {
       },
       defaultText: `
         <p>
-          Cliquez sur la ligne d'un course pour afficher ici des informations
-          détaillées. Si un course et un intervenant sont sélectionnés en même
+          Cliquez sur la ligne d'un enseignement pour afficher ici des informations
+          détaillées. Si un enseignement et un intervenant sont sélectionnés en même
           temps, ce sont les informations de l'enseignement qui sont affichées. Vous
-          pouvez désélectionner un course ou un intervenant en cliquant à nouveau
+          pouvez désélectionner un enseignement ou un intervenant en cliquant à nouveau
           sur la ligne correspondante.
         </p>
-        <p>Boutons dans l'en-tête (accessibles uniquement depuis cette page) :</p>
+        <p>Boutons dans la barre de menu (accessibles uniquement depuis cette page) :</p>
         <ul>
           <li>
             <i class="q-icon text-primary material-symbols-sharp">history</i>
