@@ -18,7 +18,6 @@ import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { TOOLTIP_DELAY } from "@/config/constants.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
-import { primitiveTypeName } from "@/locales/helpers.ts";
 import type { Column } from "@/types/column.ts";
 import type {
   FieldDescriptor,
@@ -427,7 +426,7 @@ const importColumns: Column<[string, FieldDescriptor]>[] = [
     label: t("admin.data.import.table.column.type"),
     align: "left",
     field: ([_, fieldDescriptor]) => fieldDescriptor.type,
-    format: (val: PrimitiveType) => primitiveTypeName(t, val),
+    format: (val: PrimitiveType) => t(`primitiveTypeName.${val}`),
   },
   {
     name: "nonNullable",
