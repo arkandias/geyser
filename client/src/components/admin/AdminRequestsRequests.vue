@@ -23,7 +23,6 @@ import {
   UpdateRequestsDocument,
   UpsertRequestsDocument,
 } from "@/gql/graphql.ts";
-import { requestTypeLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
@@ -31,7 +30,7 @@ import type {
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
-import { isRequestType, unique } from "@/utils";
+import { isRequestType, toLowerCase, unique } from "@/utils";
 
 import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -122,7 +121,7 @@ const rowDescriptor = {
   type: {
     type: "string",
     info: `${RequestTypeEnum.Assignment} | ${RequestTypeEnum.Primary} | ${RequestTypeEnum.Secondary}`,
-    format: (val: RequestTypeEnum) => requestTypeLabel(t, val),
+    format: (val: RequestTypeEnum) => t(`requestType.${toLowerCase(val)}`),
     formComponent: "select",
   },
   hours: {
@@ -311,7 +310,7 @@ const importUpdateColumns = [
 ];
 
 const formatRow = (row: Row) =>
-  `${requestTypeLabel(t, row.type)} — ` +
+  `${t(`requestType.${toLowerCase(row.type)}`)} — ` +
   `${row.year} — ${row.service.teacher.displayname} — ` +
   `${row.course.program.degree.name} — ${row.course.program.name} ` +
   (row.course.track ? `— ${row.course.track.name}` : "") +
@@ -455,7 +454,9 @@ const formOptions = computed(() => ({
         c.semester === formValues.value["courseSemester"],
     )
     .map((c) => c.type.label),
-  type: Object.values(RequestTypeEnum).map((type) => requestTypeLabel(t, type)),
+  type: Object.values(RequestTypeEnum).map((type) =>
+    t(`requestType.${toLowerCase(type)}`),
+  ),
 }));
 
 const filterValues = ref<Record<string, Scalar[]>>({});

@@ -6,9 +6,9 @@ import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { PhaseEnum, SetCurrentPhaseDocument } from "@/gql/graphql.ts";
-import { phaseLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
+import { toLowerCase } from "@/utils";
 
 // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const authManager = inject<AuthManager>("authManager")!;
@@ -23,7 +23,7 @@ const phaseOptions = [
   PhaseEnum.Shutdown,
 ].map((phase) => ({
   value: phase,
-  label: phaseLabel(t, phase),
+  label: t(`phase.${toLowerCase(phase)}`),
 }));
 
 graphql(`

@@ -17,13 +17,13 @@ import {
   UpdateRolesDocument,
   UpsertRolesDocument,
 } from "@/gql/graphql.ts";
-import { roleLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
 } from "@/types/data.ts";
+import { toLowerCase } from "@/utils";
 
 import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -51,7 +51,7 @@ const rowDescriptor = {
   },
   type: {
     type: "string",
-    format: (val: RoleEnum) => roleLabel(t, val),
+    format: (val: RoleEnum) => t(`role.${toLowerCase(val)}`),
     formComponent: "select",
   },
   comment: {
@@ -140,7 +140,7 @@ const importUpdateColumns = [
 ];
 
 const formatRow = (row: Row) =>
-  `${roleLabel(t, row.role)} — ${row.teacher.email}`;
+  `${t(`role.${toLowerCase(row.role)}`)} — ${row.teacher.email}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
@@ -186,7 +186,7 @@ const formOptions = computed(() => ({
   })),
   type: Object.values(RoleEnum).map((type) => ({
     value: type,
-    label: roleLabel(t, type),
+    label: t(`role.${toLowerCase(type)}`),
   })),
 }));
 

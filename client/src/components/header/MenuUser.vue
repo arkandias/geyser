@@ -4,9 +4,9 @@ import { computed, inject } from "vue";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import type { RoleEnum } from "@/gql/graphql.ts";
-import { roleLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { toLowerCase } from "@/utils";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
@@ -19,7 +19,7 @@ const { profile, setActiveRole } = useProfileStore();
 const roleOptions = computed(() =>
   profile.roles.toSorted().map((role) => ({
     value: role,
-    label: roleLabel(t, role),
+    label: t(`role.${toLowerCase(role)}`),
   })),
 );
 

@@ -5,7 +5,7 @@ import { usePermissions } from "@/composables/usePermissions.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import { CourseRequestsFragmentDoc, RequestTypeEnum } from "@/gql/graphql.ts";
-import { requestTypeLabel } from "@/locales/helpers.ts";
+import { toLowerCase } from "@/utils";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
 import DetailsSubsection from "@/components/core/DetailsSubsection.vue";
@@ -45,7 +45,7 @@ const requestsByType = computed(() =>
     : [RequestTypeEnum.Primary, RequestTypeEnum.Secondary]
   ).map((value) => ({
     value,
-    label: requestTypeLabel(t, value, 2),
+    label: t(`requestType.${toLowerCase(value)}`, 2),
     requests: data.value.requests.filter((r) => r.type === value),
   })),
 );

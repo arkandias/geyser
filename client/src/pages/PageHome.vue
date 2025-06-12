@@ -2,7 +2,6 @@
 import { computed } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { phaseMessage, phaseSubtitle } from "@/locales/helpers.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 import { capitalize, toLowerCase } from "@/utils";
@@ -19,12 +18,12 @@ const title = computed(
 const subtitle = computed(
   () =>
     getCustomText(`homeSubtitle${capitalize(toLowerCase(currentPhase.value))}`)
-      .value || phaseSubtitle(t, currentPhase.value),
+      .value || t(`home.subtitle.${toLowerCase(currentPhase.value)}`),
 );
 const message = computed(
   () =>
     getCustomText(`homeMessage${capitalize(toLowerCase(currentPhase.value))}`)
-      .value || phaseMessage(t, currentPhase.value),
+      .value || t(`home.message.${toLowerCase(currentPhase.value)}`),
 );
 </script>
 
