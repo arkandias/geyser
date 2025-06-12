@@ -121,7 +121,8 @@ export default {
             >https://github.com/arkandias/geyser-monorepo</a
           >.`,
       },
-    },
+    } satisfies Record<InfoTextKey, { label: string; message: string }> &
+      Record<string, unknown>,
     user: {
       label: "User",
       login: "Login",
