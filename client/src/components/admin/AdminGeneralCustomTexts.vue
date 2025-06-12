@@ -5,6 +5,7 @@ import {
   type ShallowRef,
   computed,
   inject,
+  ref,
   shallowRef,
 } from "vue";
 
@@ -39,6 +40,8 @@ const customTextOptions = computed(() =>
     edit: false,
   })),
 );
+
+const editStates = ref<Record<string, boolean>>({});
 
 graphql(`
   mutation UpdateCustomText($oid: Int!, $key: String!, $value: String) {
@@ -115,7 +118,7 @@ const callOnDelete = async (key: CustomTextKey, label: string) => {
         <QCardSection>
           <EditableText
             :ref="(el) => setRef(opt.key, el)"
-            v-model="opt.edit"
+            v-model="editStates[opt.key]"
             :text="opt.value"
             :set-text="
               (value) =>
@@ -132,13 +135,13 @@ const callOnDelete = async (key: CustomTextKey, label: string) => {
             no-caps
             outline
             dense
-            @click="opt.edit = true"
+            @click="editStates[opt.key] = true"
           />
           <QBtn
             :label="t('admin.general.customTexts.button.delete')"
             icon="sym_s_delete"
             color="primary"
-            :disable="!opt"
+            :disable="!opt.value"
             no-caps
             outline
             dense
