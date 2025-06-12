@@ -46,10 +46,19 @@ server {
     include /etc/nginx/includes/locations/dev.conf;
 }
 
-# App preview server
+# Preview client server
 server {
     listen 80;
     server_name preview.${NGINX_DOMAIN};
+    
+    set $client_url ${NGINX_PROXY_PREVIEW_SERVER_URL};
+    include /etc/nginx/includes/locations/dev.conf;
+}
+
+# App build server
+server {
+    listen 80;
+    server_name build.${NGINX_DOMAIN};
     
     location / {
         root /usr/share/nginx/html;
