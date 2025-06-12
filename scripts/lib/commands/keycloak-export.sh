@@ -65,6 +65,7 @@ handle_keycloak_export() {
 
     # Create backup directory
     mkdir -p "${KC_BACKUPS_DIR}/${backup}"
+    chmod 777 "${KC_BACKUPS_DIR}/${backup}"
 
     info "Exporting Keycloak realms and users to ${KC_BACKUPS_DIR}/${backup}/..."
     _compose run --rm keycloak export --dir "/opt/keycloak/data/backups/${backup}"

@@ -132,6 +132,7 @@ services:
       API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
       API_OIDC_CLIENT_SECRET: "${CLIENT_SECRET}"
+      API_ORGANIZATION_KEY: "${API_ORGANIZATION_KEY}"
     ports:
       - "3000:3000"
     networks:
