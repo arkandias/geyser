@@ -3,7 +3,6 @@ import type { ComposerTranslation } from "vue-i18n";
 import type { CustomTextKey } from "@/config/custom-text-keys.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
 import { PhaseEnum, RequestTypeEnum, RoleEnum } from "@/gql/graphql.ts";
-import { capitalize, toLowerCase } from "@/utils";
 
 export const phaseSubtitle = (t: ComposerTranslation, phase: PhaseEnum) => {
   switch (phase) {
@@ -59,7 +58,7 @@ export const requestTypeLabel = (
   }
 };
 
-export const roleTypeLabel = (
+export const roleLabel = (
   t: ComposerTranslation,
   role: RoleEnum,
   plural = 1,
@@ -84,28 +83,26 @@ export const customTextDefault = (
   switch (key) {
     case "homeTitle":
       return t("home.title");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Requests))}`:
+    case "homeSubtitleRequests":
       return t("home.subtitle.requests");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
+    case "homeSubtitleAssignments":
       return t("home.subtitle.assignments");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Results))}`:
+    case "homeSubtitleResults":
       return t("home.subtitle.results");
-    case `homeSubtitle${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
+    case "homeSubtitleShutdown":
       return t("home.subtitle.shutdown");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Requests))}`:
+    case "homeMessageRequests":
       return t("home.message.requests");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Assignments))}`:
+    case "homeMessageAssignments":
       return t("home.message.assignments");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Results))}`:
+    case "homeMessageResults":
       return t("home.message.results");
-    case `homeMessage${capitalize(toLowerCase(PhaseEnum.Shutdown))}`:
+    case "homeMessageShutdown":
       return t("home.message.shutdown");
     case "contact":
       return t("header.info.contact.message");
     case "legalNotice":
       return t("header.info.legalNotice.message");
-    default:
-      throw new Error(`Custom text key not implemented: ${key}`);
   }
 };
 

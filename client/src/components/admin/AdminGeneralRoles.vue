@@ -17,7 +17,7 @@ import {
   UpdateRolesDocument,
   UpsertRolesDocument,
 } from "@/gql/graphql.ts";
-import { roleTypeLabel } from "@/locales/helpers.ts";
+import { roleLabel } from "@/locales/helpers.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import type {
   NullableParsedRow,
@@ -51,7 +51,7 @@ const rowDescriptor = {
   },
   type: {
     type: "string",
-    format: (val: RoleEnum) => roleTypeLabel(t, val),
+    format: (val: RoleEnum) => roleLabel(t, val),
     formComponent: "select",
   },
   comment: {
@@ -140,7 +140,7 @@ const importUpdateColumns = [
 ];
 
 const formatRow = (row: Row) =>
-  `${roleTypeLabel(t, row.role)} — ${row.teacher.email}`;
+  `${roleLabel(t, row.role)} — ${row.teacher.email}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
@@ -186,7 +186,7 @@ const formOptions = computed(() => ({
   })),
   type: Object.values(RoleEnum).map((type) => ({
     value: type,
-    label: roleTypeLabel(t, type),
+    label: roleLabel(t, type),
   })),
 }));
 

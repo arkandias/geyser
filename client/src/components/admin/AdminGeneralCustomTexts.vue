@@ -3,7 +3,6 @@ import { useMutation } from "@urql/vue";
 import {
   type ComponentPublicInstance,
   type ShallowRef,
-  computed,
   inject,
   ref,
   shallowRef,
@@ -30,16 +29,6 @@ import EditableText from "@/components/core/EditableText.vue";
 const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { getCustomText } = useCustomTextsStore();
-
-const customTextOptions = computed(() =>
-  CUSTOM_TEXT_KEYS.map((key) => ({
-    key,
-    value: getCustomText(key).value,
-    label: customTextLabel(t, key),
-    default: customTextDefault(t, key),
-    edit: false,
-  })),
-);
 
 const editStates = ref<Record<string, boolean>>({});
 
@@ -98,8 +87,14 @@ const setRef = (key: string, el: Element | ComponentPublicInstance | null) => {
   }
 };
 
-const callOnDelete = async (key: CustomTextKey, label: string) => {
-  if (confirm(t("admin.general.customTexts.confirm.delete", { label }))) {
+const callOnDelete = async (key: CustomTextKey) => {
+  if (
+    confirm(
+      t("admin.general.customTexts.confirm.delete", {
+        label: t(`customTextLabel.${key}`),
+      }),
+    )
+  ) {
     await editableTextRefs[key].value?.clear();
   }
 };
@@ -108,23 +103,22 @@ const callOnDelete = async (key: CustomTextKey, label: string) => {
 <template>
   <QList bordered separator dense>
     <QExpansionItem
-      v-for="opt in customTextOptions"
-      :key="opt.key"
-      :label="opt.label"
+      v-for="key in CUSTOM_TEXT_KEYS"
+      :key
+      :label="customTextLabel(t, key)"
       dense
       dense-toggle
     >
       <QCard>
         <QCardSection>
           <EditableText
-            :ref="(el) => setRef(opt.key, el)"
-            v-model="editStates[opt.key]"
-            :text="opt.value"
+            :ref="(el) => setRef(key, el)"
+            v-model="editStates[key]"
+            :text="getCustomText(key).value"
             :set-text="
-              (value) =>
-                updateCustomTextHandle(authManager.orgId, opt.key, value)
+              (value) => updateCustomTextHandle(authManager.orgId, key, value)
             "
-            :default-text="opt.default"
+            :default-text="customTextDefault(t, key)"
           />
         </QCardSection>
         <QCardActions dense>
@@ -135,17 +129,17 @@ const callOnDelete = async (key: CustomTextKey, label: string) => {
             no-caps
             outline
             dense
-            @click="editStates[opt.key] = true"
+            @click="editStates[key] = true"
           />
           <QBtn
             :label="t('admin.general.customTexts.button.delete')"
             icon="sym_s_delete"
             color="primary"
-            :disable="!opt.value"
+            :disable="!getCustomText(key)"
             no-caps
             outline
             dense
-            @click="callOnDelete(opt.key, opt.label)"
+            @click="callOnDelete(key)"
           />
         </QCardActions>
       </QCard>
