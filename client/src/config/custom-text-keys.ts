@@ -1,15 +1,22 @@
+/**
+ * Custom text keys for editable contents
+ *
+ * N.B. The default values for these contents are stored in locale files with
+ * the same keys but written in dot notation (e.g., "homeTitle" → "home.title").
+ * The camelCase keys are converted to dot.case when looking up default values.
+ * Admins can override these defaults with custom text stored in the database.
+ */
+
 export const CUSTOM_TEXT_KEYS = [
   "homeTitle",
-  `homeSubtitleRequests`,
-  `homeSubtitleAssignments`,
-  `homeSubtitleResults`,
-  `homeSubtitleShutdown`,
-  `homeMessageRequests`,
-  `homeMessageAssignments`,
-  `homeMessageResults`,
-  `homeMessageShutdown`,
-  "contact",
-  "legalNotice",
+  "homeSubtitleRequests",
+  "homeSubtitleAssignments",
+  "homeSubtitleResults",
+  "homeSubtitleShutdown",
+  "homeMessageRequests",
+  "homeMessageAssignments",
+  "homeMessageResults",
+  "homeMessageShutdown",
 ] as const;
 
 export type CustomTextKey = (typeof CUSTOM_TEXT_KEYS)[number];

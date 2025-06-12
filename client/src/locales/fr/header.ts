@@ -1,3 +1,6 @@
+import { contactEmail } from "@/config/env.ts";
+import type { InfoTextKey } from "@/config/info-text-keys.ts";
+
 export default {
   header: {
     home: {
@@ -32,9 +35,7 @@ export default {
           <div>
             Pour toute question ou remarque, vous pouvez envoyer un message à l'adresse
             électronique suivante&nbsp;:
-            <a href="mailto:contact{'@'}geyserflow.org"
-              >contact{'@'}geyserflow.org</a
-            >
+            <a href="mailto:${contactEmail}">${contactEmail}</a>
           </div>`,
       },
       legalNotice: {
@@ -73,9 +74,7 @@ export default {
           <p>
             Pour exercer vos droits ou pour toute question sur le traitement de vos
             données, vous pouvez envoyer un message à l'adresse électronique suivante&nbsp;:
-            <a href="mailto:contact{'@'}geyserflow.org"
-              >contact{'@'}geyserflow.org</a
-            >
+            <a href="mailto:${contactEmail}">${contactEmail}</a>
           </div>
           <p>
             Si, après avoir envoyé un message à l'adresse ci-dessus, vous estimez que vos
@@ -125,7 +124,8 @@ export default {
             >https://github.com/arkandias/geyser-monorepo</a
           >`,
       },
-    },
+    } satisfies Record<InfoTextKey, { label: string; message: string }> &
+      Record<string, unknown>,
     user: {
       label: "Utilisateur",
       login: "Connexion",

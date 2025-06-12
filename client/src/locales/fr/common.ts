@@ -32,8 +32,6 @@ export default {
       "Message de la page d'accueil en phase de commission",
     homeMessageResults: "Message de la page d'accueil en phase de consultation",
     homeMessageShutdown: "Message de la page d'accueil en phase de fermeture",
-    contact: "Contact",
-    legalNotice: "Mentions légales",
   } satisfies Record<CustomTextKey, string>,
   primitiveTypeName: {
     string: "texte",

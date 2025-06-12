@@ -1,5 +1,12 @@
 {
   "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    /* Emit */
+    "noEmit": true,
+
+    /* Project */
+    "composite": false
+  },
   "include": ["**/*.ts"],
   "exclude": ["client/", "server/", "shared/"]
 }

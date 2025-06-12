@@ -1,3 +1,5 @@
+import { contactEmail } from "@/config/env.ts";
+
 export default {
   header: {
     home: {
@@ -32,9 +34,7 @@ export default {
           <div>
             For any questions or comments, you can send a message to the following
             email address:
-            <a href="mailto:contact{'@'}geyserflow.org"
-              >contact{'@'}geyserflow.org</a
-            >
+            <a href="mailto:${contactEmail}">${contactEmail}</a>
           </div>`,
       },
       legalNotice: {
@@ -72,9 +72,7 @@ export default {
           <p>
             To exercise your rights or for any questions about the processing of your
             data, you can send a message to the following email address:
-            <a href="mailto:contact{'@'}geyserflow.org"
-              >contact{'@'}geyserflow.org</a
-            >
+            <a href="mailto:${contactEmail}">${contactEmail}</a>
           </div>
           <p>
             If, after sending a message to the above address, you believe that your

@@ -1,69 +1,62 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
+import { INFO_TEXT_KEYS, type InfoTextKey } from "@/config/info-text-keys.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
 const { t } = useTypedI18n();
-const { getCustomText } = useCustomTextsStore();
 
-const sections = ["contact", "legalNotice", "license"] as const;
-
-const isDialogOpen = ref({
+const isDialogOpen = ref<Record<InfoTextKey, boolean>>({
   contact: false,
   legalNotice: false,
   license: false,
 });
 
-const labels = {
-  contact: t("header.info.contact.label"),
-  legalNotice: t("header.info.legalNotice.label"),
-  license: t("header.info.license.label"),
-};
-
-const icons = {
+const icons: Record<InfoTextKey, string> = {
   contact: "sym_s_contact_support",
   legalNotice: "sym_s_balance",
   license: "sym_s_license",
 };
-
-const messages = computed(() => ({
-  contact: getCustomText("contact").value || t("header.info.contact.message"),
-  legalNotice:
-    getCustomText("legalNotice").value || t("header.info.legalNotice.message"),
-  license: t("header.info.license.message"),
-}));
 </script>
 
 <template>
   <MenuBase :label="t('header.info.label')" icon="sym_s_info">
     <QList>
       <QItem
-        v-for="s in sections"
-        :key="s"
+        v-for="key in INFO_TEXT_KEYS"
+        :key
         v-close-popup
         clickable
-        @click="isDialogOpen[s] = true"
+        @click="isDialogOpen[key] = true"
       >
         <QItemSection side>
-          <QIcon :name="icons[s]" color="primary" />
+          <QIcon :name="icons[key]" color="primary" />
         </QItemSection>
         <QItemSection>
-          {{ labels[s] }}
+          {{ t(`header.info.${key}.label`) }}
         </QItemSection>
       </QItem>
     </QList>
   </MenuBase>
 
-  <QDialog v-for="s in sections" :key="s" v-model="isDialogOpen[s]" square>
+  <QDialog
+    v-for="key in INFO_TEXT_KEYS"
+    :key
+    v-model="isDialogOpen[key]"
+    square
+  >
     <QCard square>
       <QCardSection class="text-h6">
-        {{ labels[s] }}
+        {{ t(`header.info.${key}.label`) }}
       </QCardSection>
-      <!-- eslint-disable-next-line vue/no-v-html vue/no-v-text-v-html-on-component -->
-      <QCardSection class="text-justify q-pt-none" v-html="messages[s]" />
+      <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
+      <QCardSection
+        class="text-justify q-pt-none"
+        v-html="t(`header.info.${key}.message`)"
+      />
+      <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
     </QCard>
   </QDialog>
 </template>

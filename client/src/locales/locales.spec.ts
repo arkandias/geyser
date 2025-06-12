@@ -5,11 +5,12 @@ import { describe, expect, it } from "vitest";
 import en from "./en";
 import fr from "./fr";
 import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
+import { INFO_TEXT_KEYS } from "@/config/info-text-keys.ts";
 import type { AvailableLocale } from "@/config/locales.ts";
 import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
 import { PhaseEnum, RequestTypeEnum, RoleEnum } from "@/gql/graphql.ts";
 import type { SimpleObject } from "@/types/data.ts";
-import { toLowerCase } from "@/utils";
+import { camelToDot, toLowerCase } from "@/utils";
 
 import {
   adminCoursesCourseTypesColNames,
@@ -128,8 +129,17 @@ const findKeysInFiles = async (): Promise<string[]> => {
 
   CUSTOM_TEXT_KEYS.forEach((key) => {
     standardKeys.add(`customTextLabel.${key}`);
+    standardKeys.add(camelToDot(key));
   });
   templateStringsKeys.delete("customTextLabel.${key}");
+  templateStringsKeys.delete("${camelToDot(key)}");
+
+  INFO_TEXT_KEYS.forEach((key) => {
+    standardKeys.add(`header.info.${key}.label`);
+    standardKeys.add(`header.info.${key}.message`);
+  });
+  templateStringsKeys.delete("header.info.${key}.label");
+  templateStringsKeys.delete("header.info.${key}.message");
 
   PRIMITIVE_TYPES.forEach((type) => {
     standardKeys.add(`primitiveTypeName.${type}`);

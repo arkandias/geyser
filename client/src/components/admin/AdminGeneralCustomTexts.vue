@@ -30,7 +30,12 @@ const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { getCustomText } = useCustomTextsStore();
 
-const editStates = ref<Record<string, boolean>>({});
+const editStates = ref(
+  Object.fromEntries(CUSTOM_TEXT_KEYS.map((key) => [key, false])) as Record<
+    CustomTextKey,
+    boolean
+  >,
+);
 
 graphql(`
   mutation UpdateCustomText($oid: Int!, $key: String!, $value: String) {
@@ -118,7 +123,7 @@ const callOnDelete = async (key: CustomTextKey) => {
             :set-text="
               (value) => updateCustomTextHandle(authManager.orgId, key, value)
             "
-            :default-text="t(camelToDot(key))"
+            :default-text="t(`${camelToDot(key)}`)"
           />
         </QCardSection>
         <QCardActions dense>

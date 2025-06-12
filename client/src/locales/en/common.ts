@@ -28,8 +28,6 @@ export default {
     homeMessageAssignments: "Homepage message during assignments phase",
     homeMessageResults: "Homepage message during results phase",
     homeMessageShutdown: "Homepage message during shutdown phase",
-    contact: "Contact",
-    legalNotice: "Legal notice",
   } satisfies Record<CustomTextKey, string>,
   primitiveTypeName: {
     string: "text",
