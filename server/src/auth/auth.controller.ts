@@ -3,6 +3,7 @@ import {
   BadRequestException,
   Controller,
   Get,
+  Headers,
   Post,
   Query,
   Res,
@@ -45,16 +46,16 @@ export class AuthController {
 
   @Get("login")
   login(
-    @Query("organization_key") organizationKey: string | undefined,
+    @Headers("Host") host: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ) {
-    if (!organizationKey) {
-      throw new BadRequestException("Missing organization key");
+    if (!host) {
+      throw new BadRequestException("Missing Host header");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ organizationKey, redirectUrl });
+    const stateId = this.authService.setState({ host, redirectUrl });
 
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
@@ -129,16 +130,16 @@ export class AuthController {
 
   @Get("logout")
   logout(
-    @Query("organization_key") organizationKey: string | undefined,
+    @Headers("Host") host: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ): void {
-    if (!organizationKey) {
-      throw new BadRequestException("Missing organization key");
+    if (!host) {
+      throw new BadRequestException("Missing Host header");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ organizationKey, redirectUrl });
+    const stateId = this.authService.setState({ host, redirectUrl });
 
     // Building logout URL
     const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);

@@ -15,7 +15,6 @@ import {
   apiUrl,
   bypassAuth,
   orgId,
-  organizationKey,
   userId,
 } from "@/config/env.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
@@ -122,7 +121,6 @@ export class AuthManager {
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
-        organization_key: organizationKey,
         redirect_url: redirectUrl,
       },
     });
@@ -148,7 +146,6 @@ export class AuthManager {
     window.location.href = api.getUri({
       url: "/auth/logout",
       params: {
-        organization_key: organizationKey,
         redirect_url: redirectUrl,
       },
     });
