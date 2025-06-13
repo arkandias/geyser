@@ -34,12 +34,12 @@ export class AuthController {
     private userService: UserService,
   ) {
     this.loginCallbackUrl = new URL(
-      "/auth/login/callback",
-      this.configService.api.url,
+      this.configService.api.url.href.replace(/\/$/, "") +
+        "/auth/login/callback",
     );
     this.logoutCallbackUrl = new URL(
-      "/auth/logout/callback",
-      this.configService.api.url,
+      this.configService.api.url.href.replace(/\/$/, "") +
+        "/auth/logout/callback",
     );
   }
 

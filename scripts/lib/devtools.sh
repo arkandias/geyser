@@ -11,12 +11,6 @@ _compose() {
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
 
     local -a ENV_VARS=(
-        "GEYSER_DOMAIN"
-        "GEYSER_TAG"
-        "GEYSER_ORIGIN"
-        "API_URL"
-        "KC_HOSTNAME"
-        "KC_HOSTNAME_ADMIN"
         "KC_BOOTSTRAP_ADMIN_PASSWORD"
         "POSTGRES_KC_PASSWORD"
         "POSTGRES_PASSWORD"

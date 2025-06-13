@@ -43,10 +43,10 @@ services:
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${POSTGRES_KC_PASSWORD}"
       KC_DB_SCHEMA: "public"
-      KC_HOSTNAME: "${KC_HOSTNAME}"
-      KC_HOSTNAME_ADMIN: "${KC_HOSTNAME_ADMIN}"
-      KC_HOSTNAME_DEBUG: "false"
+      KC_HOSTNAME: "${GEYSER_AUTH_URL}"
+      KC_HOSTNAME_ADMIN: "${GEYSER_AUTH_ADMIN_URL}"
       KC_HOSTNAME_STRICT: "true"
+      KC_HOSTNAME_DEBUG: "false"
       KC_HTTP_ENABLED: "true"
       KC_PROXY_HEADERS: "xforwarded"
     ports:
@@ -124,7 +124,8 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      API_URL: "${API_URL}"
+      API_URL: "${GEYSER_API_URL}"
+      API_ORIGINS: "${GEYSER_ORIGINS}"
       API_ADMIN_SECRET: "${API_ADMIN_SECRET}"
       API_DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/geyser"
       API_GRAPHQL_URL: "http://hasura:8080/v1/graphql"

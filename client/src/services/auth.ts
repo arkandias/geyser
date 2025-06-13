@@ -22,7 +22,7 @@ import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
 const api = axios.create({
-  baseURL: apiUrl,
+  baseURL: apiUrl.href,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
 });

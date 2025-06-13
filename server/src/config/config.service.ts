@@ -10,10 +10,9 @@ export class ConfigService {
   readonly port: number;
   readonly api: {
     url: URL;
+    allowedOrigins: RegExp[];
     adminSecret: string;
   };
-  readonly parentDomain: string;
-  readonly originRegex: RegExp;
   readonly databaseUrl: URL;
   readonly graphql: {
     url: URL;
@@ -42,17 +41,17 @@ export class ConfigService {
 
     this.api = {
       url: new URL(this.configService.getOrThrow<string>("API_URL")),
+      allowedOrigins: this.configService
+        .getOrThrow<string>("API_ORIGINS")
+        .split(",")
+        .map((origin) => new RegExp(origin.trim()))
+        .map(
+          (regex) => new RegExp("^" + regex.source.replace(/\*/, ".*") + "$"),
+        ),
       adminSecret: this.configService.getOrThrow<string>("API_ADMIN_SECRET"),
     };
     this.logger.log(`API URL: ${this.api.url.href}`);
-
-    this.parentDomain = this.api.url.hostname.replace(/^[^.]+\./, "");
-    this.logger.log(`Parent domain: ${this.parentDomain}`);
-
-    this.originRegex = new RegExp(
-      `^${this.api.url.protocol}//[^.]+\\.${this.parentDomain.replace(".", "\\.")}$`,
-    );
-    this.logger.log(`Origin regex: ${this.originRegex}`);
+    this.logger.log(`Allowed origins: ${this.api.allowedOrigins.join(", ")}`);
 
     this.databaseUrl = new URL(
       this.configService.getOrThrow<string>("API_DATABASE_URL"),

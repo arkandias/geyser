@@ -51,7 +51,7 @@ handle_init() {
     _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    _compose run --rm -e API_URL -e GEYSER_ORIGIN -e CLIENT_SECRET keycloak \
+    _compose run --rm -e GEYSER_API_URL -e GEYSER_ORIGINS -e CLIENT_SECRET keycloak \
         import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."

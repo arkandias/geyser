@@ -8,32 +8,29 @@ export const contactEmail = import.meta.env.VITE_CONTACT_EMAIL ?? null;
 
 const hostnameMatch = /^([^.]+)\.(.+\..+)$/.exec(window.location.hostname);
 
-export const apiUrl =
+export const apiUrl = new URL(
   import.meta.env.VITE_API_URL ??
-  (hostnameMatch
-    ? `${window.location.protocol}//api.${hostnameMatch[2]}`
-    : (() => {
-        throw new Error(
-          "Cannot determine API URL. Set VITE_API_URL environment variable or access via subdomain with at least 3 parts (e.g., org.example.com)",
-        );
-      })());
+    (hostnameMatch
+      ? `${window.location.protocol}//api.${hostnameMatch[2]}`
+      : (() => {
+          throw new Error(
+            "Cannot determine API URL. Set VITE_API_URL environment variable or access via subdomain with at least 3 parts (e.g., org.example.com)",
+          );
+        })()),
+);
 
 try {
-  const url = new URL(apiUrl);
-  if (url.protocol !== "http:" && url.protocol !== "https:") {
+  if (apiUrl.protocol !== "http:" && apiUrl.protocol !== "https:") {
     throw new Error("Protocol must be HTTP or HTTPS");
   }
-  if (import.meta.env.PROD && url.protocol !== "https:") {
+  if (import.meta.env.PROD && apiUrl.protocol !== "https:") {
     throw new Error("Production environment requires HTTPS");
   }
 } catch (error) {
-  if (error instanceof TypeError) {
-    throw new Error(`Invalid API URL: ${apiUrl}`);
-  }
   throw new Error(`Invalid API URL: ${errorMessage(error)}`);
 }
 
-export const graphqlUrl = apiUrl.replace(/\/$/, "") + "/graphql";
+export const graphqlUrl = new URL(apiUrl.href.replace(/\/$/, "") + "/graphql");
 
 export const organizationKey =
   import.meta.env.VITE_ORGANIZATION_KEY ??

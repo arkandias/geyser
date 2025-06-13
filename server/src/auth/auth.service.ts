@@ -38,13 +38,14 @@ export class AuthService {
     }
 
     if (
-      url.protocol !== this.configService.api.url.protocol ||
-      !url.hostname.endsWith(this.configService.parentDomain)
+      this.configService.api.allowedOrigins.some((origin) =>
+        origin.test(url.origin),
+      )
     ) {
-      throw new BadRequestException("Redirect URL not allowed");
+      return url;
     }
 
-    return url;
+    throw new BadRequestException("Redirect URL not allowed");
   }
 
   setState(params: StateParams): string {

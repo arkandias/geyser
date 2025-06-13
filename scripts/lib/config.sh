@@ -3,10 +3,14 @@
 ###############################################################################
 
 declare -r GEYSER_ENV_VARS=(
-    "GEYSER_DOMAIN"
+    "GEYSER_LOG_LEVEL"
     "GEYSER_MODE"
     "GEYSER_TAG"
-    "GEYSER_LOG_LEVEL"
+    "GEYSER_DOMAIN"
+    "GEYSER_ORIGINS"
+    "GEYSER_AUTH_URL"
+    "GEYSER_AUTH_ADMIN_URL"
+    "GEYSER_API_URL"
     "GEYSER_AS_SERVICE"
 )
 
@@ -38,7 +42,6 @@ load_environment() {
     _validate_geyser_env_vars
     _validate_required_env_vars
     _validate_optional_env_vars
-    _compute_additional_env_vars
     _env_summary
 }
 
@@ -98,12 +101,15 @@ _load_env_files() {
 }
 
 _validate_geyser_env_vars() {
-    # Domain at which Geyser will be accessible
-    if [[ -z "${GEYSER_DOMAIN}" ]]; then
-        warn "GEYSER_DOMAIN is not set. Defaulting to 'geyser.localhost'"
-        GEYSER_DOMAIN="geyser.localhost"
+    # Logging verbosity threshold [silent/debug/info/warn/error]
+    if [[ -z "${GEYSER_LOG_LEVEL}" ]]; then
+        warn "GEYSER_LOG_LEVEL is not set. Defaulting to 'info'"
+        GEYSER_LOG_LEVEL="info"
+    elif [[ ! "${GEYSER_LOG_LEVEL}" =~ ^(silent|debug|info|warn|error)$ ]]; then
+        warn "Invalid value: GEYSER_LOG_LEVEL='${GEYSER_LOG_LEVEL}'. Defaulting to 'info'"
+        GEYSER_LOG_LEVEL="info"
     fi
-    declare -gr GEYSER_DOMAIN
+    declare -grx GEYSER_LOG_LEVEL
 
     # Application deployment context [development/production]
     if [[ -z "${GEYSER_MODE}" ]]; then
@@ -113,24 +119,56 @@ _validate_geyser_env_vars() {
         warn "Invalid value GEYSER_MODE='${GEYSER_MODE}'. Defaulting to 'production'"
         GEYSER_MODE="production"
     fi
-    declare -gr GEYSER_MODE
+    declare -grx GEYSER_MODE
+    
+    local protocol
+    if [[ "${GEYSER_MODE}" == "development" ]]; then
+        protocol="http"
+    else
+        protocol="https"
+    fi
 
     # Tag for backend and frontend images
     if [[ -z "${GEYSER_TAG}" ]]; then
         warn "GEYSER_TAG is not set. Defaulting to 'latest'"
         GEYSER_TAG="latest"
     fi
-    declare -gr GEYSER_TAG
+    declare -grx GEYSER_TAG
 
-    # Logging verbosity threshold [silent/debug/info/warn/error]
-    if [[ -z "${GEYSER_LOG_LEVEL}" ]]; then
-        warn "GEYSER_LOG_LEVEL is not set. Defaulting to 'info'"
-        GEYSER_LOG_LEVEL="info"
-    elif [[ ! "${GEYSER_LOG_LEVEL}" =~ ^(silent|debug|info|warn|error)$ ]]; then
-        warn "Invalid value: GEYSER_LOG_LEVEL='${GEYSER_LOG_LEVEL}'. Defaulting to 'info'"
-        GEYSER_LOG_LEVEL="info"
+    # Domain at which Geyser will be accessible
+    if [[ -z "${GEYSER_DOMAIN}" ]]; then
+        warn "GEYSER_DOMAIN is not set. Defaulting to 'geyser.localhost'"
+        GEYSER_DOMAIN="geyser.localhost"
     fi
-    declare -gr GEYSER_LOG_LEVEL
+    declare -grx GEYSER_DOMAIN
+
+    # Allowed origins for CORS policy and post login/logout redirection
+    if [[ -z "${GEYSER_ORIGINS}" ]]; then
+        warn "GEYSER_ORIGINS is not set. Defaulting to '${protocol}://*.${GEYSER_DOMAIN}'"
+        GEYSER_ORIGINS="${protocol}://*.${GEYSER_DOMAIN}"
+    fi
+    declare -grx GEYSER_ORIGINS
+
+    # Keycloak URL
+    if [[ -z "${GEYSER_AUTH_URL}" ]]; then
+        warn "GEYSER_AUTH_URL is not set. Defaulting to '${protocol}://auth.${GEYSER_DOMAIN}'"
+        GEYSER_AUTH_URL="${protocol}://auth.${GEYSER_DOMAIN}"
+    fi
+    declare -grx GEYSER_AUTH_URL
+
+    # Keycloak Admin URL
+    if [[ -z "${GEYSER_AUTH_ADMIN_URL}" ]]; then
+        warn "GEYSER_AUTH_ADMIN_URL is not set. Defaulting to '${protocol}://auth-admin.${GEYSER_DOMAIN}'"
+        GEYSER_AUTH_ADMIN_URL="${protocol}://auth-admin.${GEYSER_DOMAIN}"
+    fi
+    declare -grx GEYSER_AUTH_ADMIN_URL
+
+    # API URL
+    if [[ -z "${GEYSER_API_URL}" ]]; then
+        warn "GEYSER_API_URL is not set. Defaulting to '${protocol}://api.${GEYSER_DOMAIN}'"
+        GEYSER_API_URL="${protocol}://api.${GEYSER_DOMAIN}"
+    fi
+    declare -grx GEYSER_API_URL
 
     # Indicates if running as a systemd service (affects logging)
     if [[ -z "${GEYSER_AS_SERVICE}" ]]; then
@@ -140,7 +178,7 @@ _validate_geyser_env_vars() {
         warn "Invalid value: GEYSER_AS_SERVICE='${GEYSER_AS_SERVICE}'. Defaulting to 'false'"
         GEYSER_AS_SERVICE="false"
     fi
-    declare -gr GEYSER_AS_SERVICE
+    declare -grx GEYSER_AS_SERVICE
 }
 
 _validate_required_env_vars() {
@@ -170,33 +208,19 @@ _validate_optional_env_vars() {
     done
 }
 
-_compute_additional_env_vars() {
-    local protocol
-    if [[ "${GEYSER_MODE}" == "development" ]]; then
-        protocol="http"
-    else
-        protocol="https"
-    fi
-
-    declare -gr GEYSER_ORIGIN="${protocol}://*.${GEYSER_DOMAIN}"
-    declare -gr KC_HOSTNAME="${protocol}://auth.${GEYSER_DOMAIN}"
-    declare -gr KC_HOSTNAME_ADMIN="${protocol}://auth-admin.${GEYSER_DOMAIN}"
-    declare -gr API_URL="${protocol}://api.${GEYSER_DOMAIN}"
-}
-
 _env_summary() {
     debug "============ Configuration ============"
     # shellcheck disable=SC2153
     debug "GEYSER_HOME=${GEYSER_HOME}"
-    debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
     debug "GEYSER_MODE=${GEYSER_MODE}"
     debug "GEYSER_TAG=${GEYSER_TAG}"
+    debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
+    debug "GEYSER_ORIGINS=${GEYSER_ORIGINS}"
+    debug "GEYSER_AUTH_URL=${GEYSER_AUTH_URL}"
+    debug "GEYSER_AUTH_ADMIN_URL=${GEYSER_AUTH_ADMIN_URL}"
+    debug "GEYSER_API_URL=${GEYSER_API_URL}"
     debug "GEYSER_LOG_LEVEL=${GEYSER_LOG_LEVEL}"
     debug "GEYSER_AS_SERVICE=${GEYSER_AS_SERVICE}"
-    debug "GEYSER_ORIGIN=${GEYSER_ORIGIN}"
-    debug "API_URL=${API_URL}"
-    debug "KC_HOSTNAME=${KC_HOSTNAME}"
-    debug "KC_HOSTNAME_ADMIN=${KC_HOSTNAME_ADMIN}"
     debug "======================================="
 }
 
