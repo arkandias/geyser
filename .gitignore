@@ -6,8 +6,7 @@ node_modules/
 /db/migration/summaries/
 /keycloak/backups/
 /logs/
-/nginx/certs/*
-!/nginx/certs/default
+/nginx/certs/
 /server/keys/
 
 *.tsbuildinfo

@@ -1,15 +1,6 @@
 # Use Docker's DNS resolver
 resolver 127.0.0.11 valid=1y ipv6=off;
 
-# Default server
-server {
-    listen 80 default_server;
-    server_name _;
-
-    # Return no response and close connection
-    return 444;
-}
-
 # Keycloak admin server
 server {
     listen 80;
