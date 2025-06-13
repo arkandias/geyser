@@ -32,6 +32,7 @@
 
     /* Project */
     "composite": true,
+    "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
 
     /* Output Formatting */
     "noErrorTruncation": true,
