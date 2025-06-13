@@ -10,12 +10,12 @@ import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
-import { apiUrl } from "@/config/env.ts";
+import { apiUrl, organizationKey } from "@/config/env.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
 const api = axios.create({
-  baseURL: apiUrl.href,
+  baseURL: apiUrl,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
 });
@@ -92,6 +92,7 @@ export class AuthManager {
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
+        organization_key: organizationKey,
         redirect_url: redirectUrl,
       },
     });
@@ -113,6 +114,7 @@ export class AuthManager {
     window.location.href = api.getUri({
       url: "/auth/logout",
       params: {
+        organization_key: organizationKey,
         redirect_url: redirectUrl,
       },
     });

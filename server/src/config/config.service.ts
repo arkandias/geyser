@@ -8,7 +8,6 @@ export class ConfigService {
   private readonly logger = new Logger(ConfigService.name);
   readonly nodeEnv: "development" | "production";
   readonly port: number;
-  readonly organizationKey?: string;
   readonly api: {
     url: URL;
     adminSecret: string;
@@ -40,13 +39,6 @@ export class ConfigService {
 
     this.port = this.configService.getOrThrow<number>("API_PORT");
     this.logger.log(`Port: ${this.port}`);
-
-    this.organizationKey = this.configService.get<string | undefined>(
-      "API_ORGANIZATION_KEY",
-    );
-    if (this.organizationKey) {
-      this.logger.log(`Organization key: ${this.organizationKey}`);
-    }
 
     this.api = {
       url: new URL(this.configService.getOrThrow<string>("API_URL")),

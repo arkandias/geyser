@@ -7,8 +7,6 @@ export const envSchema = z.looseObject({
   API_URL: z.url({ protocol: /^https?$/, hostname: /^[^.]+\.[^.]+\.[^.]+/ }),
   API_ADMIN_SECRET: z.string(),
 
-  API_ORGANIZATION_KEY: z.string().optional(),
-
   API_DATABASE_URL: z.url(),
 
   API_GRAPHQL_URL: z.url(),

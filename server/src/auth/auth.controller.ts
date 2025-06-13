@@ -45,15 +45,16 @@ export class AuthController {
 
   @Get("login")
   login(
+    @Query("organization_key") organizationKey: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ) {
-    if (!redirectUrl) {
-      throw new BadRequestException("Missing redirect URL");
+    if (!organizationKey) {
+      throw new BadRequestException("Missing organization key");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.newState(redirectUrl);
+    const stateId = this.authService.setState({ organizationKey, redirectUrl });
 
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
@@ -72,20 +73,19 @@ export class AuthController {
     @Query("code") code: string | undefined,
     @Res() res: Response,
   ): Promise<void> {
-    if (!state) {
-      throw new BadRequestException("Missing state");
-    }
-    if (!code) {
-      throw new BadRequestException("Missing code");
-    }
-
-    const { redirectUrl } = this.authService.getState(state);
-    const subdomain = redirectUrl?.hostname.split(".")[0] ?? "";
-
-    // Override the organization key (useful in dev)
-    const key = this.configService.organizationKey ?? subdomain;
-
+    let redirectUrl: URL | null = null;
     try {
+      if (!state) {
+        throw new BadRequestException("Missing state");
+      }
+      if (!code) {
+        throw new BadRequestException("Missing code");
+      }
+
+      const { organizationKey: key, redirectUrl: url } =
+        this.authService.getState(state);
+      redirectUrl = url;
+
       const organization = await this.organizationService.findByKey(key);
       if (!organization) {
         throw new UnauthorizedException(`Organization '${key}' not found`);
@@ -113,14 +113,14 @@ export class AuthController {
       await this.cookiesService.setAuthCookies(res, organization.id, user.id);
 
       if (redirectUrl) {
-        res.redirect(redirectUrl.toString());
+        res.redirect(redirectUrl.href);
       } else {
         res.status(200).json({ message: "Logged in" });
       }
     } catch (error) {
       if (redirectUrl) {
         redirectUrl.searchParams.set("auth_error", errorMessage(error));
-        res.redirect(redirectUrl.toString());
+        res.redirect(redirectUrl.href);
       } else {
         throw error;
       }
@@ -129,15 +129,16 @@ export class AuthController {
 
   @Get("logout")
   logout(
+    @Query("organization_key") organizationKey: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ): void {
-    if (!redirectUrl) {
-      throw new BadRequestException("Missing redirect URL");
+    if (!organizationKey) {
+      throw new BadRequestException("Missing organization key");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.newState(redirectUrl);
+    const stateId = this.authService.setState({ organizationKey, redirectUrl });
 
     // Building logout URL
     const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
@@ -159,15 +160,26 @@ export class AuthController {
     @Query("state") state: string | undefined,
     @Res() res: Response,
   ): void {
-    if (!state) {
-      throw new BadRequestException("Missing state");
-    }
+    let redirectUrl: URL | null = null;
+    try {
+      if (!state) {
+        throw new BadRequestException("Missing state");
+      }
 
-    const redirectUrl = this.authService.getState(state).redirectUrl;
-    if (redirectUrl) {
-      res.redirect(redirectUrl.href);
-    } else {
-      res.status(200).json({ message: "Logged out" });
+      redirectUrl = this.authService.getState(state).redirectUrl;
+
+      if (redirectUrl) {
+        res.redirect(redirectUrl.href);
+      } else {
+        res.status(200).json({ message: "Logged out" });
+      }
+    } catch (error) {
+      if (redirectUrl) {
+        redirectUrl.searchParams.set("auth_error", errorMessage(error));
+        res.redirect(redirectUrl.href);
+      } else {
+        throw error;
+      }
     }
   }
 

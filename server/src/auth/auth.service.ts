@@ -8,9 +8,15 @@ import {
 
 import { ConfigService } from "../config/config.service";
 
+interface StateParams {
+  organizationKey: string;
+  redirectUrl?: string;
+}
+
 interface State {
-  expiresAt: number;
+  organizationKey: string;
   redirectUrl: URL | null;
+  expiresAt: number;
 }
 
 @Injectable()
@@ -19,7 +25,11 @@ export class AuthService {
 
   constructor(private configService: ConfigService) {}
 
-  private validateRedirectUrl(redirectUrl: string): URL {
+  private validateRedirectUrl(redirectUrl?: string): URL | null {
+    if (!redirectUrl) {
+      return null;
+    }
+
     let url: URL;
     try {
       url = new URL(redirectUrl);
@@ -28,20 +38,22 @@ export class AuthService {
     }
 
     if (
-      url.protocol === this.configService.api.url.protocol &&
-      url.hostname.endsWith(this.configService.parentDomain)
+      url.protocol !== this.configService.api.url.protocol ||
+      !url.hostname.endsWith(this.configService.parentDomain)
     ) {
-      return url;
+      throw new BadRequestException("Redirect URL not allowed");
     }
 
-    throw new BadRequestException("Redirect URL not allowed");
+    return url;
   }
 
-  newState(url: string): string {
+  setState(params: StateParams): string {
     const id = randomUUID();
-    const expiresAt = Date.now() + this.configService.jwt.stateExpirationTime;
-    const redirectUrl = this.validateRedirectUrl(url);
-    this.stateRecord.set(id, { expiresAt, redirectUrl });
+    this.stateRecord.set(id, {
+      organizationKey: params.organizationKey,
+      redirectUrl: this.validateRedirectUrl(params.redirectUrl),
+      expiresAt: Date.now() + this.configService.jwt.stateExpirationTime,
+    });
     return id;
   }
 
