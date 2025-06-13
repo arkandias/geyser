@@ -1,4 +1,5 @@
 import { contactEmail } from "@/config/env.ts";
+import type { InfoTextKey } from "@/config/info-text-keys.ts";
 
 export default {
   header: {
