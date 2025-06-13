@@ -10,9 +10,9 @@ if (!apiUrl) {
 
 const graphqlUrl = apiUrl.replace(/\/$/, "") + "/graphql";
 
-const apiAdminSecret = process.env["API_ADMIN_SECRET"];
+const apiAdminSecret = process.env["VITE_ADMIN_SECRET"];
 if (!apiAdminSecret) {
-  throw new Error("Missing API_ADMIN_SECRET environment variable");
+  throw new Error("Missing VITE_ADMIN_SECRET environment variable");
 }
 
 const config: CodegenConfig = {

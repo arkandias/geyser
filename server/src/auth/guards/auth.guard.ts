@@ -24,7 +24,7 @@ export class AuthGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<Request>();
 
     // Extract required headers
-    const orgId = z
+    const orgId = z.coerce
       .number()
       .optional()
       .parse(
@@ -32,7 +32,7 @@ export class AuthGuard implements CanActivate {
           ? request.headers["x-org-id"].at(-1) // Last value
           : request.headers["x-org-id"],
       );
-    const userId = z
+    const userId = z.coerce
       .number()
       .optional()
       .parse(

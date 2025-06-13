@@ -10,7 +10,14 @@ import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
-import { apiUrl, organizationKey } from "@/config/env.ts";
+import {
+  adminSecret,
+  apiUrl,
+  bypassAuth,
+  orgId,
+  organizationKey,
+  userId,
+} from "@/config/env.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
@@ -28,6 +35,25 @@ export class AuthManager {
   private _authError: string | null = null;
 
   async init(): Promise<void> {
+    if (bypassAuth) {
+      if (!adminSecret) {
+        throw new Error(
+          "Missing admin secret to bypass authentication. Set VITE_ADMIN_SECRET environment variable",
+        );
+      }
+      if (!orgId) {
+        throw new Error(
+          "Missing organisation id to bypass authentication. Set VITE_ORG_ID environment variable",
+        );
+      }
+      if (!userId) {
+        throw new Error(
+          "Missing user id to bypass authentication. Set VITE_USER_ID environment variable",
+        );
+      }
+      return;
+    }
+
     console.debug("[AuthManager] Initializing authentication...");
     const url = new URL(window.location.href);
 
@@ -82,6 +108,10 @@ export class AuthManager {
   }
 
   async login(): Promise<void> {
+    if (bypassAuth) {
+      return;
+    }
+
     console.debug("[AuthManager] Logging in...");
 
     const redirectUrl = new URL(window.location.href);
@@ -104,6 +134,10 @@ export class AuthManager {
   }
 
   async logout(): Promise<void> {
+    if (bypassAuth) {
+      return;
+    }
+
     console.debug("[AuthManager] Logging out...");
 
     const redirectUrl = new URL(window.location.href);
@@ -126,6 +160,10 @@ export class AuthManager {
   }
 
   async verify(): Promise<boolean> {
+    if (bypassAuth) {
+      return true;
+    }
+
     console.debug("[AuthManager] Verifying access token...");
     try {
       const response = await api.get("/auth/token/verify");
@@ -158,6 +196,10 @@ export class AuthManager {
   }
 
   async refresh(): Promise<boolean> {
+    if (bypassAuth) {
+      return true;
+    }
+
     console.debug("[AuthManager] Refreshing access token...");
     try {
       await api.post("/auth/token/refresh");
@@ -181,10 +223,11 @@ export class AuthManager {
   }
 
   shouldRefresh(): boolean {
-    return (
-      !this._payload ||
-      this._payload.exp - Math.floor(Date.now() / 1000) < API_TOKEN_MIN_VALIDITY
-    );
+    return bypassAuth
+      ? false
+      : !this._payload ||
+          this._payload.exp - Math.floor(Date.now() / 1000) <
+            API_TOKEN_MIN_VALIDITY;
   }
 
   get authError(): string | null {
@@ -192,26 +235,27 @@ export class AuthManager {
   }
 
   get hasAccess(): boolean {
-    return !!this._payload;
+    return bypassAuth || !!this._payload;
   }
 
   get isLoggedOut(): boolean {
-    return this._postLogout;
+    return !bypassAuth && this._postLogout;
   }
 
   get orgId(): number {
-    return this._payload?.orgId ?? -1;
+    return (bypassAuth ? orgId : this._payload?.orgId) ?? -1;
   }
 
   get userId(): number {
-    return this._payload?.userId ?? -1;
+    return (bypassAuth ? userId : this._payload?.userId) ?? -1;
   }
 
   get allowedRoles(): RoleEnum[] {
-    return (
-      this._payload?.allowedRoles.map((role) => RoleEnum[capitalize(role)]) ??
-      []
-    );
+    return bypassAuth
+      ? Object.values(RoleEnum)
+      : (this._payload?.allowedRoles.map(
+          (role) => RoleEnum[capitalize(role)],
+        ) ?? []);
   }
 
   get role(): RoleEnum | null {
@@ -232,6 +276,21 @@ export class AuthManager {
   }
 
   get headers(): Record<string, string> {
-    return this._role ? { "X-User-Role": this._role } : {};
+    const headers: Record<string, string> = {};
+    if (bypassAuth) {
+      if (adminSecret) {
+        headers["X-Admin-Secret"] = adminSecret;
+      }
+      if (orgId) {
+        headers["X-Org-Id"] = orgId.toString();
+      }
+      if (userId) {
+        headers["X-User-Id"] = userId.toString();
+      }
+    }
+    if (this._role) {
+      headers["X-User-Role"] = this._role;
+    }
+    return headers;
   }
 }

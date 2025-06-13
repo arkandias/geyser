@@ -4,6 +4,8 @@ export const version = import.meta.env.DEV
   ? "dev"
   : (import.meta.env.VITE_BUILD_VERSION ?? null);
 
+export const contactEmail = import.meta.env.VITE_CONTACT_EMAIL ?? null;
+
 const hostnameMatch = /^([^.]+)\.(.+\..+)$/.exec(window.location.hostname);
 
 export const apiUrl =
@@ -42,4 +44,12 @@ export const organizationKey =
     );
   })();
 
-export const contactEmail = import.meta.env.VITE_CONTACT_EMAIL ?? null;
+export const bypassAuth =
+  import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === "true";
+export const adminSecret = import.meta.env.VITE_ADMIN_SECRET ?? null;
+export const orgId = import.meta.env.VITE_ORG_ID
+  ? Number.parseInt(import.meta.env.VITE_ORG_ID)
+  : null;
+export const userId = import.meta.env.VITE_USER_ID
+  ? Number.parseInt(import.meta.env.VITE_USER_ID)
+  : null;
