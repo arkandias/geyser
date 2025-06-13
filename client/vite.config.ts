@@ -70,7 +70,6 @@ export default defineConfig(() => ({
   },
   // https://vitest.dev/config/
   test: {
-    globals: true,
     environment: "happy-dom",
     environmentOptions: {
       happyDOM: {
