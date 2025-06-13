@@ -8,7 +8,7 @@ Cleanup Geyser services
 
 Usage: geyser cleanup
 
-Remove all unused Docker objects including stopped containers, dangling images, 
+Remove all unused Docker objects including stopped containers, dangling images,
 unused volumes, and networks to free up disk space.
 
 Options:

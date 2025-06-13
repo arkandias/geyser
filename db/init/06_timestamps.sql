@@ -11,7 +11,7 @@ CREATE FUNCTION public.add_timestamp_columns(p_table text) RETURNS void AS
 $$
 BEGIN
     EXECUTE format('
-        ALTER TABLE public.%I 
+        ALTER TABLE public.%I
         ADD COLUMN created_at timestamptz NOT NULL DEFAULT current_timestamp,
         ADD COLUMN updated_at timestamptz NOT NULL DEFAULT current_timestamp;
 

@@ -5,7 +5,7 @@ resolver 127.0.0.11 valid=1y ipv6=off;
 server {
     listen 80;
     server_name auth-admin.${NGINX_DOMAIN};
-    
+
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak-admin.conf;
 }
@@ -14,7 +14,7 @@ server {
 server {
     listen 80;
     server_name auth.${NGINX_DOMAIN};
-    
+
     set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
     include /etc/nginx/includes/locations/keycloak.conf;
 }
@@ -23,7 +23,7 @@ server {
 server {
     listen 80;
     server_name api.${NGINX_DOMAIN};
-    
+
     set $api_url ${NGINX_PROXY_API_URL};
     include /etc/nginx/includes/locations/api.conf;
 }
@@ -32,7 +32,7 @@ server {
 server {
     listen 80;
     server_name dev.${NGINX_DOMAIN};
-    
+
     set $client_url ${NGINX_PROXY_DEV_SERVER_URL};
     include /etc/nginx/includes/locations/client.conf;
 }
@@ -41,7 +41,7 @@ server {
 server {
     listen 80;
     server_name preview.${NGINX_DOMAIN};
-    
+
     set $client_url ${NGINX_PROXY_PREVIEW_SERVER_URL};
     include /etc/nginx/includes/locations/client.conf;
 }
@@ -50,7 +50,7 @@ server {
 server {
     listen 80;
     server_name build.${NGINX_DOMAIN};
-    
+
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;
