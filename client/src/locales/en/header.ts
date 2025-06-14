@@ -1,4 +1,4 @@
-import { contactEmail } from "@/config/env.ts";
+import { contactEmail } from "@/config/environment.ts";
 import type { InfoTextKey } from "@/config/info-text-keys.ts";
 
 export default {
@@ -126,7 +126,6 @@ export default {
       Record<string, unknown>,
     user: {
       label: "User",
-      login: "Login",
       logout: "Logout",
     },
   },

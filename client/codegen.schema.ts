@@ -3,12 +3,10 @@ import dotenv from "dotenv";
 
 dotenv.config({ path: ".env.development" });
 
-const apiUrl = process.env["VITE_API_URL"];
-if (!apiUrl) {
-  throw new Error("Missing VITE_API_URL environment variable");
+const graphqlUrl = process.env["VITE_GRAPHQL_URL"];
+if (!graphqlUrl) {
+  throw new Error("Missing VITE_GRAPHQL_URL environment variable");
 }
-
-const graphqlUrl = apiUrl.replace(/\/$/, "") + "/graphql";
 
 const apiAdminSecret = process.env["VITE_ADMIN_SECRET"];
 if (!apiAdminSecret) {

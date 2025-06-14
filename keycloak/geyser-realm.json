@@ -36,7 +36,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "${CLIENT_SECRET}",
-      "redirectUris": ["/auth/login/callback"],
+      "redirectUris": ["/auth/callback"],
       "webOrigins": ["${GEYSER_ORIGINS}"],
       "notBefore": 0,
       "bearerOnly": false,
@@ -51,62 +51,18 @@
       "attributes": {
         "realm_client": "false",
         "oidc.ciba.grant.enabled": "false",
-        "client.secret.creation.time": "1746453823",
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
-        "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "/auth/logout/callback",
-        "display.on.consent.screen": "false",
+        "post.logout.redirect.uris": "-",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"
       },
       "authenticationFlowBindingOverrides": {},
       "fullScopeAllowed": false,
       "nodeReRegistrationTimeout": -1,
-      "protocolMappers": [
-        {
-          "name": "email",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-usermodel-attribute-mapper",
-          "consentRequired": false,
-          "config": {
-            "aggregate.attrs": "false",
-            "introspection.token.claim": "false",
-            "multivalued": "false",
-            "userinfo.token.claim": "false",
-            "user.attribute": "email",
-            "id.token.claim": "false",
-            "lightweight.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "email",
-            "jsonType.label": "String"
-          }
-        },
-        {
-          "name": "audience",
-          "protocol": "openid-connect",
-          "protocolMapper": "oidc-hardcoded-claim-mapper",
-          "consentRequired": false,
-          "config": {
-            "introspection.token.claim": "false",
-            "claim.value": "${GEYSER_API_URL}/",
-            "userinfo.token.claim": "false",
-            "id.token.claim": "false",
-            "lightweight.claim": "false",
-            "access.token.claim": "true",
-            "claim.name": "aud",
-            "jsonType.label": "String",
-            "access.tokenResponse.claim": "false"
-          }
-        }
-      ],
-      "defaultClientScopes": [],
-      "optionalClientScopes": [],
-      "access": {
-        "view": true,
-        "configure": true,
-        "manage": true
-      }
+      "protocolMappers": [],
+      "defaultClientScopes": ["email"],
+      "optionalClientScopes": []
     }
   ]
 }

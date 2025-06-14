@@ -3,7 +3,9 @@ import {
   BadRequestException,
   Controller,
   Get,
-  Headers,
+  Head,
+  NotFoundException,
+  Param,
   Post,
   Query,
   Res,
@@ -22,8 +24,7 @@ import { OidcService } from "./oidc.service";
 
 @Controller("auth")
 export class AuthController {
-  readonly loginCallbackUrl: URL;
-  readonly logoutCallbackUrl: URL;
+  readonly callbackUrl: URL;
 
   constructor(
     private authService: AuthService,
@@ -34,24 +35,27 @@ export class AuthController {
     private organizationService: OrganizationService,
     private userService: UserService,
   ) {
-    this.loginCallbackUrl = new URL(
-      this.configService.api.url.href.replace(/\/$/, "") +
-        "/auth/login/callback",
+    this.callbackUrl = new URL(
+      this.configService.api.url.href.replace(/\/$/, "") + "/auth/callback",
     );
-    this.logoutCallbackUrl = new URL(
-      this.configService.api.url.href.replace(/\/$/, "") +
-        "/auth/logout/callback",
-    );
+  }
+
+  @Head("org/:key")
+  async checkOrganization(@Param("key") key: string): Promise<void> {
+    const exists = await this.organizationService.exists(key);
+    if (!exists) {
+      throw new NotFoundException("Organization not found");
+    }
   }
 
   @Get("login")
   login(
-    @Headers("X-Organization-Key") organizationKey: string | undefined,
+    @Query("organization_key") organizationKey: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ) {
     if (!organizationKey) {
-      throw new BadRequestException("Missing X-Organization-Key header");
+      throw new BadRequestException("Missing organization_key query param");
     }
 
     // Use state parameter to prevent CSRF attacks
@@ -60,27 +64,28 @@ export class AuthController {
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
     authUrl.searchParams.set("client_id", this.configService.oidc.clientId);
+    authUrl.searchParams.set("redirect_uri", this.callbackUrl.href);
     authUrl.searchParams.set("response_type", "code");
+    authUrl.searchParams.set("scope", "email");
+    authUrl.searchParams.set("prompt", "login");
     authUrl.searchParams.set("state", stateId);
-    authUrl.searchParams.set("scope", "openid");
-    authUrl.searchParams.set("redirect_uri", this.loginCallbackUrl.href);
 
     res.redirect(authUrl.href);
   }
 
-  @Get("login/callback")
-  async loginCallback(
-    @Query("state") state: string | undefined,
+  @Get("callback")
+  async callback(
     @Query("code") code: string | undefined,
+    @Query("state") state: string | undefined,
     @Res() res: Response,
   ): Promise<void> {
     let redirectUrl: URL | null = null;
     try {
-      if (!state) {
-        throw new BadRequestException("Missing state");
-      }
       if (!code) {
         throw new BadRequestException("Missing code");
+      }
+      if (!state) {
+        throw new BadRequestException("Missing state");
       }
 
       const { organizationKey: key, redirectUrl: url } =
@@ -98,7 +103,7 @@ export class AuthController {
           client_secret: this.configService.oidc.clientSecret,
           grant_type: "authorization_code",
           code,
-          redirect_uri: this.loginCallbackUrl.href,
+          redirect_uri: this.callbackUrl.href,
         });
 
       const { email } = await this.oidcService.verifyToken(identityToken);
@@ -128,60 +133,10 @@ export class AuthController {
     }
   }
 
-  @Get("logout")
-  logout(
-    @Headers("X-Organization-Key") organizationKey: string | undefined,
-    @Query("redirect_url") redirectUrl: string | undefined,
-    @Res() res: Response,
-  ): void {
-    if (!organizationKey) {
-      throw new BadRequestException("Missing X-Organization-Key header");
-    }
-
-    // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ organizationKey, redirectUrl });
-
-    // Building logout URL
-    const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
-    logoutUrl.searchParams.set("client_id", this.configService.oidc.clientId);
-    logoutUrl.searchParams.set("state", stateId);
-    logoutUrl.searchParams.set(
-      "post_logout_redirect_uri",
-      this.logoutCallbackUrl.href,
-    );
-
-    // Removing cookies
+  @Post("logout")
+  logout(@Res() res: Response): void {
     this.cookiesService.unsetAuthCookies(res);
-
-    res.redirect(logoutUrl.href);
-  }
-
-  @Get("logout/callback")
-  logoutCallback(
-    @Query("state") state: string | undefined,
-    @Res() res: Response,
-  ): void {
-    let redirectUrl: URL | null = null;
-    try {
-      if (!state) {
-        throw new BadRequestException("Missing state");
-      }
-
-      redirectUrl = this.authService.getState(state).redirectUrl;
-
-      if (redirectUrl) {
-        res.redirect(redirectUrl.href);
-      } else {
-        res.status(200).json({ message: "Logged out" });
-      }
-    } catch (error) {
-      if (redirectUrl) {
-        redirectUrl.searchParams.set("auth_error", errorMessage(error));
-        res.redirect(redirectUrl.href);
-      } else {
-        throw error;
-      }
-    }
+    res.status(200).json({ message: "Logged out" });
   }
 
   @Get("token/verify")

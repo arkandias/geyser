@@ -17,6 +17,7 @@ _compose() {
         "HASURA_GRAPHQL_ADMIN_SECRET"
         "API_ADMIN_SECRET"
         "CLIENT_SECRET"
+        "NGINX_AUTH_ADMIN_ALLOW"
     )
 
     export COMPOSE_BAKE=true

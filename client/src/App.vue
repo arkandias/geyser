@@ -122,8 +122,8 @@ watch(
 
 // Access check and information message
 const accessDeniedMessage = computed(() => {
-  if (authManager.isLoggedOut) {
-    return t("home.alert.loggedOut");
+  if (!authManager.organizationKey) {
+    return t("home.alert.organizationNotFound");
   }
   if (!authManager.hasAccess) {
     return t("home.alert.noAccess");

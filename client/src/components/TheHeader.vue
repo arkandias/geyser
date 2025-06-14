@@ -5,7 +5,7 @@ import { useDarkMode } from "@/composables/useDarkMode.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { version } from "@/config/env.ts";
+import { version } from "@/config/environment.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";

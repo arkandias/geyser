@@ -10,91 +10,51 @@ import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
-import {
-  adminSecret,
-  apiUrl,
-  bypassAuth,
-  orgId,
-  userId,
-} from "@/config/env.ts";
+import { apiUrl, bypassAuth, organizationKey } from "@/config/environment.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
 const api = axios.create({
-  baseURL: apiUrl.href,
+  baseURL: apiUrl,
   timeout: API_REQUEST_TIMEOUT,
   withCredentials: true,
 });
 
 export class AuthManager {
+  private _organizationKey: string | null = null;
   private _payload?: AccessTokenPayload;
   private _role: RoleType | null = null;
-  private _postLogin = false;
-  private _postLogout = false;
   private _authError: string | null = null;
 
   async init(): Promise<void> {
     if (bypassAuth) {
-      if (!adminSecret) {
-        throw new Error(
-          "Missing admin secret to bypass authentication. Set VITE_ADMIN_SECRET environment variable",
-        );
-      }
-      if (!orgId) {
-        throw new Error(
-          "Missing organisation id to bypass authentication. Set VITE_ORG_ID environment variable",
-        );
-      }
-      if (!userId) {
-        throw new Error(
-          "Missing user id to bypass authentication. Set VITE_USER_ID environment variable",
-        );
-      }
       return;
     }
 
-    console.debug("[AuthManager] Initializing authentication...");
-    const url = new URL(window.location.href);
+    // Get organization key
+    await this.getOrganizationKey();
+    if (!this._organizationKey) {
+      return;
+    }
 
-    // Step 1: Check for authentication errors from API
+    // Check for authentication errors from API in query params
+    const url = new URL(window.location.href);
     this._authError = url.searchParams.get("auth_error");
     if (this._authError) {
       console.error(`[AuthManager] Authentication error: ${this._authError}`);
       return;
     }
 
-    // Step 2: Parse login/logout state from URL parameters (set by API)
-    this._postLogin = url.searchParams.get("post_login") === "true";
-    this._postLogout = url.searchParams.get("post_logout") === "true";
-
-    // Validate that both post_login and post_logout aren't set simultaneously
-    if (this._postLogin && this._postLogout) {
-      this._authError =
-        "Query parameters 'post_login' and 'post_logout' cannot be simultaneously set to 'true'";
-      console.error(`[AuthManager] Authentication error: ${this._authError}`);
-      return;
-    }
-
-    // Step 3: Handle post-logout state - user has been logged out, no further action needed
-    if (this._postLogout) {
-      console.debug("[AuthManager] Logged out");
-      return;
-    }
-
-    // Step 4: Verify current authentication status using existing tokens
+    // Verify access token
     const verified = await this.verify();
 
-    // Step 5: If already authenticated OR just completed login flow, we're done
+    // Verification succeeded - we're done
     if (verified) {
       console.debug("[AuthManager] Logged in");
       return;
     }
-    if (this._postLogin) {
-      console.warn("[AuthManager] Login failed");
-      return;
-    }
 
-    // Step 6: Authentication failed - attempt to refresh tokens
+    // Verification failed - attempt to refresh tokens
     const refreshed = await this.refresh();
     if (refreshed) {
       // Refresh succeeded - verify again to store payload
@@ -102,8 +62,53 @@ export class AuthManager {
       return;
     }
 
-    // Step 7: Refresh failed - redirect to login
+    // Refresh failed - redirect to login
     await this.login();
+  }
+
+  async getOrganizationKey(): Promise<void> {
+    // Set organization key from environment
+    this._organizationKey = organizationKey;
+
+    // If not provided, use current location hostname
+    if (!this._organizationKey) {
+      const domainLabels = window.location.hostname.split(".");
+      if (domainLabels.length < 3) {
+        console.debug(
+          "[AuthManager] Could not determine organization key: no subdomain",
+        );
+        return;
+      }
+
+      this._organizationKey = domainLabels[0] ?? null;
+      if (!this._organizationKey) {
+        console.debug("[AuthManager] Could not determine organization key");
+        return;
+      }
+    }
+    console.debug(`[AuthManager] Organization key: ${this._organizationKey}`);
+
+    try {
+      await api.head(`/auth/org/${this._organizationKey}`);
+      console.debug("[AuthManager] Organization key checked successfully");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.debug(
+            `[AuthManager] Organization check failed: ${error.response.status} ${error.response.statusText}`,
+          );
+        } else {
+          console.debug(
+            "[AuthManager] Organization check failed: Network error",
+          );
+          console.debug(error.message);
+        }
+      } else {
+        console.debug("[AuthManager] Organization check failed: Unknown error");
+        console.debug(error);
+      }
+      this._organizationKey = null;
+    }
   }
 
   async login(): Promise<void> {
@@ -122,6 +127,7 @@ export class AuthManager {
       url: "/auth/login",
       params: {
         redirect_url: redirectUrl,
+        organization_key: this._organizationKey,
       },
     });
 
@@ -137,23 +143,25 @@ export class AuthManager {
     }
 
     console.debug("[AuthManager] Logging out...");
+    try {
+      await api.post("/auth/logout");
+    } catch (error) {
+      if (axios.isAxiosError(error)) {
+        if (error.response) {
+          console.debug(
+            `[AuthManager] Logout failed: ${error.response.status} ${error.response.statusText}`,
+          );
+        } else {
+          console.debug("[AuthManager] Logout failed: Network error");
+          console.debug(error.message);
+        }
+      } else {
+        console.debug("[AuthManager] Logout failed: Unknown error");
+        console.debug(error);
+      }
+    }
 
-    const redirectUrl = new URL(window.location.href);
-    redirectUrl.searchParams.set("post_logout", "true");
-    redirectUrl.searchParams.delete("post_login");
-    redirectUrl.searchParams.delete("auth_error");
-
-    window.location.href = api.getUri({
-      url: "/auth/logout",
-      params: {
-        redirect_url: redirectUrl,
-      },
-    });
-
-    // Prevent further execution since we're redirecting to logout page
-    await new Promise(() => {
-      // This promise intentionally never resolves
-    });
+    await this.init();
   }
 
   async verify(): Promise<boolean> {
@@ -227,24 +235,24 @@ export class AuthManager {
             API_TOKEN_MIN_VALIDITY;
   }
 
+  get organizationKey(): string | null {
+    return this._organizationKey;
+  }
+
   get authError(): string | null {
     return this._authError;
   }
 
   get hasAccess(): boolean {
-    return bypassAuth || !!this._payload;
-  }
-
-  get isLoggedOut(): boolean {
-    return !bypassAuth && this._postLogout;
+    return !!bypassAuth || !!this._payload;
   }
 
   get orgId(): number {
-    return (bypassAuth ? orgId : this._payload?.orgId) ?? -1;
+    return bypassAuth?.orgId ?? this._payload?.orgId ?? -1;
   }
 
   get userId(): number {
-    return (bypassAuth ? userId : this._payload?.userId) ?? -1;
+    return bypassAuth?.userId ?? this._payload?.userId ?? -1;
   }
 
   get allowedRoles(): RoleEnum[] {
@@ -275,15 +283,9 @@ export class AuthManager {
   get headers(): Record<string, string> {
     const headers: Record<string, string> = {};
     if (bypassAuth) {
-      if (adminSecret) {
-        headers["X-Admin-Secret"] = adminSecret;
-      }
-      if (orgId) {
-        headers["X-Org-Id"] = orgId.toString();
-      }
-      if (userId) {
-        headers["X-User-Id"] = userId.toString();
-      }
+      headers["X-Admin-Secret"] = bypassAuth.adminSecret;
+      headers["X-Org-Id"] = bypassAuth.orgId.toString();
+      headers["X-User-Id"] = bypassAuth.userId.toString();
     }
     if (this._role) {
       headers["X-User-Role"] = this._role;

@@ -51,26 +51,14 @@ const updateRole = async (value: RoleEnum) => {
         </QItem>
         <QSeparator />
       </template>
-      <template v-if="authManager.isLoggedOut">
-        <QItem v-close-popup clickable @click="authManager.login()">
-          <QItemSection side>
-            <QIcon name="sym_s_login" color="primary" />
-          </QItemSection>
-          <QItemSection>
-            {{ t("header.user.login") }}
-          </QItemSection>
-        </QItem>
-      </template>
-      <template v-else>
-        <QItem v-close-popup clickable @click="authManager.logout()">
-          <QItemSection side>
-            <QIcon name="sym_s_logout" color="primary" />
-          </QItemSection>
-          <QItemSection>
-            {{ t("header.user.logout") }}
-          </QItemSection>
-        </QItem>
-      </template>
+      <QItem v-close-popup clickable @click="authManager.logout()">
+        <QItemSection side>
+          <QIcon name="sym_s_logout" color="primary" />
+        </QItemSection>
+        <QItemSection>
+          {{ t("header.user.logout") }}
+        </QItemSection>
+      </QItem>
     </QList>
   </MenuBase>
 </template>

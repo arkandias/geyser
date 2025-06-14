@@ -24,6 +24,7 @@ declare -r REQUIRED_ENV_VARS=(
 )
 
 declare -r OPTIONAL_ENV_VARS=(
+    "NGINX_AUTH_ADMIN_ALLOW"
     "WEBHOOK_SECRET"
     "WEBDAV_URL"
     "WEBDAV_USER"

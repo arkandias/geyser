@@ -13,7 +13,7 @@ import {
   fetchExchange,
 } from "@urql/vue";
 
-import { graphqlUrl } from "@/config/env.ts";
+import { graphqlUrl } from "@/config/environment.ts";
 import type { AuthManager } from "@/services/auth.ts";
 
 const authInit =
@@ -46,7 +46,7 @@ const authInit =
     });
 
 export const makeClientOptions = (authManager: AuthManager): ClientOptions => ({
-  url: graphqlUrl.href,
+  url: graphqlUrl,
   exchanges: [
     devtoolsExchange,
     cacheExchange,

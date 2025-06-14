@@ -158,6 +158,7 @@ services:
       NGINX_DOMAIN: "${GEYSER_DOMAIN}"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://backend:3000"
+      NGINX_AUTH_ADMIN_ALLOW: "${NGINX_AUTH_ADMIN_ALLOW:-0.0.0.0/0}"
     ports:
       - "80:80"
       - "443:443"
