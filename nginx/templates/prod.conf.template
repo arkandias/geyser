@@ -11,65 +11,94 @@ server {
     return 301 https://$host$request_uri;
 }
 
-# Keycloak admin server
-server {
-    listen 443 ssl;
-    server_name auth-admin.${NGINX_DOMAIN};
-    
-    # Configure allowed IPs (e.g., behind a VPN)
-    #allow 10.0.0.0/24;
-    #deny all;
-    
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
-    
-    # Client certificate verification
-    #ssl_client_certificate /etc/nginx/certs/client/ca.crt;
-    #ssl_verify_client on;
-    
-    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-    include /etc/nginx/includes/locations/keycloak-admin.conf;
-}
-
 # Keycloak server
 server {
     listen 443 ssl;
     server_name auth.${NGINX_DOMAIN};
-    
+
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
-    
-    set $keycloak_url ${NGINX_PROXY_KEYCLOAK_URL};
-    include /etc/nginx/includes/locations/keycloak.conf;
+
+    location ~ ^/(realms|resources)/ {
+        set $proxy_target ${NGINX_PROXY_KEYCLOAK_URL};
+        include /etc/nginx/includes/proxy-common.conf;
+    }
+}
+
+# Keycloak admin server
+server {
+    listen 443 ssl;
+    server_name auth-admin.${NGINX_DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+
+    # Configure allowed IPs
+    #allow 10.0.0.0/24;
+    #deny all;
+
+    # Client certificate verification
+    #ssl_client_certificate /etc/nginx/certs/client/ca.crt;
+    #ssl_verify_client on;
+
+    location / {
+        set $proxy_target ${NGINX_PROXY_KEYCLOAK_URL};
+        include /etc/nginx/includes/proxy-common.conf;
+    }
+}
+
+map $http_x_forwarded_host $organization_key {
+    ~^([a-zA-Z0-9\-]+)\.${NGINX_DOMAIN}$ $1;
+    default "";
 }
 
 # API server
 server {
     listen 443 ssl;
     server_name api.${NGINX_DOMAIN};
-    
+
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
-    
-    set $api_url ${NGINX_PROXY_API_URL};
-    include /etc/nginx/includes/locations/api.conf;
-    # Disable admin access
-    proxy_set_header X-Admin-Secret "";
+
+    location / {
+        set $proxy_target ${NGINX_PROXY_API_URL};
+        include /etc/nginx/includes/proxy-common.conf;
+        # Set organization key based on forwarded host
+        proxy_set_header X-Organization-Key $organization_key;
+        # Disable admin access
+        proxy_set_header X-Admin-Secret "";
+    }
 }
 
-# App server
+# Client server
 server {
     listen 443 ssl;
-    server_name app.${NGINX_DOMAIN};
-    
+    server_name ~^(?<organization_key>[a-zA-Z0-9\-]{1,63})\.${NGINX_DOMAIN}$;
+
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
     # Enable serving pre-compressed files
     gzip_static on;
 
+    location = /check-organization {
+        internal;
+        proxy_pass ${NGINX_PROXY_API_URL}/organization/$organization_key;
+        proxy_pass_request_body off;
+        proxy_set_header Content-Length "";
+        proxy_method HEAD;
+    }
+
     location / {
+        auth_request /check-organization;
+        error_page 500 = @organization_not_found;
+
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;
+    }
+
+    location @organization_not_found {
+        add_header Content-Type text/html;
+        return 404 '<html><body><h1>Organization Not Found</h1></body></html>';
     }
 }

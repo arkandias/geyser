@@ -46,16 +46,16 @@ export class AuthController {
 
   @Get("login")
   login(
-    @Headers("Host") host: string | undefined,
+    @Headers("X-Organization-Key") organizationKey: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ) {
-    if (!host) {
-      throw new BadRequestException("Missing Host header");
+    if (!organizationKey) {
+      throw new BadRequestException("Missing X-Organization-Key header");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ host, redirectUrl });
+    const stateId = this.authService.setState({ organizationKey, redirectUrl });
 
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
@@ -130,16 +130,16 @@ export class AuthController {
 
   @Get("logout")
   logout(
-    @Headers("Host") host: string | undefined,
+    @Headers("X-Organization-Key") organizationKey: string | undefined,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
   ): void {
-    if (!host) {
-      throw new BadRequestException("Missing Host header");
+    if (!organizationKey) {
+      throw new BadRequestException("Missing X-Organization-Key header");
     }
 
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ host, redirectUrl });
+    const stateId = this.authService.setState({ organizationKey, redirectUrl });
 
     // Building logout URL
     const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);

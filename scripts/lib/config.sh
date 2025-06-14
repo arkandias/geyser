@@ -120,7 +120,7 @@ _validate_geyser_env_vars() {
         GEYSER_MODE="production"
     fi
     declare -grx GEYSER_MODE
-    
+
     local protocol
     if [[ "${GEYSER_MODE}" == "development" ]]; then
         protocol="http"

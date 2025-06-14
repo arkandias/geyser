@@ -29,9 +29,6 @@ export class ConfigService {
     refreshTokenMaxAge: number;
     stateExpirationTime: number;
   };
-  readonly tenancy:
-    | { type: "single"; organizationKey: string }
-    | { type: "multiple"; hostConfig: RegExp };
 
   constructor(private configService: NestConfigService<Env, true>) {
     this.nodeEnv = this.configService.getOrThrow<"development" | "production">(
@@ -106,34 +103,5 @@ export class ConfigService {
     this.logger.log(
       `- State expiration time (ms): ${this.jwt.stateExpirationTime}`,
     );
-
-    const organizationKey =
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      this.configService.get<string | undefined>("API_ORGANIZATION_KEY") ||
-      null;
-    if (organizationKey) {
-      this.tenancy = {
-        type: "single",
-        organizationKey,
-      };
-      this.logger.warn(
-        `Single-tenant configuration activated with organization key '${organizationKey}'`,
-      );
-    } else {
-      const parentHost = /^api\.([^.]+\.[^.]+)/.exec(this.api.url.host)?.[1];
-      if (!parentHost) {
-        throw new Error(
-          "Multi-tenant configuration requires API domain to be of the form 'api.<parent-domain>.<tld>'",
-        );
-      }
-      const hostConfig = new RegExp(`^([^.]+)\\.${parentHost}$`);
-      this.tenancy = {
-        type: "multiple",
-        hostConfig,
-      };
-      this.logger.warn(
-        `Multi-tenant configuration activated with host configuration '${hostConfig}'`,
-      );
-    }
   }
 }

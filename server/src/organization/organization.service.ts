@@ -11,6 +11,10 @@ export class OrganizationService {
     private orgRepository: Repository<Organization>,
   ) {}
 
+  async exists(key: string): Promise<boolean> {
+    return this.orgRepository.exists({ where: { key } });
+  }
+
   async findByKey(key: string): Promise<Organization | null> {
     return this.orgRepository.findOne({ where: { key } });
   }

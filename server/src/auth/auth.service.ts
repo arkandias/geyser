@@ -9,7 +9,7 @@ import {
 import { ConfigService } from "../config/config.service";
 
 interface StateParams {
-  host: string;
+  organizationKey: string;
   redirectUrl?: string;
 }
 
@@ -24,18 +24,6 @@ export class AuthService {
   private stateRecord = new Map<string, State>();
 
   constructor(private configService: ConfigService) {}
-
-  private getOrganizationKey(host: string): string {
-    if (this.configService.tenancy.type === "single") {
-      return this.configService.tenancy.organizationKey;
-    }
-    const organizationKey =
-      this.configService.tenancy.hostConfig.exec(host)?.[1];
-    if (!organizationKey) {
-      throw new BadRequestException("Invalid host");
-    }
-    return organizationKey;
-  }
 
   private validateRedirectUrl(redirectUrl?: string): URL | null {
     if (!redirectUrl) {
@@ -63,7 +51,7 @@ export class AuthService {
   setState(params: StateParams): string {
     const id = randomUUID();
     this.stateRecord.set(id, {
-      organizationKey: this.getOrganizationKey(params.host),
+      organizationKey: params.organizationKey,
       redirectUrl: this.validateRedirectUrl(params.redirectUrl),
       expiresAt: Date.now() + this.configService.jwt.stateExpirationTime,
     });
