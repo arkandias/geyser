@@ -20,7 +20,6 @@ env:
   BUILD_VERSION: ${{ github.ref_type == 'tag' && github.ref_name || github.sha }}
   FRONTEND_IMAGE: ghcr.io/${{ github.repository_owner }}/geyser-frontend
   BACKEND_IMAGE: ghcr.io/${{ github.repository_owner }}/geyser-backend
-  CONTACT_EMAIL: contact@geyserflow.org
 
 jobs:
   format:
