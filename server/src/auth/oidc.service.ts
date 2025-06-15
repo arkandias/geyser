@@ -16,10 +16,7 @@ import {
   oidcTokenPayloadSchema,
 } from "./oidc-token-payload.schema";
 import { OidcTokenRequestParameters } from "./oidc-token-request-parameters.interface";
-import {
-  OidcTokenResponse,
-  oidcTokenResponseSchema,
-} from "./oidc-token-response.schema";
+import { oidcTokenResponseSchema } from "./oidc-token-response.schema";
 
 @Injectable()
 export class OidcService implements OnModuleInit {
@@ -70,16 +67,15 @@ export class OidcService implements OnModuleInit {
     }
   }
 
-  async requestToken(
-    params: OidcTokenRequestParameters,
-  ): Promise<OidcTokenResponse> {
+  async requestToken(params: OidcTokenRequestParameters): Promise<string> {
     try {
       const response = await axios.post(
         this.metadata.tokenUrl,
         new URLSearchParams({ ...params }).toString(),
         { headers: { "Content-Type": "application/x-www-form-urlencoded" } },
       );
-      return oidcTokenResponseSchema.parse(response.data);
+      const { accessToken } = oidcTokenResponseSchema.parse(response.data);
+      return accessToken;
     } catch (error) {
       if (axios.isAxiosError(error)) {
         throw new UnauthorizedException({

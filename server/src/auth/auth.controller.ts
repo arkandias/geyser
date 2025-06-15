@@ -97,14 +97,13 @@ export class AuthController {
         throw new UnauthorizedException(`Organization '${key}' not found`);
       }
 
-      const { accessToken: identityToken } =
-        await this.oidcService.requestToken({
-          client_id: this.configService.oidc.clientId,
-          client_secret: this.configService.oidc.clientSecret,
-          grant_type: "authorization_code",
-          code,
-          redirect_uri: this.callbackUrl.href,
-        });
+      const identityToken = await this.oidcService.requestToken({
+        client_id: this.configService.oidc.clientId,
+        client_secret: this.configService.oidc.clientSecret,
+        grant_type: "authorization_code",
+        code,
+        redirect_uri: this.callbackUrl.href,
+      });
 
       const { email } = await this.oidcService.verifyToken(identityToken);
 
