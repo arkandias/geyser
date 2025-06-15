@@ -9,6 +9,7 @@ import { GetAppDataDocument, PhaseEnum, RoleEnum } from "@/gql/graphql.ts";
 import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
@@ -21,6 +22,7 @@ const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
 const { profile, setProfile } = useProfileStore();
+const { setOrganization } = useOrganizationStore();
 
 const authManager = inject<AuthManager>("authManager");
 if (!authManager) {
@@ -46,6 +48,7 @@ graphql(`
     organization: organizationByPk(id: $orgId) {
       label
       sublabel
+      email
       currentPhases {
         value
       }
@@ -101,6 +104,12 @@ watch(
     }
 
     if (data?.organization) {
+      setOrganization({
+        oid: authManager.orgId,
+        label: data.organization.label,
+        sublabel: data.organization.sublabel ?? null,
+        email: data.organization.email,
+      });
       setCurrentPhase(
         data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,
       );

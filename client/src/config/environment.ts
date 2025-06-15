@@ -2,8 +2,6 @@ export const version = import.meta.env.DEV
   ? "dev"
   : (import.meta.env.VITE_BUILD_VERSION ?? null);
 
-export const contactEmail = import.meta.env.VITE_CONTACT_EMAIL ?? null;
-
 export const apiUrl = import.meta.env.VITE_API_URL ?? "";
 if (!apiUrl && import.meta.env.MODE !== "test") {
   throw new Error("Missing required environment variable VITE_API_URL");

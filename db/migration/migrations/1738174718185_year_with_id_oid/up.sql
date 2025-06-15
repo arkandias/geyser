@@ -1,14 +1,16 @@
 CREATE TABLE public.organization
 (
     id       integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    key      text NOT NULL UNIQUE,
-    label    text NOT NULL,
+    key      text    NOT NULL UNIQUE,
+    label    text    NOT NULL,
     sublabel text,
+    email    text    NOT NULL,
+    active   boolean NOT NULL DEFAULT TRUE,
     CHECK (id = 1)
 );
 
-INSERT INTO public.organization(key, label, sublabel)
-VALUES ('univ-lille-dpt-math', 'Université de Lille', 'Département de mathématiques');
+INSERT INTO public.organization(key, label, sublabel, email)
+VALUES ('univ-lille-dpt-math', 'Université de Lille', 'Département de mathématiques', 'julien.hauseux@univ-lille.fr');
 
 ALTER TABLE public.year
     ADD COLUMN oid integer NOT NULL DEFAULT 1 REFERENCES public.organization;

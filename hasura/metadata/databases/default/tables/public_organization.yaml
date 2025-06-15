@@ -136,6 +136,8 @@ select_permissions:
         - key
         - label
         - sublabel
+        - email
+        - active
       filter:
         id:
           _eq: X-Hasura-Org-Id
@@ -147,6 +149,8 @@ select_permissions:
         - key
         - label
         - sublabel
+        - email
+        - active
       filter:
         id:
           _eq: X-Hasura-Org-Id

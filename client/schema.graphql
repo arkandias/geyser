@@ -5790,6 +5790,8 @@ enum OrderBy {
 
 """Organization information"""
 type Organization {
+  active: Boolean
+
   """An array relationship"""
   appSettings(
     """distinct select on columns"""
@@ -6008,6 +6010,7 @@ type Organization {
     """filter the rows returned"""
     where: DegreeBoolExp
   ): DegreeAggregate!
+  email: String!
 
   """Unique identifier"""
   id: Int!
@@ -6497,6 +6500,7 @@ input OrganizationBoolExp {
   _and: [OrganizationBoolExp!]
   _not: OrganizationBoolExp
   _or: [OrganizationBoolExp!]
+  active: BooleanComparisonExp
   appSettings: AppSettingBoolExp
   appSettingsAggregate: AppSettingAggregateBoolExp
   coordinations: CoordinationBoolExp
@@ -6510,6 +6514,7 @@ input OrganizationBoolExp {
   currentPhasesAggregate: CurrentPhaseAggregateBoolExp
   degrees: DegreeBoolExp
   degreesAggregate: DegreeAggregateBoolExp
+  email: StringComparisonExp
   id: IntComparisonExp
   key: StringComparisonExp
   label: StringComparisonExp
@@ -6560,6 +6565,7 @@ enum OrganizationConstraint {
 input type for inserting data into table "organization"
 """
 input OrganizationInsertInput {
+  active: Boolean
   appSettings: AppSettingArrRelInsertInput
   coordinations: CoordinationArrRelInsertInput
   courseTypes: CourseTypeArrRelInsertInput
@@ -6569,6 +6575,7 @@ input OrganizationInsertInput {
   createdAt: timestamptz
   currentPhases: CurrentPhaseArrRelInsertInput
   degrees: DegreeArrRelInsertInput
+  email: String
 
   """Human-readable identifier (unique)"""
   key: String
@@ -6601,6 +6608,7 @@ input OrganizationInsertInput {
 type OrganizationMaxFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
+  email: String
 
   """Unique identifier"""
   id: Int
@@ -6624,6 +6632,7 @@ type OrganizationMaxFields {
 type OrganizationMinFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
+  email: String
 
   """Unique identifier"""
   id: Int
@@ -6675,6 +6684,7 @@ input OrganizationOnConflict {
 
 """Ordering options when selecting data from "organization"."""
 input OrganizationOrderBy {
+  active: OrderBy
   appSettingsAggregate: AppSettingAggregateOrderBy
   coordinationsAggregate: CoordinationAggregateOrderBy
   courseTypesAggregate: CourseTypeAggregateOrderBy
@@ -6682,6 +6692,7 @@ input OrganizationOrderBy {
   createdAt: OrderBy
   currentPhasesAggregate: CurrentPhaseAggregateOrderBy
   degreesAggregate: DegreeAggregateOrderBy
+  email: OrderBy
   id: OrderBy
   key: OrderBy
   label: OrderBy
@@ -6712,7 +6723,13 @@ select columns of table "organization"
 """
 enum OrganizationSelectColumn {
   """column name"""
+  active
+
+  """column name"""
   createdAt
+
+  """column name"""
+  email
 
   """column name"""
   id
@@ -6734,8 +6751,11 @@ enum OrganizationSelectColumn {
 input type for updating data in table "organization"
 """
 input OrganizationSetInput {
+  active: Boolean
+
   """Timestamp when the record was created"""
   createdAt: timestamptz
+  email: String
 
   """Human-readable identifier (unique)"""
   key: String
@@ -6783,8 +6803,11 @@ input OrganizationStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input OrganizationStreamCursorValueInput {
+  active: Boolean
+
   """Timestamp when the record was created"""
   createdAt: timestamptz
+  email: String
 
   """Unique identifier"""
   id: Int
@@ -6815,7 +6838,13 @@ update columns of table "organization"
 """
 enum OrganizationUpdateColumn {
   """column name"""
+  active
+
+  """column name"""
   createdAt
+
+  """column name"""
+  email
 
   """column name"""
   key

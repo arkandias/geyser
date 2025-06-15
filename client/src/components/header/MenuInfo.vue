@@ -3,10 +3,12 @@ import { ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { INFO_TEXT_KEYS, type InfoTextKey } from "@/config/info-text-keys.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 
 const isDialogOpen = ref<Record<InfoTextKey, boolean>>({
   contact: false,
@@ -54,7 +56,7 @@ const icons: Record<InfoTextKey, string> = {
       <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
       <QCardSection
         class="text-justify q-pt-none"
-        v-html="t(`header.info.${key}.message`)"
+        v-html="t(`header.info.${key}.message`, { email: organization.email })"
       />
       <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
     </QCard>

@@ -1,16 +1,20 @@
 CREATE TABLE public.organization
 (
     id       integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    key      text NOT NULL UNIQUE,
-    label    text NOT NULL,
-    sublabel text
+    key      text    NOT NULL UNIQUE,
+    label    text    NOT NULL,
+    sublabel text,
+    email    text    NOT NULL,
+    active   boolean NOT NULL DEFAULT TRUE
 );
 
 COMMENT ON TABLE public.organization IS 'Organization information';
 COMMENT ON COLUMN public.organization.id IS 'Unique identifier';
 COMMENT ON COLUMN public.organization.key IS 'Human-readable identifier (unique)';
+COMMENT ON COLUMN public.organization.email IS 'Organization contact email address';
 COMMENT ON COLUMN public.organization.label IS 'Label for display purposes';
 COMMENT ON COLUMN public.organization.sublabel IS 'Sublabel for display purposes';
+COMMENT ON COLUMN public.organization.active IS 'Organization status flag';
 
 CREATE TABLE public.current_phase
 (

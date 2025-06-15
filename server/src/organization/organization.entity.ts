@@ -10,8 +10,14 @@ export class Organization {
   key!: string;
 
   @Column("text")
-  label!: string;
+  email!: string;
 
   @Column("text")
+  label!: string;
+
+  @Column("text", { nullable: true })
   sublabel: string | null = null;
+
+  @Column("boolean", { default: true })
+  active!: boolean;
 }
