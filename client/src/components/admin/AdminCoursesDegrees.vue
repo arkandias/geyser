@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, inject, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
@@ -14,7 +14,7 @@ import {
   UpdateDegreesDocument,
   UpsertDegreesDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -32,8 +32,7 @@ const { degreeFragments } = defineProps<{
   degreeFragments: FragmentType<typeof AdminDegreeFragmentDoc>[];
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
+const { organization } = useOrganizationStore();
 
 const rowDescriptor = {
   name: {
@@ -120,7 +119,7 @@ const formatRow = (row: Row) => row.name;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
-    oid: authManager.orgId,
+    oid: organization.id,
   };
   if (flatRow.name !== undefined) {
     object.name = flatRow.name;

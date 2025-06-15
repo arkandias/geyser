@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, inject, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -15,7 +15,7 @@ import {
   UpdatePositionsDocument,
   UpsertPositionsDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
   NullableParsedRow,
   RowDescriptorExtra,
@@ -33,9 +33,8 @@ const { positionFragments } = defineProps<{
   positionFragments: FragmentType<typeof AdminPositionFragmentDoc>[];
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 
 const rowDescriptor = {
   label: {
@@ -123,7 +122,7 @@ const formatRow = (row: Row) => row.label;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
-    oid: authManager.orgId,
+    oid: organization.id,
   };
   if (flatRow.label !== undefined) {
     object.label = flatRow.label;

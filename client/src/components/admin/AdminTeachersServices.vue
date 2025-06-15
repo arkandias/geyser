@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { computed, inject, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -16,7 +16,7 @@ import {
   UpdateServicesDocument,
   UpsertServicesDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   NullableParsedRow,
@@ -36,9 +36,8 @@ const { serviceFragments, teacherFragments } = defineProps<{
   teacherFragments: FragmentType<typeof AdminServicesTeacherFragmentDoc>[];
 }>();
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
 const rowDescriptor = {
@@ -141,7 +140,7 @@ const formatRow = (row: Row): string =>
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
-    oid: authManager.orgId,
+    oid: organization.id,
   };
   if (flatRow.year !== undefined) {
     object.year = flatRow.year;

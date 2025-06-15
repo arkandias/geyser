@@ -1,17 +1,14 @@
 <script setup lang="ts">
-import { computed, inject } from "vue";
+import { computed } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import type { RoleEnum } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { toLowerCase } from "@/utils";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
 const { profile, setActiveRole } = useProfileStore();
@@ -51,7 +48,7 @@ const updateRole = async (value: RoleEnum) => {
         </QItem>
         <QSeparator />
       </template>
-      <QItem v-close-popup clickable @click="authManager.logout()">
+      <QItem v-close-popup clickable @click="profile.logout()">
         <QItemSection side>
           <QIcon name="sym_s_logout" color="primary" />
         </QItemSection>

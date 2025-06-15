@@ -1,14 +1,14 @@
 import { reactive, readonly } from "vue";
 
 type Organization = {
-  oid: number;
+  id: number;
   label: string;
   sublabel: string | null;
   email: string;
 };
 
 const organization = reactive<Organization>({
-  oid: -1,
+  id: -1,
   label: "",
   sublabel: null,
   email: "",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { inject, ref } from "vue";
+import { ref } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
@@ -15,14 +15,13 @@ import {
   SetCurrentYearDocument,
   UpdateYearDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import NumInput from "@/components/core/NumInput.vue";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { notify } = useNotify();
 const { years, currentYear } = useYearsStore();
 
@@ -102,7 +101,7 @@ const computePriorities = useMutation(ComputePrioritiesDocument);
 
 const setCurrentYearHandle = async (year: number): Promise<void> => {
   const { error } = await setCurrentYear.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     value: year,
   });
 
@@ -128,7 +127,7 @@ const insertYearHandle = async () => {
   }
 
   const { data, error } = await insertYear.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     value: yearValue.value,
     visible: false,
   });
@@ -157,7 +156,7 @@ const updateYearHandle = async (
   },
 ) => {
   const { data, error } = await updateYear.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     value,
     changes,
   });
@@ -204,7 +203,7 @@ const deleteYearHandle = async (value: number) => {
   }
 
   const { data, error } = await deleteYear.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     value,
   });
   if (error || data?.deleteYearByPk?.value === undefined) {
@@ -225,7 +224,7 @@ const createServicesHandle = async () => {
   }
 
   const { data, error } = await createServices.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: selectedYear.value,
   });
 
@@ -250,7 +249,7 @@ const copyServicesHandle = async () => {
   }
 
   const { data, error } = await copyServices.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: selectedYear.value,
   });
 
@@ -275,7 +274,7 @@ const copyCoursesHandle = async () => {
   }
 
   const { data, error } = await copyCourses.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: selectedYear.value,
   });
 
@@ -300,7 +299,7 @@ const computePrioritiesHandle = async () => {
   }
 
   const { data, error } = await computePriorities.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: selectedYear.value,
   });
 

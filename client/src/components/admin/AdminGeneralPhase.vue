@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { inject } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { PhaseEnum, SetCurrentPhaseDocument } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { toLowerCase } from "@/utils";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { notify } = useNotify();
 const { currentPhase } = useCurrentPhaseStore();
 
@@ -44,7 +42,7 @@ const setCurrentPhase = useMutation(SetCurrentPhaseDocument);
 
 const setCurrentPhaseHandle = async (value: PhaseEnum): Promise<void> => {
   const { error } = await setCurrentPhase.executeMutation({
-    oid: authManager.orgId,
+    oid: organization.id,
     value,
   });
   if (error) {

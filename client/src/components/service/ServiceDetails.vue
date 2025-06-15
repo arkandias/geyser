@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from "@urql/vue";
-import { computed, inject, ref, watch } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -14,7 +14,7 @@ import {
   ServiceDetailsFragmentDoc,
   UpdateServiceHoursDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
 import NumInput from "@/components/core/NumInput.vue";
@@ -89,10 +89,9 @@ graphql(`
   }
 `);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
+const { organization } = useOrganizationStore();
 const perm = usePermissions();
 
 const updateServiceHours = useMutation(UpdateServiceHoursDocument);
@@ -152,7 +151,7 @@ watch(service, resetBaseServiceForm, { immediate: true });
 const isModificationFormOpen = ref(false);
 const { data } = useQuery({
   query: GetModificationTypesDocument,
-  variables: { oid: authManager.orgId },
+  variables: { oid: organization.id },
   pause: () => !isModificationFormOpen.value,
   context: { additionalTypenames: ["All", "ServiceModificationType"] },
 });

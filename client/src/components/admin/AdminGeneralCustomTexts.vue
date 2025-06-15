@@ -3,7 +3,6 @@ import { useMutation } from "@urql/vue";
 import {
   type ComponentPublicInstance,
   type ShallowRef,
-  inject,
   ref,
   shallowRef,
 } from "vue";
@@ -19,15 +18,14 @@ import {
   DeleteCustomTextDocument,
   UpdateCustomTextDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { camelToDot } from "@/utils";
 
 import EditableText from "@/components/core/EditableText.vue";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { getCustomText } = useCustomTextsStore();
 
 const editStates = ref(
@@ -121,7 +119,7 @@ const callOnDelete = async (key: CustomTextKey) => {
             v-model="editStates[key]"
             :text="getCustomText(key).value"
             :set-text="
-              (value) => updateCustomTextHandle(authManager.orgId, key, value)
+              (value) => updateCustomTextHandle(organization.id, key, value)
             "
             :default-text="t(`${camelToDot(key)}`)"
           />

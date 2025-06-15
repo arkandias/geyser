@@ -4,7 +4,6 @@ import type { RoleEnum } from "@/gql/graphql.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 type Profile = {
-  oid: number;
   id: number;
   roles: RoleEnum[];
   activeRole: RoleEnum | null;
@@ -13,15 +12,18 @@ type Profile = {
     id: number;
     year: number;
   }[];
+  logout: () => Promise<void>;
 };
 
 const profile = reactive<Profile>({
-  oid: -1,
   id: -1,
   displayname: "",
   roles: [],
   activeRole: null,
   services: [],
+  logout: (): Promise<void> => {
+    return Promise.resolve();
+  },
 });
 
 const setProfile = (newProfile: Profile) => {

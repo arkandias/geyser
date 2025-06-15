@@ -25,8 +25,7 @@ await authManager.init();
 
 const clientOptions = makeClientOptions(authManager);
 
-createApp(App)
-  .provide("authManager", authManager)
+createApp(App, { authManager })
   .use(Quasar, quasarOptions)
   .use(i18n)
   .use(router)

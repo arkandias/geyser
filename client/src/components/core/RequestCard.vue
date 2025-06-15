@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation, useQuery } from "@urql/vue";
-import { computed, inject } from "vue";
+import { computed } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -15,7 +15,7 @@ import {
   RequestTypeEnum,
   UpdateAssignmentDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { priorityColor } from "@/utils";
 
 const { dataFragment } = defineProps<{
@@ -101,11 +101,10 @@ graphql(`
   }
 `);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
 const perm = usePermissions();
+const { organization } = useOrganizationStore();
 
 const request = computed(() =>
   useFragment(RequestCardDataFragmentDoc, dataFragment),
@@ -114,7 +113,7 @@ const request = computed(() =>
 const getAssignment = useQuery({
   query: GetAssignmentDocument,
   variables: () => ({
-    oid: authManager.orgId,
+    oid: organization.id,
     serviceId: request.value.service.id,
     courseId: request.value.course.id,
   }),

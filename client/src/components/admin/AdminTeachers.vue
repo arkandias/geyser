@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, inject } from "vue";
+import { computed } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminTeachersDocument } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
@@ -15,9 +15,8 @@ import AdminTeachersServices from "@/components/admin/AdminTeachersServices.vue"
 import AdminTeachersTeachers from "@/components/admin/AdminTeachersTeachers.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 
 graphql(`
   query GetAdminTeachers($oid: Int!) {
@@ -82,7 +81,7 @@ graphql(`
 
 const { data } = useQuery({
   query: GetAdminTeachersDocument,
-  variables: { oid: authManager.orgId },
+  variables: { oid: organization.id },
   context: {
     additionalTypenames: [
       "All",

@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, inject, watch } from "vue";
+import { computed, watch } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
@@ -11,12 +11,12 @@ import {
   GetCourseRowsDocument,
   GetServiceRowsDocument,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
 import {
   hSplitterRatio,
   useLeftPanelStore,
   vSplitterRatio,
 } from "@/stores/useLeftPanelStore.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import TableCourses from "@/components/TableCourses.vue";
@@ -64,9 +64,8 @@ graphql(`
   }
 `);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { activeYear, isCurrentYearActive } = useYearsStore();
 const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
 const perm = usePermissions();
@@ -75,7 +74,7 @@ const perm = usePermissions();
 const getCourseRows = useQuery({
   query: GetCourseRowsDocument,
   variables: () => ({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: activeYear.value ?? -1,
   }),
   pause: () => activeYear.value === null,
@@ -88,7 +87,7 @@ const courseRows = computed(() => getCourseRows.data.value?.courses ?? []);
 const getServiceRows = useQuery({
   query: GetServiceRowsDocument,
   variables: () => ({
-    oid: authManager.orgId,
+    oid: organization.id,
     year: activeYear.value ?? -1,
   }),
   pause: () => activeYear.value === null,
@@ -110,7 +109,7 @@ const { getValue: selectedCourse } = useQueryParam("courseId", true);
 const getCourseDetails = useQuery({
   query: GetCourseDetailsDocument,
   variables: () => ({
-    oid: authManager.orgId,
+    oid: organization.id,
     id: selectedCourse.value ?? -1,
   }),
   pause: () => selectedCourse.value === null,

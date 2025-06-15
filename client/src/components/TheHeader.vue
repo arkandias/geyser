@@ -6,6 +6,7 @@ import { usePermissions } from "@/composables/usePermissions.ts";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
@@ -14,16 +15,14 @@ import MenuUser from "@/components/header/MenuUser.vue";
 import NavBtn from "@/components/header/NavBtn.vue";
 import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
-defineProps<{
-  disable: boolean;
-  organization?: { label: string; sublabel?: string | null } | null;
-}>();
+defineProps<{ disable: boolean }>();
 
 const { t } = useTypedI18n();
 const router = useRouter();
 const perm = usePermissions();
 const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
+const { organization } = useOrganizationStore();
 const { hasService } = useProfileStore();
 </script>
 
@@ -39,7 +38,7 @@ const { hasService } = useProfileStore();
       </QToolbarTitle>
       <div class="organization-info">
         <QSeparator vertical />
-        <div v-if="organization" class="organization-text">
+        <div class="organization-text">
           <div class="label">
             {{ organization.label }}
           </div>

@@ -1,19 +1,18 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, inject } from "vue";
+import { computed } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import { GetAdminRequestsDocument } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import AdminRequestsPriorities from "@/components/admin/AdminRequestsPriorities.vue";
 import AdminRequestsRequests from "@/components/admin/AdminRequestsRequests.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 
 graphql(`
   query GetAdminRequests($oid: Int!) {
@@ -117,7 +116,7 @@ graphql(`
 
 const { data } = useQuery({
   query: GetAdminRequestsDocument,
-  variables: { oid: authManager.orgId },
+  variables: { oid: organization.id },
   context: {
     additionalTypenames: ["All", "Course", "Priority", "Request", "Service"],
   },

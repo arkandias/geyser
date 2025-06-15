@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, inject } from "vue";
+import { computed } from "vue";
 
 import { useDownloadAssignments } from "@/composables/useDownloadAssignments.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -11,7 +11,7 @@ import {
   type TeacherCoordinationsFragment,
   TeacherCoordinationsFragmentDoc,
 } from "@/gql/graphql.ts";
-import type { AuthManager } from "@/services/auth.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type { ArrayElement } from "@/types/misc.ts";
 
@@ -74,9 +74,8 @@ graphql(`
   }
 `);
 
-// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-const authManager = inject<AuthManager>("authManager")!;
 const { t } = useTypedI18n();
+const { organization } = useOrganizationStore();
 const { activeYear } = useYearsStore();
 const perm = usePermissions();
 const { downloadAssignments } = useDownloadAssignments();
@@ -157,7 +156,7 @@ const downloadProgramAssignments = async (coordination: Coordination) => {
 
   await downloadAssignments(
     {
-      oid: authManager.orgId,
+      oid: organization.id,
       year: activeYear.value,
       where,
     },

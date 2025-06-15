@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useQuery } from "@urql/vue";
-import { computed, inject, watch } from "vue";
+import { computed, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
@@ -16,18 +16,16 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
 
+const { authManager } = defineProps<{ authManager: AuthManager }>();
+
 const { t } = useTypedI18n();
 const { notify } = useNotify();
+const { setOrganization } = useOrganizationStore();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
 const { profile, setProfile } = useProfileStore();
-const { setOrganization } = useOrganizationStore();
 
-const authManager = inject<AuthManager>("authManager");
-if (!authManager) {
-  throw new Error("Authentication manager is not provided to the app");
-}
 if (authManager.authError) {
   notify(NotifyType.Error, {
     message: t("app.auth.error"),
@@ -105,7 +103,7 @@ watch(
 
     if (data?.organization) {
       setOrganization({
-        oid: authManager.orgId,
+        id: authManager.orgId,
         label: data.organization.label,
         sublabel: data.organization.sublabel ?? null,
         email: data.organization.email,
@@ -118,12 +116,12 @@ watch(
     }
 
     setProfile({
-      oid: authManager.orgId,
       id: authManager.userId,
       roles: authManager.allowedRoles,
       activeRole: authManager.role,
-      displayname: (profile.displayname || data?.profile?.displayname) ?? "",
+      displayname: data?.profile?.displayname ?? "",
       services: data?.profile?.services ?? [],
+      logout: () => authManager.logout(),
     });
   },
   { immediate: true },
@@ -174,10 +172,7 @@ const devClass = {
 
 <template>
   <QLayout view="hHh lpR fFf" class="text-body-1" :class="devClass">
-    <TheHeader
-      :disable="!accessGranted"
-      :organization="getAppData.data.value?.organization"
-    />
+    <TheHeader :disable="!accessGranted" />
     <QPageContainer>
       <RouterView v-if="accessGranted" />
       <PageHome v-else :alert="accessDeniedMessage" />
