@@ -2,6 +2,7 @@ import { AccessTokenPayload, errorMessage } from "@geyser/shared";
 import {
   BadRequestException,
   Controller,
+  ForbiddenException,
   Get,
   Head,
   NotFoundException,
@@ -42,9 +43,12 @@ export class AuthController {
 
   @Head("org/:key")
   async checkOrganization(@Param("key") key: string): Promise<void> {
-    const check = await this.organizationService.check(key);
-    if (!check) {
+    const organization = await this.organizationService.findByKey(key);
+    if (!organization) {
       throw new NotFoundException("Organization not found");
+    }
+    if (!organization.active) {
+      throw new ForbiddenException("Organization not active");
     }
   }
 
