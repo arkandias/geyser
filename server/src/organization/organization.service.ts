@@ -11,7 +11,7 @@ export class OrganizationService {
     private orgRepository: Repository<Organization>,
   ) {}
 
-  async exists(key: string): Promise<boolean> {
+  async check(key: string): Promise<boolean> {
     return this.orgRepository.exists({ where: { key, active: true } });
   }
 

@@ -42,8 +42,8 @@ export class AuthController {
 
   @Head("org/:key")
   async checkOrganization(@Param("key") key: string): Promise<void> {
-    const exists = await this.organizationService.exists(key);
-    if (!exists) {
+    const check = await this.organizationService.check(key);
+    if (!check) {
       throw new NotFoundException("Organization not found");
     }
   }
