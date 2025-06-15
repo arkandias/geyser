@@ -6,7 +6,7 @@
 # License: GNU AGPL v3.0
 #######################################
 
-declare -r VERSION="1.0.0"
+declare -rx GEYSER_VERSION="1.0.0"
 
 # Exit the script immediately if any command fails
 set -e
@@ -152,19 +152,9 @@ main() {
             declare -g GEYSER_MODE="production"
             shift
             ;;
-        --tag)
-            # shellcheck disable=SC2034
-            declare -g GEYSER_TAG="$2"
-            shift 2
-            ;;
         --domain)
             # shellcheck disable=SC2034
             declare -g GEYSER_DOMAIN="$2"
-            shift 2
-            ;;
-        --origins)
-            # shellcheck disable=SC2034
-            declare -g GEYSER_ORIGINS="$2"
             shift 2
             ;;
         --as-service)

@@ -44,10 +44,7 @@ export class ConfigService {
       allowedOrigins: this.configService
         .getOrThrow<string>("API_ORIGINS")
         .split(",")
-        .map((origin) => new RegExp(origin.trim()))
-        .map(
-          (regex) => new RegExp("^" + regex.source.replace(/\*/, ".*") + "$"),
-        ),
+        .map((origin) => new RegExp(`^${origin.trim()}$`)),
       adminSecret: this.configService.getOrThrow<string>("API_ADMIN_SECRET"),
     };
     if (this.nodeEnv === "production" && this.api.url.protocol !== "https:") {

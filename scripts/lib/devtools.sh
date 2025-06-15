@@ -12,11 +12,11 @@ _compose() {
 
     local -a ENV_VARS=(
         "KC_BOOTSTRAP_ADMIN_PASSWORD"
-        "POSTGRES_KC_PASSWORD"
-        "POSTGRES_PASSWORD"
+        "KC_DB_PASSWORD"
+        "DB_PASSWORD"
         "HASURA_GRAPHQL_ADMIN_SECRET"
         "API_ADMIN_SECRET"
-        "CLIENT_SECRET"
+        "OIDC_CLIENT_SECRET"
         "NGINX_AUTH_ADMIN_ALLOW"
     )
 

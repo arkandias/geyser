@@ -29,7 +29,7 @@ pg_start() {
     docker run --name "${CONTAINER_NAME}" \
         -e POSTGRES_DB=geyser \
         -e POSTGRES_USER=postgres \
-        -e POSTGRES_PASSWORD=postgres_pwd \
+        -e DB_PASSWORD=postgres_pwd \
         -d postgres:17 \
         >/dev/null
 

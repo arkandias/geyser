@@ -51,7 +51,18 @@ handle_init() {
     _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
-    _compose run --rm -e GEYSER_API_URL -e GEYSER_ORIGINS -e CLIENT_SECRET keycloak \
+    if [[ "${GEYSER_MODE}" == "production" ]]; then
+        CLIENT_ROOT_URL="https://api.${GEYSER_DOMAIN}"
+        CLIENT_WEB_ORIGINS="https://*.${GEYSER_DOMAIN}"
+    elif [[ "${GEYSER_MODE}" == "development" ]]; then
+        # shellcheck disable=SC2034
+        CLIENT_ROOT_URL="http://api.${GEYSER_DOMAIN}"
+        # shellcheck disable=SC2034
+        CLIENT_WEB_ORIGINS="http://*.${GEYSER_DOMAIN}"
+    fi
+    # shellcheck disable=SC2034
+    CLIENT_SECRET=OIDC_CLIENT_SECRET
+    _compose run --rm -e CLIENT_ROOT_URL -e CLIENT_WEB_ORIGINS -e CLIENT_SECRET keycloak \
         import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."

@@ -10,6 +10,8 @@ WORKDIR /app
 
 ARG VITE_BUILD_VERSION
 ARG VITE_API_URL
+ARG VITE_GRAPHQL_URL
+ARG VITE_ORGANIZATION_KEY
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build
@@ -31,16 +33,9 @@ ENV API_PORT=3000
 EXPOSE 3000
 CMD ["pnpm", "start:prod"]
 
-LABEL \
-    org.opencontainers.image.base.name="node:22-slim" \
-    org.opencontainers.image.base.digest=""
 
 FROM nginx:1.27 AS frontend
 COPY --from=build /prod/client /usr/share/nginx/html
 
 COPY ./nginx/templates/prod.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
-
-LABEL \
-    org.opencontainers.image.base.name="nginx:1.27" \
-    org.opencontainers.image.base.digest=""
