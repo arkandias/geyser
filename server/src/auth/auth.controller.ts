@@ -133,10 +133,16 @@ export class AuthController {
     }
   }
 
-  @Post("logout")
+  @Get("logout")
   logout(@Res() res: Response): void {
+    // Building logout URL
+    const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
+    logoutUrl.searchParams.set("client_id", this.configService.oidc.clientId);
+
+    // Removing cookies
     this.cookiesService.unsetAuthCookies(res);
-    res.status(200).json({ message: "Logged out" });
+
+    res.redirect(logoutUrl.href);
   }
 
   @Get("token/verify")

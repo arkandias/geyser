@@ -116,13 +116,10 @@ export class AuthManager {
       return;
     }
 
-    console.debug("[AuthManager] Logging in...");
-
     const redirectUrl = new URL(window.location.href);
-    redirectUrl.searchParams.set("post_login", "true");
-    redirectUrl.searchParams.delete("post_logout");
     redirectUrl.searchParams.delete("auth_error");
 
+    console.debug("[AuthManager] Logging in...");
     window.location.href = api.getUri({
       url: "/auth/login",
       params: {
@@ -143,25 +140,14 @@ export class AuthManager {
     }
 
     console.debug("[AuthManager] Logging out...");
-    try {
-      await api.post("/auth/logout");
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.debug(
-            `[AuthManager] Logout failed: ${error.response.status} ${error.response.statusText}`,
-          );
-        } else {
-          console.debug("[AuthManager] Logout failed: Network error");
-          console.debug(error.message);
-        }
-      } else {
-        console.debug("[AuthManager] Logout failed: Unknown error");
-        console.debug(error);
-      }
-    }
+    window.location.href = api.getUri({
+      url: "/auth/logout",
+    });
 
-    await this.init();
+    // Prevent further execution since we're redirecting to logout page
+    await new Promise(() => {
+      // This promise intentionally never resolves
+    });
   }
 
   async verify(): Promise<boolean> {
