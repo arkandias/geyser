@@ -26,6 +26,7 @@ Core Commands:
   init                  Initialize a fresh Geyser installation
   start                 Start Geyser services
   stop                  Stop Geyser services
+  restart               Restart Geyser services
   show                  Show Geyser services
   update                Update Geyser services
   cleanup               Cleanup Geyser services
@@ -184,6 +185,10 @@ main() {
     stop)
         shift
         handle_stop "$@"
+        ;;
+    restart)
+        shift
+        handle_restart "$@"
         ;;
     show)
         shift
