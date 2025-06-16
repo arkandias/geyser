@@ -1,6 +1,12 @@
 # Use Docker's DNS resolver
 resolver 127.0.0.11 valid=1y ipv6=off;
 
+# For WebSocket proxying
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
 # Keycloak server
 server {
     listen 80;
