@@ -47,6 +47,7 @@ const rowDescriptor = {
   },
   teacherEmail: {
     type: "string",
+    field: (row) => row.teacher.email,
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
     formComponent: "select",
