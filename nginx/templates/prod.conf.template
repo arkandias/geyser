@@ -23,7 +23,7 @@ server {
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
     location ~ ^/(realms|resources)/ {
-        set $proxy_target ${NGINX_PROXY_KEYCLOAK_URL};
+        proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
         include /etc/nginx/includes/proxy-common.conf;
     }
 }
@@ -40,7 +40,7 @@ server {
     deny all;
 
     location / {
-        set $proxy_target ${NGINX_PROXY_KEYCLOAK_URL};
+        proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
         include /etc/nginx/includes/proxy-common.conf;
     }
 }
@@ -54,7 +54,7 @@ server {
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
     location / {
-        set $proxy_target ${NGINX_PROXY_API_URL};
+        proxy_pass ${NGINX_PROXY_API_URL};
         include /etc/nginx/includes/proxy-common.conf;
         # Disable admin access
         proxy_set_header X-Admin-Secret "";
