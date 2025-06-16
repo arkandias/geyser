@@ -101,11 +101,9 @@ export class AuthManager {
           console.debug(
             "[AuthManager] Organization check failed: Network error",
           );
-          console.debug(error.message);
         }
       } else {
         console.debug("[AuthManager] Organization check failed: Unknown error");
-        console.debug(error);
       }
       this._organizationKey = null;
     }
@@ -166,7 +164,6 @@ export class AuthManager {
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.debug("[AuthManager] Verification failed: Invalid token");
-        console.debug(error.issues);
       }
       if (axios.isAxiosError(error)) {
         if (error.response) {
@@ -175,11 +172,9 @@ export class AuthManager {
           );
         } else {
           console.debug("[AuthManager] Verification failed: Network error");
-          console.debug(error.message);
         }
       } else {
         console.debug("[AuthManager] Verification failed: Unknown error");
-        console.debug(error);
       }
       delete this._payload;
       return false;
@@ -204,7 +199,6 @@ export class AuthManager {
           );
         } else {
           console.debug("[AuthManager] Refresh failed: Network error");
-          console.debug(error.message);
         }
       } else {
         console.debug("[AuthManager] Refresh failed: Unknown error");
