@@ -5,6 +5,7 @@ import {
   ForbiddenException,
   Get,
   Head,
+  InternalServerErrorException,
   NotFoundException,
   Param,
   Post,
@@ -79,10 +80,18 @@ export class AuthController {
 
   @Get("callback")
   async callback(
+    @Query("error") error: string | undefined,
+    @Query("error_description") errorDescription: string | undefined,
     @Query("code") code: string | undefined,
     @Query("state") state: string | undefined,
     @Res() res: Response,
   ): Promise<void> {
+    if (error) {
+      throw new InternalServerErrorException(
+        `Identity provider returned error ${error}: ${errorDescription}`,
+      );
+    }
+
     let redirectUrl: URL | null = null;
     try {
       if (!code) {
