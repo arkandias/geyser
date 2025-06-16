@@ -8,7 +8,7 @@ Restart Geyser services
 
 Usage: geyser restart
 
-Restart all Geyser services.
+Stop and start all Geyser services.
 
 Options:
   -h, --help        Show this help message
