@@ -32,7 +32,7 @@ const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   </QBtn>
   <QBtn
     icon="sym_s_assignment"
-    :color="buttonColor(selectedService === currentServiceId)"
+    :color="buttonColor(hasService && selectedService === currentServiceId)"
     :disable="!hasService"
     flat
     square
