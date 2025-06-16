@@ -20,60 +20,27 @@ server {
     return 301 https://$host$request_uri;
 }
 
-# Keycloak server
 server {
     listen 443 ssl;
-    server_name auth.${NGINX_DOMAIN};
+    server_name ${NGINX_DOMAIN};
 
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
-    location ~ ^/(realms|resources)/ {
+    location /auth/ {
+        rewrite ^/auth/(.*)$ /$1 break;
         proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
         include /etc/nginx/includes/proxy-common.conf;
+        proxy_set_header X-Forwarded-Prefix /auth;
     }
-}
 
-# Keycloak admin server
-server {
-    listen 443 ssl;
-    server_name auth-admin.${NGINX_DOMAIN};
-
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
-
-    allow ${NGINX_AUTH_ADMIN_ALLOW};
-    deny all;
-
-    location / {
-        proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
-        include /etc/nginx/includes/proxy-common.conf;
-    }
-}
-
-# API server
-server {
-    listen 443 ssl;
-    server_name api.${NGINX_DOMAIN};
-
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
-
-    location / {
+    location /api/ {
+        rewrite ^/api/(.*)$ /$1 break;
         proxy_pass ${NGINX_PROXY_API_URL};
         include /etc/nginx/includes/proxy-common.conf;
-        # Disable admin access
+        proxy_set_header X-Forwarded-Prefix /api;
         proxy_set_header X-Admin-Secret "";
     }
-}
-
-# Client server
-server {
-    listen 443 ssl;
-    server_name *.${NGINX_DOMAIN};
-
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
     location / {
         root /usr/share/nginx/html;

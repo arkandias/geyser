@@ -43,8 +43,8 @@ services:
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${KC_DB_PASSWORD}"
       KC_DB_SCHEMA: "public"
-      KC_HOSTNAME: "https://auth.${GEYSER_DOMAIN}"
-      KC_HOSTNAME_ADMIN: "https://auth-admin.${GEYSER_DOMAIN}"
+      KC_HOSTNAME: "https://${GEYSER_DOMAIN}/auth"
+      KC_HOSTNAME_ADMIN: "https://${GEYSER_DOMAIN}/auth"
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_DEBUG: "false"
       KC_HTTP_ENABLED: "true"
@@ -126,13 +126,13 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      API_URL: "https://api.${GEYSER_DOMAIN}"
-      API_ORIGINS: "https://*.${GEYSER_DOMAIN}"
+      API_URL: "https://${GEYSER_DOMAIN}/api"
+      API_ORIGINS: "https://${GEYSER_DOMAIN}"
       API_ADMIN_SECRET: "${API_ADMIN_SECRET}"
       API_DATABASE_URL: "postgresql://postgres:${DB_PASSWORD}@db:5432/geyser"
       API_GRAPHQL_URL: "http://hasura:8080/v1/graphql"
       API_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
-      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
+      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/master/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
       API_OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET}"
     ports:
@@ -147,8 +147,9 @@ services:
       target: frontend
       args:
         VITE_BUILD_VERSION: "${GEYSER_VERSION}"
-        VITE_API_URL: "https://api.${GEYSER_DOMAIN}"
-        VITE_GRAPHQL_URL: "https://api.${GEYSER_DOMAIN}/graphql"
+        VITE_API_URL: "https://${GEYSER_DOMAIN}/api"
+        VITE_GRAPHQL_URL: "https://${GEYSER_DOMAIN}/api/graphql"
+        VITE_ORGANIZATION_KEY: "univ-lille-dpt-math"
     restart: always
     depends_on:
       keycloak:

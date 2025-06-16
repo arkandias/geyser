@@ -5,8 +5,8 @@ services:
   keycloak:
     restart: unless-stopped
     environment:
-      KC_HOSTNAME: "http://auth.${GEYSER_DOMAIN}"
-      KC_HOSTNAME_ADMIN: "http://auth-admin.${GEYSER_DOMAIN}"
+      KC_HOSTNAME: "http://${GEYSER_DOMAIN}/auth"
+      KC_HOSTNAME_ADMIN: "http://${GEYSER_DOMAIN}/auth"
       KC_HOSTNAME_DEBUG: "true"
 
   db:
