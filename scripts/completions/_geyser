@@ -25,6 +25,7 @@ _geyser() {
         'init:Initialize a fresh Geyser installation'
         'start:Start Geyser services'
         'stop:Stop Geyser services'
+        'restart:Restart Geyser services'
         'show:Show Geyser services'
         'update:Update Geyser services'
         'cleanup:Cleanup Geyser services'
@@ -97,7 +98,7 @@ _geyser() {
         kcadm)
             _arguments '--login[Start an authenticated session]'
             ;;
-        init | start | stop | show | update | cleanup | purge)
+        init | start | stop | restart | show | update | cleanup | purge)
             _arguments '(-h --help)'{-h,--help}'[Show help message]'
             ;;
         esac
