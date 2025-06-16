@@ -24,18 +24,13 @@ const authInit =
         return utils.appendHeaders(operation, authManager.headers);
       },
       didAuthError(error: CombinedError): boolean {
-        return error.graphQLErrors.some((e) => {
-          switch (e.extensions["code"]) {
-            case "invalid-headers":
-            case "invalid-jwt":
-            case "jwt-invalid-claims":
-            case "jwt-missing-role-claims":
-            case "access-denied":
-              return true;
-            default:
-              return false;
-          }
-        });
+        const response = error.response as unknown;
+        return (
+          !!response &&
+          typeof response === "object" &&
+          "status" in response &&
+          response.status === 401
+        );
       },
       async refreshAuth(): Promise<void> {
         await authManager.refresh();
