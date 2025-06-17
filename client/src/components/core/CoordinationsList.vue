@@ -26,8 +26,8 @@ const coordinations = dataFragments.map((f) =>
 <template>
   {{ title }}
   <template v-for="(c, ind) in coordinations" :key="c.id">
-    <a :href="'mailto:' + c.teacher.email">{{ c.teacher.displayname }}</a>
-    {{
+    <a :href="'mailto:' + c.teacher.email">{{ c.teacher.displayname }}</a
+    >{{
       (c.comment ? ` (${c.comment})` : "") +
       (ind < coordinations.length - 1 ? ", " : ".")
     }}
