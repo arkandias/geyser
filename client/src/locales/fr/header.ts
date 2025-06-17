@@ -66,7 +66,7 @@ export default {
             données. Vous pouvez également retirer à tout moment votre consentement au
             traitement de vos données. Consultez le site
             <a href="https://www.cnil.fr/fr" target="_blank" rel="noopener noreferrer"
-              >cnil.fr</a
+              style="white-space: nowrap;">cnil.fr</a
             >
             pour plus d’informations sur vos droits.
           </p>

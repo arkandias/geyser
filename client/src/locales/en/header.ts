@@ -65,7 +65,7 @@ export default {
             your right to limit the processing of your data. You can also withdraw
             your consent to the processing of your data at any time. Visit
             <a href="https://www.cnil.fr/fr" target="_blank" rel="noopener noreferrer"
-              >cnil.fr</a
+              style="white-space: nowrap;">cnil.fr</a
             >
             for more information about your rights.
           </p>
