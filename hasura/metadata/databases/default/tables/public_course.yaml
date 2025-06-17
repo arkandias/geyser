@@ -127,9 +127,12 @@ select_permissions:
               - _and:
                   - visible:
                       _eq: true
-                  - track:
-                      visible:
-                        _eq: true
+                  - _or:
+                      - track_id:
+                          _is_null: true
+                      - track:
+                          visible:
+                            _eq: true
                   - program:
                       _and:
                         - visible:
