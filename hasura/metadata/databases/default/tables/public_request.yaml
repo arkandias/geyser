@@ -238,7 +238,7 @@ update_permissions:
           - organization:
               currentPhases:
                 value:
-                  _neq: requests
+                  _eq: requests
           - yearByYear:
               visible:
                 _eq: true
@@ -275,7 +275,7 @@ delete_permissions:
           - organization:
               currentPhases:
                 value:
-                  _neq: requests
+                  _eq: requests
           - yearByYear:
               visible:
                 _eq: true

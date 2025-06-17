@@ -92,7 +92,7 @@ const setMessage = computed(
             serviceId: data.value.id,
           })
           .then((result) => ({
-            returnId: result.data?.deleteMessage?.returning[0]?.id ?? null,
+            returnId: result.data?.deleteMessage?.returning?.length ?? null,
             error: result.error,
           })),
 );

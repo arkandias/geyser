@@ -201,7 +201,7 @@ const submitForm = async (): Promise<void> => {
       requestType: requestType.value,
     });
 
-    if (result.data?.deleteRequest?.returning && !result.error) {
+    if (result.data?.deleteRequest?.returning.length && !result.error) {
       notify(NotifyType.Success, {
         message: t("requestForm.success"),
       });
