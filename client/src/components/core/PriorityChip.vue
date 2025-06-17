@@ -54,12 +54,12 @@ const { t } = useTypedI18n();
 const { notify } = useNotify();
 const perm = usePermissions();
 
-const deletePriority = useMutation(DeletePriorityDocument);
-const deleteComputedPriority = useMutation(DeleteComputedPriorityDocument);
-
 const priority = computed(() =>
   useFragment(PriorityChipDataFragmentDoc, dataFragment),
 );
+
+const deletePriority = useMutation(DeletePriorityDocument);
+const deleteComputedPriority = useMutation(DeleteComputedPriorityDocument);
 
 const remove = async () => {
   if (priority.value.computed) {

@@ -56,11 +56,11 @@ graphql(`
 const { t } = useTypedI18n();
 const { notify } = useNotify();
 
-const upsertPriority = useMutation(UpsertPriorityDocument);
-
 const data = computed(() =>
   useFragment(PriorityFormDataFragmentDoc, dataFragment),
 );
+
+const upsertPriority = useMutation(UpsertPriorityDocument);
 
 const serviceId = ref<number | null>(null);
 const seniority = ref<number | null>(null);

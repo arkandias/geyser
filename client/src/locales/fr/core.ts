@@ -66,10 +66,22 @@ export default {
         type: "Sélectionnez un type de demande",
       },
     },
-    success: "Demande enregistrée",
-    error: "Échec de l'enregistrement",
+    get: {
+      error: "Échec du chargement",
+    },
+    update: {
+      success: "Demande mise à jour",
+      error: "Échec de la mise à jour",
+      noChanges: "Pas de changement",
+    },
+    delete: {
+      success: "Demande supprimée",
+      error: "Échec de la suppression",
+      noChanges: "Pas de changement",
+    },
     tooltip: {
       submit: "Enregistrer la demande",
+      reset: "Supprimer la demande",
     },
   },
   priorityForm: {

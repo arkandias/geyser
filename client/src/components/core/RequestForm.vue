@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMutation } from "@urql/vue";
+import { useMutation, useQuery } from "@urql/vue";
 import { computed, ref, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
@@ -8,6 +8,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   DeleteRequestDocument,
+  GetRequestDocument,
   RequestFormDataFragmentDoc,
   RequestTypeEnum,
   UpsertRequestDocument,
@@ -27,6 +28,28 @@ graphql(`
     year
     courseId: id
     hoursPerGroup: hoursEffective
+  }
+
+  query GetRequest(
+    $oid: Int!
+    $serviceId: Int!
+    $courseId: Int!
+    $requestType: RequestTypeEnum!
+  ) {
+    requests: request(
+      where: {
+        _and: [
+          { oid: { _eq: $oid } }
+          { serviceId: { _eq: $serviceId } }
+          { courseId: { _eq: $courseId } }
+          { type: { _eq: $requestType } }
+        ]
+      }
+    ) {
+      oid
+      id
+      hours
+    }
   }
 
   mutation UpsertRequest(
@@ -85,12 +108,24 @@ const { notify } = useNotify();
 const { currentServiceId: myServiceId } = useProfileStore();
 const perm = usePermissions();
 
-const upsertRequest = useMutation(UpsertRequestDocument);
-const deleteRequest = useMutation(DeleteRequestDocument);
-
 const data = computed(() =>
   useFragment(RequestFormDataFragmentDoc, dataFragment),
 );
+
+const getRequest = useQuery({
+  query: GetRequestDocument,
+  variables: () => ({
+    oid: data.value.oid,
+    serviceId: serviceId.value,
+    courseId: data.value.courseId,
+    requestType: requestType.value,
+  }),
+  pause: true,
+  context: { requestPolicy: "network-only" },
+});
+
+const upsertRequest = useMutation(UpsertRequestDocument);
+const deleteRequest = useMutation(DeleteRequestDocument);
 
 const hours = ref<number | null>(null);
 watch(
@@ -193,7 +228,23 @@ const submitForm = async (): Promise<void> => {
     return;
   }
 
+  const current = await getRequest.executeQuery();
+  if (!current.data.value?.requests || current.error.value) {
+    notify(NotifyType.Error, {
+      message: t("requestForm.get.error"),
+      caption: current.error.value?.message,
+    });
+    return;
+  }
+
   if (hours.value === 0) {
+    if (!current.data.value.requests.length) {
+      notify(NotifyType.Default, {
+        message: t("requestForm.delete.noChanges"),
+      });
+      return;
+    }
+
     const result = await deleteRequest.executeMutation({
       oid: data.value.oid,
       serviceId: serviceId.value,
@@ -203,15 +254,22 @@ const submitForm = async (): Promise<void> => {
 
     if (result.data?.deleteRequest?.returning.length && !result.error) {
       notify(NotifyType.Success, {
-        message: t("requestForm.success"),
+        message: t("requestForm.delete.success"),
       });
     } else {
       notify(NotifyType.Error, {
-        message: t("requestForm.error"),
+        message: t("requestForm.delete.error"),
         caption: result.error?.message,
       });
     }
   } else {
+    if (current.data.value.requests[0]?.hours === hours.value) {
+      notify(NotifyType.Default, {
+        message: t("requestForm.update.noChanges"),
+      });
+      return;
+    }
+
     const result = await upsertRequest.executeMutation({
       oid: data.value.oid,
       year: data.value.year,
@@ -223,21 +281,22 @@ const submitForm = async (): Promise<void> => {
 
     if (result.data?.insertRequestOne && !result.error) {
       notify(NotifyType.Success, {
-        message: t("requestForm.success"),
+        message: t("requestForm.update.success"),
       });
     } else {
       notify(NotifyType.Error, {
-        message: t("requestForm.error"),
+        message: t("requestForm.update.error"),
         caption: result.error?.message,
       });
     }
   }
 };
 
-const resetForm = (): void => {
-  serviceId.value = serviceIdInit.value;
-  hours.value = data.value.hoursPerGroup ?? null;
-  requestType.value = requestTypeInit.value;
+const resetForm = async (): Promise<void> => {
+  const hoursBackup = hours.value;
+  hours.value = 0;
+  await submitForm();
+  hours.value = hoursBackup;
 };
 </script>
 
@@ -264,6 +323,11 @@ const resetForm = (): void => {
     <QBtn type="submit" icon="sym_s_check" color="primary" flat square dense>
       <QTooltip>
         {{ t("requestForm.tooltip.submit") }}
+      </QTooltip>
+    </QBtn>
+    <QBtn type="reset" icon="sym_s_close" color="primary" flat square dense>
+      <QTooltip>
+        {{ t("requestForm.tooltip.reset") }}
       </QTooltip>
     </QBtn>
   </QForm>

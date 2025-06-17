@@ -62,14 +62,26 @@ export default {
       message: "Invalid form",
       caption: {
         service: "Select a service",
-        hours: "Select a positive or zero number of hours",
+        hours: "Select a non-negative number of hours",
         type: "Select a request type",
       },
     },
-    success: "Request saved",
-    error: "Save failed",
+    get: {
+      error: "Fetch failed",
+    },
+    update: {
+      success: "Request updated",
+      error: "Update failed",
+      noChanges: "No changes",
+    },
+    delete: {
+      success: "Request deleted",
+      error: "Deletion failed",
+      noChanges: "No changes",
+    },
     tooltip: {
       submit: "Save request",
+      reset: "Delete request",
     },
   },
   priorityForm: {

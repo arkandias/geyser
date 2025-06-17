@@ -61,12 +61,12 @@ graphql(`
 const { t } = useTypedI18n();
 const perm = usePermissions();
 
-const upsertMessage = useMutation(UpsertMessageDocument);
-const deleteMessage = useMutation(DeleteMessageDocument);
-
 const data = computed(() =>
   useFragment(ServiceMessageFragmentDoc, dataFragment),
 );
+
+const upsertMessage = useMutation(UpsertMessageDocument);
+const deleteMessage = useMutation(DeleteMessageDocument);
 
 const messageSanitized = computed(() =>
   DOMPurify.sanitize(data.value.messages[0]?.content ?? ""),
@@ -92,7 +92,7 @@ const setMessage = computed(
             serviceId: data.value.id,
           })
           .then((result) => ({
-            returnId: result.data?.deleteMessage?.returning?.length ?? null,
+            returnId: result.data?.deleteMessage?.returning.length ?? null,
             error: result.error,
           })),
 );
