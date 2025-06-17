@@ -33,6 +33,7 @@ handle_deploy() {
     git pull
 
     # Deploy application
+    _hasura metadata apply
     _compose pull
     _compose build --pull --no-cache
     _compose up -d
