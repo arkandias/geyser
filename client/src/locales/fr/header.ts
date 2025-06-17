@@ -34,7 +34,7 @@ export default {
           <div>
             Pour toute question ou remarque, vous pouvez envoyer un message à l'adresse
             électronique suivante&nbsp;:
-            <a href="mailto:{email}">{email}</a>
+            <a href="mailto:{email}" style="white-space: nowrap;">{email}</a>
           </div>`,
       },
       legalNotice: {
@@ -73,7 +73,7 @@ export default {
           <p>
             Pour exercer vos droits ou pour toute question sur le traitement de vos
             données, vous pouvez envoyer un message à l'adresse électronique suivante&nbsp;:
-            <a href="mailto:{email}">{email}</a>
+            <a href="mailto:{email}" style="white-space: nowrap;">{email}</a>
           </div>
           <p>
             Si, après avoir envoyé un message à l'adresse ci-dessus, vous estimez que vos
