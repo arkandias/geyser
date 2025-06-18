@@ -108,7 +108,7 @@ const rowDescriptor = {
   hoursAdjusted: {
     type: "number",
     nullable: true,
-    format: (val: number | null) => (val === null ? null : n(val, "decimal")),
+    format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
     formComponent: "input",
     inputType: "number",
   },
@@ -121,7 +121,7 @@ const rowDescriptor = {
   groupsAdjusted: {
     type: "number",
     nullable: true,
-    format: (val: number | null) => (val === null ? null : n(val, "decimal")),
+    format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
     formComponent: "input",
     inputType: "number",
   },

@@ -65,7 +65,8 @@ const rowDescriptor = {
   baseServiceHours: {
     type: "number",
     nullable: true,
-    format: (val: number) => n(val, "decimalFixed"),
+    format: (val: number | null) =>
+      val === null ? "" : n(val, "decimalFixed"),
     formComponent: "input",
     inputType: "number",
   },
