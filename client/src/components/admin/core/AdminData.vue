@@ -148,6 +148,13 @@ const formTitle = computed(() => {
 });
 const selectedFields = ref<string[]>([]);
 
+// Deselect a single row when the form is closed
+watch(isFormOpen, (value) => {
+  if (!value && selectedRows.value.length === 1) {
+    selectedRows.value = [];
+  }
+});
+
 const initForm = (rows: Row[]) =>
   Object.fromEntries(
     Object.entries(rowDescriptor).map(([key, descriptor]) => [
@@ -655,6 +662,9 @@ const exportDataHandle = () => {
           {{ scope.col.tooltip }}
         </QTooltip>
       </QTh>
+    </template>
+    <template #body-cell="scope">
+      <QTd :props="scope" @click="openForm([scope.row])">{{ scope.value }}</QTd>
     </template>
   </QTable>
 
