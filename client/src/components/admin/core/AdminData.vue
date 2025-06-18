@@ -161,6 +161,7 @@ const openForm = (rows?: Row[]) => {
     selectedRows.value = rows;
   }
   formValues.value = initForm(selectedRows.value);
+  selectedFields.value = [];
   isFormOpen.value = true;
 };
 
