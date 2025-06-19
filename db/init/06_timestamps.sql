@@ -1,7 +1,7 @@
 CREATE FUNCTION public.set_timestamp_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
-    new.updated_at = now();
+    NEW.updated_at = now();
     RETURN new;
 END;
 $$ LANGUAGE plpgsql;
