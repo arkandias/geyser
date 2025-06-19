@@ -60,7 +60,8 @@ WHERE priority.computed IS TRUE;
 UPDATE public.priority p
 SET is_priority = (p.seniority > 0 AND (c.priority_rule > p.seniority OR c.priority_rule = 0))
 FROM public.course c
-WHERE p.service_id = service_row.id
+WHERE p.computed IS TRUE
+  AND p.service_id = service_row.id
   AND p.course_id = c.id
   AND c.priority_rule IS NOT NULL;
 
