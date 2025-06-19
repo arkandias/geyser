@@ -51,9 +51,9 @@ $$
 BEGIN
     UPDATE public.year
     SET current = FALSE
-    WHERE oid = new.oid
+    WHERE oid = NEW.oid
       AND current IS TRUE;
-    RETURN new;
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION clear_current_year_flag_trigger_fn() IS 'Trigger function that clears the current year flag before a year is set as current';
@@ -62,7 +62,7 @@ CREATE TRIGGER year_before_update_clear_current_flag_trigger
     BEFORE UPDATE OF current
     ON public.year
     FOR EACH ROW
-    WHEN (new.current = TRUE)
+    WHEN (NEW.current = TRUE)
 EXECUTE FUNCTION clear_current_year_flag_trigger_fn();
 
 CREATE TABLE public.app_setting

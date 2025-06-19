@@ -77,8 +77,8 @@ COMMENT ON FUNCTION public.compute_service_priorities(service) IS 'Computes cour
 CREATE FUNCTION public.compute_service_priorities_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
-    PERFORM public.compute_service_priorities(new);
-    RETURN new;
+    PERFORM public.compute_service_priorities(NEW);
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.compute_service_priorities_trigger_fn() IS 'Trigger function that computes courses seniority and priority status for newly inserted services';
