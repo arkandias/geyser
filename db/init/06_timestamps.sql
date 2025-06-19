@@ -1,8 +1,8 @@
 CREATE FUNCTION public.set_timestamp_trigger_fn() RETURNS trigger AS
 $$
 BEGIN
-    NEW.updated_at = now();
-    RETURN NEW;
+    new.updated_at = now();
+    RETURN new;
 END;
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.set_timestamp_trigger_fn() IS 'Trigger function to automatically update updated_at timestamp column on row updates';
