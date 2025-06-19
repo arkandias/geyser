@@ -107,6 +107,14 @@ insert_permissions:
                     coordinations:
                       teacher_id:
                         _eq: X-Hasura-User-Id
+                - priorities:
+                    service:
+                      teacher_id:
+                        _eq: X-Hasura-User-Id
+                - requests:
+                    service:
+                      teacher_id:
+                        _eq: X-Hasura-User-Id
       columns:
         - oid
         - year
@@ -246,7 +254,7 @@ update_permissions:
                 value:
                   _eq: requests
           - yearByYear:
-              visible:
+              current:
                 _eq: true
           - service:
               teacher_id:
@@ -283,7 +291,7 @@ delete_permissions:
                 value:
                   _eq: requests
           - yearByYear:
-              visible:
+              current:
                 _eq: true
           - service:
               teacher_id:
