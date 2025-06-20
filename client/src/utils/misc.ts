@@ -1,4 +1,5 @@
-export const localeCompare = (a: string, b: string) => a.localeCompare(b);
+export const localeCompare = (a: string, b: string) =>
+  a.localeCompare(b, undefined, { sensitivity: "case", numeric: true });
 
 export const compare =
   <K extends string, T extends Record<K, string>>(name: K) =>

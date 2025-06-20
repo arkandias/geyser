@@ -55,8 +55,8 @@ watch(
 
 const filter = (val: string, update: (x: () => void) => void) => {
   update(() => {
-    options.value = optionsInit.value.filter((t) =>
-      t.search.includes(normalizeForSearch(val)),
+    options.value = optionsInit.value.filter((opt) =>
+      opt.search.includes(normalizeForSearch(val)),
     );
   });
 };

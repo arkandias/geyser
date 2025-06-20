@@ -28,7 +28,13 @@ import type {
   SelectOptions,
   SimpleObject,
 } from "@/types/data.ts";
-import { downloadCSV, getField, importCSV, normalizeForSearch } from "@/utils";
+import {
+  downloadCSV,
+  getField,
+  importCSV,
+  localeCompare,
+  normalizeForSearch,
+} from "@/utils";
 
 import AdminInput from "@/components/admin/core/AdminInput.vue";
 import AdminSelect from "@/components/admin/core/AdminSelect.vue";
@@ -119,6 +125,7 @@ const columns = computed<Column<Row>[]>(() =>
     field: descriptor.field ?? key,
     format: descriptor.format,
     sortable: true,
+    sort: descriptor.type === "string" ? localeCompare : undefined,
     searchable: descriptor.type === "string",
   })),
 );
