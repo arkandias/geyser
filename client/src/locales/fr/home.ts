@@ -11,11 +11,11 @@ export default {
       requests: `
         <p>
           Sur la page <i class="q-icon text-primary material-symbols-sharp">badge</i>
-          Mon service, entrez votre service de base (en heures EQTD), puis ajoutez
-          vos modifications de service éventuelles (délégation, décharge, congé, etc.).
+          Mon service, entrez votre service de base, puis ajoutez vos modifications de
+          service éventuelles (délégation, décharge, congé, etc.).
           <b>
-            Le total indiqué doit correspondre au nombre d'heures EQTD que la commission
-            doit vous attribuer avec des enseignements disponibles sur Geyser.
+            Le total indiqué doit correspondre au nombre d'heures que la commission doit
+            vous attribuer avec des enseignements disponibles sur Geyser.
           </b>
         </p>
         <p>

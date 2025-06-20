@@ -135,7 +135,7 @@ export default {
               "Télécharger les attributions de l'intervenant",
             deselect: "Désélectionner l'intervenant",
           },
-          weightedHours: "Heures équivalent TD",
+          weightedHours: "Heures pondérées",
           stickyHeader: "En-tête fixe",
           visibleColumns: "Colonnes visibles",
         },
