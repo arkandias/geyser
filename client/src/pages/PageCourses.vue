@@ -17,6 +17,7 @@ import {
   vSplitterRatio,
 } from "@/stores/useLeftPanelStore.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
+import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import TableCourses from "@/components/TableCourses.vue";
@@ -47,9 +48,9 @@ graphql(`
     }
   }
 
-  query GetServiceRows($oid: Int!, $year: Int!) {
+  query GetServiceRows($where: ServiceBoolExp) {
     services: service(
-      where: { _and: [{ oid: { _eq: $oid } }, { year: { _eq: $year } }] }
+      where: $where
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...ServiceRow
@@ -67,6 +68,7 @@ graphql(`
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { activeYear, isCurrentYearActive } = useYearsStore();
+const { profile } = useProfileStore();
 const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
 const perm = usePermissions();
 
@@ -87,8 +89,15 @@ const courseRows = computed(() => getCourseRows.data.value?.courses ?? []);
 const getServiceRows = useQuery({
   query: GetServiceRowsDocument,
   variables: () => ({
-    oid: organization.id,
-    year: activeYear.value ?? -1,
+    where: {
+      _and: [
+        { oid: { _eq: organization.id } },
+        { year: { _eq: activeYear.value ?? -1 } },
+        ...(!perm.toViewAllServices
+          ? [{ teacher: { id: { _eq: profile.id } } }]
+          : []),
+      ],
+    },
   }),
   pause: () => activeYear.value === null,
   context: {
