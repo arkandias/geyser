@@ -23,10 +23,10 @@
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
     "jose": "^6.0.11",
-    "pg": "^8.16.0",
+    "pg": "^8.16.2",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
-    "typeorm": "^0.3.24",
+    "typeorm": "^0.3.25",
     "zod": "^3.25.67"
   },
   "devDependencies": {
