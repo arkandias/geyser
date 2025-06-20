@@ -181,7 +181,7 @@ const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed(() => ({
   teacherEmail: teachers.value.map((t) => ({
     value: t.email,
-    label: t.displayname,
+    label: t.displayname ?? "",
   })),
   role: Object.values(RoleEnum).map((role) => ({
     value: role,

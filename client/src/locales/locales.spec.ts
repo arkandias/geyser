@@ -6,9 +6,13 @@ import en from "./en";
 import fr from "./fr";
 import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
 import { INFO_TEXT_KEYS } from "@/config/info-text-keys.ts";
-import type { AvailableLocale } from "@/config/locales.ts";
 import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
-import { PhaseEnum, RequestTypeEnum, RoleEnum } from "@/gql/graphql.ts";
+import {
+  LocaleEnum,
+  PhaseEnum,
+  RequestTypeEnum,
+  RoleEnum,
+} from "@/gql/graphql.ts";
 import type { SimpleObject } from "@/types/data.ts";
 import { camelToDot, toLowerCase } from "@/utils";
 
@@ -29,10 +33,10 @@ import {
   adminTeachersTeachersColNames,
 } from "@/components/admin/col-names.ts";
 
-const locales = { "fr-FR": fr, "en-US": en } satisfies Record<
-  AvailableLocale,
-  SimpleObject<string>
->;
+const locales = {
+  [LocaleEnum.Fr]: fr,
+  [LocaleEnum.En]: en,
+} satisfies Record<LocaleEnum, SimpleObject<string>>;
 
 describe("Translation Validation", () => {
   it("should have all translation keys properly defined and used", async () => {

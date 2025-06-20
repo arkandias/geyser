@@ -5,16 +5,20 @@ CREATE TABLE public.organization
     label    text    NOT NULL,
     sublabel text,
     email    text    NOT NULL,
+    locale   text    NOT NULL REFERENCES public.locale ON UPDATE CASCADE,
     active   boolean NOT NULL DEFAULT TRUE
 );
+CREATE INDEX idx_organization_locale ON public.organization (locale);
 
 COMMENT ON TABLE public.organization IS 'Organization information';
 COMMENT ON COLUMN public.organization.id IS 'Unique identifier';
 COMMENT ON COLUMN public.organization.key IS 'Human-readable identifier (unique)';
-COMMENT ON COLUMN public.organization.email IS 'Organization contact email address';
 COMMENT ON COLUMN public.organization.label IS 'Label for display purposes';
 COMMENT ON COLUMN public.organization.sublabel IS 'Sublabel for display purposes';
-COMMENT ON COLUMN public.organization.active IS 'Organization status flag';
+COMMENT ON COLUMN public.organization.email IS 'Contact email address';
+COMMENT ON COLUMN public.organization.locale IS 'Default locale';
+COMMENT ON COLUMN public.organization.active IS 'Status flag';
+
 
 CREATE TABLE public.current_phase
 (
@@ -27,6 +31,7 @@ CREATE INDEX idx_current_phase_value ON public.current_phase (value);
 COMMENT ON TABLE public.current_phase IS 'Current active phase for each organization';
 COMMENT ON COLUMN public.current_phase.oid IS 'Organization reference';
 COMMENT ON COLUMN public.current_phase.value IS 'Active phase reference';
+
 
 CREATE TABLE public.year
 (
@@ -64,6 +69,7 @@ CREATE TRIGGER year_before_update_clear_current_flag_trigger
     FOR EACH ROW
     WHEN (new.current = TRUE)
 EXECUTE FUNCTION clear_current_year_flag_trigger_fn();
+
 
 CREATE TABLE public.app_setting
 (

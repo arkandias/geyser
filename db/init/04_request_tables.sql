@@ -30,6 +30,7 @@ COMMENT ON COLUMN public.priority.seniority IS 'Number of consecutive years teac
 COMMENT ON COLUMN public.priority.computed IS 'Indicates if seniority was computed automatically';
 COMMENT ON COLUMN public.priority.is_priority IS 'Current priority status based on seniority and course rules';
 
+
 CREATE TABLE public.request
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,

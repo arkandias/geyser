@@ -1,3 +1,18 @@
+CREATE TABLE public.locale
+(
+    value       text PRIMARY KEY,
+    description text
+);
+
+COMMENT ON TABLE public.locale IS 'Locales implemented in the web client';
+COMMENT ON COLUMN public.locale.value IS 'Unique identifier';
+COMMENT ON COLUMN public.locale.description IS 'Short description';
+
+INSERT INTO public.locale(value, description)
+VALUES ('fr-FR', 'French'),
+       ('en-EN', 'English');
+
+
 CREATE TABLE public.phase
 (
     value       text PRIMARY KEY,
@@ -18,6 +33,7 @@ VALUES ('requests',
        ('shutdown',
         'System is temporarily closed, typically between academic years or during maintenance periods.');
 
+
 CREATE TABLE public.role
 (
     value       text PRIMARY KEY,
@@ -32,6 +48,7 @@ INSERT INTO public.role(value, description)
 VALUES ('admin', 'Administrator with full capabilities including configuration and user management'),
        ('commissioner', 'Committee member with extra capabilities during assignment phase'),
        ('teacher', 'Standard user with basic capabilities');
+
 
 CREATE TABLE public.request_type
 (

@@ -79,5 +79,7 @@
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718183_year/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718185_year_with_id_oid/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718185_year_with_id_oid/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718186_locales/down.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718186_locales/up.sql" dialect="PostgreSQL" />
   </component>
 </project>

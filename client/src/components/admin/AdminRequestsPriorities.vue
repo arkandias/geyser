@@ -416,7 +416,10 @@ const formOptions = computed(() => ({
   year: years.value.map((y) => y.value),
   teacherEmail: services.value
     .filter((s) => s.year === formValues.value["year"])
-    .map((s) => ({ value: s.teacher.email, label: s.teacher.displayname })),
+    .map((s) => ({
+      value: s.teacher.email,
+      label: s.teacher.displayname ?? "",
+    })),
   degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
   programName: courses.value
     .filter((c) => c.program.degree.name === formValues.value["degreeName"])

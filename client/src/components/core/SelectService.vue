@@ -7,6 +7,7 @@ import { graphql } from "@/gql";
 import { GetServicesDocument } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
+import type { OptionWithSearch } from "@/types/data.ts";
 import { normalizeForSearch } from "@/utils";
 
 const id = defineModel<number | null>();
@@ -36,7 +37,7 @@ const { data } = useQuery({
   context: { additionalTypenames: ["All", "Service"] },
 });
 
-const options = ref<{ value: number; label: string; search: string }[]>([]);
+const options = ref<OptionWithSearch<number>[]>([]);
 const optionsInit = computed(
   () =>
     data.value?.services.map((s) => ({

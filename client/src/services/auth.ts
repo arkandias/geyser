@@ -158,8 +158,8 @@ export class AuthManager {
       const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
       this._role = this._payload.defaultRole;
-      console.debug("[AuthManager] Verification succeeded:");
-      console.debug(this._payload);
+      console.debug("[AuthManager] Verification succeeded");
+      console.debug("[AuthManager] Token payload:", this._payload);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {

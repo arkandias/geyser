@@ -1,17 +1,25 @@
 <script setup lang="ts">
 import { useLocale } from "@/composables/useLocale.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { AVAILABLE_LOCALES, LOCALE_LABELS } from "@/config/locales.ts";
+import { LocaleEnum } from "@/gql/graphql.ts";
+import type { Option } from "@/types/data.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
 const { t, locale } = useTypedI18n();
 const { setLocale } = useLocale();
 
-const localeOptions = AVAILABLE_LOCALES.map((l) => ({
-  value: l,
-  label: LOCALE_LABELS[l],
-}));
+const localeLabels: Record<LocaleEnum, string> = {
+  [LocaleEnum.Fr]: "Français",
+  [LocaleEnum.En]: "English",
+} as const;
+
+const localeOptions: Option<LocaleEnum>[] = Object.values(LocaleEnum).map(
+  (l) => ({
+    value: l,
+    label: localeLabels[l],
+  }),
+);
 </script>
 
 <template>

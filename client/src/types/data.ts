@@ -8,9 +8,13 @@ export type SimpleObject<T extends Scalar = Scalar> = {
   [key: string]: T | SimpleObject<T>;
 };
 
-export type Option = {
-  value: Scalar;
-  label: Scalar;
+export type Option<T = Scalar> = {
+  value: T;
+  label: string;
+};
+
+export type OptionWithSearch<T = Scalar> = Option<T> & {
+  search: string;
 };
 
 export type FieldDescriptor = {

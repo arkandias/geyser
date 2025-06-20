@@ -19,6 +19,7 @@ COMMENT ON COLUMN public.degree.name_short IS 'Abbreviated name (e.g., BSc)';
 COMMENT ON COLUMN public.degree.name_display IS 'Computed display name';
 COMMENT ON COLUMN public.degree.visible IS 'Controls visibility to teachers';
 
+
 CREATE TABLE public.program
 (
     oid          integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -43,6 +44,7 @@ COMMENT ON COLUMN public.program.name IS 'Full name, unique within degree (e.g.,
 COMMENT ON COLUMN public.program.name_short IS 'Abbreviated name';
 COMMENT ON COLUMN public.program.name_display IS 'Computed display name';
 COMMENT ON COLUMN public.program.visible IS 'Controls visibility to teachers';
+
 
 CREATE TABLE public.track
 (
@@ -70,6 +72,7 @@ COMMENT ON COLUMN public.track.name_short IS 'Abbreviated name';
 COMMENT ON COLUMN public.track.name_display IS 'Computed display name';
 COMMENT ON COLUMN public.track.visible IS 'Controls visibility to teachers';
 
+
 CREATE TABLE public.course_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -88,6 +91,7 @@ COMMENT ON COLUMN public.course_type.id IS 'Unique identifier';
 COMMENT ON COLUMN public.course_type.label IS 'Course type name (unique)';
 COMMENT ON COLUMN public.course_type.coefficient IS 'Workload multiplier for service hours calculations';
 COMMENT ON COLUMN public.course_type.description IS 'Optional description';
+
 
 CREATE TABLE public.course
 (
@@ -149,6 +153,7 @@ COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups, de
 COMMENT ON COLUMN public.course.description IS 'Optional description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls visibility to teachers';
+
 
 CREATE TABLE public.coordination
 (

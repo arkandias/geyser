@@ -5155,6 +5155,194 @@ input IntComparisonExp {
   _nin: [Int!]
 }
 
+"""Locales implemented in the web client"""
+type Locale {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String!
+}
+
+"""
+aggregated selection of "locale"
+"""
+type LocaleAggregate {
+  aggregate: LocaleAggregateFields
+  nodes: [Locale!]!
+}
+
+"""
+aggregate fields of "locale"
+"""
+type LocaleAggregateFields {
+  count(columns: [LocaleSelectColumn!], distinct: Boolean): Int!
+  max: LocaleMaxFields
+  min: LocaleMinFields
+}
+
+"""
+Boolean expression to filter rows from the table "locale". All fields are combined with a logical 'AND'.
+"""
+input LocaleBoolExp {
+  _and: [LocaleBoolExp!]
+  _not: LocaleBoolExp
+  _or: [LocaleBoolExp!]
+  description: StringComparisonExp
+  value: StringComparisonExp
+}
+
+"""
+unique or primary key constraints on table "locale"
+"""
+enum LocaleConstraint {
+  """
+  unique or primary key constraint on columns "value"
+  """
+  locale_pkey
+}
+
+enum LocaleEnum {
+  """English"""
+  EN
+
+  """French"""
+  FR
+}
+
+"""
+Boolean expression to compare columns of type "LocaleEnum". All fields are combined with logical 'AND'.
+"""
+input LocaleEnumComparisonExp {
+  _eq: LocaleEnum
+  _in: [LocaleEnum!]
+  _isNull: Boolean
+  _neq: LocaleEnum
+  _nin: [LocaleEnum!]
+}
+
+"""
+input type for inserting data into table "locale"
+"""
+input LocaleInsertInput {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""aggregate max on columns"""
+type LocaleMaxFields {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""aggregate min on columns"""
+type LocaleMinFields {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""
+response of any mutation on the table "locale"
+"""
+type LocaleMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [Locale!]!
+}
+
+"""
+on_conflict condition type for table "locale"
+"""
+input LocaleOnConflict {
+  constraint: LocaleConstraint!
+  updateColumns: [LocaleUpdateColumn!]! = []
+  where: LocaleBoolExp
+}
+
+"""Ordering options when selecting data from "locale"."""
+input LocaleOrderBy {
+  description: OrderBy
+  value: OrderBy
+}
+
+"""primary key columns input for table: locale"""
+input LocalePkColumnsInput {
+  """Unique identifier"""
+  value: String!
+}
+
+"""
+select columns of table "locale"
+"""
+enum LocaleSelectColumn {
+  """column name"""
+  description
+
+  """column name"""
+  value
+}
+
+"""
+input type for updating data in table "locale"
+"""
+input LocaleSetInput {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""
+Streaming cursor of the table "locale"
+"""
+input LocaleStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: LocaleStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input LocaleStreamCursorValueInput {
+  """Short description"""
+  description: String
+
+  """Unique identifier"""
+  value: String
+}
+
+"""
+update columns of table "locale"
+"""
+enum LocaleUpdateColumn {
+  """column name"""
+  description
+
+  """column name"""
+  value
+}
+
+input LocaleUpdates {
+  """sets the columns of the filtered rows to the given values"""
+  _set: LocaleSetInput
+
+  """filter the rows which have to be updated"""
+  where: LocaleBoolExp!
+}
+
 """Messages to the assignment committee"""
 type Message {
   """Message content"""
@@ -6020,6 +6208,7 @@ type Organization {
 
   """Label for display purposes"""
   label: String!
+  locale: LocaleEnum!
 
   """An array relationship"""
   messages(
@@ -6518,6 +6707,7 @@ input OrganizationBoolExp {
   id: IntComparisonExp
   key: StringComparisonExp
   label: StringComparisonExp
+  locale: LocaleEnumComparisonExp
   messages: MessageBoolExp
   messagesAggregate: MessageAggregateBoolExp
   positions: PositionBoolExp
@@ -6582,6 +6772,7 @@ input OrganizationInsertInput {
 
   """Label for display purposes"""
   label: String
+  locale: LocaleEnum
   messages: MessageArrRelInsertInput
   positions: PositionArrRelInsertInput
   priorities: PriorityArrRelInsertInput
@@ -6696,6 +6887,7 @@ input OrganizationOrderBy {
   id: OrderBy
   key: OrderBy
   label: OrderBy
+  locale: OrderBy
   messagesAggregate: MessageAggregateOrderBy
   positionsAggregate: PositionAggregateOrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
@@ -6741,6 +6933,9 @@ enum OrganizationSelectColumn {
   label
 
   """column name"""
+  locale
+
+  """column name"""
   sublabel
 
   """column name"""
@@ -6762,6 +6957,7 @@ input OrganizationSetInput {
 
   """Label for display purposes"""
   label: String
+  locale: LocaleEnum
 
   """Sublabel for display purposes"""
   sublabel: String
@@ -6817,6 +7013,7 @@ input OrganizationStreamCursorValueInput {
 
   """Label for display purposes"""
   label: String
+  locale: LocaleEnum
 
   """Sublabel for display purposes"""
   sublabel: String
@@ -6851,6 +7048,9 @@ enum OrganizationUpdateColumn {
 
   """column name"""
   label
+
+  """column name"""
+  locale
 
   """column name"""
   sublabel
@@ -16836,6 +17036,22 @@ type mutation_root {
   ): Degree
 
   """
+  delete data from the table: "locale"
+  """
+  deleteLocale(
+    """filter the rows which have to be deleted"""
+    where: LocaleBoolExp!
+  ): LocaleMutationResponse
+
+  """
+  delete single row from the table: "locale"
+  """
+  deleteLocaleByPk(
+    """Unique identifier"""
+    value: String!
+  ): Locale
+
+  """
   delete data from the table: "message"
   """
   deleteMessage(
@@ -17278,6 +17494,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: DegreeOnConflict
   ): Degree
+
+  """
+  insert data into the table: "locale"
+  """
+  insertLocale(
+    """the rows to be inserted"""
+    objects: [LocaleInsertInput!]!
+
+    """upsert condition"""
+    onConflict: LocaleOnConflict
+  ): LocaleMutationResponse
+
+  """
+  insert a single row into the table: "locale"
+  """
+  insertLocaleOne(
+    """the row to be inserted"""
+    object: LocaleInsertInput!
+
+    """upsert condition"""
+    onConflict: LocaleOnConflict
+  ): Locale
 
   """
   insert data into the table: "message"
@@ -17834,6 +18072,34 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [DegreeUpdates!]!
   ): [DegreeMutationResponse]
+
+  """
+  update data of the table: "locale"
+  """
+  updateLocale(
+    """sets the columns of the filtered rows to the given values"""
+    _set: LocaleSetInput
+
+    """filter the rows which have to be updated"""
+    where: LocaleBoolExp!
+  ): LocaleMutationResponse
+
+  """
+  update single row of the table: "locale"
+  """
+  updateLocaleByPk(
+    """sets the columns of the filtered rows to the given values"""
+    _set: LocaleSetInput
+    pkColumns: LocalePkColumnsInput!
+  ): Locale
+
+  """
+  update multiples rows of table: "locale"
+  """
+  updateLocaleMany(
+    """updates to execute, in order"""
+    updates: [LocaleUpdates!]!
+  ): [LocaleMutationResponse]
 
   """
   update data of the table: "message"
@@ -18696,6 +18962,52 @@ type query_root {
     """Organization reference"""
     oid: Int!
   ): Degree
+
+  """
+  fetch data from the table: "locale"
+  """
+  locale(
+    """distinct select on columns"""
+    distinctOn: [LocaleSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [LocaleOrderBy!]
+
+    """filter the rows returned"""
+    where: LocaleBoolExp
+  ): [Locale!]!
+
+  """
+  fetch aggregated fields from the table: "locale"
+  """
+  localeAggregate(
+    """distinct select on columns"""
+    distinctOn: [LocaleSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [LocaleOrderBy!]
+
+    """filter the rows returned"""
+    where: LocaleBoolExp
+  ): LocaleAggregate!
+
+  """fetch data from the table: "locale" using primary key columns"""
+  localeByPk(
+    """Unique identifier"""
+    value: String!
+  ): Locale
 
   """
   fetch data from the table: "message"
@@ -19879,6 +20191,66 @@ type subscription_root {
     """filter the rows returned"""
     where: DegreeBoolExp
   ): [Degree!]!
+
+  """
+  fetch data from the table: "locale"
+  """
+  locale(
+    """distinct select on columns"""
+    distinctOn: [LocaleSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [LocaleOrderBy!]
+
+    """filter the rows returned"""
+    where: LocaleBoolExp
+  ): [Locale!]!
+
+  """
+  fetch aggregated fields from the table: "locale"
+  """
+  localeAggregate(
+    """distinct select on columns"""
+    distinctOn: [LocaleSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [LocaleOrderBy!]
+
+    """filter the rows returned"""
+    where: LocaleBoolExp
+  ): LocaleAggregate!
+
+  """fetch data from the table: "locale" using primary key columns"""
+  localeByPk(
+    """Unique identifier"""
+    value: String!
+  ): Locale
+
+  """
+  fetch data from the table in a streaming manner: "locale"
+  """
+  localeStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [LocaleStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: LocaleBoolExp
+  ): [Locale!]!
 
   """
   fetch data from the table: "message"

@@ -1,0 +1,19 @@
+table:
+  name: locale
+  schema: public
+is_enum: true
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - value
+        - description
+      filter: {}
+    comment: Can view all locales
+  - role: teacher
+    permission:
+      columns:
+        - value
+        - description
+      filter: {}
+    comment: Can view all locales

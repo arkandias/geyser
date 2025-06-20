@@ -18,6 +18,7 @@ COMMENT ON COLUMN public.position.label IS 'Position name (unique)';
 COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours';
 COMMENT ON COLUMN public.position.description IS 'Optional description';
 
+
 CREATE TABLE public.teacher
 (
     oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -54,6 +55,7 @@ COMMENT ON COLUMN public.teacher.visible IS 'Controls visibility to other teache
 COMMENT ON COLUMN public.teacher.active IS 'Controls automatic service creation for upcoming years';
 COMMENT ON COLUMN public.teacher.access IS 'Controls teacher login access';
 
+
 CREATE TABLE public.teacher_role
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -75,6 +77,7 @@ COMMENT ON COLUMN public.teacher_role.id IS 'Unique identifier';
 COMMENT ON COLUMN public.teacher_role.teacher_id IS 'Teacher reference';
 COMMENT ON COLUMN public.teacher_role.role IS 'Role reference';
 COMMENT ON COLUMN public.teacher_role.comment IS 'Additional information about this assignment';
+
 
 CREATE TABLE public.service
 (
@@ -101,6 +104,7 @@ COMMENT ON COLUMN public.service.year IS 'Academic year reference';
 COMMENT ON COLUMN public.service.teacher_id IS 'Teacher reference';
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifications';
 
+
 CREATE TABLE public.message
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -120,6 +124,7 @@ COMMENT ON COLUMN public.message.id IS 'Unique identifier';
 COMMENT ON COLUMN public.message.service_id IS 'Service reference';
 COMMENT ON COLUMN public.message.content IS 'Message content';
 
+
 CREATE TABLE public.service_modification_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -136,6 +141,7 @@ COMMENT ON COLUMN public.service_modification_type.oid IS 'Organization referenc
 COMMENT ON COLUMN public.service_modification_type.id IS 'Unique identifier';
 COMMENT ON COLUMN public.service_modification_type.label IS 'Modification type name (unique)';
 COMMENT ON COLUMN public.service_modification_type.description IS 'Optional description';
+
 
 CREATE TABLE public.service_modification
 (

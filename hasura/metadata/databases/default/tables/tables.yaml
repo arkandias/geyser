@@ -4,6 +4,7 @@
 - "!include public_course_type.yaml"
 - "!include public_current_phase.yaml"
 - "!include public_degree.yaml"
+- "!include public_locale.yaml"
 - "!include public_message.yaml"
 - "!include public_organization.yaml"
 - "!include public_phase.yaml"

@@ -47,6 +47,7 @@ graphql(`
       label
       sublabel
       email
+      locale
       currentPhases {
         value
       }
@@ -107,6 +108,7 @@ watch(
         label: data.organization.label,
         sublabel: data.organization.sublabel ?? null,
         email: data.organization.email,
+        locale: data.organization.locale,
       });
       setCurrentPhase(
         data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,

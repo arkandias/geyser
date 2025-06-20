@@ -1,8 +1,8 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import type { Option, Scalar } from "@/types/data.ts";
+import type { Option, OptionWithSearch, Scalar } from "@/types/data.ts";
 import { normalizeForSearch } from "@/utils";
 
 const modelValue = defineModel<Scalar | Scalar[]>();
@@ -28,19 +28,30 @@ const disable = computed(
     (multipleSelection && !(selectedFields.value?.includes(name) ?? true)),
 );
 
-const initOptions = computed(() =>
+const initOptions = computed<OptionWithSearch[]>(() =>
   options.map((opt) =>
     typeof opt === "object" && opt !== null
       ? {
           value: opt.value,
-          label: opt.label,
+          label: String(opt.label),
           search: normalizeForSearch(String(opt.label)),
         }
-      : { value: opt, label: opt, search: normalizeForSearch(String(opt)) },
+      : {
+          value: opt,
+          label: String(opt),
+          search: normalizeForSearch(String(opt)),
+        },
   ),
 );
 
-const filteredOptions = ref(options);
+const filteredOptions = ref<OptionWithSearch[]>([]);
+watch(
+  initOptions,
+  (value) => {
+    filteredOptions.value = value;
+  },
+  { immediate: true },
+);
 
 const filter = (val: string, update: (x: () => void) => void) => {
   update(() => {
