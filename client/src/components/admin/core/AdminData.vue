@@ -355,8 +355,8 @@ const filters: Ref<Filter[]> = ref(
             [])
           : [
               // formComponent === 'toggle'
-              { value: "✓", label: t("yes") },
-              { value: "✗", label: t("no") },
+              { value: true, label: t("yes") },
+              { value: false, label: t("no") },
             ],
       ),
     })),
