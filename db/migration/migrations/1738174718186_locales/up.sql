@@ -9,8 +9,8 @@ COMMENT ON COLUMN public.locale.value IS 'Unique identifier';
 COMMENT ON COLUMN public.locale.description IS 'Short description';
 
 INSERT INTO public.locale(value, description)
-VALUES ('fr-FR', 'French'),
-       ('en-EN', 'English');
+VALUES ('fr', 'French'),
+       ('en', 'English');
 
 ALTER TABLE public.organization
-    ADD COLUMN locale text NOT NULL REFERENCES public.locale ON UPDATE CASCADE DEFAULT 'fr-FR';
+    ADD COLUMN locale text NOT NULL REFERENCES public.locale ON UPDATE CASCADE DEFAULT 'fr';
