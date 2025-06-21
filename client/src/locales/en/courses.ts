@@ -7,7 +7,7 @@ export default {
     table: {
       services: {
         title: "Services",
-        columns: {
+        column: {
           lastname: {
             label: "Last name",
             tooltip: "",
@@ -66,7 +66,7 @@ export default {
       },
       courses: {
         title: "Courses",
-        columns: {
+        column: {
           degreeProgram: {
             label: "Program",
             tooltip: "",

@@ -241,22 +241,7 @@ const formatWH = (hours: number) =>
           <td>
             {{ t("service.details.baseServiceHours") }}
             <QBtn
-              v-if="isBaseServiceFormOpen"
-              form="edit-base-service"
-              type="submit"
-              icon="sym_s_check_circle"
-              color="primary"
-              size="sm"
-              flat
-              square
-              dense
-            >
-              <QTooltip :delay="TOOLTIP_DELAY">
-                {{ t("service.details.baseServiceForm.tooltip.validate") }}
-              </QTooltip>
-            </QBtn>
-            <QBtn
-              v-else-if="perm.toEditAService(service)"
+              v-if="perm.toEditAService(service)"
               form="edit-base-service"
               icon="sym_s_edit"
               color="primary"
@@ -271,15 +256,7 @@ const formatWH = (hours: number) =>
               </QTooltip>
             </QBtn>
           </td>
-          <td v-if="isBaseServiceFormOpen">
-            <NumInput
-              v-model="baseServiceHours"
-              :label="t('service.details.baseServiceForm.fields.hours')"
-              form="edit-base-service"
-              class="inline-block"
-            />
-          </td>
-          <td v-else>
+          <td>
             {{ formatWH(service.hours) }}
           </td>
         </tr>
@@ -287,22 +264,7 @@ const formatWH = (hours: number) =>
           <td>
             {{ t("service.details.modifications") }}
             <QBtn
-              v-if="isModificationFormOpen"
-              form="add-modification"
-              type="submit"
-              icon="sym_s_check_circle"
-              color="primary"
-              size="sm"
-              flat
-              square
-              dense
-            >
-              <QTooltip :delay="TOOLTIP_DELAY">
-                {{ t("service.details.modificationForm.tooltip.validate") }}
-              </QTooltip>
-            </QBtn>
-            <QBtn
-              v-else-if="perm.toEditAService(service)"
+              v-if="perm.toEditAService(service)"
               icon="sym_s_add_circle"
               color="primary"
               size="sm"
@@ -317,58 +279,6 @@ const formatWH = (hours: number) =>
             </QBtn>
           </td>
           <td />
-        </tr>
-        <tr v-if="isModificationFormOpen">
-          <td>
-            <QBtn
-              form="add-modification"
-              type="reset"
-              icon="sym_s_cancel"
-              color="primary"
-              size="sm"
-              flat
-              square
-              dense
-            >
-              <QTooltip :delay="TOOLTIP_DELAY">
-                {{ t("service.details.modificationForm.tooltip.delete") }}
-              </QTooltip>
-            </QBtn>
-            <QSelect
-              v-model="modificationTypeId"
-              :options="modificationTypesOptions"
-              :label="t('service.details.modificationForm.fields.type')"
-              option-value="id"
-              emit-value
-              map-options
-              square
-              dense
-              options-dense
-              form="add-modification"
-              class="inline-block q-ml-sm"
-            >
-              <template #option="scope">
-                <QItem v-bind="scope.itemProps">
-                  <QItemSection>
-                    <QItemLabel>
-                      {{ scope.opt.label }}
-                    </QItemLabel>
-                    <QItemLabel v-if="scope.opt.description" caption>
-                      {{ scope.opt.description }}
-                    </QItemLabel>
-                  </QItemSection>
-                </QItem>
-              </template>
-            </QSelect>
-          </td>
-          <td>
-            <NumInput
-              v-model="modificationHours"
-              :label="t('service.details.modificationForm.fields.hours')"
-              form="add-modification"
-              class="inline-block"
-            />
-          </td>
         </tr>
         <tr v-for="m in service.modifications" :key="m.id">
           <td>
@@ -403,13 +313,93 @@ const formatWH = (hours: number) =>
       </tbody>
     </ServiceTable>
   </DetailsSection>
+
+  <QDialog v-model="isBaseServiceFormOpen" square>
+    <QCard flat square>
+      <QCardSection>
+        <QForm
+          id="edit-base-service"
+          class="q-gutter-md"
+          @submit="submitBaseServiceForm"
+        >
+          <NumInput
+            v-model="baseServiceHours"
+            :label="t('service.details.baseServiceForm.field.hours')"
+          />
+        </QForm>
+      </QCardSection>
+      <QSeparator />
+      <QCardActions align="right">
+        <QBtn
+          form="edit-base-service"
+          type="submit"
+          :label="t('service.details.baseServiceForm.button.update')"
+          color="primary"
+          flat
+          square
+        />
+      </QCardActions>
+    </QCard>
+  </QDialog>
+
+  <QDialog v-model="isModificationFormOpen" square>
+    <QCard flat square>
+      <QCardSection>
+        <QForm
+          id="add-modification"
+          class="q-gutter-md"
+          @submit="submitModificationForm"
+        >
+          <QSelect
+            v-model="modificationTypeId"
+            :options="modificationTypesOptions"
+            :label="t('service.details.modificationForm.field.type')"
+            option-value="id"
+            emit-value
+            map-options
+            square
+            dense
+            options-dense
+          >
+            <template #option="scope">
+              <QItem v-bind="scope.itemProps">
+                <QItemSection>
+                  <QItemLabel>
+                    {{ scope.opt.label }}
+                  </QItemLabel>
+                  <QItemLabel v-if="scope.opt.description" caption>
+                    {{ scope.opt.description }}
+                  </QItemLabel>
+                </QItemSection>
+              </QItem>
+            </template>
+          </QSelect>
+          <NumInput
+            v-model="modificationHours"
+            :label="t('service.details.modificationForm.field.hours')"
+          />
+        </QForm>
+      </QCardSection>
+      <QSeparator />
+      <QCardActions align="right">
+        <QBtn
+          form="add-modification"
+          type="submit"
+          :label="t('service.details.modificationForm.button.add')"
+          color="primary"
+          flat
+          square
+        />
+      </QCardActions>
+    </QCard>
+  </QDialog>
 </template>
 
 <style scoped lang="scss">
 .q-select {
-  width: 240px;
+  width: 360px;
 }
 .q-input {
-  width: 60px;
+  width: 180px;
 }
 </style>

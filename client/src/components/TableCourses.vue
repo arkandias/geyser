@@ -204,8 +204,8 @@ const selectRow = async (_: Event, row: CourseRow) => {
 const columns = computed<Column<CourseRow>[]>(() => [
   {
     name: "degreeProgram",
-    label: t("courses.table.courses.columns.degreeProgram.label"),
-    tooltip: t("courses.table.courses.columns.degreeProgram.tooltip"),
+    label: t("courses.table.courses.column.degreeProgram.label"),
+    tooltip: t("courses.table.courses.column.degreeProgram.tooltip"),
     align: "left",
     field: (row) => `${row.program.degree.name} ${row.program.name}`,
     sortable: true,
@@ -215,8 +215,8 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "track",
-    label: t("courses.table.courses.columns.track.label"),
-    tooltip: t("courses.table.courses.columns.track.tooltip"),
+    label: t("courses.table.courses.column.track.label"),
+    tooltip: t("courses.table.courses.column.track.tooltip"),
     align: "left",
     field: (row) => row.track?.name,
     sortable: true,
@@ -226,8 +226,8 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "name",
-    label: t("courses.table.courses.columns.name.label"),
-    tooltip: t("courses.table.courses.columns.name.tooltip"),
+    label: t("courses.table.courses.column.name.label"),
+    tooltip: t("courses.table.courses.column.name.tooltip"),
     align: "left",
     field: "name",
     format: (val: string) => (val.length > 40 ? val.slice(0, 40) + "…" : val),
@@ -238,8 +238,8 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "semester",
-    label: t("courses.table.courses.columns.semester.label"),
-    tooltip: t("courses.table.courses.columns.semester.tooltip"),
+    label: t("courses.table.courses.column.semester.label"),
+    tooltip: t("courses.table.courses.column.semester.tooltip"),
     align: "left",
     field: "semester",
     format: (val: number) => t("semester", { semester: val }),
@@ -249,8 +249,8 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "type",
-    label: t("courses.table.courses.columns.type.label"),
-    tooltip: t("courses.table.courses.columns.type.tooltip"),
+    label: t("courses.table.courses.column.type.label"),
+    tooltip: t("courses.table.courses.column.type.tooltip"),
     align: "left",
     field: (row) => row.type.label,
     sortable: true,
@@ -260,10 +260,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "hours",
-    label: t("courses.table.courses.columns.hours.label", {
+    label: t("courses.table.courses.column.hours.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.hours.tooltip"),
+    tooltip: t("courses.table.courses.column.hours.tooltip"),
     align: "left",
     field: "hours",
     format: (val: number) => n(val, "decimal"),
@@ -273,8 +273,8 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "groups",
-    label: t("courses.table.courses.columns.groups.label"),
-    tooltip: t("courses.table.courses.columns.groups.tooltip"),
+    label: t("courses.table.courses.column.groups.label"),
+    tooltip: t("courses.table.courses.column.groups.tooltip"),
     align: "left",
     field: "groups",
     format: (val: number) => n(val, "decimal"),
@@ -284,10 +284,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "totalAssignment",
-    label: t("courses.table.courses.columns.totalAssignment.label", {
+    label: t("courses.table.courses.column.totalAssignment.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.totalAssignment.tooltip"),
+    tooltip: t("courses.table.courses.column.totalAssignment.tooltip"),
     field: "totalAssignment",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -296,10 +296,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "diffAssignment",
-    label: t("courses.table.courses.columns.diffAssignment.label", {
+    label: t("courses.table.courses.column.diffAssignment.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.diffAssignment.tooltip"),
+    tooltip: t("courses.table.courses.column.diffAssignment.tooltip"),
     field: "diffAssignment",
     format: (val: number | null) =>
       val === null ? "–" : n(val, "decimalFixed"),
@@ -309,10 +309,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "totalPrimary",
-    label: t("courses.table.courses.columns.totalPrimary.label", {
+    label: t("courses.table.courses.column.totalPrimary.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.totalPrimary.tooltip"),
+    tooltip: t("courses.table.courses.column.totalPrimary.tooltip"),
     field: "totalPrimary",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -321,10 +321,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "diffPrimary",
-    label: t("courses.table.courses.columns.diffPrimary.label", {
+    label: t("courses.table.courses.column.diffPrimary.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.diffPrimary.tooltip"),
+    tooltip: t("courses.table.courses.column.diffPrimary.tooltip"),
     field: "diffPrimary",
     format: (val: number | null) =>
       val === null ? "–" : n(val, "decimalFixed"),
@@ -334,10 +334,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "diffPrimaryPriority",
-    label: t("courses.table.courses.columns.diffPrimaryPriority.label", {
+    label: t("courses.table.courses.column.diffPrimaryPriority.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.diffPrimaryPriority.tooltip"),
+    tooltip: t("courses.table.courses.column.diffPrimaryPriority.tooltip"),
     field: "diffPrimaryPriority",
     format: (val: number | null) =>
       val === null ? "–" : n(val, "decimalFixed"),
@@ -347,10 +347,10 @@ const columns = computed<Column<CourseRow>[]>(() => [
   },
   {
     name: "totalSecondary",
-    label: t("courses.table.courses.columns.totalSecondary.label", {
+    label: t("courses.table.courses.column.totalSecondary.label", {
       unit: unit.value,
     }),
-    tooltip: t("courses.table.courses.columns.totalSecondary.tooltip"),
+    tooltip: t("courses.table.courses.column.totalSecondary.tooltip"),
     field: "totalSecondary",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,

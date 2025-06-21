@@ -22,12 +22,14 @@ export default {
       modifications: "Modifications",
       total: "Total",
       baseServiceForm: {
-        fields: {
+        field: {
           hours: "Hours",
         },
         tooltip: {
-          validate: "Validate base service",
           edit: "Edit base service",
+        },
+        button: {
+          update: "Update",
         },
         invalid: {
           message: "Invalid form",
@@ -40,14 +42,16 @@ export default {
         error: "Modification failed",
       },
       modificationForm: {
-        fields: {
+        field: {
           type: "Type",
           hours: "Hours",
         },
         tooltip: {
           create: "Add a modification",
-          validate: "Validate modification",
           delete: "Delete modification",
+        },
+        button: {
+          add: "Add",
         },
         invalid: {
           message: "Invalid form",

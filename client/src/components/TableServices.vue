@@ -117,8 +117,8 @@ const selectRow = async (_: Event, row: ServiceRowFragment) => {
 const columns = computed<Column<ServiceRow>[]>(() => [
   {
     name: "lastname",
-    label: t("courses.table.services.columns.lastname.label"),
-    tooltip: t("courses.table.services.columns.lastname.tooltip"),
+    label: t("courses.table.services.column.lastname.label"),
+    tooltip: t("courses.table.services.column.lastname.tooltip"),
     align: "left",
     field: (row) => row.teacher.lastname,
     sortable: true,
@@ -128,8 +128,8 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "firstname",
-    label: t("courses.table.services.columns.firstname.label"),
-    tooltip: t("courses.table.services.columns.firstname.tooltip"),
+    label: t("courses.table.services.column.firstname.label"),
+    tooltip: t("courses.table.services.column.firstname.tooltip"),
     align: "left",
     field: (row) => row.teacher.firstname,
     sortable: true,
@@ -139,8 +139,8 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "alias",
-    label: t("courses.table.services.columns.alias.label"),
-    tooltip: t("courses.table.services.columns.alias.tooltip"),
+    label: t("courses.table.services.column.alias.label"),
+    tooltip: t("courses.table.services.column.alias.tooltip"),
     align: "left",
     field: (row) => row.teacher.alias,
     sortable: true,
@@ -150,8 +150,8 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "message",
-    label: t("courses.table.services.columns.message.label"),
-    tooltip: t("courses.table.services.columns.message.tooltip"),
+    label: t("courses.table.services.column.message.label"),
+    tooltip: t("courses.table.services.column.message.tooltip"),
     align: "center",
     field: (row) => !!row.messages[0]?.content,
     format: (val: boolean) => (val ? "✓" : "✗"),
@@ -161,10 +161,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "modifiedService",
-    label: t("courses.table.services.columns.modifiedService.label", {
+    label: t("courses.table.services.column.modifiedService.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.modifiedService.tooltip"),
+    tooltip: t("courses.table.services.column.modifiedService.tooltip"),
     field: "modifiedService",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -173,10 +173,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "totalAssignment",
-    label: t("courses.table.services.columns.totalAssignment.label", {
+    label: t("courses.table.services.column.totalAssignment.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.totalAssignment.tooltip"),
+    tooltip: t("courses.table.services.column.totalAssignment.tooltip"),
     field: "totalAssignment",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -185,10 +185,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "diffAssignment",
-    label: t("courses.table.services.columns.diffAssignment.label", {
+    label: t("courses.table.services.column.diffAssignment.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.diffAssignment.tooltip"),
+    tooltip: t("courses.table.services.column.diffAssignment.tooltip"),
     field: "diffAssignment",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -197,10 +197,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "totalPrimary",
-    label: t("courses.table.services.columns.totalPrimary.label", {
+    label: t("courses.table.services.column.totalPrimary.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.totalPrimary.tooltip"),
+    tooltip: t("courses.table.services.column.totalPrimary.tooltip"),
     field: "totalPrimary",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -209,10 +209,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "diffPrimary",
-    label: t("courses.table.services.columns.diffPrimary.label", {
+    label: t("courses.table.services.column.diffPrimary.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.diffPrimary.tooltip"),
+    tooltip: t("courses.table.services.column.diffPrimary.tooltip"),
     field: "diffPrimary",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
@@ -221,10 +221,10 @@ const columns = computed<Column<ServiceRow>[]>(() => [
   },
   {
     name: "totalSecondary",
-    label: t("courses.table.services.columns.totalSecondary.label", {
+    label: t("courses.table.services.column.totalSecondary.label", {
       unit: t("unit.weightedHours"),
     }),
-    tooltip: t("courses.table.services.columns.totalSecondary.tooltip"),
+    tooltip: t("courses.table.services.column.totalSecondary.tooltip"),
     field: "totalSecondary",
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
