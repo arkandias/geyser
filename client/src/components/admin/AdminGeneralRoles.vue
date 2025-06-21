@@ -65,6 +65,7 @@ graphql(`
     id
     teacher {
       email
+      displayname
     }
     role
     comment
@@ -139,7 +140,7 @@ const importUpdateColumns = [
 ];
 
 const formatRow = (row: Row) =>
-  `${t(`role.${toLowerCase(row.role)}`)} — ${row.teacher.email}`;
+  `${row.teacher.displayname} — ${t(`role.${toLowerCase(row.role)}`)}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
