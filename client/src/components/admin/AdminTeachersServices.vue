@@ -54,6 +54,7 @@ const rowDescriptor = {
   },
   hours: {
     type: "number",
+    nullable: true,
     format: (val: number) => n(val, "decimalFixed"),
     formComponent: "input",
     inputType: "number",
@@ -75,6 +76,10 @@ graphql(`
     id
     email
     displayname
+    position {
+      baseServiceHours
+    }
+    baseServiceHours
   }
 
   mutation InsertServices($objects: [ServiceInsertInput!]!) {
@@ -162,11 +167,20 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.teacherId = teacher.id;
   }
 
+  // hours
   if (flatRow.hours !== undefined) {
-    if (flatRow.hours === null || flatRow.hours < 0) {
+    if (flatRow.hours !== null && flatRow.hours < 0) {
       throw new Error(t("admin.teachers.services.form.error.hoursNegative"));
     }
-    object.hours = flatRow.hours;
+    if (flatRow.hours !== null) {
+      object.hours = flatRow.hours;
+    } else {
+      const teacher = teachers.value.find(
+        (t) => t.email === flatRow.teacherEmail,
+      );
+      object.hours =
+        teacher?.baseServiceHours ?? teacher?.position?.baseServiceHours ?? 0;
+    }
   }
 
   return object;
