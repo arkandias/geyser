@@ -181,6 +181,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
   };
+
   if (flatRow.email !== undefined) {
     object.email = flatRow.email;
   }

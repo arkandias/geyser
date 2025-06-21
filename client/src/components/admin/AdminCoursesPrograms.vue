@@ -147,6 +147,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
   };
+
   // degreeId
   if (flatRow.degreeName !== undefined) {
     const degree = degrees.value.find((d) => d.name === flatRow.degreeName);

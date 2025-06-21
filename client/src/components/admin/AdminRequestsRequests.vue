@@ -319,6 +319,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
   };
+
   if (flatRow.year !== undefined) {
     object.year = flatRow.year;
   }

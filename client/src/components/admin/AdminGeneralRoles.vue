@@ -145,6 +145,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
   };
+
   // teacherId
   if (flatRow.teacherEmail !== undefined) {
     const teacher = teachers.value.find(

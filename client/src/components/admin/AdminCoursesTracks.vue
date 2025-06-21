@@ -174,6 +174,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
   };
+
   // programId
   if (flatRow.degreeName !== undefined || flatRow.programName !== undefined) {
     if (flatRow.programName === undefined) {
