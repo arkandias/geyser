@@ -173,7 +173,7 @@ const devClass = {
 </script>
 
 <template>
-  <QLayout view="hHh lpR fFf" class="text-body-1" :class="devClass">
+  <QLayout view="hHh LpR fFf" class="text-body-1" :class="devClass">
     <TheHeader :disable="!accessGranted" />
     <QPageContainer>
       <RouterView v-if="accessGranted" />

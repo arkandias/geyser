@@ -790,8 +790,7 @@ const exportDataHandle = () => {
 
 <style scoped lang="scss">
 .q-dialog .q-card {
-  max-width: unset;
-  width: $dialog-admin-data-width;
+  max-width: $dialog-admin-data-max-width;
 }
 
 .search-input-with-filters {
