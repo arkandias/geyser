@@ -75,10 +75,10 @@ graphql(`
 `);
 
 const { t, n } = useTypedI18n();
-const { organization } = useOrganizationStore();
-const { activeYear } = useYearsStore();
 const perm = usePermissions();
 const { downloadAssignments } = useDownloadAssignments();
+const { organization } = useOrganizationStore();
+const { activeYear } = useYearsStore();
 
 // Service selection
 const { getValue: selectedService, setValue: selectService } = useQueryParam(

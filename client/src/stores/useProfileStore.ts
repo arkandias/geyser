@@ -40,6 +40,7 @@ export const useProfileStore = () => {
   const currentServiceId = computed(
     () => profile.services.find((s) => s.year === activeYear.value)?.id ?? null,
   );
+
   const hasService = computed(() => currentServiceId.value !== null);
 
   return {

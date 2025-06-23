@@ -91,8 +91,8 @@ graphql(`
 
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
-const { organization } = useOrganizationStore();
 const perm = usePermissions();
+const { organization } = useOrganizationStore();
 
 const updateServiceHours = useMutation(UpdateServiceHoursDocument);
 const insertModification = useMutation(InsertModificationDocument);

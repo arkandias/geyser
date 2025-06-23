@@ -22,11 +22,13 @@ export const useYearsStore = () => {
     "year",
     true,
   );
+
   const activeYear = computed<number | null>(() =>
     years.value.find((year) => year.value === selectedYear.value)
       ? selectedYear.value
       : currentYear.value,
   );
+
   const isCurrentYearActive = computed(
     () => currentYear.value !== null && activeYear.value === currentYear.value,
   );

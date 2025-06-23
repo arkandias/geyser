@@ -55,7 +55,7 @@ const icons: Record<InfoTextKey, string> = {
     v-model="isDialogOpen[key]"
     square
   >
-    <QCard square>
+    <QCard flat square>
       <QCardSection class="text-h6">
         {{ t(`header.info.${key}.label`) }}
       </QCardSection>

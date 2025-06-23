@@ -21,10 +21,10 @@ const { authManager } = defineProps<{ authManager: AuthManager }>();
 const { t } = useTypedI18n();
 const { notify } = useNotify();
 const { setOrganization } = useOrganizationStore();
+const { profile, setProfile } = useProfileStore();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
 const { setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
-const { profile, setProfile } = useProfileStore();
 
 if (authManager.authError) {
   notify(NotifyType.Error, {

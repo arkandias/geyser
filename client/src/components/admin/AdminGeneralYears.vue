@@ -21,8 +21,8 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 import NumInput from "@/components/core/NumInput.vue";
 
 const { t } = useTypedI18n();
-const { organization } = useOrganizationStore();
 const { notify } = useNotify();
+const { organization } = useOrganizationStore();
 const { years, currentYear } = useYearsStore();
 
 const selectedYear = ref<number | null>(null);

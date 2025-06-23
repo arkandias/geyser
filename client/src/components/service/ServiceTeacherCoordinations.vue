@@ -75,10 +75,10 @@ graphql(`
 `);
 
 const { t } = useTypedI18n();
-const { organization } = useOrganizationStore();
-const { activeYear } = useYearsStore();
 const perm = usePermissions();
 const { downloadAssignments } = useDownloadAssignments();
+const { organization } = useOrganizationStore();
+const { activeYear } = useYearsStore();
 
 const coordinations = computed(() =>
   useFragment(

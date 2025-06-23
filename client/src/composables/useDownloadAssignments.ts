@@ -65,8 +65,8 @@ graphql(`
 `);
 
 export const useDownloadAssignments = () => {
-  const client = useClientHandle().client;
   const { t } = useTypedI18n();
+  const client = useClientHandle().client;
   const { notify } = useNotify();
 
   const downloadAssignments = async (

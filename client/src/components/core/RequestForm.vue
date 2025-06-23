@@ -105,8 +105,8 @@ graphql(`
 
 const { t } = useTypedI18n();
 const { notify } = useNotify();
-const { currentServiceId: myServiceId } = useProfileStore();
 const perm = usePermissions();
+const { currentServiceId: myServiceId } = useProfileStore();
 
 const data = computed(() =>
   useFragment(RequestFormDataFragmentDoc, dataFragment),

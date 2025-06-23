@@ -28,7 +28,7 @@ const message = computed(() =>
 <template>
   <QPage class="column items-center">
     <QCard flat square class="text-center">
-      <QCardSection class="text-h4 q-pt-xl">
+      <QCardSection class="text-h4">
         {{ alert || title }}
       </QCardSection>
       <QCardSection v-if="!alert">

@@ -10,8 +10,8 @@ import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { toLowerCase } from "@/utils";
 
 const { t } = useTypedI18n();
-const { organization } = useOrganizationStore();
 const { notify } = useNotify();
+const { organization } = useOrganizationStore();
 const { currentPhase } = useCurrentPhaseStore();
 
 const phaseOptions = [

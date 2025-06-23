@@ -30,9 +30,9 @@ graphql(`
 `);
 
 const { t } = useTypedI18n();
+const { getValue: selectedService } = useQueryParam("serviceId", true);
 const { organization } = useOrganizationStore();
 const { currentServiceId: myServiceId } = useProfileStore();
-const { getValue: selectedService } = useQueryParam("serviceId", true);
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);
 

@@ -111,7 +111,7 @@ const callOnDelete = async (key: CustomTextKey) => {
       dense
       dense-toggle
     >
-      <QCard>
+      <QCard flat square>
         <QCardSection>
           <EditableText
             :ref="(el) => setRef(key, el)"

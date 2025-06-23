@@ -6,8 +6,8 @@ import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { isLocale } from "@/utils";
 
 export const useLocale = () => {
-  const { locale } = useTypedI18n();
   const $q = useQuasar();
+  const { locale } = useTypedI18n();
   const { organization } = useOrganizationStore();
 
   locale.value = organization.locale;
