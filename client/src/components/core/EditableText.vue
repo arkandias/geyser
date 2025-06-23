@@ -126,7 +126,7 @@ defineExpose({ clear });
 
 <style scoped lang="scss">
 .q-dialog .q-card {
-  max-width: $dialog-text-editor-max-width;
+  width: 720px;
 }
 :deep(.q-editor__toolbar) {
   background-color: $grey-3;

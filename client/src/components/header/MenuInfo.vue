@@ -65,7 +65,7 @@ const icons: Record<InfoTextKey, string> = {
 
 <style scoped lang="scss">
 .q-dialog .q-card {
-  max-width: $dialog-info-max-width;
+  max-width: 720px;
 }
 .q-item {
   white-space: nowrap;

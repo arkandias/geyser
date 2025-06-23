@@ -43,6 +43,6 @@ const message = computed(
 
 <style scoped lang="scss">
 .q-card {
-  max-width: $page-home-max-width;
+  max-width: 480px;
 }
 </style>

@@ -83,7 +83,7 @@ const service = computed(() => getServiceDetails.data.value?.service ?? null);
 
 <style scoped lang="scss">
 .q-card {
-  max-width: $page-service-max-width;
+  max-width: 480px;
 }
 :deep(.q-card__section) {
   text-align: center;
