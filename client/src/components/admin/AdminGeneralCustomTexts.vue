@@ -20,13 +20,12 @@ import {
 } from "@/gql/graphql.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import { camelToDot } from "@/utils";
 
 import EditableText from "@/components/core/EditableText.vue";
 
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
-const { getCustomText } = useCustomTextsStore();
+const { customTextsData } = useCustomTextsStore();
 
 const editStates = ref(
   Object.fromEntries(CUSTOM_TEXT_KEYS.map((key) => [key, false])) as Record<
@@ -60,11 +59,11 @@ const deleteCustomText = useMutation(DeleteCustomTextDocument);
 const updateCustomTextHandle = (oid: number, key: string, value: string) =>
   value
     ? updateCustomText.executeMutation({ oid, key, value }).then((result) => ({
-        returnId: result.data?.insertAppSettingOne?.key,
+        success: !!result.data?.insertAppSettingOne,
         error: result.error,
       }))
     : deleteCustomText.executeMutation({ oid, key }).then((result) => ({
-        returnId: result.data?.deleteAppSettingByPk?.key,
+        success: !!result.data?.deleteAppSettingByPk,
         error: result.error,
       }));
 
@@ -106,7 +105,7 @@ const callOnDelete = async (key: CustomTextKey) => {
 <template>
   <QList bordered separator dense>
     <QExpansionItem
-      v-for="key in CUSTOM_TEXT_KEYS"
+      v-for="{ key, text, isDefault, markdown } in customTextsData"
       :key
       :label="t(`customTextLabel.${key}`)"
       dense
@@ -117,11 +116,11 @@ const callOnDelete = async (key: CustomTextKey) => {
           <EditableText
             :ref="(el) => setRef(key, el)"
             v-model="editStates[key]"
-            :text="getCustomText(key).value"
+            :text
             :set-text="
               (value) => updateCustomTextHandle(organization.id, key, value)
             "
-            :default-text="t(`${camelToDot(key)}`)"
+            :markdown
           />
         </QCardSection>
         <QCardActions dense>
@@ -138,7 +137,7 @@ const callOnDelete = async (key: CustomTextKey) => {
             :label="t('admin.general.customTexts.button.delete')"
             icon="sym_s_delete"
             color="primary"
-            :disable="!getCustomText(key)"
+            :disable="isDefault"
             no-caps
             outline
             dense

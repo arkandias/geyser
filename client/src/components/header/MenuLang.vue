@@ -23,7 +23,7 @@ const localeOptions: Option<LocaleEnum>[] = Object.values(LocaleEnum).map(
 </script>
 
 <template>
-  <MenuBase :label="t('header.lang.label')" icon="sym_s_translate">
+  <MenuBase :label="t('header.lang.label')" icon="sym_s_language">
     <QList>
       <QItem class="flex-center text-no-wrap">
         <QItemLabel header>

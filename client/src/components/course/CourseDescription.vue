@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import DOMPurify from "dompurify";
 import { computed, ref } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -56,20 +55,26 @@ graphql(`
 const { t } = useTypedI18n();
 const perm = usePermissions();
 
-const updateDescription = useMutation(UpdateDescriptionDocument);
-
 const data = computed(() =>
   useFragment(CourseDescriptionFragmentDoc, dataFragment),
 );
 
-const descriptionSanitized = computed(() =>
-  DOMPurify.sanitize(data.value.description ?? ""),
-);
+const updateDescription = useMutation(UpdateDescriptionDocument);
+
 const coordinators = computed(() => [
   ...data.value.coordinations.map((c) => c.teacherId),
   ...data.value.program.coordinations.map((c) => c.teacherId),
   ...(data.value.track?.coordinations.map((c) => c.teacherId) ?? []),
 ]);
+
+const editable = computed(() => perm.toEditADescription(coordinators.value));
+
+const description = computed(() => data.value.description ?? "");
+const defaultDescription = computed(() =>
+  editable.value
+    ? t("courses.expansion.description.defaultTextWithEdition")
+    : t("courses.expansion.description.defaultText"),
+);
 
 const editDescription = ref(false);
 const setDescription = (text: string) =>
@@ -80,7 +85,7 @@ const setDescription = (text: string) =>
       description: text || null,
     })
     .then((result) => ({
-      returnId: result.data?.updateCourseByPk?.id ?? null,
+      success: !!result.data?.updateCourseByPk,
       error: result.error,
     }));
 </script>
@@ -89,13 +94,15 @@ const setDescription = (text: string) =>
   <DetailsSubsection
     v-model="editDescription"
     :title="t('courses.expansion.description.title')"
-    :editable="perm.toEditADescription(coordinators)"
+    :editable
+    :edition-tooltip="t('courses.expansion.description.editionTooltip')"
   >
     <EditableText
       v-model="editDescription"
-      :text="descriptionSanitized"
+      :text="description"
       :set-text="setDescription"
-      :default-text="t('courses.expansion.description.defaultText')"
+      :default-text="defaultDescription"
+      markdown
     />
   </DetailsSubsection>
 </template>

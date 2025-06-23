@@ -27,7 +27,7 @@ export default {
       label: "Mode sombre",
     },
     info: {
-      label: "Infos",
+      label: "Informations",
       contact: {
         label: "Contact",
         message: `

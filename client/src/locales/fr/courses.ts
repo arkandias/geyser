@@ -135,7 +135,7 @@ export default {
               "Télécharger les attributions de l'intervenant",
             deselect: "Désélectionner l'intervenant",
           },
-          weightedHours: "Heures pondérées",
+          weightedHours: "Heures équivalent TD",
           stickyHeader: "En-tête fixe",
           visibleColumns: "Colonnes visibles",
         },
@@ -157,7 +157,9 @@ export default {
       },
       description: {
         title: "Description",
+        editionTooltip: "Éditer la description",
         defaultText: "Pas de description (contactez un responsable)",
+        defaultTextWithEdition: `[Cliquez sur l'icône <i class="q-icon text-primary material-symbols-sharp">edit</i> pour ajouter une description.]`,
       },
       defaultText: `
         <p>
@@ -219,12 +221,16 @@ export default {
           qui ont été demandés par l'intervenant ou attribués à l'intervenant et les
           filtres de recherche sont désactivés. Le nom de l'intervenant apparaît alors
           en haut de la table (à la place de «&nbsp;Enseignements&nbsp;»).
-          Deux raccourcis sont présents à droite du nom de l'intervenant :
+          Trois raccourcis sont présents à droite du nom de l'intervenant :
         </p>
         <ul>
           <li>
-            <i class="q-icon text-primary material-symbols-sharp">visibility</i>
+            <i class="q-icon text-primary material-symbols-sharp">badge</i>
             permet d'afficher des informations détaillées sur l'intervenant ;
+          </li>
+          <li>
+            <i class="q-icon text-primary material-symbols-sharp">download</i>
+            permet de télécharger les attributions de l'intervenant ;
           </li>
           <li>
             <i class="q-icon text-primary material-symbols-sharp">close</i>

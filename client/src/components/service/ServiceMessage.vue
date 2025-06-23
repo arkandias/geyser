@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import DOMPurify from "dompurify";
 import { computed, ref } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
@@ -68,8 +67,13 @@ const data = computed(() =>
 const upsertMessage = useMutation(UpsertMessageDocument);
 const deleteMessage = useMutation(DeleteMessageDocument);
 
-const messageSanitized = computed(() =>
-  DOMPurify.sanitize(data.value.messages[0]?.content ?? ""),
+const editable = computed(() => perm.toEditAMessage(data.value));
+
+const message = computed(() => data.value.messages[0]?.content ?? "");
+const defaultMessage = computed(() =>
+  editable.value
+    ? t("service.message.defaultTextWithEdition")
+    : t("service.message.defaultText"),
 );
 
 const editMessage = ref(false);
@@ -83,7 +87,7 @@ const setMessage = computed(
             content: message,
           })
           .then((result) => ({
-            returnId: result.data?.insertMessageOne?.id ?? null,
+            success: !!result.data?.insertMessageOne,
             error: result.error,
           }))
       : deleteMessage
@@ -92,7 +96,7 @@ const setMessage = computed(
             serviceId: data.value.id,
           })
           .then((result) => ({
-            returnId: result.data?.deleteMessage?.returning.length ?? null,
+            success: !!result.data?.deleteMessage?.returning.length,
             error: result.error,
           })),
 );
@@ -102,14 +106,16 @@ const setMessage = computed(
   <DetailsSection
     v-model="editMessage"
     :title="t('service.message.title')"
-    :editable="perm.toEditAMessage(data)"
+    :editable
     :edition-tooltip="t('service.message.editionTooltip')"
   >
     <EditableText
       v-model="editMessage"
-      :text="messageSanitized"
+      :text="message"
       :set-text="setMessage"
-      text-class="q-pa-md"
+      :default-text="defaultMessage"
+      markdown
+      text-class="q-pa-md text-justify"
     />
   </DetailsSection>
 </template>

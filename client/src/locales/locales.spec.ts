@@ -69,9 +69,11 @@ const findKeysInFiles = async (): Promise<string[]> => {
   const regexSingleQuotes = /[^a-zA-Z]t\([\s\n]*'([^']*)'/g;
   const regexDoubleQuotes = /[^a-zA-Z]t\([\s\n]*"([^"]*)"/g;
   const regexTemplateStrings = /[^a-zA-Z]t\([\s\n]*`([^`]*)`/g;
+  const regexNonString = /[^a-zA-Z]t\([\s\n]*([^\s\n"'`][^)]*)\)/g;
 
   const standardKeys = new Set<string>();
   const templateStringsKeys = new Set<string>();
+  const nonStringKeys = new Set<string>();
 
   // Process each file
   for (const file of files) {
@@ -99,6 +101,14 @@ const findKeysInFiles = async (): Promise<string[]> => {
     while ((match = regexTemplateStrings.exec(content)) !== null) {
       if (match[1]) {
         templateStringsKeys.add(match[1]);
+      }
+    }
+
+    // Check non-string
+    regexNonString.lastIndex = 0;
+    while ((match = regexNonString.exec(content)) !== null) {
+      if (match[1]) {
+        nonStringKeys.add(match[1]);
       }
     }
   }
@@ -214,6 +224,10 @@ const findKeysInFiles = async (): Promise<string[]> => {
     Array.from(templateStringsKeys),
     "Found unexpected template string keys",
   ).toEqual([]);
+
+  expect(Array.from(nonStringKeys), "Found unexpected non-string keys").toEqual(
+    [],
+  );
 
   return [...standardKeys];
 };

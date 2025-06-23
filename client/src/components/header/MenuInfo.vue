@@ -26,6 +26,12 @@ const icons: Record<InfoTextKey, string> = {
 <template>
   <MenuBase :label="t('header.info.label')" icon="sym_s_info">
     <QList>
+      <QItem class="flex-center text-no-wrap">
+        <QItemLabel header>
+          {{ t("header.info.label") }}
+        </QItemLabel>
+      </QItem>
+      <QSeparator />
       <QItem
         v-for="key in INFO_TEXT_KEYS"
         :key
@@ -65,7 +71,7 @@ const icons: Record<InfoTextKey, string> = {
 
 <style scoped lang="scss">
 .q-dialog .q-card {
-  max-width: 720px;
+  width: 720px;
 }
 .q-item {
   white-space: nowrap;

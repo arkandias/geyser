@@ -154,7 +154,9 @@ export default {
       },
       description: {
         title: "Description",
+        editionTooltip: "Edit the description",
         defaultText: "No description (contact a coordinator)",
+        defaultTextWithEdition: `[Click on the icon <i class="q-icon text-primary material-symbols-sharp">edit</i> to add a description.]`,
       },
       defaultText: `
         <p>
@@ -210,12 +212,16 @@ export default {
           When a teacher is selected in the services table, the courses that appear in the table
           above are only those that have been requested by the teacher or assigned to the teacher,
           and the search filters are disabled. The teacher's name then appears at the top of the table
-          (instead of "Courses"). Two shortcuts are present to the right of the teacher's name:
+          (instead of "Courses"). Three shortcuts are present to the right of the teacher's name:
         </p>
         <ul>
           <li>
-            <i class="q-icon text-primary material-symbols-sharp">visibility</i>
+            <i class="q-icon text-primary material-symbols-sharp">badge</i>
             allows you to display detailed information about the teacher;
+          </li>
+          <li>
+            <i class="q-icon text-primary material-symbols-sharp">download</i>
+            allows you to download the teacher's list of assignments;
           </li>
           <li>
             <i class="q-icon text-primary material-symbols-sharp">close</i>

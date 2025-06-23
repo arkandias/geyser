@@ -21,6 +21,7 @@ export default defineConfig(() => ({
             "axios",
             "dompurify",
             "graphql",
+            "marked",
             "papaparse",
             "zod",
           ],

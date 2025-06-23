@@ -72,6 +72,9 @@ importers:
       graphql:
         specifier: ^16.11.0
         version: 16.11.0
+      marked:
+        specifier: ^15.0.12
+        version: 15.0.12
       papaparse:
         specifier: ^5.5.3
         version: 5.5.3
@@ -2855,6 +2858,11 @@ packages:
   map-cache@0.2.2:
     resolution: {integrity: sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==}
     engines: {node: '>=0.10.0'}
+
+  marked@15.0.12:
+    resolution: {integrity: sha512-8dD6FusOQSrpv9Z1rdNMdlSgQOIP880DHqnohobOmYLElGEqAL/JvxvuxZO16r4HtjTlfPRDC1hbvxC9dPN2nA==}
+    engines: {node: '>= 18'}
+    hasBin: true
 
   math-intrinsics@1.1.0:
     resolution: {integrity: sha512-/IXtbwEk5HTPyEwyKX6hGkYXxM9nbj64B+ilVJnC/R6B0pH5G4V3b0pVbL7DBj4tkhBAppbQUlf6F6Xl9LHu1g==}
@@ -7129,6 +7137,8 @@ snapshots:
       '@jridgewell/sourcemap-codec': 1.5.0
 
   map-cache@0.2.2: {}
+
+  marked@15.0.12: {}
 
   math-intrinsics@1.1.0: {}
 

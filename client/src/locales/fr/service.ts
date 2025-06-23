@@ -86,6 +86,8 @@ export default {
     message: {
       title: "Message pour la commission",
       editionTooltip: "Éditer le message",
+      defaultText: "[Pas de message]",
+      defaultTextWithEdition: `[Cliquez sur l'icône <i class="q-icon text-primary material-symbols-sharp">edit</i> pour ajouter un message.]`,
     },
   },
 } as const;

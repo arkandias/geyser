@@ -19,6 +19,13 @@ export const CUSTOM_TEXT_KEYS = [
   "homeMessageShutdown",
 ] as const;
 
+export const CUSTOM_TEXT_MARKDOWN_KEYS: CustomTextKey[] = [
+  "homeMessageRequests",
+  "homeMessageAssignments",
+  "homeMessageResults",
+  "homeMessageShutdown",
+] as const;
+
 export type CustomTextKey = (typeof CUSTOM_TEXT_KEYS)[number];
 
 export const isCustomTextKey = (key: unknown): key is CustomTextKey =>
