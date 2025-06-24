@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import { useDarkMode } from "@/composables/useDarkMode.ts";
@@ -8,10 +9,12 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
 import MenuUser from "@/components/header/MenuUser.vue";
+import MenuYear from "@/components/header/MenuYear.vue";
 import NavBtn from "@/components/header/NavBtn.vue";
 import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
@@ -24,11 +27,20 @@ const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
 const { organization } = useOrganizationStore();
 const { hasService } = useProfileStore();
+const { activeYear, isCurrentYearActive } = useYearsStore();
+
+const warningMessage = computed(() =>
+  activeYear.value === null
+    ? t("courses.warning.noActiveYear")
+    : !isCurrentYearActive.value
+      ? t("courses.warning.archive", { year: activeYear.value })
+      : "",
+);
 </script>
 
 <template>
-  <QHeader id="header">
-    <QToolbar>
+  <QHeader>
+    <QToolbar id="main-toolbar">
       <QToolbarTitle shrink class="title">
         <QAvatar icon="sym_s_spa" square size="xl" />
         Geyser
@@ -107,20 +119,37 @@ const { hasService } = useProfileStore();
           {{ t("header.darkMode.label") }}
         </QTooltip>
       </QBtn>
+      <MenuYear />
       <MenuLang />
       <MenuInfo />
       <MenuUser />
+    </QToolbar>
+
+    <QToolbar v-if="warningMessage" id="warning-toolbar">
+      <QSpace />
+      <QToolbarTitle shrink class="text-center text-body1">
+        {{ warningMessage }}
+      </QToolbarTitle>
+      <QSpace />
     </QToolbar>
   </QHeader>
 </template>
 
 <style scoped lang="scss">
-#header {
-  height: $header-height;
+#main-toolbar {
+  min-height: $main-toolbar-height;
+  height: $main-toolbar-height;
   background-color: $primary;
 }
-.dev #header {
+.dev #main-toolbar {
   background-color: $secondary;
+}
+
+#warning-toolbar {
+  min-height: $warning-toolbar-height;
+  height: $warning-toolbar-height;
+  background-color: $warning;
+  color: black;
 }
 
 .title {
@@ -169,7 +198,7 @@ const { hasService } = useProfileStore();
 }
 .v-enter-to,
 .v-leave-from {
-  width: 182px;
+  width: 126px;
 }
 .v-enter-from,
 .v-leave-to {

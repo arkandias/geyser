@@ -4,7 +4,6 @@ import { computed, watch } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
-import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
 import {
   GetCourseDetailsDocument,
@@ -65,12 +64,11 @@ graphql(`
   }
 `);
 
-const { t } = useTypedI18n();
-const { organization } = useOrganizationStore();
-const { activeYear, isCurrentYearActive } = useYearsStore();
-const { profile } = useProfileStore();
-const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
 const perm = usePermissions();
+const { organization } = useOrganizationStore();
+const { profile } = useProfileStore();
+const { activeYear } = useYearsStore();
+const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
 
 // Course rows
 const getCourseRows = useQuery({
@@ -150,21 +148,10 @@ watch(
   },
   { immediate: true },
 );
-
-const warningMessage = computed(() =>
-  activeYear.value === null
-    ? t("courses.warning.noActiveYear")
-    : !isCurrentYearActive.value
-      ? t("courses.warning.archive", { year: activeYear.value })
-      : "",
-);
 </script>
 
 <template>
   <QPage>
-    <QCard v-if="warningMessage" id="warning-header" class="text-body1">
-      {{ warningMessage }}
-    </QCard>
     <QSplitter
       id="first-splitter"
       v-model="vSplitterRatio"
@@ -201,12 +188,6 @@ const warningMessage = computed(() =>
 </template>
 
 <style scoped lang="scss">
-#warning-header {
-  height: $warning-height;
-  text-align: center;
-  background-color: $accent;
-  color: black;
-}
 .q-splitter :deep(.q-splitter__separator) {
   background-color: $primary;
 }
@@ -214,25 +195,24 @@ const warningMessage = computed(() =>
   background-color: $secondary;
 }
 
-// Adjust splitters height to window's height
-// and set tables height for sticky headers
+// Adjust splitters height to window's height and set tables height for sticky headers
 #first-splitter,
 #first-splitter :deep(.sticky-header-table) {
-  height: calc(100vh - $header-height);
+  height: calc(100vh - $main-toolbar-height);
 }
-#warning-header + #first-splitter,
-#warning-header + #first-splitter :deep(.sticky-header-table) {
-  height: calc(100vh - $header-height - $warning-height);
+body:has(#warning-toolbar) #first-splitter,
+body:has(#warning-toolbar) #first-splitter :deep(.sticky-header-table) {
+  height: calc(100vh - $main-toolbar-height - $warning-toolbar-height);
 }
 #first-splitter #second-splitter :deep(.sticky-header-table) {
-  height: calc((100vh - $header-height) * v-bind("hSplitterRatio") / 100);
+  height: calc((100vh - $main-toolbar-height) * v-bind("hSplitterRatio") / 100);
 }
 /* prettier-ignore */
-#warning-header + #first-splitter #second-splitter :deep(.sticky-header-table) {
-  height: calc((100vh - $header-height - $warning-height) * v-bind('hSplitterRatio') / 100);
+body:has(#warning-toolbar) #first-splitter #second-splitter :deep(.sticky-header-table) {
+  height: calc((100vh - $main-toolbar-height - $warning-toolbar-height) * v-bind('hSplitterRatio') / 100);
 }
 
-// sticky header tables
+// Sticky header tables
 :deep(.sticky-header-table) {
   thead tr:first-child th {
     background-color: #ffffff;

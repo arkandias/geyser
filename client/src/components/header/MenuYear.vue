@@ -33,7 +33,7 @@ const update = async () => {
 </script>
 
 <template>
-  <MenuBase :label="t('header.courses.year')" icon="sym_s_history">
+  <MenuBase :label="t('header.courses.year')" icon="sym_s_calendar_month">
     <QList>
       <QItem class="flex-center">
         <QItemLabel header>

@@ -20,7 +20,12 @@ const router = useRouter();
     :disable
     flat
     square
-    @click="router.push({ name })"
+    @click="
+      router.push({
+        name,
+        query: { year: router.currentRoute.value.query['year'] },
+      })
+    "
   >
     <QTooltip v-if="tooltip">
       {{ tooltip }}

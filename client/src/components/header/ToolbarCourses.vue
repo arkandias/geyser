@@ -5,20 +5,17 @@ import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { buttonColor } from "@/utils";
 
-import MenuYear from "@/components/header/MenuYear.vue";
-
 const { t } = useTypedI18n();
-const { hasService, currentServiceId } = useProfileStore();
-const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
 const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   "serviceId",
   true,
 );
+const { hasService, currentServiceId } = useProfileStore();
+const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
 </script>
 
 <template>
   <QIcon name="sym_s_chevron_right" />
-  <MenuYear />
   <QBtn
     icon="sym_s_vertical_split"
     :color="buttonColor(isLeftPanelOpen)"
