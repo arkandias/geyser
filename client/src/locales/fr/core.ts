@@ -1,14 +1,14 @@
 export default {
   editableText: {
     markdownNotice: `
-      Vous pouvez utiliser la
-          <a
-            href="https://docs.github.com/fr/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
-            target="_blank"
-            rel="noopener noreferrer"
-            >syntaxe Markdown</a
-          >
-          pour formatter votre texte.`,
+Vous pouvez utiliser la
+<a
+  href="https://docs.github.com/fr/get-started/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax"
+  target="_blank"
+  rel="noopener noreferrer"
+  >syntaxe Markdown</a
+>
+pour formatter votre texte.`,
     button: {
       save: "Enregistrer",
       cancel: "Annuler",
