@@ -9,7 +9,8 @@ import { compression } from "vite-plugin-compression2";
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   build: {
-    target: "es2022",
+    target: "es2024",
+    cssTarget: "es2023",
     rollupOptions: {
       output: {
         manualChunks: {

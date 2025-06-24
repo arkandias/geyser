@@ -9,8 +9,6 @@ import { i18n } from "@/services/i18n.ts";
 import { router } from "@/services/router.ts";
 import { makeClientOptions } from "@/services/urql.ts";
 
-import "@quasar/extras/material-symbols-sharp/material-symbols-sharp.css";
-import "@quasar/extras/roboto-font/roboto-font.css";
 import "quasar/src/css/index.sass";
 import "@/css/main.scss";
 
