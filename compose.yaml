@@ -132,7 +132,7 @@ services:
       API_DATABASE_URL: "postgresql://postgres:${DB_PASSWORD}@db:5432/geyser"
       API_GRAPHQL_URL: "http://hasura:8080/v1/graphql"
       API_GRAPHQL_ADMIN_SECRET: "${HASURA_GRAPHQL_ADMIN_SECRET}"
-      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/master/.well-known/openid-configuration"
+      API_OIDC_DISCOVERY_URL: "http://keycloak:8080/realms/geyser/.well-known/openid-configuration"
       API_OIDC_CLIENT_ID: "backend"
       API_OIDC_CLIENT_SECRET: "${OIDC_CLIENT_SECRET}"
     ports:
