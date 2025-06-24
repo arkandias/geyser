@@ -80,14 +80,9 @@ const warningMessage = computed(() =>
         :disable
         :tooltip="t('header.courses.label')"
       />
-      <Transition>
-        <div
-          v-if="!disable && router.currentRoute.value.name === 'courses'"
-          id="toolbar-wrapper"
-        >
-          <ToolbarCourses />
-        </div>
-      </Transition>
+      <ToolbarCourses
+        v-if="!disable && router.currentRoute.value.name === 'courses'"
+      />
       <QSeparator vertical inset />
       <NavBtn
         v-if="perm.toAdmin"
@@ -140,6 +135,7 @@ const warningMessage = computed(() =>
   min-height: $main-toolbar-height;
   height: $main-toolbar-height;
   background-color: $primary;
+  overflow-x: auto;
 }
 .dev #main-toolbar {
   background-color: $secondary;
@@ -182,26 +178,5 @@ const warningMessage = computed(() =>
       margin-top: 1px;
     }
   }
-}
-
-#toolbar-wrapper {
-  display: flex;
-  align-items: center;
-  overflow: hidden;
-}
-#toolbar-wrapper * {
-  white-space: nowrap;
-}
-.v-enter-active,
-.v-leave-active {
-  transition: width 1s ease;
-}
-.v-enter-to,
-.v-leave-from {
-  width: 126px;
-}
-.v-enter-from,
-.v-leave-to {
-  width: 0;
 }
 </style>
