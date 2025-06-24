@@ -21,6 +21,7 @@ import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
 } from "@/types/data.ts";
 
 import type { AdminTeachersTeachersColName } from "@/components/admin/col-names.ts";

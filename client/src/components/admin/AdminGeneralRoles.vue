@@ -22,6 +22,7 @@ import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
 } from "@/types/data.ts";
 import { toLowerCase } from "@/utils";
 
