@@ -280,14 +280,16 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  year: years.value.map((y) => y.value),
-  teacherEmail: teachers.value.map((t) => ({
-    value: t.email,
-    label: t.displayname ?? "",
-  })),
-  typeLabel: serviceModificationTypes.value.map((smt) => smt.label),
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    year: years.value.map((y) => y.value),
+    teacherEmail: teachers.value.map((t) => ({
+      value: t.email,
+      label: t.displayname ?? "",
+    })),
+    typeLabel: serviceModificationTypes.value.map((smt) => smt.label),
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
 </script>

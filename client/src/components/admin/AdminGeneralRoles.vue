@@ -180,16 +180,18 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  teacherEmail: teachers.value.map((t) => ({
-    value: t.email,
-    label: t.displayname ?? "",
-  })),
-  role: Object.values(RoleEnum).map((role) => ({
-    value: role,
-    label: t(`role.${toLowerCase(role)}`),
-  })),
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    teacherEmail: teachers.value.map((t) => ({
+      value: t.email,
+      label: t.displayname ?? "",
+    })),
+    role: Object.values(RoleEnum).map((role) => ({
+      value: role,
+      label: t(`role.${toLowerCase(role)}`),
+    })),
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
 </script>

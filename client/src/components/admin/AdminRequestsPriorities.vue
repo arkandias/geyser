@@ -28,6 +28,7 @@ import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
 } from "@/types/data.ts";
 import { unique } from "@/utils";
 
@@ -413,63 +414,67 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  year: years.value.map((y) => y.value),
-  teacherEmail: services.value
-    .filter((s) => s.year === formValues.value["year"])
-    .map((s) => ({
-      value: s.teacher.email,
-      label: s.teacher.displayname ?? "",
-    })),
-  degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
-  programName: courses.value
-    .filter((c) => c.program.degree.name === formValues.value["degreeName"])
-    .map((c) => c.program.name)
-    .filter(unique),
-  trackName: courses.value
-    .filter(
-      (c) =>
-        c.program.degree.name === formValues.value["degreeName"] &&
-        c.program.name === formValues.value["programName"] &&
-        c.track?.name,
-    )
-    .map((c) => c.track?.name)
-    .filter(unique),
-  courseName: courses.value
-    .filter(
-      (c) =>
-        c.program.degree.name === formValues.value["degreeName"] &&
-        c.program.name === formValues.value["programName"] &&
-        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null),
-    )
-    .map((c) => c.name)
-    .filter(unique),
-  courseSemester: courses.value
-    .filter(
-      (c) =>
-        c.program.degree.name === formValues.value["degreeName"] &&
-        c.program.name === formValues.value["programName"] &&
-        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
-        c.name === formValues.value["courseName"],
-    )
-    .map((c) => ({
-      value: c.semester,
-      label: t("semester", { semester: c.semester }),
-    })),
-  courseType: courses.value
-    .filter(
-      (c) =>
-        c.program.degree.name === formValues.value["degreeName"] &&
-        c.program.name === formValues.value["programName"] &&
-        (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
-        c.name === formValues.value["courseName"] &&
-        c.semester === formValues.value["courseSemester"],
-    )
-    .map((c) => c.type.label),
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    year: years.value.map((y) => y.value),
+    teacherEmail: services.value
+      .filter((s) => s.year === formValues.value["year"])
+      .map((s) => ({
+        value: s.teacher.email,
+        label: s.teacher.displayname ?? "",
+      })),
+    degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
+    programName: courses.value
+      .filter((c) => c.program.degree.name === formValues.value["degreeName"])
+      .map((c) => c.program.name)
+      .filter(unique),
+    trackName: courses.value
+      .filter(
+        (c) =>
+          c.program.degree.name === formValues.value["degreeName"] &&
+          c.program.name === formValues.value["programName"] &&
+          c.track?.name,
+      )
+      .map((c) => c.track?.name)
+      .filter(unique),
+    courseName: courses.value
+      .filter(
+        (c) =>
+          c.program.degree.name === formValues.value["degreeName"] &&
+          c.program.name === formValues.value["programName"] &&
+          (c.track?.name ?? null) === (formValues.value["trackName"] ?? null),
+      )
+      .map((c) => c.name)
+      .filter(unique),
+    courseSemester: courses.value
+      .filter(
+        (c) =>
+          c.program.degree.name === formValues.value["degreeName"] &&
+          c.program.name === formValues.value["programName"] &&
+          (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
+          c.name === formValues.value["courseName"],
+      )
+      .map((c) => ({
+        value: c.semester,
+        label: t("semester", { semester: c.semester }),
+      })),
+    courseType: courses.value
+      .filter(
+        (c) =>
+          c.program.degree.name === formValues.value["degreeName"] &&
+          c.program.name === formValues.value["programName"] &&
+          (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
+          c.name === formValues.value["courseName"] &&
+          c.semester === formValues.value["courseSemester"],
+      )
+      .map((c) => c.type.label),
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed(() => ({
+const filterOptions = computed<
+  SelectOptions<string, Row, typeof rowDescriptor>
+>(() => ({
   teacherEmail: teachers.value.map((t) => t.email),
   degreeName: degrees.value.map((d) => d.name),
   programName: programs.value.map((p) => p.name),

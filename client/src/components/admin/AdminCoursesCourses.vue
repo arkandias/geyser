@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
-import { type ComputedRef, computed, ref } from "vue";
+import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
@@ -437,29 +437,31 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  year: years.value.map((y) => y.value),
-  degreeName: degrees.value.map((d) => d.name),
-  programName:
-    degrees.value
-      .find((d) => d.name === formValues.value["degreeName"])
-      ?.programs.map((p) => p.name) ?? [],
-  trackName:
-    degrees.value
-      .find((d) => d.name === formValues.value["degreeName"])
-      ?.programs.find((p) => p.name === formValues.value["programName"])
-      ?.tracks.map((t) => t.name) ?? [],
-  semester: [1, 2, 3, 4, 5, 6].map((s) => ({
-    value: s,
-    label: t("semester", { semester: s }),
-  })),
-  typeLabel: courseTypes.value.map((ct) => ct.label),
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    year: years.value.map((y) => y.value),
+    degreeName: degrees.value.map((d) => d.name),
+    programName:
+      degrees.value
+        .find((d) => d.name === formValues.value["degreeName"])
+        ?.programs.map((p) => p.name) ?? [],
+    trackName:
+      degrees.value
+        .find((d) => d.name === formValues.value["degreeName"])
+        ?.programs.find((p) => p.name === formValues.value["programName"])
+        ?.tracks.map((t) => t.name) ?? [],
+    semester: [1, 2, 3, 4, 5, 6].map((s) => ({
+      value: s,
+      label: t("semester", { semester: s }),
+    })),
+    typeLabel: courseTypes.value.map((ct) => ct.label),
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions: ComputedRef<
+const filterOptions = computed<
   SelectOptions<string, Row, typeof rowDescriptor>
-> = computed(() => ({
+>(() => ({
   programName: programs.value.map((p) => p.name),
   track: tracks.value.map((t) => t.name),
 }));

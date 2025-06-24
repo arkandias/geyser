@@ -22,6 +22,7 @@ import type {
   NullableParsedRow,
   RowDescriptorExtra,
   Scalar,
+  SelectOptions,
 } from "@/types/data.ts";
 
 import type { AdminCoursesTracksColName } from "@/components/admin/col-names.ts";
@@ -218,16 +219,20 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  degreeName: degrees.value.map((d) => d.name),
-  programName:
-    degrees.value
-      .find((d) => d.name === formValues.value["degreeName"])
-      ?.programs.map((p) => p.name) ?? [],
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    degreeName: degrees.value.map((d) => d.name),
+    programName:
+      degrees.value
+        .find((d) => d.name === formValues.value["degreeName"])
+        ?.programs.map((p) => p.name) ?? [],
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed(() => ({
+const filterOptions = computed<
+  SelectOptions<string, Row, typeof rowDescriptor>
+>(() => ({
   programName: programs.value.map((p) => p.name),
 }));
 </script>

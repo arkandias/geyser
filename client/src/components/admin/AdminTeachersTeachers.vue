@@ -235,9 +235,11 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed(() => ({
-  positionLabel: positions.value.map((p) => p.label),
-}));
+const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+  () => ({
+    positionLabel: positions.value.map((p) => p.label),
+  }),
+);
 
 const filterValues = ref<Record<string, Scalar[]>>({});
 </script>
