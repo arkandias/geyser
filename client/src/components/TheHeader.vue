@@ -75,10 +75,10 @@ const { hasService } = useProfileStore();
       <QSeparator vertical inset />
       <NavBtn
         v-if="perm.toAdmin"
-        name="settings"
+        name="admin"
         icon="sym_s_settings"
         :disable
-        :tooltip="t('header.settings.label')"
+        :tooltip="t('header.admin.label')"
       />
       <QSeparator v-if="perm.toAdmin" vertical inset />
       <QBtn

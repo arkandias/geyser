@@ -18,7 +18,7 @@ export default {
       servicesTable: "Services table",
       myService: "My requests",
     },
-    settings: {
+    admin: {
       label: "Parameters",
     },
     lang: {
