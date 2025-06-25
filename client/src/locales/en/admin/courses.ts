@@ -28,11 +28,7 @@ export default {
         },
       } satisfies Record<AdminCoursesDegreesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New degree",
-          single: "{label}",
-          multiple: "{count} degrees selected",
-        },
+        title: "Creating a degree | Editing a degree | Editing {count} degrees",
       },
       data: {
         success: {
@@ -48,12 +44,11 @@ export default {
             "0 degrees exported | 1 degree exported | {count} degrees exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the degree "{label}"?
-If this degree contains programs, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected degrees?
+          delete:
+            `Are you sure you want to delete the selected degree?
+If this degree contains programs, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected degrees?
 If these degrees contain programs, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -78,11 +73,8 @@ If these degrees contain programs, you will not be able to delete them.`,
         },
       } satisfies Record<AdminCoursesProgramsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New program",
-          single: "{label}",
-          multiple: "{count} programs selected",
-        },
+        title:
+          "Creating a program | Editing a program | Editing {count} programs",
         error: {
           degreeNotFound: 'No degree with the name "{degree}" exists',
         },
@@ -101,12 +93,11 @@ If these degrees contain programs, you will not be able to delete them.`,
             "0 programs exported | 1 program exported | {count} programs exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the program "{label}"?
-If there are tracks, courses, or coordinations for this program, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected programs?
+          delete:
+            `Are you sure you want to delete the selected program?
+If there are tracks, courses, or coordinations for this program, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected programs?
 If there are tracks, courses, or coordinations for these programs, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -135,11 +126,7 @@ If there are tracks, courses, or coordinations for these programs, you will not 
         },
       } satisfies Record<AdminCoursesTracksColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New track",
-          single: "{label}",
-          multiple: "{count} tracks selected",
-        },
+        title: "Creating a track | Editing a track | Editing {count} tracks",
         error: {
           updateDegreeWithoutProgram:
             "You cannot modify the degree without selecting a program",
@@ -161,12 +148,11 @@ If there are tracks, courses, or coordinations for these programs, you will not 
             "0 tracks exported | 1 track exported | {count} tracks exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the track "{label}"?
-If there are courses or coordinations for this track, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected tracks?
+          delete:
+            `Are you sure you want to delete the selected track?
+If there are courses or coordinations for this track, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected tracks?
 If there are courses or coordinations for these tracks, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -235,11 +221,7 @@ If there are courses or coordinations for these tracks, you will not be able to 
         },
       } satisfies Record<AdminCoursesCoursesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New course",
-          single: "{label}",
-          multiple: "{count} courses selected",
-        },
+        title: "Creating a course | Editing a course | Editing {count} courses",
         error: {
           updateDegreeWithoutProgram:
             "You cannot modify the degree without selecting a program",
@@ -278,12 +260,11 @@ If there are courses or coordinations for these tracks, you will not be able to 
             "0 courses exported | 1 course exported | {count} courses exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the course "{label}"?
-If there are requests, priorities, or coordinations for this course, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected tracks?
+          delete:
+            `Are you sure you want to delete the selected course?
+If there are requests, priorities, or coordinations for this course, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected tracks?
 If there are requests, priorities, or coordinations for these courses, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -304,11 +285,8 @@ If there are requests, priorities, or coordinations for these courses, you will 
         },
       } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New course type",
-          single: "{label}",
-          multiple: "{count} course types selected",
-        },
+        title:
+          "Creating a course type | Editing a course type | Editing {count} course types",
       },
       data: {
         success: {
@@ -324,12 +302,11 @@ If there are requests, priorities, or coordinations for these courses, you will 
             "0 course types exported | 1 course type exported | {count} course types exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the course type "{label}"?
-If this type is assigned to courses, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected course types?
+          delete:
+            `Are you sure you want to delete the selected course type?
+If this type is assigned to courses, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected course types?
 If these types are assigned to courses, you will not be able to delete them.`,
-          },
         },
       },
     },

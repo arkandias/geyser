@@ -100,11 +100,8 @@ If there are services, responsibilities, or roles for these teachers, you will n
         },
       } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New position",
-          single: "{label}",
-          multiple: "{count} positions selected",
-        },
+        title:
+          "Creating a position | Editing a position | Editing {count} positions",
         error: {
           baseServiceHoursNegative:
             "Enter a positive or zero number of base service hours",
@@ -124,12 +121,11 @@ If there are services, responsibilities, or roles for these teachers, you will n
             "0 positions exported | 1 position exported | {count} positions exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the position "{label}"?
-If this position is assigned to teachers, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected positions?
+          delete:
+            `Are you sure you want to delete the selected position?
+If this position is assigned to teachers, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected positions?
 If these positions are assigned to teachers, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -150,13 +146,10 @@ If these positions are assigned to teachers, you will not be able to delete them
         },
       } satisfies Record<AdminTeachersServicesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New service",
-          single: "{label}",
-          multiple: "{count} services selected",
-        },
+        title:
+          "Creating a service | Editing a service | Editing {count} services",
         error: {
-          teacherNotFound: "No teacher with email '{email}'",
+          teacherNotFound: 'No teacher with email "{email}"',
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },
@@ -174,12 +167,11 @@ If these positions are assigned to teachers, you will not be able to delete them
             "0 services exported | 1 service exported | {count} services exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the service "{label}"?
-If there are modifications, requests, or priorities for this service, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected services?
+          delete:
+            `Are you sure you want to delete the selected service?
+If there are modifications, requests, or priorities for this service, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected services?
 If there are modifications, requests, or priorities for these services, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -207,11 +199,8 @@ If there are modifications, requests, or priorities for these services, you will
         AdminColNameOptions
       >,
       form: {
-        title: {
-          none: "New service modification",
-          single: "{label}",
-          multiple: "{count} service modifications selected",
-        },
+        title:
+          "Creating a service modification | Editing a service modification | Editing {count} service modification",
         error: {
           updateYearWithoutTeacher:
             "You cannot modify the year without selecting a teacher",
@@ -238,10 +227,8 @@ If there are modifications, requests, or priorities for these services, you will
             "0 service modifications exported | 1 service modification exported | {count} service modifications exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the service modification "{label}"?`,
-            multiple: `Are you sure you want to delete the {count} selected service modifications?`,
-          },
+          delete:
+            "Are you sure you want to delete the selected service modification? | Are you sure you want to delete the {count} selected service modifications?",
         },
       },
     },
@@ -261,11 +248,8 @@ If there are modifications, requests, or priorities for these services, you will
         AdminColNameOptions
       >,
       form: {
-        title: {
-          none: "New modification type",
-          single: "{label}",
-          multiple: "{count} modification types selected",
-        },
+        title:
+          "Creating a modification type | Editing a modification type | Editing {count} modification types",
       },
       data: {
         success: {
@@ -281,12 +265,11 @@ If there are modifications, requests, or priorities for these services, you will
             "0 modification types exported | 1 modification type exported | {count} modification types exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the modification type "{label}"?
-If this type is assigned to modifications, you will not be able to delete it.`,
-            multiple: `Are you sure you want to delete the {count} selected modification types?
+          delete:
+            `Are you sure you want to delete the selected modification type?
+If this type is assigned to modifications, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected modification types?
 If these types are assigned to modifications, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -307,11 +290,8 @@ If these types are assigned to modifications, you will not be able to delete the
         },
       } satisfies Record<AdminTeachersMessagesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New message",
-          single: "{label}",
-          multiple: "{count} messages selected",
-        },
+        title:
+          "Creating a message | Editing a message | Editing {count} messages",
         error: {
           updateYearWithoutTeacher:
             "You cannot modify the year without selecting a teacher",
@@ -336,10 +316,8 @@ If these types are assigned to modifications, you will not be able to delete the
             "0 messages exported | 1 message exported | {count} messages exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the message "{label}"?`,
-            multiple: `Are you sure you want to delete the {count} selected messages?`,
-          },
+          delete:
+            "Are you sure you want to delete the selected message? | Are you sure you want to delete the {count} selected messages?",
         },
       },
     },

@@ -76,7 +76,8 @@ la supprimer.`,
         error: {
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {email} »",
-          invalidRole: `Le type de rôle doit être @:role.admin ou @:role.commissioner`,
+          invalidRole:
+            "Le type de rôle doit être @:role.admin ou @:role.commissioner",
         },
       },
       data: {
@@ -102,7 +103,8 @@ la supprimer.`,
         delete: "Supprimer",
       },
       confirm: {
-        delete: `Êtes-vous sûr de vouloir réinitialiser « {label} » à sa valeur par défaut ?`,
+        delete:
+          "Êtes-vous sûr de vouloir réinitialiser « {label} » à sa valeur par défaut ?",
       },
     },
   },

@@ -73,8 +73,8 @@ If courses or services are associated with this year, you will not be able to de
       form: {
         title: "Creating a role | Editing a role | Editing {count} roles",
         error: {
-          teacherNotFound: "No teacher with email '{email}'",
-          invalidRole: `Role type must be @:role.admin or @:role.commissioner`,
+          teacherNotFound: 'No teacher with email "{email}"',
+          invalidRole: "Role type must be @:role.admin or @:role.commissioner",
         },
       },
       data: {
@@ -86,7 +86,8 @@ If courses or services are associated with this year, you will not be able to de
           export: "0 roles exported | 1 role exported | {count} roles exported",
         },
         confirm: {
-          delete: `Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?`,
+          delete:
+            "Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?",
         },
       },
     },
@@ -97,7 +98,8 @@ If courses or services are associated with this year, you will not be able to de
         delete: "Delete",
       },
       confirm: {
-        delete: `Are you sure you want to reset "{label}" to its default value?`,
+        delete:
+          'Are you sure you want to reset "{label}" to its default value?',
       },
     },
   },

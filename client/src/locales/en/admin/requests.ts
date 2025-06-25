@@ -50,15 +50,12 @@ export default {
         },
         courseType: {
           label: "Course type",
-          tooltip: "Course type",
+          tooltip: "",
         },
       } satisfies Record<AdminRequestsRequestsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New request",
-          single: "{label}",
-          multiple: "{count} requests selected",
-        },
+        title:
+          "Creating a request | Editing a request | Editing {count} requests",
         error: {
           updateTeacherWithoutYear:
             "You cannot modify the teacher without selecting a year",
@@ -86,11 +83,8 @@ export default {
             "0 requests exported | 1 request exported | {count} requests exported",
         },
         confirm: {
-          delete: {
-            single: 'Are you sure you want to delete the request "{label}"?',
-            multiple:
-              "Are you sure you want to delete the {count} selected requests?",
-          },
+          delete:
+            "Are you sure you want to delete the selected request? | Are you sure you want to delete the {count} selected requests?",
         },
       },
     },
@@ -139,15 +133,12 @@ export default {
         },
         courseType: {
           label: "Course type",
-          tooltip: "Course type",
+          tooltip: "",
         },
       } satisfies Record<AdminRequestsPrioritiesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New priority",
-          single: "{label}",
-          multiple: "{count} priorities selected",
-        },
+        title:
+          "Creating a priority | Editing a priority | Editing {count} priorities",
         error: {
           updateTeacherWithoutYear:
             "You cannot modify the teacher without selecting a year",
@@ -173,11 +164,8 @@ export default {
             "0 priorities exported | 1 priority exported | {count} priorities exported",
         },
         confirm: {
-          delete: {
-            single: 'Are you sure you want to delete the priority "{label}"?',
-            multiple:
-              "Are you sure you want to delete the {count} selected priorities?",
-          },
+          delete:
+            "Are you sure you want to delete the selected priority? | Are you sure you want to delete the {count} selected priorities?",
         },
       },
     },
