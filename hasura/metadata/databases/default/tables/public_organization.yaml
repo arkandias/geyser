@@ -143,6 +143,20 @@ select_permissions:
         id:
           _eq: X-Hasura-Org-Id
     comment: Can view their own organization
+  - role: organizer
+    permission:
+      columns:
+        - id
+        - key
+        - label
+        - sublabel
+        - email
+        - locale
+        - active
+      filter:
+        id:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:

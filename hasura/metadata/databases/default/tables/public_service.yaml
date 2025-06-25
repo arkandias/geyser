@@ -54,6 +54,18 @@ array_relationships:
         table:
           name: request
           schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - year
+        - teacher_id
+        - hours
+    comment: ""
 select_permissions:
   - role: commissioner
     permission:
@@ -72,6 +84,18 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all services [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - year
+        - teacher_id
+        - hours
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -99,6 +123,17 @@ select_permissions:
                     _eq: true
     comment: Can view their own services and visible teachers services for visible years [except during shutdown phase]
 update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - year
+        - teacher_id
+        - hours
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -118,3 +153,10 @@ update_permissions:
               _eq: X-Hasura-User-Id
       check: null
     comment: During requests phase, can update their own service hours for the current year
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

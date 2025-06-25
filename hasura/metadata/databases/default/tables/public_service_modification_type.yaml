@@ -15,6 +15,17 @@ array_relationships:
         table:
           name: service_modification
           schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - label
+        - description
+    comment: ""
 select_permissions:
   - role: commissioner
     permission:
@@ -32,6 +43,17 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all service modification types [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - label
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -48,3 +70,21 @@ select_permissions:
                 value:
                   _neq: shutdown
     comment: Can view all service modification types [except during shutdown phase]
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - label
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

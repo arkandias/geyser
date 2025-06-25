@@ -10,6 +10,13 @@ select_permissions:
         - description
       filter: {}
     comment: Can view all request types
+  - role: organizer
+    permission:
+      columns:
+        - value
+        - description
+      filter: {}
+    comment: ""
   - role: teacher
     permission:
       columns:

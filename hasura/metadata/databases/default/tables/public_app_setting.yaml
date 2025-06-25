@@ -5,6 +5,17 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - key
+        - value
+    comment: ""
 select_permissions:
   - role: commissioner
     permission:
@@ -16,6 +27,16 @@ select_permissions:
         oid:
           _eq: X-Hasura-Org-Id
     comment: Can view the app settings of their organization
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - key
+        - value
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -26,3 +47,21 @@ select_permissions:
         oid:
           _eq: X-Hasura-Org-Id
     comment: Can view the app settings of their organization
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - key
+        - value
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

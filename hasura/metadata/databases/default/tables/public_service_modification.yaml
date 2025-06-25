@@ -16,6 +16,17 @@ object_relationships:
         - oid
         - type_id
 insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - service_id
+        - type_id
+        - hours
+    comment: ""
   - role: teacher
     permission:
       check:
@@ -57,6 +68,18 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all service modifications [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - service_id
+        - type_id
+        - hours
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -82,6 +105,17 @@ select_permissions:
                     _eq: X-Hasura-User-Id
     comment: Can view their own service modifications for visible years [except during shutdown phase]
 update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - service_id
+        - type_id
+        - hours
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -105,6 +139,12 @@ update_permissions:
       check: null
     comment: During requests phase, can update their own service modifications type and hours for the current year
 delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       filter:

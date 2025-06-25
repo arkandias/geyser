@@ -8,6 +8,16 @@ object_relationships:
   - name: phase
     using:
       foreign_key_constraint_on: value
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - value
+    comment: ""
 select_permissions:
   - role: commissioner
     permission:
@@ -18,6 +28,15 @@ select_permissions:
         oid:
           _eq: X-Hasura-Org-Id
     comment: Can view the phase of their organization
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - value
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -27,3 +46,20 @@ select_permissions:
         oid:
           _eq: X-Hasura-Org-Id
     comment: Can view the phase of their organization
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - value
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

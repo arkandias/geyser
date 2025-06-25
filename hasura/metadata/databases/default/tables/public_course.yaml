@@ -56,6 +56,28 @@ array_relationships:
         table:
           name: request
           schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - year
+        - program_id
+        - track_id
+        - name
+        - name_short
+        - semester
+        - type_id
+        - hours
+        - hours_adjusted
+        - groups
+        - groups_adjusted
+        - description
+        - priority_rule
+        - visible
 select_permissions:
   - role: commissioner
     permission:
@@ -89,6 +111,33 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all courses [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - year
+        - program_id
+        - track_id
+        - name
+        - name_short
+        - name_display
+        - semester
+        - type_id
+        - cycle_year
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - groups
+        - groups_adjusted
+        - groups_effective
+        - description
+        - priority_rule
+        - visible
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -161,6 +210,28 @@ select_permissions:
                       _eq: X-Hasura-User-Id
     comment: "Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request"
 update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - year
+        - program_id
+        - track_id
+        - name
+        - name_short
+        - semester
+        - type_id
+        - hours
+        - hours_adjusted
+        - groups
+        - groups_adjusted
+        - description
+        - priority_rule
+        - visible
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -190,3 +261,10 @@ update_permissions:
                       _eq: X-Hasura-User-Id
       check: null
     comment: Can update description of courses that they coordinate (directly or via program/track) [except during shutdown phase]
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

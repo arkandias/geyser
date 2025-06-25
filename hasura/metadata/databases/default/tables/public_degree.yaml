@@ -15,6 +15,18 @@ array_relationships:
         table:
           name: program
           schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - name
+        - name_short
+        - visible
+    comment: ""
 select_permissions:
   - role: commissioner
     permission:
@@ -34,6 +46,19 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all degrees [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - name
+        - name_short
+        - name_display
+        - visible
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -54,3 +79,22 @@ select_permissions:
           - visible:
               _eq: true
     comment: Can view visible degrees [except during shutdown phase]
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - name
+        - name_short
+        - visible
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

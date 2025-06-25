@@ -25,6 +25,19 @@ object_relationships:
       foreign_key_constraint_on:
         - oid
         - track_id
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - teacher_id
+        - program_id
+        - track_id
+        - course_id
+        - comment
 select_permissions:
   - role: commissioner
     permission:
@@ -45,6 +58,20 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all coordinations [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - teacher_id
+        - program_id
+        - track_id
+        - course_id
+        - comment
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -84,3 +111,24 @@ select_permissions:
                         visible:
                           _eq: true
     comment: Can view coordinations by visible teachers of visible courses/tracks/programs/degrees [except during shutdown phase]
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - teacher_id
+        - program_id
+        - track_id
+        - course_id
+        - comment
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

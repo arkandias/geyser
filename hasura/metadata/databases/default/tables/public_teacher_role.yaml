@@ -13,3 +13,47 @@ object_relationships:
   - name: roleByRole
     using:
       foreign_key_constraint_on: role
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - teacher_id
+        - role
+        - comment
+    comment: ""
+select_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - teacher_id
+        - role
+        - comment
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - teacher_id
+        - role
+        - comment
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""

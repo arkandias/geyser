@@ -60,6 +60,19 @@ insert_permissions:
         - type
         - hours
     comment: Can create assignments for courses of the current year [during assignments phase only]
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - year
+        - service_id
+        - course_id
+        - type
+        - hours
+    comment: ""
   - role: teacher
     permission:
       check:
@@ -122,7 +135,7 @@ insert_permissions:
         - course_id
         - type
         - hours
-    comment: "During requests phase, can create primary and secondary requests for themselves for courses of the current year that are either visible with visible degree/program/track, or that they coordinate (directly or via program/track)"
+    comment: During requests phase, can create primary and secondary requests for themselves for courses of the current year that are either visible with visible degree/program/track, or that they coordinate (directly or via program/track)
 select_permissions:
   - role: commissioner
     permission:
@@ -146,6 +159,23 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all requests [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - year
+        - service_id
+        - course_id
+        - type
+        - hours
+      computed_fields:
+        - hoursWeighted
+        - isPriority
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -241,6 +271,19 @@ update_permissions:
               _eq: assignment
       check: null
     comment: Can update assignments hours for courses of the current year [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - year
+        - service_id
+        - course_id
+        - type
+        - hours
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: ""
   - role: teacher
     permission:
       columns:
@@ -280,6 +323,12 @@ delete_permissions:
           - type:
               _eq: assignment
     comment: Can delete assignments for courses of the current year [during assignments phase only]
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: ""
   - role: teacher
     permission:
       filter:
