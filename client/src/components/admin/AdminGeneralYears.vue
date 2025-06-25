@@ -61,29 +61,29 @@ graphql(`
     }
   }
 
-  mutation CreateServices($oid: Int!, $year: Int!) {
-    createYearServices(args: { p_oid: $oid, p_year: $year }) {
+  mutation CreateServices($year: Int!) {
+    createYearServices(args: { p_year: $year }) {
       oid
       id
     }
   }
 
-  mutation CopyServices($oid: Int!, $year: Int!) {
-    copyYearServices(args: { p_oid: $oid, p_year: $year }) {
+  mutation CopyServices($year: Int!) {
+    copyYearServices(args: { p_year: $year }) {
       oid
       id
     }
   }
 
-  mutation CopyCourses($oid: Int!, $year: Int!) {
-    copyYearCourses(args: { p_oid: $oid, p_year: $year }) {
+  mutation CopyCourses($year: Int!) {
+    copyYearCourses(args: { p_year: $year }) {
       oid
       id
     }
   }
 
-  mutation ComputePriorities($oid: Int!, $year: Int!) {
-    computeYearPriorities(args: { p_oid: $oid, p_year: $year }) {
+  mutation ComputePriorities($year: Int!) {
+    computeYearPriorities(args: { p_year: $year }) {
       oid
       id
     }
@@ -224,10 +224,7 @@ const createServicesHandle = async () => {
   }
 
   const { data, error } = await createServices.executeMutation(
-    {
-      oid: organization.id,
-      year: selectedYear.value,
-    },
+    { year: selectedYear.value },
     { additionalTypenames: ["Service"] },
   );
 
@@ -252,10 +249,7 @@ const copyServicesHandle = async () => {
   }
 
   const { data, error } = await copyServices.executeMutation(
-    {
-      oid: organization.id,
-      year: selectedYear.value,
-    },
+    { year: selectedYear.value },
     { additionalTypenames: ["Service"] },
   );
 
@@ -280,10 +274,7 @@ const copyCoursesHandle = async () => {
   }
 
   const { data, error } = await copyCourses.executeMutation(
-    {
-      oid: organization.id,
-      year: selectedYear.value,
-    },
+    { year: selectedYear.value },
     { additionalTypenames: ["Coordination", "Course"] },
   );
 
@@ -308,10 +299,7 @@ const computePrioritiesHandle = async () => {
   }
 
   const { data, error } = await computePriorities.executeMutation(
-    {
-      oid: organization.id,
-      year: selectedYear.value,
-    },
+    { year: selectedYear.value },
     { additionalTypenames: ["Priority"] },
   );
 

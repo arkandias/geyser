@@ -196,7 +196,7 @@ export default {
   <li>
     <i class="q-icon text-primary material-symbols-sharp">vertical_split</i>
     Services table: allows you to show/hide the list of services for the current
-    year (feature reserved for commission members and administrators).
+    year (feature reserved for committee members and organizers).
   </li>
   <li>
     <i class="q-icon text-primary material-symbols-sharp">assignment</i>

@@ -148,7 +148,7 @@ const alertMessage = computed(() => {
   }
   if (
     currentPhase.value === PhaseEnum.Shutdown &&
-    profile.activeRole !== RoleEnum.Admin
+    profile.activeRole !== RoleEnum.Organizer
   ) {
     return t("home.alert.shutdown");
   }

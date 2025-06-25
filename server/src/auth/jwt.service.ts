@@ -86,7 +86,7 @@ export class JwtService {
       orgId,
       userId,
       allowedRoles: roles,
-      defaultRole: roles.includes("admin") ? "admin" : "teacher",
+      defaultRole: roles.includes("organizer") ? "organizer" : "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 

@@ -10925,13 +10925,13 @@ enum RoleConstraint {
 }
 
 enum RoleEnum {
+  """Committee member with extra capabilities during assignment phase"""
+  COMMISSIONER
+
   """
   Administrator with full capabilities including configuration and user management
   """
-  ADMIN
-
-  """Committee member with extra capabilities during assignment phase"""
-  COMMISSIONER
+  ORGANIZER
 
   """Standard user with basic capabilities"""
   TEACHER
@@ -16677,7 +16677,6 @@ input computeServicePrioritiesArgs {
 }
 
 input computeYearPrioritiesArgs {
-  p_oid: Int
   p_year: Int
 }
 
@@ -16689,12 +16688,10 @@ input coordinationAggregateBoolExpCount {
 }
 
 input copyYearCoursesArgs {
-  p_oid: Int
   p_year: Int
 }
 
 input copyYearServicesArgs {
-  p_oid: Int
   p_year: Int
 }
 
@@ -16727,13 +16724,11 @@ input courseTypeAggregateBoolExpCount {
 }
 
 input createTeacherServiceArgs {
-  p_oid: Int
   p_teacher_id: Int
   p_year: Int
 }
 
 input createYearServicesArgs {
-  p_oid: Int
   p_year: Int
 }
 

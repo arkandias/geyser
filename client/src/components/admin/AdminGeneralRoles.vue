@@ -161,7 +161,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   if (flatRow.role !== undefined) {
     if (
-      flatRow.role !== RoleEnum.Admin &&
+      flatRow.role !== RoleEnum.Organizer &&
       flatRow.role !== RoleEnum.Commissioner
     ) {
       throw new Error(t("admin.general.roles.form.error.invalidRole"));

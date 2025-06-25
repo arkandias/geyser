@@ -203,7 +203,7 @@ export default {
     <i class="q-icon text-primary material-symbols-sharp">vertical_split</i>
     Table des services : permet d'afficher/masquer la liste des services de
     l'année en cours (fonctionnalité réservée aux membres de la commission et
-    aux administrateurs).
+    aux organisateurs).
   </li>
   <li>
     <i class="q-icon text-primary material-symbols-sharp">assignment</i>

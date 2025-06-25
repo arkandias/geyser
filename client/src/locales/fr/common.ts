@@ -14,7 +14,7 @@ export default {
     secondary: "Secondaire | Secondaires",
   },
   role: {
-    admin: "Administrateur | Administrateurs",
+    organizer: "Organisateur | Organisateurs",
     commissioner: "Commissaire | Commissaires",
     teacher: "Intervenant | Intervenants",
   },

@@ -137,7 +137,7 @@ select_permissions:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:
@@ -231,7 +231,7 @@ update_permissions:
         oid:
           _eq: X-Hasura-Org-Id
       check: null
-    comment: ""
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:
@@ -267,4 +267,4 @@ delete_permissions:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization

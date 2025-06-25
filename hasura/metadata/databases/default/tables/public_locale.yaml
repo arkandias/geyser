@@ -16,7 +16,7 @@ select_permissions:
         - value
         - description
       filter: {}
-    comment: ""
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:

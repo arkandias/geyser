@@ -18,8 +18,8 @@ export default {
       servicesTable: "Services table",
       myService: "My requests",
     },
-    admin: {
-      label: "Administration",
+    settings: {
+      label: "Parameters",
     },
     lang: {
       label: "Language",

@@ -156,7 +156,7 @@ select_permissions:
       filter:
         id:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:

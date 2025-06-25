@@ -24,7 +24,7 @@ insert_permissions:
         - teacher_id
         - role
         - comment
-    comment: ""
+    comment: Full permissions within their organization
 select_permissions:
   - role: organizer
     permission:
@@ -37,7 +37,7 @@ select_permissions:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization
 update_permissions:
   - role: organizer
     permission:
@@ -49,11 +49,11 @@ update_permissions:
         oid:
           _eq: X-Hasura-Org-Id
       check: null
-    comment: ""
+    comment: Full permissions within their organization
 delete_permissions:
   - role: organizer
     permission:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization

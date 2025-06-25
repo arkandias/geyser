@@ -77,7 +77,7 @@ la supprimer.`,
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {email} »",
           invalidRole:
-            "Le type de rôle doit être @:role.admin ou @:role.commissioner",
+            "Le type de rôle doit être @:role.organizer ou @:role.commissioner",
         },
       },
       data: {

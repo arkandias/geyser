@@ -36,7 +36,7 @@ insert_permissions:
         - seniority
         - is_priority
         - computed
-    comment: ""
+    comment: Full permissions within their organization
 select_permissions:
   - role: commissioner
     permission:
@@ -72,7 +72,7 @@ select_permissions:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:
@@ -150,11 +150,11 @@ update_permissions:
         oid:
           _eq: X-Hasura-Org-Id
       check: null
-    comment: ""
+    comment: Full permissions within their organization
 delete_permissions:
   - role: organizer
     permission:
       filter:
         oid:
           _eq: X-Hasura-Org-Id
-    comment: ""
+    comment: Full permissions within their organization

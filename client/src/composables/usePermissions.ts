@@ -10,11 +10,11 @@ export const usePermissions = () => {
   const { currentPhase } = useCurrentPhaseStore();
   const { profile, hasService } = useProfileStore();
 
-  const toAdmin = computed(() => profile.activeRole === RoleEnum.Admin);
+  const toAdmin = computed(() => profile.activeRole === RoleEnum.Organizer);
 
   const toSubmitRequestsForSelf = computed(
     () =>
-      profile.activeRole === RoleEnum.Admin ||
+      profile.activeRole === RoleEnum.Organizer ||
       (profile.activeRole === RoleEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         isCurrentYearActive.value &&
@@ -22,7 +22,7 @@ export const usePermissions = () => {
   );
 
   const toSubmitRequestsForOthers = computed(
-    () => profile.activeRole === RoleEnum.Admin,
+    () => profile.activeRole === RoleEnum.Organizer,
   );
 
   const toSubmitRequests = computed(
@@ -30,7 +30,7 @@ export const usePermissions = () => {
   );
 
   const toDeleteRequests = computed(
-    () => profile.activeRole === RoleEnum.Admin,
+    () => profile.activeRole === RoleEnum.Organizer,
   );
 
   const toViewAssignments = computed(
@@ -42,32 +42,32 @@ export const usePermissions = () => {
 
   const toEditAssignments = computed(
     () =>
-      profile.activeRole === RoleEnum.Admin ||
+      profile.activeRole === RoleEnum.Organizer ||
       (profile.activeRole === RoleEnum.Commissioner &&
         currentPhase.value === PhaseEnum.Assignments &&
         isCurrentYearActive.value),
   );
 
   const toEditPriorities = computed(
-    () => profile.activeRole === RoleEnum.Admin,
+    () => profile.activeRole === RoleEnum.Organizer,
   );
 
   const toEditADescription = computed(
     () => (coordinators: number[]) =>
-      profile.activeRole === RoleEnum.Admin ||
+      profile.activeRole === RoleEnum.Organizer ||
       (isCurrentYearActive.value && coordinators.includes(profile.id)),
   );
 
   const toViewAllServices = computed(
     () =>
-      profile.activeRole === RoleEnum.Admin ||
+      profile.activeRole === RoleEnum.Organizer ||
       (profile.activeRole === RoleEnum.Commissioner &&
         currentPhase.value === PhaseEnum.Assignments),
   );
 
   const toEditAService = computed(
     () => (service: { year: number; teacherId: number }) =>
-      profile.activeRole === RoleEnum.Admin ||
+      profile.activeRole === RoleEnum.Organizer ||
       (profile.activeRole === RoleEnum.Teacher &&
         currentPhase.value === PhaseEnum.Requests &&
         service.year === currentYear.value &&

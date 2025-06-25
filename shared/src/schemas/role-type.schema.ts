@@ -1,7 +1,7 @@
 import { z } from "zod/v4";
 
 export const roleTypeSchema = z.enum(
-  ["admin", "commissioner", "teacher"],
+  ["organizer", "commissioner", "teacher"],
   "Invalid role",
 );
 
