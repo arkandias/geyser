@@ -223,10 +223,13 @@ const createServicesHandle = async () => {
     return;
   }
 
-  const { data, error } = await createServices.executeMutation({
-    oid: organization.id,
-    year: selectedYear.value,
-  });
+  const { data, error } = await createServices.executeMutation(
+    {
+      oid: organization.id,
+      year: selectedYear.value,
+    },
+    { additionalTypenames: ["Service"] },
+  );
 
   if (error || !data?.createYearServices) {
     notify(NotifyType.Error, {
@@ -248,10 +251,13 @@ const copyServicesHandle = async () => {
     return;
   }
 
-  const { data, error } = await copyServices.executeMutation({
-    oid: organization.id,
-    year: selectedYear.value,
-  });
+  const { data, error } = await copyServices.executeMutation(
+    {
+      oid: organization.id,
+      year: selectedYear.value,
+    },
+    { additionalTypenames: ["Service"] },
+  );
 
   if (error || !data?.copyYearServices) {
     notify(NotifyType.Error, {
@@ -273,10 +279,13 @@ const copyCoursesHandle = async () => {
     return;
   }
 
-  const { data, error } = await copyCourses.executeMutation({
-    oid: organization.id,
-    year: selectedYear.value,
-  });
+  const { data, error } = await copyCourses.executeMutation(
+    {
+      oid: organization.id,
+      year: selectedYear.value,
+    },
+    { additionalTypenames: ["Coordination", "Course"] },
+  );
 
   if (error || !data?.copyYearCourses) {
     notify(NotifyType.Error, {
@@ -298,10 +307,13 @@ const computePrioritiesHandle = async () => {
     return;
   }
 
-  const { data, error } = await computePriorities.executeMutation({
-    oid: organization.id,
-    year: selectedYear.value,
-  });
+  const { data, error } = await computePriorities.executeMutation(
+    {
+      oid: organization.id,
+      year: selectedYear.value,
+    },
+    { additionalTypenames: ["Priority"] },
+  );
 
   if (error || !data?.computeYearPriorities) {
     notify(NotifyType.Error, {
