@@ -52,13 +52,13 @@ handle_init() {
 
     info "Initializing Keycloak..."
     if [[ "${GEYSER_MODE}" == "production" ]]; then
-        CLIENT_ROOT_URL="https://api.${GEYSER_DOMAIN}"
-        CLIENT_WEB_ORIGINS="https://*.${GEYSER_DOMAIN}"
+        CLIENT_ROOT_URL="https://${GEYSER_DOMAIN}/api"
+        CLIENT_WEB_ORIGINS="https://${GEYSER_DOMAIN}"
     elif [[ "${GEYSER_MODE}" == "development" ]]; then
         # shellcheck disable=SC2034
-        CLIENT_ROOT_URL="http://api.${GEYSER_DOMAIN}"
+        CLIENT_ROOT_URL="http://${GEYSER_DOMAIN}/api"
         # shellcheck disable=SC2034
-        CLIENT_WEB_ORIGINS="http://*.${GEYSER_DOMAIN}"
+        CLIENT_WEB_ORIGINS="http://${GEYSER_DOMAIN}"
     fi
     # shellcheck disable=SC2034
     CLIENT_SECRET=OIDC_CLIENT_SECRET
