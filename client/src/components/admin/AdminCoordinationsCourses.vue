@@ -5,23 +5,20 @@ import { computed, ref } from "vue";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
-  type AdminRequestFragment,
-  AdminRequestFragmentDoc,
-  AdminRequestsCourseFragmentDoc,
-  AdminRequestsCourseTypeFragmentDoc,
-  AdminRequestsDegreeFragmentDoc,
-  AdminRequestsProgramFragmentDoc,
-  AdminRequestsServiceFragmentDoc,
-  AdminRequestsTeacherFragmentDoc,
-  AdminRequestsTrackFragmentDoc,
-  DeleteRequestsDocument,
-  InsertRequestsDocument,
-  RequestConstraint,
-  type RequestInsertInput,
-  RequestTypeEnum,
-  RequestUpdateColumn,
-  UpdateRequestsDocument,
-  UpsertRequestsDocument,
+  type AdminCoordinationCourseFragment,
+  AdminCoordinationCourseFragmentDoc,
+  AdminCoordinationsCoursesCourseFragmentDoc,
+  AdminCoordinationsCoursesDegreeFragmentDoc,
+  AdminCoordinationsCoursesProgramFragmentDoc,
+  AdminCoordinationsCoursesTeacherFragmentDoc,
+  AdminCoordinationsCoursesTrackFragmentDoc,
+  CoordinationConstraint,
+  type CoordinationInsertInput,
+  CoordinationUpdateColumn,
+  DeleteCoordinationsCoursesDocument,
+  InsertCoordinationsCoursesDocument,
+  UpdateCoordinationsCoursesDocument,
+  UpsertCoordinationsCoursesDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
@@ -31,38 +28,44 @@ import type {
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
-import { isRequestType, toLowerCase, unique } from "@/utils";
+import { unique } from "@/utils";
 
-import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
+import type { AdminCoordinationsCoursesColNames } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
-type Row = AdminRequestFragment;
+type Row = AdminCoordinationCourseFragment;
 type FlatRow = NullableParsedRow<typeof rowDescriptor>;
-type InsertInput = RequestInsertInput;
+type InsertInput = CoordinationInsertInput;
 
 const {
-  requestFragments,
-  serviceFragments,
+  coordinationFragments,
   teacherFragments,
-  courseFragments,
   degreeFragments,
   programFragments,
   trackFragments,
-  courseTypeFragments,
+  courseFragments,
 } = defineProps<{
-  requestFragments: FragmentType<typeof AdminRequestFragmentDoc>[];
-  serviceFragments: FragmentType<typeof AdminRequestsServiceFragmentDoc>[];
-  teacherFragments: FragmentType<typeof AdminRequestsTeacherFragmentDoc>[];
-  courseFragments: FragmentType<typeof AdminRequestsCourseFragmentDoc>[];
-  degreeFragments: FragmentType<typeof AdminRequestsDegreeFragmentDoc>[];
-  programFragments: FragmentType<typeof AdminRequestsProgramFragmentDoc>[];
-  trackFragments: FragmentType<typeof AdminRequestsTrackFragmentDoc>[];
-  courseTypeFragments: FragmentType<
-    typeof AdminRequestsCourseTypeFragmentDoc
+  coordinationFragments: FragmentType<
+    typeof AdminCoordinationCourseFragmentDoc
+  >[];
+  teacherFragments: FragmentType<
+    typeof AdminCoordinationsCoursesTeacherFragmentDoc
+  >[];
+  degreeFragments: FragmentType<
+    typeof AdminCoordinationsCoursesDegreeFragmentDoc
+  >[];
+  programFragments: FragmentType<
+    typeof AdminCoordinationsCoursesProgramFragmentDoc
+  >[];
+  trackFragments: FragmentType<
+    typeof AdminCoordinationsCoursesTrackFragmentDoc
+  >[];
+  courseFragments: FragmentType<
+    typeof AdminCoordinationsCoursesCourseFragmentDoc
   >[];
 }>();
 
-const { t, n } = useTypedI18n();
+const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
@@ -73,65 +76,53 @@ const rowDescriptor = {
   },
   teacherEmail: {
     type: "string",
-    field: (row) => row.service.teacher.email,
+    field: (row) => row.teacher.email,
     format: (val: string) =>
       teachers.value.find((t) => t.email === val)?.displayname,
     formComponent: "select",
   },
   degreeName: {
     type: "string",
-    field: (row) => row.course.program.degree.name,
+    field: (row) => row.course?.program.degree.name,
     formComponent: "select",
   },
   programName: {
     type: "string",
-    field: (row) => row.course.program.name,
+    field: (row) => row.course?.program.name,
     formComponent: "select",
   },
   trackName: {
     type: "string",
-    nullable: true,
-    field: (row) => row.course.track?.name,
+    field: (row) => row.course?.track?.name,
     formComponent: "select",
   },
   courseName: {
     type: "string",
-    field: (row) => row.course.name,
+    field: (row) => row.course?.name,
     formComponent: "select",
   },
   courseSemester: {
     type: "number",
-    field: (row) => row.course.semester,
+    field: (row) => row.course?.semester,
     format: (val: number) => t("semester", { semester: val }),
     formComponent: "select",
   },
   courseType: {
     type: "string",
-    field: (row) => row.course.type.label,
+    field: (row) => row.course?.type.label,
     formComponent: "select",
   },
-  type: {
+  comment: {
     type: "string",
-    info: `${RequestTypeEnum.Assignment} | ${RequestTypeEnum.Primary} | ${RequestTypeEnum.Secondary}`,
-    format: (val: RequestTypeEnum) => t(`requestType.${toLowerCase(val)}`),
-    formComponent: "select",
-  },
-  hours: {
-    type: "number",
-    format: (val: number) => n(val, "decimal"),
     formComponent: "input",
-    inputType: "number",
   },
-} as const satisfies RowDescriptorExtra<AdminRequestsRequestsColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoordinationsCoursesColNames, Row>;
 
 graphql(`
-  fragment AdminRequest on Request {
+  fragment AdminCoordinationCourse on Coordination {
     id
-    year
-    service {
-      teacher {
-        email
-      }
+    teacher {
+      email
     }
     course {
       name
@@ -149,37 +140,28 @@ graphql(`
         label
       }
     }
-    type
-    hours
+    comment
   }
 
-  fragment AdminRequestsService on Service {
+  fragment AdminCoordinationsCoursesTeacher on Teacher {
     id
-    year
-    teacher {
-      email
-      displayname
-    }
-  }
-
-  fragment AdminRequestsTeacher on Teacher {
     email
     displayname
   }
 
-  fragment AdminRequestsDegree on Degree {
+  fragment AdminCoordinationsCoursesDegree on Degree {
     name
   }
 
-  fragment AdminRequestsProgram on Program {
+  fragment AdminCoordinationsCoursesProgram on Program {
     name
   }
 
-  fragment AdminRequestsTrack on Track {
+  fragment AdminCoordinationsCoursesTrack on Track {
     name
   }
 
-  fragment AdminRequestsCourse on Course {
+  fragment AdminCoordinationsCoursesCourse on Course {
     id
     year
     name
@@ -204,12 +186,8 @@ graphql(`
     }
   }
 
-  fragment AdminRequestsCourseType on CourseType {
-    label
-  }
-
-  mutation InsertRequests($objects: [RequestInsertInput!]!) {
-    insertData: insertRequest(objects: $objects) {
+  mutation InsertCoordinationsCourses($objects: [CoordinationInsertInput!]!) {
+    insertData: insertCoordination(objects: $objects) {
       returning {
         oid
         id
@@ -217,11 +195,11 @@ graphql(`
     }
   }
 
-  mutation UpsertRequests(
-    $objects: [RequestInsertInput!]!
-    $onConflict: RequestOnConflict
+  mutation UpsertCoordinationsCourses(
+    $objects: [CoordinationInsertInput!]!
+    $onConflict: CoordinationOnConflict
   ) {
-    upsertData: insertRequest(objects: $objects, onConflict: $onConflict) {
+    upsertData: insertCoordination(objects: $objects, onConflict: $onConflict) {
       returning {
         oid
         id
@@ -229,8 +207,14 @@ graphql(`
     }
   }
 
-  mutation UpdateRequests($ids: [Int!]!, $changes: RequestSetInput!) {
-    updateData: updateRequest(where: { id: { _in: $ids } }, _set: $changes) {
+  mutation UpdateCoordinationsCourses(
+    $ids: [Int!]!
+    $changes: CoordinationSetInput!
+  ) {
+    updateData: updateCoordination(
+      where: { id: { _in: $ids } }
+      _set: $changes
+    ) {
       returning {
         oid
         id
@@ -238,8 +222,8 @@ graphql(`
     }
   }
 
-  mutation DeleteRequests($ids: [Int!]!) {
-    deleteData: deleteRequest(where: { id: { _in: $ids } }) {
+  mutation DeleteCoordinationsCourses($ids: [Int!]!) {
+    deleteData: deleteCoordination(where: { id: { _in: $ids } }) {
       returning {
         oid
         id
@@ -248,44 +232,56 @@ graphql(`
   }
 `);
 
-const requests = computed(() =>
-  requestFragments.map((f) => useFragment(AdminRequestFragmentDoc, f)),
-);
-const services = computed(() =>
-  serviceFragments.map((f) => useFragment(AdminRequestsServiceFragmentDoc, f)),
+const coordinations = computed(() =>
+  coordinationFragments
+    .map((f) => useFragment(AdminCoordinationCourseFragmentDoc, f))
+    .filter((c) => c.course),
 );
 const teachers = computed(() =>
-  teacherFragments.map((f) => useFragment(AdminRequestsTeacherFragmentDoc, f)),
-);
-const courses = computed(() =>
-  courseFragments.map((f) => useFragment(AdminRequestsCourseFragmentDoc, f)),
-);
-const degrees = computed(() =>
-  degreeFragments.map((f) => useFragment(AdminRequestsDegreeFragmentDoc, f)),
-);
-const programs = computed(() =>
-  programFragments.map((f) => useFragment(AdminRequestsProgramFragmentDoc, f)),
-);
-const tracks = computed(() =>
-  trackFragments.map((f) => useFragment(AdminRequestsTrackFragmentDoc, f)),
-);
-const courseTypes = computed(() =>
-  courseTypeFragments.map((f) =>
-    useFragment(AdminRequestsCourseTypeFragmentDoc, f),
+  teacherFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesTeacherFragmentDoc, f),
   ),
 );
-const insertRequests = useMutation(InsertRequestsDocument);
-const upsertRequests = useMutation(UpsertRequestsDocument);
-const updateRequests = useMutation(UpdateRequestsDocument);
-const deleteRequests = useMutation(DeleteRequestsDocument);
+const degrees = computed(() =>
+  degreeFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesDegreeFragmentDoc, f),
+  ),
+);
+const programs = computed(() =>
+  programFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesProgramFragmentDoc, f),
+  ),
+);
+const tracks = computed(() =>
+  trackFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesTrackFragmentDoc, f),
+  ),
+);
+const courses = computed(() =>
+  courseFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesCourseFragmentDoc, f),
+  ),
+);
+const insertCoordinationsCourses = useMutation(
+  InsertCoordinationsCoursesDocument,
+);
+const upsertCoordinationsCourses = useMutation(
+  UpsertCoordinationsCoursesDocument,
+);
+const updateCoordinationsCourses = useMutation(
+  UpdateCoordinationsCoursesDocument,
+);
+const deleteCoordinationsCourses = useMutation(
+  DeleteCoordinationsCoursesDocument,
+);
 
-const importConstraint = RequestConstraint.RequestOidServiceIdCourseIdTypeKey;
+const importConstraint =
+  CoordinationConstraint.CoordinationOidTeacherIdCourseIdTrackIdProgramIdKey;
 const importUpdateColumns = [
-  RequestUpdateColumn.Oid,
-  RequestUpdateColumn.ServiceId,
-  RequestUpdateColumn.CourseId,
-  RequestUpdateColumn.Type,
-  RequestUpdateColumn.Hours,
+  CoordinationUpdateColumn.Oid,
+  CoordinationUpdateColumn.TeacherId,
+  CoordinationUpdateColumn.ProgramId,
+  CoordinationUpdateColumn.Comment,
 ];
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
@@ -293,27 +289,19 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     oid: organization.id,
   };
 
-  if (flatRow.year !== undefined) {
-    object.year = flatRow.year;
-  }
-
-  // serviceId
+  // teacherId
   if (flatRow.teacherEmail !== undefined) {
-    if (flatRow.year === undefined) {
-      throw new Error(
-        t("admin.requests.requests.form.error.updateTeacherWithoutYear"),
-      );
-    }
-    const service = services.value.find(
-      (s) =>
-        s.year === flatRow.year && s.teacher.email === flatRow.teacherEmail,
+    const teacher = teachers.value.find(
+      (t) => t.email === flatRow.teacherEmail,
     );
-    if (service === undefined) {
+    if (teacher === undefined) {
       throw new Error(
-        t("admin.requests.requests.form.error.serviceNotFound", flatRow),
+        t("admin.coordinations.courses.form.error.teacherNotFound", {
+          email: flatRow.teacherEmail,
+        }),
       );
     }
-    object.serviceId = service.id;
+    object.teacherId = teacher.id;
   }
 
   // courseId
@@ -335,7 +323,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       flatRow.courseType === undefined
     ) {
       throw new Error(
-        t("admin.requests.requests.form.error.updateCourseMissingFields"),
+        t("admin.coordinations.courses.form.error.updateCourseMissingFields"),
       );
     }
 
@@ -352,25 +340,15 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
     if (course === undefined) {
       throw new Error(
-        t("admin.requests.requests.form.error.courseNotFound", flatRow),
+        t("admin.coordinations.courses.form.error.courseNotFound", flatRow),
       );
     }
 
     object.courseId = course.id;
   }
 
-  if (flatRow.type !== undefined) {
-    if (!isRequestType(flatRow.type)) {
-      throw new Error(t("admin.requests.requests.form.error.invalidType"));
-    }
-    object.type = flatRow.type;
-  }
-
-  if (flatRow.hours !== undefined) {
-    if (flatRow.hours === null || flatRow.hours < 0) {
-      throw new Error(t("admin.requests.requests.form.error.hoursNegative"));
-    }
-    object.hours = flatRow.hours;
+  if (flatRow.comment !== undefined) {
+    object.comment = flatRow.comment;
   }
 
   return object;
@@ -380,12 +358,10 @@ const formValues = ref<Record<string, Scalar>>({});
 const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
   () => ({
     year: years.value.map((y) => y.value),
-    teacherEmail: services.value
-      .filter((s) => s.year === formValues.value["year"])
-      .map((s) => ({
-        value: s.teacher.email,
-        label: s.teacher.displayname ?? "",
-      })),
+    teacherEmail: teachers.value.map((t) => ({
+      value: t.email,
+      label: t.displayname ?? "",
+    })),
     degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
     programName: courses.value
       .filter((c) => c.program.degree.name === formValues.value["degreeName"])
@@ -431,9 +407,6 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
           c.semester === formValues.value["courseSemester"],
       )
       .map((c) => c.type.label),
-    type: Object.values(RequestTypeEnum).map((type) =>
-      t(`requestType.${toLowerCase(type)}`),
-    ),
   }),
 );
 
@@ -441,13 +414,10 @@ const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed<
   SelectOptions<string, Row, typeof rowDescriptor>
 >(() => ({
-  teacherEmail: teachers.value.map((t) => t.email),
   degreeName: degrees.value.map((d) => d.name),
   programName: programs.value.map((p) => p.name),
   trackName: tracks.value.map((t) => t.name),
   courseName: courses.value.map((c) => c.name),
-  courseSemester: [1, 2, 3, 4, 5, 6],
-  courseType: courseTypes.value.map((ct) => ct.label),
 }));
 </script>
 
@@ -455,17 +425,17 @@ const filterOptions = computed<
   <AdminData
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
-    section="requests"
-    name="requests"
+    section="coordinations"
+    name="courses"
     :row-descriptor
-    :rows="requests"
+    :rows="coordinations"
     :validate-flat-row
     :form-options
     :filter-options
-    :insert-data="insertRequests"
-    :upsert-data="upsertRequests"
-    :update-data="updateRequests"
-    :delete-data="deleteRequests"
+    :insert-data="insertCoordinationsCourses"
+    :upsert-data="upsertCoordinationsCourses"
+    :update-data="updateCoordinationsCourses"
+    :delete-data="deleteCoordinationsCourses"
     :import-constraint
     :import-update-columns
   />

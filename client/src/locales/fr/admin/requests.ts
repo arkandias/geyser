@@ -54,11 +54,8 @@ export default {
         },
       } satisfies Record<AdminRequestsRequestsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvelle demande",
-          single: "{label}",
-          multiple: "{count} demandes sélectionnées",
-        },
+        title:
+          "Création d'une demande | Édition d'une demande | Édition de {count} demandes",
         error: {
           updateTeacherWithoutYear:
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
@@ -86,12 +83,8 @@ export default {
             "0 demande exportée | 1 demande exportée | {count} demandes exportées",
         },
         confirm: {
-          delete: {
-            single:
-              "Êtes-vous sûr de vouloir supprimer la demande « {label} » ?",
-            multiple:
-              "Êtes-vous sûr de vouloir supprimer les {count} demandes sélectionnées ?",
-          },
+          delete:
+            "Êtes-vous sûr de vouloir supprimer la demande sélectionnée ? | Êtes-vous sûr de vouloir supprimer les {count} demandes sélectionnées ?",
         },
       },
     },
@@ -144,11 +137,8 @@ export default {
         },
       } satisfies Record<AdminRequestsPrioritiesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvelle priorité",
-          single: "{label}",
-          multiple: "{count} priorités sélectionnées",
-        },
+        title:
+          "Création d'une priorité | Édition d'une priorité | Édition de {count} priorités",
         error: {
           updateTeacherWithoutYear:
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
@@ -174,12 +164,8 @@ export default {
             "0 priorité exportée | 1 priorité exportée | {count} priorités exportées",
         },
         confirm: {
-          delete: {
-            single:
-              "Êtes-vous sûr de vouloir supprimer la priorité « {label} » ?",
-            multiple:
-              "Êtes-vous sûr de vouloir supprimer les {count} priorités sélectionnées ?",
-          },
+          delete:
+            "Êtes-vous sûr de vouloir supprimer la priorité sélectionnée ? | Êtes-vous sûr de vouloir supprimer les {count} priorités sélectionnées ?",
         },
       },
     },

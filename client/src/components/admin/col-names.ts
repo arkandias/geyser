@@ -1,3 +1,36 @@
+export const adminCoordinationsProgramsColNames = [
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "comment",
+] as const;
+export type AdminCoordinationsProgramsColNames =
+  (typeof adminCoordinationsProgramsColNames)[number];
+
+export const adminCoordinationsTracksColNames = [
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "comment",
+] as const;
+export type AdminCoordinationsTracksColNames =
+  (typeof adminCoordinationsTracksColNames)[number];
+
+export const adminCoordinationsCoursesColNames = [
+  "year",
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "courseName",
+  "courseSemester",
+  "courseType",
+  "comment",
+] as const;
+export type AdminCoordinationsCoursesColNames =
+  (typeof adminCoordinationsCoursesColNames)[number];
+
 export const adminCoursesCoursesColNames = [
   "year",
   "degreeName",

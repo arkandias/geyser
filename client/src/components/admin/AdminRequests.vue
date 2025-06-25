@@ -67,21 +67,6 @@ graphql(`
       ...AdminRequestsTeacher
       ...AdminPrioritiesTeacher
     }
-    courses: course(
-      where: { oid: { _eq: $oid } }
-      orderBy: [
-        { year: DESC }
-        { program: { degree: { name: ASC } } }
-        { program: { name: ASC } }
-        { track: { name: ASC } }
-        { name: ASC }
-        { semester: ASC }
-        { type: { label: ASC } }
-      ]
-    ) {
-      ...AdminRequestsCourse
-      ...AdminPrioritiesCourse
-    }
     degrees: degree(where: { oid: { _eq: $oid } }, orderBy: [{ name: ASC }]) {
       ...AdminRequestsDegree
       ...AdminPrioritiesDegree
@@ -103,6 +88,21 @@ graphql(`
     ) {
       ...AdminRequestsTrack
       ...AdminPrioritiesTrack
+    }
+    courses: course(
+      where: { oid: { _eq: $oid } }
+      orderBy: [
+        { year: DESC }
+        { program: { degree: { name: ASC } } }
+        { program: { name: ASC } }
+        { track: { name: ASC } }
+        { name: ASC }
+        { semester: ASC }
+        { type: { label: ASC } }
+      ]
+    ) {
+      ...AdminRequestsCourse
+      ...AdminPrioritiesCourse
     }
     courseTypes: courseType(
       where: { oid: { _eq: $oid } }

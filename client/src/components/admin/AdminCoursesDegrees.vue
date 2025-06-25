@@ -115,8 +115,6 @@ const importUpdateColumns = [
   DegreeUpdateColumn.Visible,
 ];
 
-const formatRow = (row: Row) => row.name;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -149,7 +147,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="degrees"
     :row-descriptor
     :rows="degrees"
-    :format-row
     :validate-flat-row
     :insert-data="insertDegrees"
     :upsert-data="upsertDegrees"

@@ -68,7 +68,6 @@ graphql(`
     year
     teacher {
       email
-      displayname
     }
     hours
   }
@@ -142,9 +141,6 @@ const importUpdateColumns = [
   ServiceUpdateColumn.Hours,
 ];
 
-const formatRow = (row: Row): string =>
-  `${row.year} — ${row.teacher.displayname}`;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -210,7 +206,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="services"
     :row-descriptor
     :rows="services"
-    :format-row
     :validate-flat-row
     :form-options
     :insert-data="insertServices"

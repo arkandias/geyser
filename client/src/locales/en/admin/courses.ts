@@ -103,9 +103,9 @@ If these degrees contain programs, you will not be able to delete them.`,
         confirm: {
           delete: {
             single: `Are you sure you want to delete the program "{label}"?
-If there are tracks, courses, or coordinators for this program, you will not be able to delete it.`,
+If there are tracks, courses, or coordinations for this program, you will not be able to delete it.`,
             multiple: `Are you sure you want to delete the {count} selected programs?
-If there are tracks, courses, or coordinators for these programs, you will not be able to delete them.`,
+If there are tracks, courses, or coordinations for these programs, you will not be able to delete them.`,
           },
         },
       },
@@ -163,9 +163,9 @@ If there are tracks, courses, or coordinators for these programs, you will not b
         confirm: {
           delete: {
             single: `Are you sure you want to delete the track "{label}"?
-If there are courses or coordinators for this track, you will not be able to delete it.`,
+If there are courses or coordinations for this track, you will not be able to delete it.`,
             multiple: `Are you sure you want to delete the {count} selected tracks?
-If there are courses or coordinators for these tracks, you will not be able to delete them.`,
+If there are courses or coordinations for these tracks, you will not be able to delete them.`,
           },
         },
       },
@@ -280,9 +280,9 @@ If there are courses or coordinators for these tracks, you will not be able to d
         confirm: {
           delete: {
             single: `Are you sure you want to delete the course "{label}"?
-If there are requests, priorities, or coordinators for this course, you will not be able to delete it.`,
+If there are requests, priorities, or coordinations for this course, you will not be able to delete it.`,
             multiple: `Are you sure you want to delete the {count} selected tracks?
-If there are requests, priorities, or coordinators for these courses, you will not be able to delete them.`,
+If there are requests, priorities, or coordinations for these courses, you will not be able to delete them.`,
           },
         },
       },

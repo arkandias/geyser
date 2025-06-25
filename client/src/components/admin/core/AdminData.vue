@@ -60,7 +60,6 @@ const {
   name,
   rowDescriptor,
   rows,
-  formatRow,
   validateFlatRow,
   formOptions = {},
   filterOptions = {},
@@ -75,7 +74,6 @@ const {
   name: string;
   rowDescriptor: T;
   rows: Row[];
-  formatRow: (row: Row) => string;
   validateFlatRow: (flatRow: FlatRow) => InsertInput;
   formOptions?: SelectOptions<string, Row, T>;
   filterOptions?: SelectOptions<string, Row, T>;
@@ -138,21 +136,9 @@ const multipleSelection = computed<boolean>(
 
 // ===== Data Form =====
 const isFormOpen = ref(false);
-const formTitle = computed(() => {
-  switch (selectedRows.value.length) {
-    case 0:
-      return t(`${keyPrefix}.form.title.none`);
-    case 1:
-      return t(`${keyPrefix}.form.title.single`, {
-        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        label: formatRow(selectedRows.value[0]!),
-      });
-    default:
-      return t(`${keyPrefix}.form.title.multiple`, {
-        count: selectedRows.value.length,
-      });
-  }
-});
+const formTitle = computed(() =>
+  t(`${keyPrefix}.form.title`, { count: selectedRows.value.length }),
+);
 const selectedFields = ref<string[]>([]);
 
 // Deselect a single row when the form is closed
@@ -302,17 +288,7 @@ const updateDataHandle = async () => {
 const deleteDataHandle = async () => {
   if (
     !selection.value ||
-    !confirm(
-      selectedRows.value.length === 1
-        ? t(`${keyPrefix}.data.confirm.delete.single`, {
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            label: formatRow(selectedRows.value[0]!),
-          })
-        : t(
-            `${keyPrefix}.data.confirm.delete.multiple`,
-            selectedRows.value.length,
-          ),
-    )
+    !confirm(t(`${keyPrefix}.data.confirm.delete`, selectedRows.value.length))
   ) {
     return;
   }
@@ -337,7 +313,7 @@ const deleteDataHandle = async () => {
   selectedRows.value = [];
 };
 
-// ===== Search & Filtering =====
+// ===== Search & Filters =====
 const search = ref<string | null>(null);
 const searchableColumns = computed(() =>
   columns.value.filter((col) => toValue(col.searchable)).map((col) => col.name),
@@ -394,11 +370,12 @@ const filterMethod = (
   rows: readonly Row[],
   terms: typeof filterObj.value,
   cols: readonly Column<Row>[],
+  getCellValue: (col: Column<Row>, row: Row) => Scalar,
 ): readonly Row[] =>
   rows.filter(
     (row) =>
       terms.searchColumns.some((col) =>
-        normalizeForSearch(String(getField(row, col.field))).includes(
+        normalizeForSearch(String(getCellValue(col, row))).includes(
           terms.search,
         ),
       ) &&

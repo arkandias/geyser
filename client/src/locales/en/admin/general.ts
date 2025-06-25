@@ -1,4 +1,3 @@
-import { RoleEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
@@ -72,14 +71,10 @@ If courses or services are associated with this year, you will not be able to de
         },
       } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New role",
-          single: "{label}",
-          multiple: "{count} roles selected",
-        },
+        title: "Creating a role | Editing a role | Editing {count} roles",
         error: {
-          teacherNotFound: `No teacher with email '{email}'`,
-          invalidRole: `Role type must be ${RoleEnum.Admin} or ${RoleEnum.Commissioner}`,
+          teacherNotFound: "No teacher with email '{email}'",
+          invalidRole: `Role type must be @:role.admin or @:role.commissioner`,
         },
       },
       data: {
@@ -91,10 +86,7 @@ If courses or services are associated with this year, you will not be able to de
           export: "0 roles exported | 1 role exported | {count} roles exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the role "{label}"?`,
-            multiple: `Are you sure you want to delete the {count} selected roles?`,
-          },
+          delete: `Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?`,
         },
       },
     },

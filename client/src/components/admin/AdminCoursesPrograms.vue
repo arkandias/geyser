@@ -43,8 +43,6 @@ const rowDescriptor = {
   degreeName: {
     type: "string",
     field: (row) => row.degree.name,
-    format: (val: string) =>
-      degrees.value.find((d) => d.name === val)?.nameDisplay,
     formComponent: "select",
   },
   name: {
@@ -68,18 +66,15 @@ graphql(`
     id
     degree {
       name
-      nameDisplay
     }
     name
     nameShort
-    nameDisplay
     visible
   }
 
   fragment AdminProgramsDegree on Degree {
     id
     name
-    nameDisplay
   }
 
   mutation InsertPrograms($objects: [ProgramInsertInput!]!) {
@@ -142,8 +137,6 @@ const importUpdateColumns = [
   ProgramUpdateColumn.Visible,
 ];
 
-const formatRow = (row: Row) => `${row.degree.nameDisplay} ${row.nameDisplay}`;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -193,7 +186,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="programs"
     :row-descriptor
     :rows="programs"
-    :format-row
     :validate-flat-row
     :form-options
     :insert-data="insertPrograms"

@@ -53,11 +53,8 @@ export default {
         },
       } satisfies Record<AdminTeachersTeachersColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "New teacher",
-          single: "{label}",
-          multiple: "{count} teachers selected",
-        },
+        title:
+          "Creating a teacher | Editing a teacher | Editing {count} teachers",
         error: {
           positionNotFound: 'No position exists with the label "{position}"',
           baseServiceHoursNegative:
@@ -78,12 +75,11 @@ export default {
             "0 teachers exported | 1 teacher exported | {count} teachers exported",
         },
         confirm: {
-          delete: {
-            single: `Are you sure you want to delete the teacher "{label}"?
-If there are services, responsibilities, or roles for this teacher, you will not be able to delete them.`,
-            multiple: `Are you sure you want to delete the {count} selected teachers?
+          delete:
+            `Are you sure you want to delete the selected teacher?
+If there are services, responsibilities, or roles for this teacher, you will not be able to delete them. ` +
+            `| Are you sure you want to delete the {count} selected teachers?
 If there are services, responsibilities, or roles for these teachers, you will not be able to delete them.`,
-          },
         },
       },
     },
@@ -160,7 +156,7 @@ If these positions are assigned to teachers, you will not be able to delete them
           multiple: "{count} services selected",
         },
         error: {
-          teacherNotFound: `No teacher with email '{email}'`,
+          teacherNotFound: "No teacher with email '{email}'",
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },

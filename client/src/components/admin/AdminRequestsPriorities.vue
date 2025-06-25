@@ -80,30 +80,22 @@ const rowDescriptor = {
   degreeName: {
     type: "string",
     field: (row) => row.course.program.degree.name,
-    format: (val: string) =>
-      degrees.value.find((d) => d.name === val)?.nameDisplay,
     formComponent: "select",
   },
   programName: {
     type: "string",
     field: (row) => row.course.program.name,
-    format: (val: string) =>
-      programs.value.find((p) => p.name === val)?.nameDisplay,
     formComponent: "select",
   },
   trackName: {
     type: "string",
     nullable: true,
     field: (row) => row.course.track?.name,
-    format: (val: string | null) =>
-      tracks.value.find((t) => t.name === val)?.nameDisplay,
     formComponent: "select",
   },
   courseName: {
     type: "string",
     field: (row) => row.course.name,
-    format: (val: string) =>
-      courses.value.find((c) => c.name === val)?.nameDisplay,
     formComponent: "select",
   },
   courseSemester: {
@@ -143,23 +135,18 @@ graphql(`
     service {
       teacher {
         email
-        displayname
       }
     }
     course {
       name
-      nameDisplay
       program {
         name
-        nameDisplay
         degree {
           name
-          nameDisplay
         }
       }
       track {
         name
-        nameDisplay
       }
       semester
       type {
@@ -185,9 +172,22 @@ graphql(`
     displayname
   }
 
+  fragment AdminPrioritiesDegree on Degree {
+    name
+  }
+
+  fragment AdminPrioritiesProgram on Program {
+    name
+  }
+
+  fragment AdminPrioritiesTrack on Track {
+    name
+  }
+
   fragment AdminPrioritiesCourse on Course {
     id
     year
+    name
     program {
       name
       degree {
@@ -203,34 +203,13 @@ graphql(`
         }
       }
     }
-    name
-    nameDisplay
     semester
     type {
       label
     }
   }
 
-  fragment AdminPrioritiesDegree on Degree {
-    id
-    name
-    nameDisplay
-  }
-
-  fragment AdminPrioritiesProgram on Program {
-    id
-    name
-    nameDisplay
-  }
-
-  fragment AdminPrioritiesTrack on Track {
-    id
-    name
-    nameDisplay
-  }
-
   fragment AdminPrioritiesCourseType on CourseType {
-    id
     label
   }
 
@@ -320,12 +299,6 @@ const importUpdateColumns = [
   PriorityUpdateColumn.IsPriority,
   PriorityUpdateColumn.Computed,
 ];
-
-const formatRow = (row: Row) =>
-  `${row.year} — ${row.service.teacher.displayname} — ` +
-  `${row.course.program.degree.name} — ${row.course.program.name} ` +
-  (row.course.track ? `— ${row.course.track.name}` : "") +
-  `— ${row.course.name} — ${row.course.semester} — ${row.course.type.label}`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
@@ -493,7 +466,6 @@ const filterOptions = computed<
     name="priorities"
     :row-descriptor
     :rows="priorities"
-    :format-row
     :validate-flat-row
     :form-options
     :filter-options

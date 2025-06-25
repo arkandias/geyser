@@ -61,23 +61,17 @@ const rowDescriptor = {
   degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
-    format: (val: string) =>
-      degrees.value.find((d) => d.name === val)?.nameDisplay,
     formComponent: "select",
   },
   programName: {
     type: "string",
     field: (row) => row.program.name,
-    format: (val: string) =>
-      programs.value.find((p) => p.name === val)?.nameDisplay,
     formComponent: "select",
   },
   trackName: {
     type: "string",
     nullable: true,
     field: (row) => row.track?.name,
-    format: (val: string | null) =>
-      tracks.value.find((t) => t.name === val)?.nameDisplay,
     formComponent: "select",
   },
   name: {
@@ -151,19 +145,15 @@ graphql(`
     year
     program {
       name
-      nameDisplay
       degree {
         name
-        nameDisplay
       }
     }
     track {
       name
-      nameDisplay
     }
     name
     nameShort
-    nameDisplay
     semester
     type {
       label
@@ -178,9 +168,7 @@ graphql(`
   }
 
   fragment AdminCoursesDegree on Degree {
-    id
     name
-    nameDisplay
     programs {
       id
       name
@@ -192,15 +180,11 @@ graphql(`
   }
 
   fragment AdminCoursesProgram on Program {
-    id
     name
-    nameDisplay
   }
 
   fragment AdminCoursesTrack on Track {
-    id
     name
-    nameDisplay
   }
 
   fragment AdminCoursesCourseType on CourseType {
@@ -289,11 +273,6 @@ const importUpdateColumns = [
   CourseUpdateColumn.PriorityRule,
   CourseUpdateColumn.Visible,
 ];
-
-const formatRow = (row: Row) =>
-  `${row.nameDisplay} (${row.program.degree.nameDisplay}` +
-  ` — ${row.program.nameDisplay}` +
-  (row.track ? ` — ${row.track.nameDisplay})` : `)`);
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
@@ -463,7 +442,7 @@ const filterOptions = computed<
   SelectOptions<string, Row, typeof rowDescriptor>
 >(() => ({
   programName: programs.value.map((p) => p.name),
-  track: tracks.value.map((t) => t.name),
+  trackName: tracks.value.map((t) => t.name),
 }));
 </script>
 
@@ -475,7 +454,6 @@ const filterOptions = computed<
     name="courses"
     :row-descriptor
     :rows="courses"
-    :format-row
     :validate-flat-row
     :form-options
     :filter-options

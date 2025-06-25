@@ -176,8 +176,6 @@ const importUpdateColumns = [
   TeacherUpdateColumn.Access,
 ];
 
-const formatRow = (row: Row) => row.email;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -253,7 +251,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="teachers"
     :row-descriptor
     :rows="teachers"
-    :format-row
     :validate-flat-row
     :form-options
     :insert-data="insertTeachers"

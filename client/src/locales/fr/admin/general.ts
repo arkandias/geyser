@@ -1,4 +1,3 @@
-import { RoleEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
@@ -72,14 +71,12 @@ la supprimer.`,
         },
       } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau rôle",
-          single: "{label}",
-          multiple: "{count} rôles sélectionnés",
-        },
+        title:
+          "Création d'un rôle | Édition d'un rôle | Édition de {count} rôles",
         error: {
-          teacherNotFound: `Il n'existe pas d'intervenant avec l'email « {email} »`,
-          invalidRole: `Le type de rôle doit être ${RoleEnum.Admin} ou ${RoleEnum.Commissioner}`,
+          teacherNotFound:
+            "Il n'existe pas d'intervenant avec l'email « {email} »",
+          invalidRole: `Le type de rôle doit être @:role.admin ou @:role.commissioner`,
         },
       },
       data: {
@@ -93,11 +90,8 @@ la supprimer.`,
           export: "0 rôle exporté | 1 rôle exporté | {count} rôles exportés",
         },
         confirm: {
-          delete: {
-            single: "Êtes-vous sûr de vouloir supprimer le rôle « {label} » ?",
-            multiple:
-              "Êtes-vous sûr de vouloir supprimer les {count} rôles sélectionnés ?",
-          },
+          delete:
+            "Êtes-vous sûr de vouloir supprimer le rôle sélectionné ? | Êtes-vous sûr de vouloir supprimer les {count} rôles sélectionnés ?",
         },
       },
     },

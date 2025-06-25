@@ -17,6 +17,9 @@ import type { SimpleObject } from "@/types/data.ts";
 import { camelToDot, toLowerCase } from "@/utils";
 
 import {
+  adminCoordinationsCoursesColNames,
+  adminCoordinationsProgramsColNames,
+  adminCoordinationsTracksColNames,
   adminCoursesCourseTypesColNames,
   adminCoursesCoursesColNames,
   adminCoursesDegreesColNames,
@@ -74,6 +77,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
   const standardKeys = new Set<string>();
   const templateStringsKeys = new Set<string>();
   const nonStringKeys = new Set<string>();
+  const failedDeletes = new Set<string>();
 
   // Process each file
   for (const file of files) {
@@ -115,52 +119,57 @@ const findKeysInFiles = async (): Promise<string[]> => {
 
   // Manually add template string keys
 
+  const deleteTemplateStringsKey = (key: string) => {
+    if (!templateStringsKeys.delete(key)) {
+      failedDeletes.add(key);
+    }
+  };
+
   Object.values(PhaseEnum).forEach((phase) => {
     standardKeys.add(`phase.${toLowerCase(phase)}`);
     standardKeys.add(`home.subtitle.${toLowerCase(phase)}`);
     standardKeys.add(`home.message.${toLowerCase(phase)}`);
   });
-  templateStringsKeys.delete("phase.${toLowerCase(phase)}");
-  templateStringsKeys.delete(
-    "home.subtitle.${toLowerCase(currentPhase.value)}",
-  );
-  templateStringsKeys.delete("home.message.${toLowerCase(currentPhase.value)}");
+  deleteTemplateStringsKey("phase.${toLowerCase(phase)}");
 
   Object.values(RoleEnum).forEach((role) => {
     standardKeys.add(`role.${toLowerCase(role)}`);
   });
-  templateStringsKeys.delete("role.${toLowerCase(val)}");
-  templateStringsKeys.delete("role.${toLowerCase(role)}");
-  templateStringsKeys.delete("role.${toLowerCase(row.role)}");
+  deleteTemplateStringsKey("role.${toLowerCase(val)}");
+  deleteTemplateStringsKey("role.${toLowerCase(role)}");
 
   Object.values(RequestTypeEnum).forEach((type) => {
     standardKeys.add(`requestType.${toLowerCase(type)}`);
   });
-  templateStringsKeys.delete("requestType.${toLowerCase(val)}");
-  templateStringsKeys.delete("requestType.${toLowerCase(value)}");
-  templateStringsKeys.delete("requestType.${toLowerCase(type)}");
-  templateStringsKeys.delete("requestType.${toLowerCase(row.type)}");
+  deleteTemplateStringsKey("requestType.${toLowerCase(val)}");
+  deleteTemplateStringsKey("requestType.${toLowerCase(value)}");
+  deleteTemplateStringsKey("requestType.${toLowerCase(type)}");
 
   CUSTOM_TEXT_KEYS.forEach((key) => {
     standardKeys.add(`customTextLabel.${key}`);
     standardKeys.add(camelToDot(key));
   });
-  templateStringsKeys.delete("customTextLabel.${key}");
-  templateStringsKeys.delete("${camelToDot(key)}");
+  deleteTemplateStringsKey("customTextLabel.${key}");
+  deleteTemplateStringsKey("${camelToDot(key)}");
 
   INFO_TEXT_KEYS.forEach((key) => {
     standardKeys.add(`header.info.${key}.label`);
     standardKeys.add(`header.info.${key}.message`);
   });
-  templateStringsKeys.delete("header.info.${key}.label");
-  templateStringsKeys.delete("header.info.${key}.message");
+  deleteTemplateStringsKey("header.info.${key}.label");
+  deleteTemplateStringsKey("header.info.${key}.message");
 
   PRIMITIVE_TYPES.forEach((type) => {
     standardKeys.add(`primitiveTypeName.${type}`);
   });
-  templateStringsKeys.delete("primitiveTypeName.${val}");
+  deleteTemplateStringsKey("primitiveTypeName.${val}");
 
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
+    coordinations: {
+      programs: adminCoordinationsProgramsColNames,
+      tracks: adminCoordinationsTracksColNames,
+      courses: adminCoordinationsCoursesColNames,
+    },
     general: {
       roles: adminGeneralRolesColNames,
     },
@@ -192,33 +201,26 @@ const findKeysInFiles = async (): Promise<string[]> => {
         standardKeys.add(`${keyPrefix}.column.${colName}.label`);
         standardKeys.add(`${keyPrefix}.column.${colName}.tooltip`);
       });
-      standardKeys.add(`${keyPrefix}.form.title.none`);
-      standardKeys.add(`${keyPrefix}.form.title.single`);
-      standardKeys.add(`${keyPrefix}.form.title.multiple`);
+      standardKeys.add(`${keyPrefix}.form.title`);
       standardKeys.add(`${keyPrefix}.data.success.insert`);
       standardKeys.add(`${keyPrefix}.data.success.update`);
       standardKeys.add(`${keyPrefix}.data.success.delete`);
       standardKeys.add(`${keyPrefix}.data.success.import`);
       standardKeys.add(`${keyPrefix}.data.success.export`);
-      standardKeys.add(`${keyPrefix}.data.confirm.delete.single`);
-      standardKeys.add(`${keyPrefix}.data.confirm.delete.multiple`);
-      templateStringsKeys.delete("${keyPrefix}.column.${key}.label");
-      templateStringsKeys.delete("${keyPrefix}.column.${key}.tooltip");
-      templateStringsKeys.delete("${keyPrefix}.column.${name}.label");
-      templateStringsKeys.delete("${keyPrefix}.column.${name}.tooltip");
-      templateStringsKeys.delete("${keyPrefix}.form.title.none");
-      templateStringsKeys.delete("${keyPrefix}.form.title.single");
-      templateStringsKeys.delete("${keyPrefix}.form.title.multiple");
-      templateStringsKeys.delete("${keyPrefix}.data.success.insert");
-      templateStringsKeys.delete("${keyPrefix}.data.success.update");
-      templateStringsKeys.delete("${keyPrefix}.data.success.delete");
-      templateStringsKeys.delete("${keyPrefix}.data.success.import");
-      templateStringsKeys.delete("${keyPrefix}.data.success.export");
-      templateStringsKeys.delete("${keyPrefix}.export.invalid.message");
-      templateStringsKeys.delete("${keyPrefix}.data.confirm.delete.single");
-      templateStringsKeys.delete("${keyPrefix}.data.confirm.delete.multiple");
+      standardKeys.add(`${keyPrefix}.data.confirm.delete`);
     });
   });
+  deleteTemplateStringsKey("${keyPrefix}.column.${key}.label");
+  deleteTemplateStringsKey("${keyPrefix}.column.${key}.tooltip");
+  deleteTemplateStringsKey("${keyPrefix}.column.${name}.label");
+  deleteTemplateStringsKey("${keyPrefix}.column.${name}.tooltip");
+  deleteTemplateStringsKey("${keyPrefix}.form.title");
+  deleteTemplateStringsKey("${keyPrefix}.data.success.insert");
+  deleteTemplateStringsKey("${keyPrefix}.data.success.update");
+  deleteTemplateStringsKey("${keyPrefix}.data.success.delete");
+  deleteTemplateStringsKey("${keyPrefix}.data.success.import");
+  deleteTemplateStringsKey("${keyPrefix}.data.success.export");
+  deleteTemplateStringsKey("${keyPrefix}.data.confirm.delete");
 
   expect(
     Array.from(templateStringsKeys),
@@ -228,6 +230,11 @@ const findKeysInFiles = async (): Promise<string[]> => {
   expect(Array.from(nonStringKeys), "Found unexpected non-string keys").toEqual(
     [],
   );
+
+  expect(
+    Array.from(failedDeletes),
+    "Failed to delete expected template string keys",
+  ).toEqual([]);
 
   return [...standardKeys];
 };

@@ -53,11 +53,8 @@ export default {
         },
       } satisfies Record<AdminTeachersTeachersColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvel intervenant",
-          single: "{label}",
-          multiple: "{count} intervenants sélectionnés",
-        },
+        title:
+          "Création d'un intervenant | Édition d'un intervenant | Édition de {count} intervenants",
         error: {
           positionNotFound:
             "Il n'existe pas de fonction avec le label « {position} »",
@@ -79,12 +76,11 @@ export default {
             "0 intervenant exporté | 1 intervenant exporté | {count} intervenants exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer l'intervenant « {label} » ?
-S'il existe des services, des responsabilités ou des rôles pour cet intervenant, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} intervenants sélectionnés ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer l'intervenant sélectionné ?
+S'il existe des services, des responsabilités ou des rôles pour cet intervenant, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} intervenants sélectionnés ?
 S'il existe des services, des responsabilités ou des rôles pour ces intervenants, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
@@ -105,11 +101,8 @@ S'il existe des services, des responsabilités ou des rôles pour ces intervenan
         },
       } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvelle fonction",
-          single: "{label}",
-          multiple: "{count} fonctions sélectionnées",
-        },
+        title:
+          "Création d'une fonction | Édition d'une fonction | Édition de {count} fonctions",
         error: {
           baseServiceHoursNegative:
             "Entrez un nombre d'heures de service de base positif ou nul",
@@ -129,12 +122,11 @@ S'il existe des services, des responsabilités ou des rôles pour ces intervenan
             "0 fonction exportée | 1 fonction exportée | {count} fonctions exportées",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer la fonction « {label} » ?
-Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer la fonction sélectionnée ?
+Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
 Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
@@ -155,13 +147,11 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
         },
       } satisfies Record<AdminTeachersServicesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau service",
-          single: "{label}",
-          multiple: "{count} services sélectionnés",
-        },
+        title:
+          "Création d'un service | Édition d'un service | Édition de {count} services",
         error: {
-          teacherNotFound: `Il n'existe pas d'intervenant avec l'email « {email} »`,
+          teacherNotFound:
+            "Il n'existe pas d'intervenant avec l'email « {email} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },
@@ -178,12 +168,11 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
             "0 service exporté | 1 service exporté | {count} services exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le service « {label} » ?
-S'il existe des modifications, des demandes ou des priorités pour ce service, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} services sélectionnés ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le service sélectionné ?
+S'il existe des modifications, des demandes ou des priorités pour ce service, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} services sélectionnés ?
 S'il existe des modifications, des demandes ou des priorités pour ces services, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
@@ -211,11 +200,8 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
         AdminColNameOptions
       >,
       form: {
-        title: {
-          none: "Nouvelle modification de service",
-          single: "{label}",
-          multiple: "{count} modifications de service sélectionnées",
-        },
+        title:
+          "Création d'une modification de service | Édition d'une modification de service | Édition de {count} modifications de service",
         error: {
           updateYearWithoutTeacher:
             "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
@@ -242,10 +228,8 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
             "0 modification de service exportée | 1 modification de service exportée | {count} modifications de service exportées",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer la modification de service « {label} » ?`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} modifications de service sélectionnées ?`,
-          },
+          delete:
+            "Êtes-vous sûr de vouloir supprimer la modification de service sélectionnée ? | Êtes-vous sûr de vouloir supprimer les {count} modifications de service sélectionnées ?",
         },
       },
     },
@@ -265,11 +249,8 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
         AdminColNameOptions
       >,
       form: {
-        title: {
-          none: "Nouveau type de modification",
-          single: "{label}",
-          multiple: "{count} types de modification sélectionnés",
-        },
+        title:
+          "Création d'un type de modification | Édition d'un type de modification | Édition de {count} types de modification",
       },
       data: {
         success: {
@@ -285,12 +266,11 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
             "0 type de modification exporté | 1 type de modification exporté | {count} types de modification exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le type de modification « {label} » ?
-Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le type de modification sélectionné ?
+Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
 Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
@@ -311,11 +291,8 @@ Si ces types sont attribués à des modifications, vous ne pourrez pas les suppr
         },
       } satisfies Record<AdminTeachersMessagesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau message",
-          single: "{label}",
-          multiple: "{count} messages sélectionnés",
-        },
+        title:
+          "Création d'un message | Édition d'un message | Édition de {count} messages",
         error: {
           updateYearWithoutTeacher:
             "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
@@ -339,10 +316,8 @@ Si ces types sont attribués à des modifications, vous ne pourrez pas les suppr
             "0 message exporté | 1 message exporté | {count} messages exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le message « {label} » ?`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} messages sélectionnés ?`,
-          },
+          delete:
+            "Êtes-vous sûr de vouloir supprimer le message sélectionné ? | Êtes-vous sûr de vouloir supprimer les {count} messages sélectionnés ?",
         },
       },
     },

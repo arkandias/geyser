@@ -66,7 +66,6 @@ graphql(`
     id
     teacher {
       email
-      displayname
     }
     role
     comment
@@ -140,9 +139,6 @@ const importUpdateColumns = [
   TeacherRoleUpdateColumn.Comment,
 ];
 
-const formatRow = (row: Row) =>
-  `${row.teacher.displayname} — ${t(`role.${toLowerCase(row.role)}`)}`;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -187,10 +183,12 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       value: t.email,
       label: t.displayname ?? "",
     })),
-    role: Object.values(RoleEnum).map((role) => ({
-      value: role,
-      label: t(`role.${toLowerCase(role)}`),
-    })),
+    role: Object.values(RoleEnum)
+      .filter((role) => role !== RoleEnum.Teacher)
+      .map((role) => ({
+        value: role,
+        label: t(`role.${toLowerCase(role)}`),
+      })),
   }),
 );
 
@@ -205,7 +203,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="roles"
     :row-descriptor
     :rows="roles"
-    :format-row
     :validate-flat-row
     :form-options
     :insert-data="insertServices"

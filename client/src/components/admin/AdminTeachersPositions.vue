@@ -118,8 +118,6 @@ const importUpdateColumns = [
   PositionUpdateColumn.BaseServiceHours,
 ];
 
-const formatRow = (row: Row) => row.label;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -157,7 +155,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="positions"
     :row-descriptor
     :rows="positions"
-    :format-row
     :validate-flat-row
     :insert-data="insertPositions"
     :upsert-data="upsertPositions"

@@ -45,15 +45,11 @@ const rowDescriptor = {
   degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
-    format: (val: string) =>
-      degrees.value.find((d) => d.name === val)?.nameDisplay,
     formComponent: "select",
   },
   programName: {
     type: "string",
     field: (row) => row.program.name,
-    format: (val: string) =>
-      programs.value.find((p) => p.name === val)?.nameDisplay,
     formComponent: "select",
   },
   name: {
@@ -77,22 +73,17 @@ graphql(`
     id
     program {
       name
-      nameDisplay
       degree {
         name
-        nameDisplay
       }
     }
     name
     nameShort
-    nameDisplay
     visible
   }
 
   fragment AdminTracksDegree on Degree {
-    id
     name
-    nameDisplay
     programs {
       id
       name
@@ -100,9 +91,7 @@ graphql(`
   }
 
   fragment AdminTracksProgram on Program {
-    id
     name
-    nameDisplay
   }
 
   mutation InsertTracks($objects: [TrackInsertInput!]!) {
@@ -167,9 +156,6 @@ const importUpdateColumns = [
   TrackUpdateColumn.NameShort,
   TrackUpdateColumn.Visible,
 ];
-
-const formatRow = (row: Row) =>
-  `${row.nameDisplay} (${row.program.degree.nameDisplay} — ${row.program.nameDisplay})`;
 
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
@@ -245,7 +231,6 @@ const filterOptions = computed<
     name="tracks"
     :row-descriptor
     :rows="tracks"
-    :format-row
     :validate-flat-row
     :form-options
     :filter-options

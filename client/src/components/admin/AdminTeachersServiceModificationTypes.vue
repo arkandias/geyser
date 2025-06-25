@@ -135,8 +135,6 @@ const importUpdateColumns = [
   ServiceModificationTypeUpdateColumn.Description,
 ];
 
-const formatRow = (row: Row) => row.label;
-
 const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   const object: InsertInput = {
     oid: organization.id,
@@ -165,7 +163,6 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="serviceModificationTypes"
     :row-descriptor
     :rows="serviceModificationTypes"
-    :format-row
     :validate-flat-row
     :insert-data="insertServiceModificationTypes"
     :upsert-data="upsertServiceModificationTypes"

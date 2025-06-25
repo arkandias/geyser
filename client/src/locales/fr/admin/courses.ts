@@ -28,11 +28,8 @@ export default {
         },
       } satisfies Record<AdminCoursesDegreesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau diplôme",
-          single: "{label}",
-          multiple: "{count} diplômes sélectionnés",
-        },
+        title:
+          "Création d'un diplôme | Édition d'un diplôme | Édition de {count} diplômes",
       },
       data: {
         success: {
@@ -47,12 +44,11 @@ export default {
             "0 diplôme exporté | 1 diplôme exporté | {count} diplômes exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le diplôme « {label} » ?
-Si ce diplôme contient des mentions, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} diplômes sélectionnés ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le diplôme sélectionné ?
+Si ce diplôme contient des mentions, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} diplômes sélectionnés ?
 Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
@@ -77,11 +73,8 @@ Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
         },
       } satisfies Record<AdminCoursesProgramsColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvelle mention",
-          single: "{label}",
-          multiple: "{count} mentions sélectionnées",
-        },
+        title:
+          "Création d'une mention | Édition d'une mention | Édition de {count} mentions",
         error: {
           degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
         },
@@ -100,12 +93,11 @@ Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
             "0 mention exportée | 1 mention exportée | {count} mentions exportées",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer la mention « {label} » ?
-S'il existe des parcours, des cours ou des responsables pour cette mention, vous ne pourrez pas la supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} mentions sélectionnées ?
-S'il existe des parcours, des cours ou des responsables pour ces mentions, vous ne pourrez pas les supprimer.`,
-          },
+          delete:
+            `Êtes-vous sûr de vouloir supprimer la mention sélectionnée ?
+S'il existe des parcours, des cours ou des responsabilités pour cette mention, vous ne pourrez pas la supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} mentions sélectionnées ?
+S'il existe des parcours, des cours ou des responsabilités pour ces mentions, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -134,11 +126,8 @@ S'il existe des parcours, des cours ou des responsables pour ces mentions, vous 
         },
       } satisfies Record<AdminCoursesTracksColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau parcours",
-          single: "{label}",
-          multiple: "{count} parcours sélectionnés",
-        },
+        title:
+          "Création d'un parcours | Édition d'un parcours | Édition de {count} parcours",
         error: {
           updateDegreeWithoutProgram:
             "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
@@ -163,12 +152,11 @@ S'il existe des parcours, des cours ou des responsables pour ces mentions, vous 
             "0 parcours exporté | 1 parcours exporté | {count} parcours exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le parcours « {label} » ?
-S'il existe des cours ou des responsables pour ce parcours, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
-S'il existe des cours ou des responsables pour ces parcours, vous ne pourrez pas les supprimer.`,
-          },
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le parcours sélectionné ?
+S'il existe des cours ou des responsabilités pour ce parcours, vous ne pourrez pas le supprimer. ` +
+            `Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
+S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -237,11 +225,8 @@ S'il existe des cours ou des responsables pour ces parcours, vous ne pourrez pas
         },
       } satisfies Record<AdminCoursesCoursesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouvel enseignement",
-          single: "{label}",
-          multiple: "{count} enseignements sélectionnés",
-        },
+        title:
+          "Création d'un enseignement | Édition d'un enseignement | Édition de {count} enseignements",
         error: {
           updateDegreeWithoutProgram:
             "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
@@ -282,12 +267,11 @@ S'il existe des cours ou des responsables pour ces parcours, vous ne pourrez pas
             "0 enseignement exporté | 1 enseignement exporté | {count} enseignements exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer l'enseignement « {label} » ?
-S'il existe des demandes, des priorités ou des responsables pour cet enseignement, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
-S'il existe des demandes, des priorités ou des responsables pour ces enseignements, vous ne pourrez pas les supprimer.`,
-          },
+          delete:
+            `Êtes-vous sûr de vouloir supprimer l'enseignement sélectionné ?
+S'il existe des demandes, des priorités ou des responsabilités pour cet enseignement, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
+S'il existe des demandes, des priorités ou des responsabilités pour ces enseignements, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -308,11 +292,8 @@ S'il existe des demandes, des priorités ou des responsables pour ces enseigneme
         },
       } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
       form: {
-        title: {
-          none: "Nouveau type d'enseignement",
-          single: "{label}",
-          multiple: "{count} types d'enseignement' sélectionnés",
-        },
+        title:
+          "Création d'un type d'enseignement | Édition d'un type d'enseignement | Édition de {count} types d'enseignement",
       },
       data: {
         success: {
@@ -328,12 +309,11 @@ S'il existe des demandes, des priorités ou des responsables pour ces enseigneme
             "0 type d'enseignement exporté | 1 type d'enseignement exporté | {count} types d'enseignement exportés",
         },
         confirm: {
-          delete: {
-            single: `Êtes-vous sûr de vouloir supprimer le type d'enseignement « {label} » ?
-Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer.`,
-            multiple: `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le type d'enseignement sélectionné ?
+Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer. ` +
+            `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
 Si ces types sont attribués à des enseignements, vous ne pourrez pas les supprimer.`,
-          },
         },
       },
     },
