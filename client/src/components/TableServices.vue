@@ -71,10 +71,10 @@ const services = computed<ServiceRow[]>(() =>
           t.totalAssignment +
           (r.type === RequestTypeEnum.Assignment ? (r.hoursWeighted ?? 0) : 0),
         totalPrimary:
-          t.totalAssignment +
+          t.totalPrimary +
           (r.type === RequestTypeEnum.Primary ? (r.hoursWeighted ?? 0) : 0),
         totalSecondary:
-          t.totalAssignment +
+          t.totalSecondary +
           (r.type === RequestTypeEnum.Secondary ? (r.hoursWeighted ?? 0) : 0),
       }),
       {
