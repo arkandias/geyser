@@ -31,7 +31,7 @@ import type {
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
-import { isRequestType, toLowerCase, unique } from "@/utils";
+import { isRequestType, toLowerCase, unique, uniqueValue } from "@/utils";
 
 import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -420,7 +420,8 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       .map((c) => ({
         value: c.semester,
         label: t("semester", { semester: c.semester }),
-      })),
+      }))
+      .filter(uniqueValue("value")),
     courseType: courses.value
       .filter(
         (c) =>
@@ -430,7 +431,8 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
           c.name === formValues.value["courseName"] &&
           c.semester === formValues.value["courseSemester"],
       )
-      .map((c) => c.type.label),
+      .map((c) => c.type.label)
+      .filter(unique),
     type: Object.values(RequestTypeEnum).map((type) =>
       t(`requestType.${toLowerCase(type)}`),
     ),
