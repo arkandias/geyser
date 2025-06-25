@@ -30,7 +30,7 @@
       "description": "",
       "rootUrl": "${CLIENT_ROOT_URL}",
       "adminUrl": "",
-      "baseUrl": "${CLIENT_HOME_URL}",
+      "baseUrl": "",
       "surrogateAuthRequired": false,
       "enabled": true,
       "alwaysDisplayInConsole": false,
