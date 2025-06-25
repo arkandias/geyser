@@ -49,7 +49,7 @@ FROM public.service s
               ON child.oid = c.oid
                   AND child.year = c.year + 1
                   AND child.program_id = c.program_id
-                  AND child.track_id = c.track_id
+                  AND child.track_id IS NOT DISTINCT FROM c.track_id
                   AND child.name = c.name
                   AND child.semester = c.semester
                   AND child.type_id = c.type_id
@@ -125,29 +125,53 @@ COMMENT ON FUNCTION public.copy_year_services(integer, integer) IS 'Creates copi
 
 CREATE FUNCTION public.copy_year_courses(p_oid integer, p_year integer) RETURNS setof public.course AS
 $$
-INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours, hours_adjusted,
-                           groups, groups_adjusted, description, priority_rule, visible)
-SELECT p_oid,
-       p_year,
-       c.program_id,
-       c.track_id,
-       c.name,
-       c.name_short,
-       c.semester,
-       c.type_id,
-       c.hours,
-       c.hours_adjusted,
-       c.groups,
-       c.groups_adjusted,
-       c.description,
-       c.priority_rule,
-       c.visible
-FROM public.course c
-WHERE c.oid = p_oid
-  AND c.year = p_year - 1
-ON CONFLICT (oid, year, program_id, track_id, name, semester, type_id) DO NOTHING
-RETURNING *;
-$$ LANGUAGE sql;
+BEGIN
+    RETURN QUERY
+        INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours,
+                                   hours_adjusted,
+                                   groups, groups_adjusted, description, priority_rule, visible)
+            SELECT p_oid,
+                   p_year,
+                   c.program_id,
+                   c.track_id,
+                   c.name,
+                   c.name_short,
+                   c.semester,
+                   c.type_id,
+                   c.hours,
+                   c.hours_adjusted,
+                   c.groups,
+                   c.groups_adjusted,
+                   c.description,
+                   c.priority_rule,
+                   c.visible
+            FROM public.course c
+            WHERE c.oid = p_oid
+              AND c.year = p_year - 1
+            ON CONFLICT (oid, year, program_id, track_id, name, semester, type_id) DO NOTHING
+            RETURNING *;
+
+    -- Copy course coordinations
+    INSERT INTO public.coordination(oid, teacher_id, course_id, comment)
+    SELECT p_oid, coord.teacher_id, c_new.id, coord.comment
+    FROM public.coordination coord
+             JOIN public.course c_old
+                  ON c_old.oid = p_oid
+                      AND c_old.id = coord.course_id
+             JOIN public.course c_new
+                  ON c_new.oid = p_oid
+                      AND c_new.year = p_year
+                      AND c_new.program_id = c_old.program_id
+                      AND c_new.track_id IS NOT DISTINCT FROM c_old.track_id
+                      AND c_new.name = c_old.name
+                      AND c_new.semester = c_old.semester
+                      AND c_new.type_id = c_old.type_id
+    WHERE coord.oid = p_oid
+      AND c_old.year = p_year - 1
+      AND coord.course_id IS NOT NULL
+    ON CONFLICT (oid, teacher_id, course_id, track_id, program_id) DO NOTHING;
+END
+$$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.copy_year_courses(integer, integer) IS 'Creates copies of all courses from the previous year into the specified year';
 
 
