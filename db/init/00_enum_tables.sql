@@ -45,9 +45,9 @@ COMMENT ON COLUMN public.role.value IS 'Unique identifier';
 COMMENT ON COLUMN public.role.description IS 'Short description';
 
 INSERT INTO public.role(value, description)
-VALUES ('admin', 'Administrator with full capabilities including configuration and user management'),
-       ('commissioner', 'Committee member with extra capabilities during assignment phase'),
-       ('teacher', 'Standard user with basic capabilities');
+VALUES ('organizer', 'Administrator with full permissions within an organization'),
+       ('commissioner', 'Committee member with extra permissions during assignment phase'),
+       ('teacher', 'Standard user with basic permissions');
 
 
 CREATE TABLE public.request_type
