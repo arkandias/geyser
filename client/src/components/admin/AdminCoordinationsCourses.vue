@@ -72,6 +72,7 @@ const { years } = useYearsStore();
 const rowDescriptor = {
   year: {
     type: "number",
+    field: (row) => row.course?.year,
     formComponent: "select",
   },
   teacherEmail: {
@@ -125,6 +126,7 @@ graphql(`
       email
     }
     course {
+      year
       name
       program {
         name

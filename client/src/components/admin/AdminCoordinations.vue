@@ -85,6 +85,7 @@ const { data } = useQuery({
   context: {
     additionalTypenames: [
       "All",
+      "Coordination",
       "Course",
       "Degree",
       "Program",
