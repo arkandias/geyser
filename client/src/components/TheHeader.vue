@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
 import { useRouter } from "vue-router";
 
 import { useDarkMode } from "@/composables/useDarkMode.ts";
@@ -9,7 +8,6 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
-import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
@@ -18,7 +16,7 @@ import MenuYear from "@/components/header/MenuYear.vue";
 import NavBtn from "@/components/header/NavBtn.vue";
 import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
-defineProps<{ disable: boolean }>();
+defineProps<{ disable: boolean; warning?: string }>();
 
 const { t } = useTypedI18n();
 const router = useRouter();
@@ -27,15 +25,6 @@ const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
 const { organization } = useOrganizationStore();
 const { hasService } = useProfileStore();
-const { activeYear, isCurrentYearActive } = useYearsStore();
-
-const warningMessage = computed(() =>
-  activeYear.value === null
-    ? t("courses.warning.noActiveYear")
-    : !isCurrentYearActive.value
-      ? t("courses.warning.archive", { year: activeYear.value })
-      : "",
-);
 </script>
 
 <template>
@@ -120,10 +109,10 @@ const warningMessage = computed(() =>
       <MenuUser />
     </QToolbar>
 
-    <QToolbar v-if="warningMessage" id="warning-toolbar">
+    <QToolbar v-if="!disable && warning" id="warning-toolbar">
       <QSpace />
       <QToolbarTitle shrink class="text-center text-body1">
-        {{ warningMessage }}
+        {{ warning }}
       </QToolbarTitle>
       <QSpace />
     </QToolbar>

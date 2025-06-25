@@ -23,7 +23,7 @@ const { notify } = useNotify();
 const { setOrganization } = useOrganizationStore();
 const { profile, setProfile } = useProfileStore();
 const { currentPhase, setCurrentPhase } = useCurrentPhaseStore();
-const { setYears } = useYearsStore();
+const { activeYear, isCurrentYearActive, setYears } = useYearsStore();
 const { setCustomTexts } = useCustomTextsStore();
 
 if (authManager.authError) {
@@ -129,8 +129,8 @@ watch(
   { immediate: true },
 );
 
-// Access check and information message
-const accessDeniedMessage = computed(() => {
+// Access check and alert message
+const alertMessage = computed(() => {
   if (!authManager.organizationKey) {
     return t("home.alert.organizationNotFound");
   }
@@ -163,7 +163,14 @@ const accessDeniedMessage = computed(() => {
   }
   return "";
 });
-const accessGranted = computed(() => !accessDeniedMessage.value);
+
+const warningMessage = computed(() =>
+  activeYear.value === null
+    ? t("header.warning.noActiveYear")
+    : !isCurrentYearActive.value
+      ? t("header.warning.archive", { year: activeYear.value })
+      : "",
+);
 
 // Apply distinct styling in development vs production environments to provide
 // visual feedback to developers about which environment they're using
@@ -174,10 +181,10 @@ const devClass = {
 
 <template>
   <QLayout view="hHh LpR fFf" class="text-body-1" :class="devClass">
-    <TheHeader :disable="!accessGranted" />
+    <TheHeader :disable="!!alertMessage" :warning="warningMessage" />
     <QPageContainer>
-      <RouterView v-if="accessGranted" />
-      <PageHome v-else :alert="accessDeniedMessage" />
+      <PageHome v-if="alertMessage" :alert="alertMessage" />
+      <RouterView v-else />
     </QPageContainer>
   </QLayout>
 </template>

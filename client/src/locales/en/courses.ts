@@ -1,9 +1,5 @@
 export default {
   courses: {
-    warning: {
-      noActiveYear: "No year selected",
-      archive: "You are viewing an archive ({year})",
-    },
     table: {
       services: {
         title: "Services",

@@ -2,6 +2,10 @@ import type { InfoTextKey } from "@/config/info-text-keys.ts";
 
 export default {
   header: {
+    warning: {
+      noActiveYear: "Pas d'année sélectionnée",
+      archive: "Vous consultez une archive ({year})",
+    },
     home: {
       label: "Accueil",
     },
