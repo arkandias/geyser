@@ -73,7 +73,7 @@ handle_init() {
     wait_until_healthy hasura
     info "Waiting a few more seconds..."
     sleep 3
-    _hasura metadata apply
+    _hasura deploy
 
     info "Starting all services..."
     _compose up -d
