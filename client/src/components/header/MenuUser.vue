@@ -3,7 +3,7 @@ import { computed } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import type { RoleEnum } from "@/gql/graphql.ts";
+import { RoleEnum } from "@/gql/graphql.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { toLowerCase } from "@/utils";
 
@@ -14,10 +14,12 @@ const { refreshData } = useRefreshData();
 const { profile, setActiveRole } = useProfileStore();
 
 const roleOptions = computed(() =>
-  profile.roles.toSorted().map((role) => ({
-    value: role,
-    label: t(`role.${toLowerCase(role)}`),
-  })),
+  [RoleEnum.Organizer, RoleEnum.Commissioner, RoleEnum.Teacher]
+    .filter((role) => profile.roles.includes(role))
+    .map((role) => ({
+      value: role,
+      label: t(`role.${toLowerCase(role)}`),
+    })),
 );
 
 const updateRole = async (value: RoleEnum) => {
