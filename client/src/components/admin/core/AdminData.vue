@@ -5,7 +5,7 @@
     Id extends Scalar,
     Row extends SimpleObject & Record<'id', Id>,
     T extends RowDescriptorExtra<string, Row>,
-    InsertInput extends object,
+    InsertInput extends { oid?: number | null | undefined },
     Constraint extends string,
     UpdateColumn extends string
   "
@@ -40,6 +40,7 @@ import AdminInput from "@/components/admin/core/AdminInput.vue";
 import AdminSelect from "@/components/admin/core/AdminSelect.vue";
 import AdminToggle from "@/components/admin/core/AdminToggle.vue";
 
+type SetInput = Omit<InsertInput, "oid">;
 type FlatRow = Partial<NullableParsedRow<T>>;
 type CustomMutationResponse<
   Name extends string,
@@ -95,7 +96,7 @@ const {
     "updateData",
     {
       ids: Id | Id[];
-      changes: InsertInput;
+      changes: SetInput;
     }
   >;
   deleteData: CustomMutationResponse<"deleteData", { ids: Id | Id[] }>;
@@ -246,13 +247,14 @@ const insertDataHandle = async () => {
 };
 
 const updateDataHandle = async () => {
-  let changes: InsertInput;
+  let changes: SetInput;
   try {
-    changes = validateFlatRow(
+    const { oid, ...rest } = validateFlatRow(
       multipleSelection.value
         ? validateForm(selectedFields.value)
         : validateForm(),
     );
+    changes = rest;
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
