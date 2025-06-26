@@ -5978,7 +5978,7 @@ enum OrderBy {
 
 """Organization information"""
 type Organization {
-  active: Boolean
+  active: Boolean!
 
   """An array relationship"""
   appSettings(

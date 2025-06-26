@@ -4512,7 +4512,7 @@ export enum OrderBy {
 /** Organization information */
 export type Organization = {
   __typename?: 'Organization';
-  active?: Maybe<Scalars['Boolean']['output']>;
+  active: Scalars['Boolean']['output'];
   /** An array relationship */
   appSettings: Array<AppSetting>;
   /** An aggregate relationship */
