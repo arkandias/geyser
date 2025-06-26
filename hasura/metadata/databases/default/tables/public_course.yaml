@@ -5,11 +5,6 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
   - name: program
     using:
       foreign_key_constraint_on:
@@ -26,6 +21,11 @@ object_relationships:
       foreign_key_constraint_on:
         - oid
         - type_id
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
 array_relationships:
   - name: coordinations
     using:
@@ -208,7 +208,7 @@ select_permissions:
                   service:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-    comment: "Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request"
+    comment: 'Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request'
 update_permissions:
   - role: organizer
     permission:

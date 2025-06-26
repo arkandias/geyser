@@ -2,14 +2,14 @@ table:
   name: program
   schema: public
 object_relationships:
-  - name: organization
-    using:
-      foreign_key_constraint_on: oid
   - name: degree
     using:
       foreign_key_constraint_on:
         - oid
         - degree_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
 array_relationships:
   - name: coordinations
     using:

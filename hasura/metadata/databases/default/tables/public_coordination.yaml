@@ -2,24 +2,24 @@ table:
   name: coordination
   schema: public
 object_relationships:
-  - name: organization
-    using:
-      foreign_key_constraint_on: oid
-  - name: teacher
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - teacher_id
   - name: course
     using:
       foreign_key_constraint_on:
         - oid
         - course_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: program
     using:
       foreign_key_constraint_on:
         - oid
         - program_id
+  - name: teacher
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - teacher_id
   - name: track
     using:
       foreign_key_constraint_on:

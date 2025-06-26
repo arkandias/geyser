@@ -2,26 +2,26 @@ table:
   name: priority
   schema: public
 object_relationships:
-  - name: organization
-    using:
-      foreign_key_constraint_on: oid
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-  - name: service
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-        - service_id
   - name: course
     using:
       foreign_key_constraint_on:
         - oid
         - year
         - course_id
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
+  - name: service
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
+        - service_id
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
 insert_permissions:
   - role: organizer
     permission:
@@ -135,7 +135,7 @@ select_permissions:
                                   - degree:
                                       visible:
                                         _eq: true
-    comment: "Can view [except during shutdown phase]: (1) their own priorities for visible years, (2) priorities for visible years for courses that they coordinate (directly or via program/track), and (3) priorities for visible years of visible teachers for visible courses with visible degree/program/track"
+    comment: 'Can view [except during shutdown phase]: (1) their own priorities for visible years, (2) priorities for visible years for courses that they coordinate (directly or via program/track), and (3) priorities for visible years of visible teachers for visible courses with visible degree/program/track'
 update_permissions:
   - role: organizer
     permission:

@@ -16,19 +16,19 @@ array_relationships:
         table:
           name: coordination
           schema: public
-  - name: courses
-    using:
-      foreign_key_constraint_on:
-        column: oid
-        table:
-          name: course
-          schema: public
   - name: courseTypes
     using:
       foreign_key_constraint_on:
         column: oid
         table:
           name: course_type
+          schema: public
+  - name: courses
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: course
           schema: public
   - name: currentPhases
     using:
@@ -79,12 +79,12 @@ array_relationships:
         table:
           name: request
           schema: public
-  - name: services
+  - name: serviceModificationTypes
     using:
       foreign_key_constraint_on:
         column: oid
         table:
-          name: service
+          name: service_modification_type
           schema: public
   - name: serviceModifications
     using:
@@ -93,19 +93,12 @@ array_relationships:
         table:
           name: service_modification
           schema: public
-  - name: serviceModificationTypes
+  - name: services
     using:
       foreign_key_constraint_on:
         column: oid
         table:
-          name: service_modification_type
-          schema: public
-  - name: teachers
-    using:
-      foreign_key_constraint_on:
-        column: oid
-        table:
-          name: teacher
+          name: service
           schema: public
   - name: teacherRoles
     using:
@@ -113,6 +106,13 @@ array_relationships:
         column: oid
         table:
           name: teacher_role
+          schema: public
+  - name: teachers
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: teacher
           schema: public
   - name: tracks
     using:

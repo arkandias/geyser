@@ -2,29 +2,29 @@ table:
   name: request
   schema: public
 object_relationships:
-  - name: organization
-    using:
-      foreign_key_constraint_on: oid
-  - name: yearByYear
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-  - name: service
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - year
-        - service_id
   - name: course
     using:
       foreign_key_constraint_on:
         - oid
         - course_id
         - year
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
   - name: requestType
     using:
       foreign_key_constraint_on: type
+  - name: service
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
+        - service_id
+  - name: yearByYear
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - year
 computed_fields:
   - name: hoursWeighted
     definition:
@@ -250,7 +250,7 @@ select_permissions:
                     _eq: false
               - type:
                   _neq: assignment
-    comment: "Can view [except during shutdown phase]: (1) their own requests for visible years, (2) requests for visible years for courses that they coordinate (directly or via program/track), and (3) requests for visible years of visible teachers for visible courses with visible degree/program/track; Moreover, can only view current year assignments during results phase"
+    comment: 'Can view [except during shutdown phase]: (1) their own requests for visible years, (2) requests for visible years for courses that they coordinate (directly or via program/track), and (3) requests for visible years of visible teachers for visible courses with visible degree/program/track; Moreover, can only view current year assignments during results phase'
 update_permissions:
   - role: commissioner
     permission:

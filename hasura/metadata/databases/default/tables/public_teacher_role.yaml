@@ -5,14 +5,14 @@ object_relationships:
   - name: organization
     using:
       foreign_key_constraint_on: oid
+  - name: roleByRole
+    using:
+      foreign_key_constraint_on: role
   - name: teacher
     using:
       foreign_key_constraint_on:
         - oid
         - teacher_id
-  - name: roleByRole
-    using:
-      foreign_key_constraint_on: role
 insert_permissions:
   - role: organizer
     permission:
