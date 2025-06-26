@@ -22,16 +22,28 @@ graphql(`
     oid
     courseId: id
     description
-    coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+    coordinations(
+      orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
+    ) {
       teacherId
     }
     program {
-      coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+      coordinations(
+        orderBy: [
+          { teacher: { lastname: ASC } }
+          { teacher: { firstname: ASC } }
+        ]
+      ) {
         teacherId
       }
     }
     track {
-      coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+      coordinations(
+        orderBy: [
+          { teacher: { lastname: ASC } }
+          { teacher: { firstname: ASC } }
+        ]
+      ) {
         teacherId
       }
     }

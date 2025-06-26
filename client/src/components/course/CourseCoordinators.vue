@@ -14,16 +14,28 @@ const { dataFragment } = defineProps<{
 
 graphql(`
   fragment CourseCoordinators on Course {
-    coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+    coordinations(
+      orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
+    ) {
       ...CoordinationData
     }
     program {
-      coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+      coordinations(
+        orderBy: [
+          { teacher: { lastname: ASC } }
+          { teacher: { firstname: ASC } }
+        ]
+      ) {
         ...CoordinationData
       }
     }
     track {
-      coordinations(orderBy: [{ teacher: { displayname: ASC } }]) {
+      coordinations(
+        orderBy: [
+          { teacher: { lastname: ASC } }
+          { teacher: { firstname: ASC } }
+        ]
+      ) {
         ...CoordinationData
       }
     }
