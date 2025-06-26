@@ -15,6 +15,18 @@ array_relationships:
         table:
           name: course
           schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - label
+        - coefficient
+        - description
+    comment: Full permissions within their organization
 select_permissions:
   - role: commissioner
     permission:
@@ -33,6 +45,18 @@ select_permissions:
                 value:
                   _eq: assignments
     comment: Can view all course types [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - label
+        - coefficient
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Full permissions within their organization
   - role: teacher
     permission:
       columns:
@@ -50,3 +74,22 @@ select_permissions:
                 value:
                   _neq: shutdown
     comment: Can view all course types [except during shutdown phase]
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - label
+        - coefficient
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: Full permissions within their organization
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Full permissions within their organization
