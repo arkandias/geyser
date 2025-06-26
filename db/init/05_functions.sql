@@ -109,7 +109,7 @@ CREATE OR REPLACE FUNCTION public.create_year_services(p_year integer) RETURNS s
 $$
 DECLARE
     session_variables json;
-    org_id            text;
+    org_id            integer;
 BEGIN
     session_variables := current_setting('hasura.user', 't');
     org_id := session_variables ->> 'x-hasura-org-id';
@@ -128,7 +128,7 @@ CREATE OR REPLACE FUNCTION public.copy_year_services(p_year integer) RETURNS set
 $$
 DECLARE
     session_variables json;
-    org_id            text;
+    org_id            integer;
 BEGIN
     session_variables := current_setting('hasura.user', 't');
     org_id := session_variables ->> 'x-hasura-org-id';
@@ -153,7 +153,7 @@ CREATE OR REPLACE FUNCTION public.copy_year_courses(p_year integer) RETURNS seto
 $$
 DECLARE
     session_variables json;
-    org_id            text;
+    org_id            integer;
 BEGIN
     session_variables := current_setting('hasura.user', 't');
     org_id := session_variables ->> 'x-hasura-org-id';
@@ -210,7 +210,7 @@ CREATE OR REPLACE FUNCTION public.compute_year_priorities(p_year integer) RETURN
 $$
 DECLARE
     session_variables json;
-    org_id            text;
+    org_id            integer;
 BEGIN
     session_variables := current_setting('hasura.user', 't');
     org_id := session_variables ->> 'x-hasura-org-id';
