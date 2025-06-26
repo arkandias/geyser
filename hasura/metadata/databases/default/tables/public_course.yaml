@@ -208,7 +208,7 @@ select_permissions:
                   service:
                     teacher_id:
                       _eq: X-Hasura-User-Id
-    comment: 'Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request'
+    comment: "Can view [except during shutdown phase]: (1) visible courses for visible years with visible degree/program/track, (2) courses for visible years that they coordinate (directly or via program/track), and (3) courses for visible years for which they have a priority/request"
 update_permissions:
   - role: organizer
     permission:
