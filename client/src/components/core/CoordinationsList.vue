@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { computed } from "vue";
+
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import { CoordinationDataFragmentDoc } from "@/gql/graphql.ts";
 
@@ -18,8 +20,8 @@ graphql(`
   }
 `);
 
-const coordinations = dataFragments.map((f) =>
-  useFragment(CoordinationDataFragmentDoc, f),
+const coordinations = computed(() =>
+  dataFragments.map((f) => useFragment(CoordinationDataFragmentDoc, f)),
 );
 </script>
 

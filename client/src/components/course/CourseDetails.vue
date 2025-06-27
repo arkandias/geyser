@@ -6,7 +6,7 @@ import { type FragmentType, graphql, useFragment } from "@/gql";
 import { CourseDetailsFragmentDoc } from "@/gql/graphql.ts";
 
 import CourseArchives from "@/components/course/CourseArchives.vue";
-import CourseCoordinators from "@/components/course/CourseCoordinators.vue";
+import CourseCoordination from "@/components/course/CourseCoordination.vue";
 import CourseDescription from "@/components/course/CourseDescription.vue";
 import CourseExpansion from "@/components/course/CourseExpansion.vue";
 import CoursePriorities from "@/components/course/CoursePriorities.vue";
@@ -50,7 +50,7 @@ watch(
   <CourseExpansion :data-fragment="details">
     <QCard flat square class="text-body2">
       <template v-if="details">
-        <CourseCoordinators :data-fragment="details" />
+        <CourseCoordination :data-fragment="details" />
         <CourseDescription :data-fragment="details" />
       </template>
       <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
