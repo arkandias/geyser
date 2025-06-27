@@ -37,7 +37,7 @@ graphql(`
   }
 `);
 
-const { data } = useQuery({
+const { data, fetching } = useQuery({
   query: GetAdminRolesDocument,
   variables: { oid: organization.id },
   context: {
@@ -70,6 +70,7 @@ const teachers = computed(() => data.value?.teachers ?? []);
       :label="t('admin.general.roles.label')"
     >
       <AdminGeneralRoles
+        :fetching
         :role-fragments="roles"
         :teacher-fragments="teachers"
       />

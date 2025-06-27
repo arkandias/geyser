@@ -30,6 +30,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = CourseTypeInsertInput;
 
 const { courseTypeFragments } = defineProps<{
+  fetching: boolean;
   courseTypeFragments: FragmentType<typeof AdminCourseTypeFragmentDoc>[];
 }>();
 
@@ -150,6 +151,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="courseTypes"
     :row-descriptor
     :rows="courseTypes"
+    :fetching
     :validate-flat-row
     :insert-data="insertCourseTypes"
     :upsert-data="upsertCourseTypes"

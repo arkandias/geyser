@@ -61,6 +61,7 @@ const {
   name,
   rowDescriptor,
   rows,
+  fetching,
   validateFlatRow,
   formOptions = {},
   filterOptions = {},
@@ -75,6 +76,7 @@ const {
   name: string;
   rowDescriptor: T;
   rows: Row[];
+  fetching: boolean;
   validateFlatRow: (flatRow: FlatRow) => InsertInput;
   formOptions?: SelectOptions<string, Row, T>;
   filterOptions?: SelectOptions<string, Row, T>;
@@ -588,6 +590,7 @@ const exportDataHandle = () => {
     v-model:selected="selectedRows"
     :columns
     :rows
+    :loading="fetching"
     :pagination="{ rowsPerPage: 100 }"
     :rows-per-page-options="[0, 10, 20, 50, 100]"
     :filter="filterObj"

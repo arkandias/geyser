@@ -49,6 +49,7 @@ const {
   trackFragments,
   courseTypeFragments,
 } = defineProps<{
+  fetching: boolean;
   priorityFragments: FragmentType<typeof AdminPriorityFragmentDoc>[];
   serviceFragments: FragmentType<typeof AdminPrioritiesServiceFragmentDoc>[];
   teacherFragments: FragmentType<typeof AdminPrioritiesTeacherFragmentDoc>[];
@@ -471,6 +472,7 @@ const filterOptions = computed<
     name="priorities"
     :row-descriptor
     :rows="priorities"
+    :fetching
     :validate-flat-row
     :form-options
     :filter-options

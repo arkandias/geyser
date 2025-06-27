@@ -29,6 +29,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = ServiceModificationTypeInsertInput;
 
 const { serviceModificationTypeFragments } = defineProps<{
+  fetching: boolean;
   serviceModificationTypeFragments: FragmentType<
     typeof AdminServiceModificationTypeFragmentDoc
   >[];
@@ -163,6 +164,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="serviceModificationTypes"
     :row-descriptor
     :rows="serviceModificationTypes"
+    :fetching
     :validate-flat-row
     :insert-data="insertServiceModificationTypes"
     :upsert-data="upsertServiceModificationTypes"

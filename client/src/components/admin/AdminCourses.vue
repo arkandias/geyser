@@ -65,7 +65,7 @@ graphql(`
   }
 `);
 
-const { data } = useQuery({
+const { data, fetching } = useQuery({
   query: GetAdminCoursesDocument,
   variables: { oid: organization.id },
   context: {
@@ -89,7 +89,7 @@ const types = computed(() => data.value?.types ?? []);
 <template>
   <QList bordered>
     <AdminSection icon="sym_s_school" :label="t('admin.courses.degrees.label')">
-      <AdminCoursesDegrees :degree-fragments="degrees" />
+      <AdminCoursesDegrees :fetching :degree-fragments="degrees" />
     </AdminSection>
 
     <QSeparator />
@@ -99,6 +99,7 @@ const types = computed(() => data.value?.types ?? []);
       :label="t('admin.courses.programs.label')"
     >
       <AdminCoursesPrograms
+        :fetching
         :degree-fragments="degrees"
         :program-fragments="programs"
       />
@@ -111,6 +112,7 @@ const types = computed(() => data.value?.types ?? []);
       :label="t('admin.courses.tracks.label')"
     >
       <AdminCoursesTracks
+        :fetching
         :degree-fragments="degrees"
         :program-fragments="programs"
         :track-fragments="tracks"
@@ -124,6 +126,7 @@ const types = computed(() => data.value?.types ?? []);
       :label="t('admin.courses.courses.label')"
     >
       <AdminCoursesCourses
+        :fetching
         :degree-fragments="degrees"
         :program-fragments="programs"
         :track-fragments="tracks"
@@ -138,7 +141,7 @@ const types = computed(() => data.value?.types ?? []);
       icon="sym_s_format_list_bulleted"
       :label="t('admin.courses.courseTypes.label')"
     >
-      <AdminCoursesCourseTypes :course-type-fragments="types" />
+      <AdminCoursesCourseTypes :fetching :course-type-fragments="types" />
     </AdminSection>
   </QList>
 </template>

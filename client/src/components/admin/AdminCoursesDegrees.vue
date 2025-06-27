@@ -29,6 +29,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = DegreeInsertInput;
 
 const { degreeFragments } = defineProps<{
+  fetching: boolean;
   degreeFragments: FragmentType<typeof AdminDegreeFragmentDoc>[];
 }>();
 
@@ -147,6 +148,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="degrees"
     :row-descriptor
     :rows="degrees"
+    :fetching
     :validate-flat-row
     :insert-data="insertDegrees"
     :upsert-data="upsertDegrees"

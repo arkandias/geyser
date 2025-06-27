@@ -33,6 +33,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = ServiceInsertInput;
 
 const { serviceFragments, teacherFragments } = defineProps<{
+  fetching: boolean;
   serviceFragments: FragmentType<typeof AdminServiceFragmentDoc>[];
   teacherFragments: FragmentType<typeof AdminServicesTeacherFragmentDoc>[];
 }>();
@@ -206,6 +207,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="services"
     :row-descriptor
     :rows="services"
+    :fetching
     :validate-flat-row
     :form-options
     :insert-data="insertServices"

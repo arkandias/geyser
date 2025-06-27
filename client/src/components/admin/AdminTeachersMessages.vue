@@ -34,6 +34,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = MessageInsertInput;
 
 const { messageFragments, serviceFragments, teacherFragments } = defineProps<{
+  fetching: boolean;
   messageFragments: FragmentType<typeof AdminMessageFragmentDoc>[];
   serviceFragments: FragmentType<typeof AdminMessagesServiceFragmentDoc>[];
   teacherFragments: FragmentType<typeof AdminMessagesTeacherFragmentDoc>[];
@@ -209,6 +210,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="messages"
     :row-descriptor
     :rows="messages"
+    :fetching
     :validate-flat-row
     :form-options
     :insert-data="insertMessages"

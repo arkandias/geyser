@@ -114,7 +114,7 @@ graphql(`
   }
 `);
 
-const { data } = useQuery({
+const { data, fetching } = useQuery({
   query: GetAdminRequestsDocument,
   variables: { oid: organization.id },
   context: {
@@ -139,6 +139,7 @@ const courseTypes = computed(() => data.value?.courseTypes ?? []);
       :label="t('admin.requests.requests.label')"
     >
       <AdminRequestsRequests
+        :fetching
         :request-fragments="requests"
         :service-fragments="services"
         :teacher-fragments="teachers"
@@ -157,6 +158,7 @@ const courseTypes = computed(() => data.value?.courseTypes ?? []);
       :label="t('admin.requests.priorities.label')"
     >
       <AdminRequestsPriorities
+        :fetching
         :priority-fragments="priorities"
         :service-fragments="services"
         :teacher-fragments="teachers"

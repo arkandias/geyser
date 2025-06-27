@@ -40,6 +40,7 @@ const {
   serviceModificationTypeFragments,
   teacherFragments,
 } = defineProps<{
+  fetching: boolean;
   serviceFragments: FragmentType<
     typeof AdminServiceModificationsServiceFragmentDoc
   >[];
@@ -298,6 +299,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="serviceModifications"
     :row-descriptor
     :rows="serviceModifications"
+    :fetching
     :validate-flat-row
     :form-options
     :insert-data="insertServiceModifications"

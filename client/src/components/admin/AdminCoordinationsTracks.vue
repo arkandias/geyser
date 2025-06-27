@@ -41,6 +41,7 @@ const {
   programFragments,
   trackFragments,
 } = defineProps<{
+  fetching: boolean;
   coordinationFragments: FragmentType<
     typeof AdminCoordinationTrackFragmentDoc
   >[];
@@ -338,6 +339,7 @@ const filterOptions = computed<
     name="tracks"
     :row-descriptor
     :rows="coordinations"
+    :fetching
     :validate-flat-row
     :form-options
     :filter-options

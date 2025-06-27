@@ -32,6 +32,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = ProgramInsertInput;
 
 const { degreeFragments, programFragments } = defineProps<{
+  fetching: boolean;
   degreeFragments: FragmentType<typeof AdminProgramsDegreeFragmentDoc>[];
   programFragments: FragmentType<typeof AdminProgramFragmentDoc>[];
 }>();
@@ -186,6 +187,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="programs"
     :row-descriptor
     :rows="programs"
+    :fetching
     :validate-flat-row
     :form-options
     :insert-data="insertPrograms"

@@ -39,6 +39,7 @@ const {
   degreeFragments,
   programFragments,
 } = defineProps<{
+  fetching: boolean;
   coordinationFragments: FragmentType<
     typeof AdminCoordinationProgramFragmentDoc
   >[];
@@ -289,6 +290,7 @@ const filterOptions = computed<
     name="programs"
     :row-descriptor
     :rows="coordinations"
+    :fetching
     :validate-flat-row
     :form-options
     :filter-options

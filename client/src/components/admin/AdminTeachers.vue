@@ -79,7 +79,7 @@ graphql(`
   }
 `);
 
-const { data } = useQuery({
+const { data, fetching } = useQuery({
   query: GetAdminTeachersDocument,
   variables: { oid: organization.id },
   context: {
@@ -112,6 +112,7 @@ const messages = computed(() => data.value?.messages ?? []);
       :label="t('admin.teachers.teachers.label')"
     >
       <AdminTeachersTeachers
+        :fetching
         :teacher-fragments="teachers"
         :position-fragments="positions"
       />
@@ -123,7 +124,7 @@ const messages = computed(() => data.value?.messages ?? []);
       icon="sym_s_work"
       :label="t('admin.teachers.positions.label')"
     >
-      <AdminTeachersPositions :position-fragments="positions" />
+      <AdminTeachersPositions :fetching :position-fragments="positions" />
     </AdminSection>
 
     <QSeparator />
@@ -133,6 +134,7 @@ const messages = computed(() => data.value?.messages ?? []);
       :label="t('admin.teachers.services.label')"
     >
       <AdminTeachersServices
+        :fetching
         :service-fragments="services"
         :teacher-fragments="teachers"
       />
@@ -145,6 +147,7 @@ const messages = computed(() => data.value?.messages ?? []);
       :label="t('admin.teachers.serviceModifications.label')"
     >
       <AdminTeachersServiceModifications
+        :fetching
         :service-fragments="services"
         :service-modification-fragments="serviceModifications"
         :service-modification-type-fragments="serviceModificationTypes"
@@ -159,6 +162,7 @@ const messages = computed(() => data.value?.messages ?? []);
       :label="t('admin.teachers.serviceModificationTypes.label')"
     >
       <AdminTeachersServiceModificationTypes
+        :fetching
         :service-modification-type-fragments="serviceModificationTypes"
       />
     </AdminSection>
@@ -167,6 +171,7 @@ const messages = computed(() => data.value?.messages ?? []);
 
     <AdminSection icon="sym_s_chat" :label="t('admin.teachers.messages.label')">
       <AdminTeachersMessages
+        :fetching
         :message-fragments="messages"
         :service-fragments="services"
         :teacher-fragments="teachers"

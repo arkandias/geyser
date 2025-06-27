@@ -79,7 +79,7 @@ graphql(`
   }
 `);
 
-const { data } = useQuery({
+const { data, fetching } = useQuery({
   query: GetAdminCoordinationsDocument,
   variables: { oid: organization.id },
   context: {
@@ -109,6 +109,7 @@ const courses = computed(() => data.value?.courses ?? []);
       :label="t('admin.coordinations.programs.label')"
     >
       <AdminCoordinationsPrograms
+        :fetching
         :coordination-fragments="coordinations"
         :teacher-fragments="teachers"
         :degree-fragments="degrees"
@@ -122,6 +123,7 @@ const courses = computed(() => data.value?.courses ?? []);
       :label="t('admin.coordinations.tracks.label')"
     >
       <AdminCoordinationsTracks
+        :fetching
         :coordination-fragments="coordinations"
         :teacher-fragments="teachers"
         :degree-fragments="degrees"
@@ -136,6 +138,7 @@ const courses = computed(() => data.value?.courses ?? []);
       :label="t('admin.coordinations.courses.label')"
     >
       <AdminCoordinationsCourses
+        :fetching
         :coordination-fragments="coordinations"
         :teacher-fragments="teachers"
         :degree-fragments="degrees"

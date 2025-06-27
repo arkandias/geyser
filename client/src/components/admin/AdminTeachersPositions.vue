@@ -30,6 +30,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = PositionInsertInput;
 
 const { positionFragments } = defineProps<{
+  fetching: boolean;
   positionFragments: FragmentType<typeof AdminPositionFragmentDoc>[];
 }>();
 
@@ -155,6 +156,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     name="positions"
     :row-descriptor
     :rows="positions"
+    :fetching
     :validate-flat-row
     :insert-data="insertPositions"
     :upsert-data="upsertPositions"

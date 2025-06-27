@@ -33,6 +33,7 @@ type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = TrackInsertInput;
 
 const { degreeFragments, programFragments, trackFragments } = defineProps<{
+  fetching: boolean;
   degreeFragments: FragmentType<typeof AdminTracksDegreeFragmentDoc>[];
   programFragments: FragmentType<typeof AdminTracksProgramFragmentDoc>[];
   trackFragments: FragmentType<typeof AdminTrackFragmentDoc>[];
@@ -231,6 +232,7 @@ const filterOptions = computed<
     name="tracks"
     :row-descriptor
     :rows="tracks"
+    :fetching
     :validate-flat-row
     :form-options
     :filter-options
