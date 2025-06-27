@@ -450,7 +450,10 @@ const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed<
   SelectOptions<string, Row, typeof rowDescriptor>
 >(() => ({
-  teacherEmail: teachers.value.map((t) => t.email),
+  teacherEmail: teachers.value.map((t) => ({
+    value: t.email,
+    label: t.displayname ?? "",
+  })),
   degreeName: degrees.value.map((d) => d.name),
   programName: programs.value.map((p) => p.name),
   trackName: tracks.value.map((t) => t.name),
