@@ -396,10 +396,7 @@ const formatWH = (hours: number) =>
 </template>
 
 <style scoped lang="scss">
-.q-select {
-  width: 360px;
-}
-.q-input {
-  width: 180px;
+.q-dialog {
+  width: 240px;
 }
 </style>

@@ -23,7 +23,7 @@ export default {
       total: "Total",
       baseServiceForm: {
         field: {
-          hours: "Heures",
+          hours: "Heures (@:unit.weightedHours)",
         },
         button: {
           update: "Mettre à jour",
@@ -44,7 +44,7 @@ export default {
       modificationForm: {
         field: {
           type: "Type",
-          hours: "Heures",
+          hours: "Heures (@:unit.weightedHours)",
         },
         button: {
           add: "Ajouter",

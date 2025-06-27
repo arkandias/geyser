@@ -23,7 +23,7 @@ export default {
       total: "Total",
       baseServiceForm: {
         field: {
-          hours: "Hours",
+          hours: "Hours (@:unit.weightedHours)",
         },
         tooltip: {
           edit: "Edit base service",
@@ -44,7 +44,7 @@ export default {
       modificationForm: {
         field: {
           type: "Type",
-          hours: "Hours",
+          hours: "Hours (@:unit.weightedHours)",
         },
         tooltip: {
           create: "Add a modification",
