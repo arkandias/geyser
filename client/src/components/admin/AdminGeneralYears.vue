@@ -300,7 +300,7 @@ const computePrioritiesHandle = async () => {
 
   const { data, error } = await computePriorities.executeMutation(
     { year: selectedYear.value },
-    { additionalTypenames: ["Priority"] },
+    { additionalTypenames: ["Priority", "Request"] },
   );
 
   if (error || !data?.computeYearPriorities) {

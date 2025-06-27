@@ -111,14 +111,15 @@ DECLARE
     session_variables json;
     org_id            integer;
 BEGIN
-    session_variables := current_setting('hasura.user', 't');
-    org_id := session_variables ->> 'x-hasura-org-id';
+    session_variables := current_setting('hasura.user', 't')::json;
+    org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
-    SELECT s.*
-    FROM public.teacher t
-             CROSS JOIN LATERAL public.create_teacher_service(org_id, p_year, t.id) s
-    WHERE t.oid = org_id
-      AND t.active IS TRUE;
+    RETURN QUERY
+        SELECT s.*
+        FROM public.teacher t
+                 CROSS JOIN LATERAL public.create_teacher_service(p_year, t.id) s
+        WHERE t.oid = org_id
+          AND t.active IS TRUE;
 END
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.create_year_services(integer) IS 'Creates service entries for all active teachers in organization for specified year';
@@ -130,20 +131,21 @@ DECLARE
     session_variables json;
     org_id            integer;
 BEGIN
-    session_variables := current_setting('hasura.user', 't');
-    org_id := session_variables ->> 'x-hasura-org-id';
+    session_variables := current_setting('hasura.user', 't')::json;
+    org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
-    INSERT INTO public.service (oid, year, teacher_id, hours)
-    SELECT org_id, p_year, s.teacher_id, s.hours
-    FROM public.service s
-             JOIN public.teacher t
-                  ON t.oid = s.oid
-                      AND t.id = s.teacher_id
-    WHERE s.oid = org_id
-      AND s.year = p_year - 1
-      AND t.active IS TRUE
-    ON CONFLICT (oid, year, teacher_id) DO NOTHING
-    RETURNING *;
+    RETURN QUERY
+        INSERT INTO public.service (oid, year, teacher_id, hours)
+            SELECT org_id, p_year, s.teacher_id, s.hours
+            FROM public.service s
+                     JOIN public.teacher t
+                          ON t.oid = s.oid
+                              AND t.id = s.teacher_id
+            WHERE s.oid = org_id
+              AND s.year = p_year - 1
+              AND t.active IS TRUE
+            ON CONFLICT (oid, year, teacher_id) DO NOTHING
+            RETURNING *;
 END
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.copy_year_services(integer) IS 'Creates copies of active teacher services from the previous year into the specified year';
@@ -155,8 +157,8 @@ DECLARE
     session_variables json;
     org_id            integer;
 BEGIN
-    session_variables := current_setting('hasura.user', 't');
-    org_id := session_variables ->> 'x-hasura-org-id';
+    session_variables := current_setting('hasura.user', 't')::json;
+    org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
     RETURN QUERY
         INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours,
@@ -212,14 +214,15 @@ DECLARE
     session_variables json;
     org_id            integer;
 BEGIN
-    session_variables := current_setting('hasura.user', 't');
-    org_id := session_variables ->> 'x-hasura-org-id';
+    session_variables := current_setting('hasura.user', 't')::json;
+    org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
-    SELECT p.*
-    FROM public.service s
-             CROSS JOIN LATERAL public.compute_service_priorities(s) p
-    WHERE s.oid = org_id
-      AND s.year = p_year;
+    RETURN QUERY
+        SELECT p.*
+        FROM public.service s
+                 CROSS JOIN LATERAL public.compute_service_priorities(s) p
+        WHERE s.oid = org_id
+          AND s.year = p_year;
 END
 $$ LANGUAGE plpgsql;
 COMMENT ON FUNCTION public.compute_year_priorities(integer) IS 'Computes seniority and priority status for all services in a given year';
