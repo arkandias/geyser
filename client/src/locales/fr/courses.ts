@@ -17,15 +17,15 @@ export default {
             tooltip: "",
           },
           message: {
-            label: "M.",
+            label: "M",
             tooltip: "Message",
           },
           modifiedService: {
-            label: "S. ({unit})",
+            label: "S ({unit})",
             tooltip: "Service à réaliser (@:unit.weightedHours)",
           },
           totalAssignment: {
-            label: "A. ({unit})",
+            label: "A ({unit})",
             tooltip: "Nombre d'heures attribuées (@:unit.weightedHours)",
           },
           diffAssignment: {
@@ -76,7 +76,7 @@ export default {
             tooltip: "",
           },
           semester: {
-            label: "S.",
+            label: "Sem.",
             tooltip: "Semestre",
           },
           type: {
@@ -92,7 +92,7 @@ export default {
             tooltip: "Nombre de groupes",
           },
           totalAssignment: {
-            label: "A. ({unit})",
+            label: "A ({unit})",
             tooltip: "Nombre d'heures attribuées",
           },
           diffAssignment: {

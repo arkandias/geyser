@@ -17,15 +17,15 @@ export default {
             tooltip: "",
           },
           message: {
-            label: "M.",
+            label: "M",
             tooltip: "Message",
           },
           modifiedService: {
-            label: "S. ({unit})",
+            label: "S ({unit})",
             tooltip: "Service to complete (@:unit.weightedHours)",
           },
           totalAssignment: {
-            label: "A. ({unit})",
+            label: "A ({unit})",
             tooltip: "Number of hours assigned (@:unit.weightedHours)",
           },
           diffAssignment: {
@@ -92,7 +92,7 @@ export default {
             tooltip: "Number of groups",
           },
           totalAssignment: {
-            label: "A. ({unit})",
+            label: "A ({unit})",
             tooltip: "Number of hours assigned",
           },
           diffAssignment: {
