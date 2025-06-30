@@ -93,6 +93,7 @@ const { hasService } = useProfileStore();
           {{ t("header.refreshData.label") }}
         </QTooltip>
       </QBtn>
+      <MenuYear />
       <QBtn
         :icon="isDarkModeActive ? 'sym_s_dark_mode' : 'sym_s_light_mode'"
         flat
@@ -103,7 +104,6 @@ const { hasService } = useProfileStore();
           {{ t("header.darkMode.label") }}
         </QTooltip>
       </QBtn>
-      <MenuYear />
       <MenuLang />
       <MenuInfo />
       <MenuUser />
