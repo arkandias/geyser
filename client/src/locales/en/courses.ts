@@ -55,7 +55,7 @@ export default {
         options: {
           stickyHeader: "Sticky header",
           columns: "Columns",
-          resetColumns: "Reset columns",
+          resetColumns: "Reset",
         },
         loading: "Loading services…",
         noData: "No services found",
@@ -134,7 +134,7 @@ export default {
           weightedHours: "Teaching equivalent hours",
           stickyHeader: "Sticky header",
           columns: "Columns",
-          resetColumns: "Reset columns",
+          resetColumns: "Reset",
         },
         loading: "Loading courses…",
         noData: "No courses found",

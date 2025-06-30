@@ -406,7 +406,13 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
             dense
             @show="isMenuColumnsTooltipVisible = false"
           >
-            <QList dense>
+            <QList>
+              <QItem class="flex-center text-no-wrap">
+                <QItemLabel header>
+                  {{ t("courses.table.services.options.columns") }}
+                </QItemLabel>
+              </QItem>
+              <QSeparator />
               <QItem v-for="col in orderedColumns" :key="col.name" dense>
                 <QToggle
                   v-model="visibleColumns"
@@ -442,7 +448,8 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
                   @click="down(col.name)"
                 />
               </QItem>
-              <QItem clickable @click="resetColumns()">
+              <QSeparator />
+              <QItem clickable class="text-no-wrap" @click="resetColumns()">
                 <QItemSection side>
                   <QIcon name="sym_s_restart_alt" color="primary" />
                 </QItemSection>

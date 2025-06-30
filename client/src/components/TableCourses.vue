@@ -707,7 +707,13 @@ const downloadTeacherAssignments = async () => {
             dense
             @show="isMenuColumnsTooltipVisible = false"
           >
-            <QList dense>
+            <QList>
+              <QItem class="flex-center text-no-wrap">
+                <QItemLabel header>
+                  {{ t("courses.table.courses.options.columns") }}
+                </QItemLabel>
+              </QItem>
+              <QSeparator />
               <QItem v-for="col in orderedColumns" :key="col.name" dense>
                 <QToggle
                   v-model="visibleColumns"
@@ -743,7 +749,8 @@ const downloadTeacherAssignments = async () => {
                   @click="down(col.name)"
                 />
               </QItem>
-              <QItem clickable @click="resetColumns()">
+              <QSeparator />
+              <QItem clickable class="text-no-wrap" @click="resetColumns()">
                 <QItemSection side>
                   <QIcon name="sym_s_restart_alt" color="primary" />
                 </QItemSection>

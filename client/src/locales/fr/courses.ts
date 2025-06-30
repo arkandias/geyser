@@ -55,7 +55,7 @@ export default {
         options: {
           stickyHeader: "En-tête fixe",
           columns: "Colonnes",
-          resetColumns: "Réinitialiser les colonnes",
+          resetColumns: "Réinitialiser",
         },
         loading: "Chargement des services…",
         noData: "Aucun service trouvé",
@@ -135,7 +135,7 @@ export default {
           weightedHours: "Heures équivalent TD",
           stickyHeader: "En-tête fixe",
           columns: "Colonnes",
-          resetColumns: "Réinitialiser les colonnes",
+          resetColumns: "Réinitialiser",
         },
         loading: "Chargement des enseignements…",
         noData: "Aucun enseignement trouvé",
