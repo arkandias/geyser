@@ -10,12 +10,19 @@ export const useLocale = () => {
   const { locale } = useTypedI18n();
   const { organization } = useOrganizationStore();
 
-  locale.value = organization.locale;
-  $q.lang.set(quasarLanguages[organization.locale]);
+  const storedLocale = $q.localStorage.getItem("locale");
+  if (isLocale(storedLocale)) {
+    locale.value = storedLocale;
+    $q.lang.set(quasarLanguages[storedLocale]);
+  } else {
+    locale.value = organization.locale;
+    $q.lang.set(quasarLanguages[organization.locale]);
+  }
 
   const setLocale = (newLocale: string) => {
     if (isLocale(newLocale)) {
       locale.value = newLocale;
+      $q.localStorage.set("locale", newLocale);
       $q.lang.set(quasarLanguages[newLocale]);
     }
   };
