@@ -101,6 +101,13 @@ const title = computed(
   () => teacher.value?.displayname ?? t("courses.table.courses.title"),
 );
 
+// Options
+const stickyHeader = ref(false);
+const weightedHours = ref(false);
+const unit = computed(() =>
+  weightedHours.value ? t("unit.weightedHours") : t("unit.hours"),
+);
+
 // Badge color
 const lowerThanHoursTotal = (col: Column<CourseRow>, row: CourseRow) =>
   priorityColor(
@@ -108,13 +115,6 @@ const lowerThanHoursTotal = (col: Column<CourseRow>, row: CourseRow) =>
   );
 const positive = (col: Column<CourseRow>, row: CourseRow) =>
   priorityColor(Number(row[col.name as keyof CourseRow]) > 0);
-
-// Options
-const stickyHeader = ref(false);
-const weightedHours = ref(false);
-const unit = computed(() =>
-  weightedHours.value ? t("unit.weightedHours") : t("unit.hours"),
-);
 
 type CourseRow = Omit<CourseRowFragment, "hoursPerGroup" | "numberOfGroups"> & {
   hours: number;
