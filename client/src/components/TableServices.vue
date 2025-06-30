@@ -61,7 +61,7 @@ const greaterThanOrEqualToModifiedService = (
   row: ServiceRow,
 ) =>
   priorityColor(
-    Number(row[col.name as keyof ServiceRow]) >= (row.modifiedService ?? 0),
+    Number(row[col.name as keyof ServiceRow]) >= row.modifiedService,
   );
 const nonPositive = (col: Column<ServiceRow>, row: ServiceRow) =>
   priorityColor(Number(row[col.name as keyof ServiceRow]) <= 0);
