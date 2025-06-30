@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { useQuasar } from "quasar";
+import { computed, ref, watch } from "vue";
 
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
@@ -12,7 +13,12 @@ import {
   ServiceRowFragmentDoc,
 } from "@/gql/graphql.ts";
 import type { Column } from "@/types/column.ts";
-import { getField, localeCompare, normalizeForSearch } from "@/utils";
+import {
+  getField,
+  localeCompare,
+  normalizeForSearch,
+  priorityColor,
+} from "@/utils";
 
 const { serviceRowFragments } = defineProps<{
   serviceRowFragments: FragmentType<typeof ServiceRowFragmentDoc>[];
@@ -42,8 +48,23 @@ graphql(`
   }
 `);
 
+const $q = useQuasar();
 const { t, n } = useTypedI18n();
 const perm = usePermissions();
+
+// Options
+const stickyHeader = ref(false);
+
+// Badge color
+const greaterThanOrEqualToModifiedService = (
+  col: Column<ServiceRow>,
+  row: ServiceRow,
+) =>
+  priorityColor(
+    Number(row[col.name as keyof ServiceRow]) >= (row.modifiedService ?? 0),
+  );
+const nonPositive = (col: Column<ServiceRow>, row: ServiceRow) =>
+  priorityColor(Number(row[col.name as keyof ServiceRow]) <= 0);
 
 type ServiceRow = Omit<
   ServiceRowFragment,
@@ -121,6 +142,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     tooltip: t("courses.table.services.column.lastname.tooltip"),
     align: "left",
     field: (row) => row.teacher.lastname,
+    required: true,
     sortable: true,
     sort: localeCompare,
     visible: true,
@@ -132,6 +154,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     tooltip: t("courses.table.services.column.firstname.tooltip"),
     align: "left",
     field: (row) => row.teacher.firstname,
+    required: true,
     sortable: true,
     sort: localeCompare,
     visible: true,
@@ -182,18 +205,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: perm.toViewAssignments,
     searchable: false,
-  },
-  {
-    name: "diffAssignment",
-    label: t("courses.table.services.column.diffAssignment.label", {
-      unit: t("unit.weightedHours"),
-    }),
-    tooltip: t("courses.table.services.column.diffAssignment.tooltip"),
-    field: "diffAssignment",
-    format: (val: number) => n(val, "decimalFixed"),
-    sortable: true,
-    visible: false,
-    searchable: false,
+    badgeColor: greaterThanOrEqualToModifiedService,
   },
   {
     name: "totalPrimary",
@@ -206,18 +218,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
-  },
-  {
-    name: "diffPrimary",
-    label: t("courses.table.services.column.diffPrimary.label", {
-      unit: t("unit.weightedHours"),
-    }),
-    tooltip: t("courses.table.services.column.diffPrimary.tooltip"),
-    field: "diffPrimary",
-    format: (val: number) => n(val, "decimalFixed"),
-    sortable: true,
-    visible: false,
-    searchable: false,
+    badgeColor: greaterThanOrEqualToModifiedService,
   },
   {
     name: "totalSecondary",
@@ -230,14 +231,104 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
+    badgeColor: greaterThanOrEqualToModifiedService,
+  },
+  {
+    name: "diffAssignment",
+    label: t("courses.table.services.column.diffAssignment.label", {
+      unit: t("unit.weightedHours"),
+    }),
+    tooltip: t("courses.table.services.column.diffAssignment.tooltip"),
+    field: "diffAssignment",
+    format: (val: number) => n(val, "decimalFixed"),
+    sortable: true,
+    visible: false,
+    searchable: false,
+    badgeColor: nonPositive,
+  },
+  {
+    name: "diffPrimary",
+    label: t("courses.table.services.column.diffPrimary.label", {
+      unit: t("unit.weightedHours"),
+    }),
+    tooltip: t("courses.table.services.column.diffPrimary.tooltip"),
+    field: "diffPrimary",
+    format: (val: number) => n(val, "decimalFixed"),
+    sortable: true,
+    visible: false,
+    searchable: false,
+    badgeColor: nonPositive,
   },
 ]);
-const visibleColumns = ref(
-  // eslint-disable-next-line vue/no-ref-object-reactivity-loss
-  columns.value.filter((col) => col.visible).map((col) => col.name),
+
+// Columns order
+// eslint-disable-next-line vue/no-ref-object-reactivity-loss
+const defaultColumnsOrder = columns.value.map((col) => col.name);
+const storedColumnsOrder = $q.localStorage.getItem(
+  "table_services_columns_order",
 );
+const columnsOrder = ref(
+  Array.isArray(storedColumnsOrder)
+    ? [...defaultColumnsOrder].sort(
+        (x, y) => storedColumnsOrder.indexOf(x) - storedColumnsOrder.indexOf(y),
+      )
+    : [...defaultColumnsOrder],
+);
+const isFirst = (name: string) => columnsOrder.value.indexOf(name) === 0;
+const isLast = (name: string) =>
+  columnsOrder.value.indexOf(name) === columnsOrder.value.length - 1;
+const orderedColumns = computed<Column<ServiceRow>[]>(() =>
+  columnsOrder.value
+    .map((name) => columns.value.find((col) => col.name === name))
+    .filter((col) => col !== undefined),
+);
+const move = (name: string, direction: number) => {
+  const index = columnsOrder.value.findIndex((x) => x === name);
+  const newIndex = index + direction;
+  if (!columnsOrder.value[index] || !columnsOrder.value[newIndex]) {
+    return;
+  }
+  [columnsOrder.value[index], columnsOrder.value[newIndex]] = [
+    columnsOrder.value[newIndex],
+    columnsOrder.value[index],
+  ];
+};
+const up = (name: string) => {
+  move(name, -1);
+};
+const down = (name: string) => {
+  move(name, 1);
+};
+watch(columnsOrder, (value) => {
+  $q.localStorage.set("table_services_columns_order", value);
+});
+
+// Column visibility
+const defaultVisibleColumns =
+  // eslint-disable-next-line vue/no-ref-object-reactivity-loss
+  columns.value.filter((col) => col.visible).map((col) => col.name);
+const storedVisibleColumns = $q.localStorage.getItem(
+  "table_services_visible_columns",
+);
+const visibleColumns = ref(
+  Array.isArray(storedVisibleColumns)
+    ? // eslint-disable-next-line vue/no-ref-object-reactivity-loss
+      columns.value
+        .map((col) => col.name)
+        .filter((name) => storedVisibleColumns.includes(name))
+    : [...defaultVisibleColumns],
+);
+watch(visibleColumns, (value) => {
+  $q.localStorage.set("table_services_visible_columns", value);
+});
+
+// Columns menu
 const isMenuColumnsOpen = ref(false);
 const isMenuColumnsTooltipVisible = ref(false);
+const resetColumns = () => {
+  columnsOrder.value = defaultColumnsOrder;
+  visibleColumns.value = defaultVisibleColumns;
+};
 
 // Search filter
 const search = ref<string | null>(null);
@@ -257,9 +348,6 @@ const filterMethod = (
     ),
   );
 
-// Options
-const stickyHeader = ref(false);
-
 // Row styling
 const tableRowClassFn = (row: ServiceRowFragment) =>
   row.teacher.visible ? "" : "non-visible";
@@ -268,7 +356,7 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
 <template>
   <QTable
     :title="t('courses.table.services.title')"
-    :columns
+    :columns="orderedColumns"
     :visible-columns
     :rows="services"
     :selected="selectedRow"
@@ -310,21 +398,21 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
           dense
         >
           <QTooltip v-model="isMenuColumnsTooltipVisible">
-            {{ t("courses.table.services.options.visibleColumns") }}
+            {{ t("courses.table.services.options.columns") }}
           </QTooltip>
           <QMenu
             v-model="isMenuColumnsOpen"
-            auto-close
             square
             dense
             @show="isMenuColumnsTooltipVisible = false"
           >
             <QList dense>
-              <QItem v-for="col in columns" :key="col.name" dense>
+              <QItem v-for="col in orderedColumns" :key="col.name" dense>
                 <QToggle
                   v-model="visibleColumns"
                   :val="col.name"
                   :label="col.label"
+                  :disable="col.required"
                   dense
                 />
                 <QTooltip
@@ -334,6 +422,33 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
                 >
                   {{ col.tooltip }}
                 </QTooltip>
+                <QSpace />
+                <QBtn
+                  icon="sym_s_keyboard_arrow_up"
+                  color="primary"
+                  :disable="isFirst(col.name)"
+                  flat
+                  square
+                  dense
+                  @click="up(col.name)"
+                />
+                <QBtn
+                  icon="sym_s_keyboard_arrow_down"
+                  color="primary"
+                  :disable="isLast(col.name)"
+                  flat
+                  square
+                  dense
+                  @click="down(col.name)"
+                />
+              </QItem>
+              <QItem clickable @click="resetColumns()">
+                <QItemSection side>
+                  <QIcon name="sym_s_restart_alt" color="primary" />
+                </QItemSection>
+                <QItemSection>
+                  {{ t("courses.table.services.options.resetColumns") }}
+                </QItemSection>
               </QItem>
             </QList>
           </QMenu>
@@ -352,6 +467,17 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
           {{ scope.col.tooltip }}
         </QTooltip>
       </QTh>
+    </template>
+    <template #body-cell="props">
+      <QTd :props>
+        <QBadge
+          v-if="props.col.badgeColor"
+          :color="props.col.badgeColor(props.col, props.row)"
+        >
+          {{ props.value }}
+        </QBadge>
+        <template v-else>{{ props.value }}</template>
+      </QTd>
     </template>
   </QTable>
 </template>
