@@ -81,5 +81,6 @@
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718185_year_with_id_oid/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718186_locales/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1738174718186_locales/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751279080012_add_hours_effective_total/up.sql" dialect="PostgreSQL" />
   </component>
 </project>

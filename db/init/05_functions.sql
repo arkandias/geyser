@@ -161,8 +161,8 @@ BEGIN
     org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
     RETURN QUERY
-        INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, hours,
-                                   hours_adjusted, groups, groups_adjusted, description, priority_rule, visible)
+        INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, semester, type_id, groups,
+                                   groups_adjusted, hours, hours_adjusted, description, priority_rule, visible)
             SELECT org_id,
                    p_year,
                    c.program_id,
@@ -171,10 +171,10 @@ BEGIN
                    c.name_short,
                    c.semester,
                    c.type_id,
-                   c.hours,
-                   c.hours_adjusted,
                    c.groups,
                    c.groups_adjusted,
+                   c.hours,
+                   c.hours_adjusted,
                    c.description,
                    c.priority_rule,
                    c.visible

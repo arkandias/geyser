@@ -95,35 +95,36 @@ COMMENT ON COLUMN public.course_type.description IS 'Optional description';
 
 CREATE TABLE public.course
 (
-    oid              integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id               integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
-    year             integer NOT NULL,
-    program_id       integer NOT NULL,
-    track_id         integer,
-    name             text    NOT NULL,
-    name_short       text,
-    name_display     text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
-    semester         integer NOT NULL CHECK (1 <= semester AND semester <= 6),
-    type_id          integer NOT NULL,
-    cycle_year       integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
-    hours            real    NOT NULL,
-    hours_adjusted   real,
-    hours_effective  integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
-    groups           integer NOT NULL,
-    groups_adjusted  integer,
-    groups_effective integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
-    description      text,
-    priority_rule    integer, -- 0=: Infinity; NULL: No rule
-    visible          boolean NOT NULL DEFAULT TRUE,
+    oid                   integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id                    integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    year                  integer NOT NULL,
+    program_id            integer NOT NULL,
+    track_id              integer,
+    name                  text    NOT NULL,
+    name_short            text,
+    name_display          text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
+    semester              integer NOT NULL CHECK (1 <= semester AND semester <= 6),
+    type_id               integer NOT NULL,
+    cycle_year            integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
+    groups                integer NOT NULL,
+    groups_adjusted       integer,
+    groups_effective      integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
+    hours                 real    NOT NULL,
+    hours_adjusted        real,
+    hours_effective       integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
+    hours_effective_total integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups) * coalesce(hours_adjusted, hours)) STORED,
+    description           text,
+    priority_rule         integer, -- 0=: Infinity; NULL: No rule
+    visible               boolean NOT NULL DEFAULT TRUE,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id) REFERENCES public.program ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id, track_id) REFERENCES public.track (oid, program_id, id) ON UPDATE CASCADE,
     FOREIGN KEY (oid, type_id) REFERENCES public.course_type ON UPDATE CASCADE,
     UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, semester, type_id),
-    UNIQUE (oid, id, year),   -- referenced in requests and priorities to ensure data consistency
-    CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
+    UNIQUE (oid, id, year),        -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
+    CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
     CONSTRAINT course_priority_rule_non_negative_check CHECK (priority_rule >= 0)
 );
 CREATE INDEX idx_course_oid ON public.course (oid);
@@ -144,12 +145,13 @@ COMMENT ON COLUMN public.course.name_display IS 'Computed display name';
 COMMENT ON COLUMN public.course.type_id IS 'Course type reference';
 COMMENT ON COLUMN public.course.semester IS 'Academic semester';
 COMMENT ON COLUMN public.course.cycle_year IS 'Computed study year (1-3) based on semester';
-COMMENT ON COLUMN public.course.hours IS 'Base number of teaching hours per group';
-COMMENT ON COLUMN public.course.hours_adjusted IS 'Modified number of teaching hours per group, if different from base';
-COMMENT ON COLUMN public.course.hours_effective IS 'Actual number of teaching hours per group, defaulting to base if no adjustment';
 COMMENT ON COLUMN public.course.groups IS 'Base number of groups';
 COMMENT ON COLUMN public.course.groups_adjusted IS 'Modified number of groups, if different from base';
 COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups, defaulting to base if no adjustment';
+COMMENT ON COLUMN public.course.hours IS 'Base number of teaching hours per group';
+COMMENT ON COLUMN public.course.hours_adjusted IS 'Modified number of teaching hours per group, if different from base';
+COMMENT ON COLUMN public.course.hours_effective IS 'Actual number of teaching hours per group, defaulting to base if no adjustment';
+COMMENT ON COLUMN public.course.hours_effective_total IS 'Effective teaching hours per group times effective number of groups';
 COMMENT ON COLUMN public.course.description IS 'Optional description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls visibility to teachers';

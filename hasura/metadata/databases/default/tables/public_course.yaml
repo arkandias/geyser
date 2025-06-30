@@ -93,12 +93,13 @@ select_permissions:
         - semester
         - type_id
         - cycle_year
-        - hours
-        - hours_adjusted
-        - hours_effective
         - groups
         - groups_adjusted
         - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - hours_effective_total
         - description
         - priority_rule
         - visible
@@ -125,12 +126,13 @@ select_permissions:
         - semester
         - type_id
         - cycle_year
-        - hours
-        - hours_adjusted
-        - hours_effective
         - groups
         - groups_adjusted
         - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - hours_effective_total
         - description
         - priority_rule
         - visible
@@ -152,12 +154,13 @@ select_permissions:
         - semester
         - type_id
         - cycle_year
-        - hours
-        - hours_adjusted
-        - hours_effective
         - groups
         - groups_adjusted
         - groups_effective
+        - hours
+        - hours_adjusted
+        - hours_effective
+        - hours_effective_total
         - description
         - priority_rule
         - visible
