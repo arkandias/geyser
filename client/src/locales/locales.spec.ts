@@ -20,12 +20,12 @@ import {
   adminCoordinationsCoursesColNames,
   adminCoordinationsProgramsColNames,
   adminCoordinationsTracksColNames,
+  adminCoursesCourseTypesColNames,
   adminCoursesCoursesColNames,
   adminCoursesDegreesColNames,
   adminCoursesProgramsColNames,
   adminCoursesTermsColNames,
   adminCoursesTracksColNames,
-  adminCoursesTypesColNames,
   adminGeneralRolesColNames,
   adminRequestsPrioritiesColNames,
   adminRequestsRequestsColNames,
@@ -166,20 +166,15 @@ const findKeysInFiles = async (): Promise<string[]> => {
   deleteTemplateStringsKey("primitiveTypeName.${val}");
 
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
-    coordinations: {
-      programs: adminCoordinationsProgramsColNames,
-      tracks: adminCoordinationsTracksColNames,
-      courses: adminCoordinationsCoursesColNames,
-    },
     general: {
       roles: adminGeneralRolesColNames,
     },
     teachers: {
-      positions: adminTeachersPositionsColNames,
       teachers: adminTeachersTeachersColNames,
+      positions: adminTeachersPositionsColNames,
       services: adminTeachersServicesColNames,
-      serviceModificationTypes: adminTeachersServiceModificationTypesColNames,
       serviceModifications: adminTeachersServiceModificationsColNames,
+      serviceModificationTypes: adminTeachersServiceModificationTypesColNames,
       messages: adminTeachersMessagesColNames,
     },
     courses: {
@@ -187,12 +182,17 @@ const findKeysInFiles = async (): Promise<string[]> => {
       programs: adminCoursesProgramsColNames,
       tracks: adminCoursesTracksColNames,
       terms: adminCoursesTermsColNames,
-      types: adminCoursesTypesColNames,
       courses: adminCoursesCoursesColNames,
+      courseTypes: adminCoursesCourseTypesColNames,
     },
     requests: {
       requests: adminRequestsRequestsColNames,
       priorities: adminRequestsPrioritiesColNames,
+    },
+    coordinations: {
+      programs: adminCoordinationsProgramsColNames,
+      tracks: adminCoordinationsTracksColNames,
+      courses: adminCoordinationsCoursesColNames,
     },
   };
 

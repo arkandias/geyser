@@ -12,52 +12,6 @@ import type {
 export default {
   teachers: {
     title: "Teachers",
-    positions: {
-      label: "Positions",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-        baseServiceHours: {
-          label: "Base service (@:unit.weightedHours)",
-          tooltip: "Base service (@:unit.weightedHours)",
-        },
-      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Creating a position | Editing a position | Editing {count} positions",
-        error: {
-          baseServiceHoursNegative:
-            "Enter a positive or zero number of base service hours",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "No position created | Position created | {count} positions created",
-          update:
-            "No position updated | Position updated | {count} positions updated",
-          delete:
-            "No position deleted | Position deleted | {count} positions deleted",
-          import:
-            "0 positions imported | 1 position imported | {count} positions imported",
-          export:
-            "0 positions exported | 1 position exported | {count} positions exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected position?
-If this position is assigned to teachers, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected positions?
-If these positions are assigned to teachers, you will not be able to delete them.`,
-        },
-      },
-    },
     teachers: {
       label: "Teachers",
       column: {
@@ -129,6 +83,52 @@ If there are services, responsibilities, or roles for these teachers, you will n
         },
       },
     },
+    positions: {
+      label: "Positions",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+        baseServiceHours: {
+          label: "Base service (@:unit.weightedHours)",
+          tooltip: "Base service (@:unit.weightedHours)",
+        },
+      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Creating a position | Editing a position | Editing {count} positions",
+        error: {
+          baseServiceHoursNegative:
+            "Enter a positive or zero number of base service hours",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No position created | Position created | {count} positions created",
+          update:
+            "No position updated | Position updated | {count} positions updated",
+          delete:
+            "No position deleted | Position deleted | {count} positions deleted",
+          import:
+            "0 positions imported | 1 position imported | {count} positions imported",
+          export:
+            "0 positions exported | 1 position exported | {count} positions exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected position?
+If this position is assigned to teachers, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected positions?
+If these positions are assigned to teachers, you will not be able to delete them.`,
+        },
+      },
+    },
     services: {
       label: "Services",
       column: {
@@ -172,47 +172,6 @@ If there are services, responsibilities, or roles for these teachers, you will n
 If there are modifications, requests, or priorities for this service, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected services?
 If there are modifications, requests, or priorities for these services, you will not be able to delete them.`,
-        },
-      },
-    },
-    serviceModificationTypes: {
-      label: "Service modification types",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<
-        AdminTeachersServiceModificationTypesColName,
-        AdminColNameOptions
-      >,
-      form: {
-        title:
-          "Creating a modification type | Editing a modification type | Editing {count} modification types",
-      },
-      data: {
-        success: {
-          insert:
-            "No modification type created | Modification type created | {count} modification types created",
-          update:
-            "No modification type updated | Modification type updated | {count} modification types updated",
-          delete:
-            "No modification type deleted | Modification type deleted | {count} modification types deleted",
-          import:
-            "0 modification types imported | 1 modification type imported | {count} modification types imported",
-          export:
-            "0 modification types exported | 1 modification type exported | {count} modification types exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected modification type?
-If this type is assigned to modifications, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected modification types?
-If these types are assigned to modifications, you will not be able to delete them.`,
         },
       },
     },
@@ -270,6 +229,47 @@ If these types are assigned to modifications, you will not be able to delete the
         confirm: {
           delete:
             "Are you sure you want to delete the selected service modification? | Are you sure you want to delete the {count} selected service modifications?",
+        },
+      },
+    },
+    serviceModificationTypes: {
+      label: "Service modification types",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<
+        AdminTeachersServiceModificationTypesColName,
+        AdminColNameOptions
+      >,
+      form: {
+        title:
+          "Creating a modification type | Editing a modification type | Editing {count} modification types",
+      },
+      data: {
+        success: {
+          insert:
+            "No modification type created | Modification type created | {count} modification types created",
+          update:
+            "No modification type updated | Modification type updated | {count} modification types updated",
+          delete:
+            "No modification type deleted | Modification type deleted | {count} modification types deleted",
+          import:
+            "0 modification types imported | 1 modification type imported | {count} modification types imported",
+          export:
+            "0 modification types exported | 1 modification type exported | {count} modification types exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected modification type?
+If this type is assigned to modifications, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected modification types?
+If these types are assigned to modifications, you will not be able to delete them.`,
         },
       },
     },

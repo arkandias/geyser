@@ -1,55 +1,64 @@
-export const adminCoordinationsProgramsColNames = [
+export const adminGeneralRolesColNames = [
   "teacherEmail",
-  "degreeName",
-  "programName",
+  "role",
   "comment",
 ] as const;
-export type AdminCoordinationsProgramsColNames =
-  (typeof adminCoordinationsProgramsColNames)[number];
+export type AdminGeneralRolesColName =
+  (typeof adminGeneralRolesColNames)[number];
 
-export const adminCoordinationsTracksColNames = [
-  "teacherEmail",
-  "degreeName",
-  "programName",
-  "trackName",
-  "comment",
+export const adminTeachersTeachersColNames = [
+  "email",
+  "firstname",
+  "lastname",
+  "alias",
+  "positionLabel",
+  "baseServiceHours",
+  "visible",
+  "active",
+  "access",
 ] as const;
-export type AdminCoordinationsTracksColNames =
-  (typeof adminCoordinationsTracksColNames)[number];
+export type AdminTeachersTeachersColName =
+  (typeof adminTeachersTeachersColNames)[number];
 
-export const adminCoordinationsCoursesColNames = [
+export const adminTeachersServicesColNames = [
   "year",
   "teacherEmail",
-  "degreeName",
-  "programName",
-  "trackName",
-  "courseName",
-  "termLabel",
-  "courseTypeLabel",
-  "comment",
+  "hours",
 ] as const;
-export type AdminCoordinationsCoursesColNames =
-  (typeof adminCoordinationsCoursesColNames)[number];
+export type AdminTeachersServicesColName =
+  (typeof adminTeachersServicesColNames)[number];
 
-export const adminCoursesCoursesColNames = [
+export const adminTeachersPositionsColNames = [
+  "label",
+  "description",
+  "baseServiceHours",
+] as const;
+export type AdminTeachersPositionsColName =
+  (typeof adminTeachersPositionsColNames)[number];
+
+export const adminTeachersServiceModificationsColNames = [
   "year",
-  "degreeName",
-  "programName",
-  "trackName",
-  "name",
-  "nameShort",
-  "termLabel",
+  "teacherEmail",
   "typeLabel",
   "hours",
-  "hoursAdjusted",
-  "groups",
-  "groupsAdjusted",
-  "description",
-  "priorityRule",
-  "visible",
 ] as const;
-export type AdminCoursesCoursesColName =
-  (typeof adminCoursesCoursesColNames)[number];
+export type AdminTeachersServiceModificationsColName =
+  (typeof adminTeachersServiceModificationsColNames)[number];
+
+export const adminTeachersServiceModificationTypesColNames = [
+  "label",
+  "description",
+] as const;
+export type AdminTeachersServiceModificationTypesColName =
+  (typeof adminTeachersServiceModificationTypesColNames)[number];
+
+export const adminTeachersMessagesColNames = [
+  "year",
+  "teacherEmail",
+  "content",
+] as const;
+export type AdminTeachersMessagesColName =
+  (typeof adminTeachersMessagesColNames)[number];
 
 export const adminCoursesDegreesColNames = [
   "name",
@@ -82,21 +91,48 @@ export const adminCoursesTermsColNames = ["label", "description"] as const;
 export type AdminCoursesTermsColName =
   (typeof adminCoursesTermsColNames)[number];
 
-export const adminCoursesTypesColNames = [
+export const adminCoursesCoursesColNames = [
+  "year",
+  "degreeName",
+  "programName",
+  "trackName",
+  "termLabel",
+  "name",
+  "nameShort",
+  "typeLabel",
+  "hours",
+  "hoursAdjusted",
+  "groups",
+  "groupsAdjusted",
+  "description",
+  "priorityRule",
+  "visible",
+] as const;
+export type AdminCoursesCoursesColName =
+  (typeof adminCoursesCoursesColNames)[number];
+
+export const adminCoursesCourseTypesColNames = [
   "label",
   "coefficient",
   "description",
 ] as const;
-export type AdminCoursesTypesColName =
-  (typeof adminCoursesTypesColNames)[number];
+export type AdminCoursesCourseTypesColName =
+  (typeof adminCoursesCourseTypesColNames)[number];
 
-export const adminGeneralRolesColNames = [
+export const adminRequestsRequestsColNames = [
+  "year",
   "teacherEmail",
-  "role",
-  "comment",
+  "degreeName",
+  "programName",
+  "trackName",
+  "termLabel",
+  "courseName",
+  "courseTypeLabel",
+  "type",
+  "hours",
 ] as const;
-export type AdminGeneralRolesColName =
-  (typeof adminGeneralRolesColNames)[number];
+export type AdminRequestsRequestsColName =
+  (typeof adminRequestsRequestsColNames)[number];
 
 export const adminRequestsPrioritiesColNames = [
   "year",
@@ -104,8 +140,8 @@ export const adminRequestsPrioritiesColNames = [
   "degreeName",
   "programName",
   "trackName",
-  "courseName",
   "termLabel",
+  "courseName",
   "courseTypeLabel",
   "seniority",
   "isPriority",
@@ -114,71 +150,35 @@ export const adminRequestsPrioritiesColNames = [
 export type AdminRequestsPrioritiesColName =
   (typeof adminRequestsPrioritiesColNames)[number];
 
-export const adminRequestsRequestsColNames = [
+export const adminCoordinationsProgramsColNames = [
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "comment",
+] as const;
+export type AdminCoordinationsProgramsColNames =
+  (typeof adminCoordinationsProgramsColNames)[number];
+
+export const adminCoordinationsTracksColNames = [
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "comment",
+] as const;
+export type AdminCoordinationsTracksColNames =
+  (typeof adminCoordinationsTracksColNames)[number];
+
+export const adminCoordinationsCoursesColNames = [
   "year",
   "teacherEmail",
   "degreeName",
   "programName",
   "trackName",
-  "courseName",
   "termLabel",
+  "courseName",
   "courseTypeLabel",
-  "type",
-  "hours",
+  "comment",
 ] as const;
-export type AdminRequestsRequestsColName =
-  (typeof adminRequestsRequestsColNames)[number];
-
-export const adminTeachersMessagesColNames = [
-  "year",
-  "teacherEmail",
-  "content",
-] as const;
-export type AdminTeachersMessagesColName =
-  (typeof adminTeachersMessagesColNames)[number];
-
-export const adminTeachersPositionsColNames = [
-  "label",
-  "description",
-  "baseServiceHours",
-] as const;
-export type AdminTeachersPositionsColName =
-  (typeof adminTeachersPositionsColNames)[number];
-
-export const adminTeachersServiceModificationsColNames = [
-  "year",
-  "teacherEmail",
-  "typeLabel",
-  "hours",
-] as const;
-export type AdminTeachersServiceModificationsColName =
-  (typeof adminTeachersServiceModificationsColNames)[number];
-
-export const adminTeachersServiceModificationTypesColNames = [
-  "label",
-  "description",
-] as const;
-export type AdminTeachersServiceModificationTypesColName =
-  (typeof adminTeachersServiceModificationTypesColNames)[number];
-
-export const adminTeachersServicesColNames = [
-  "year",
-  "teacherEmail",
-  "hours",
-] as const;
-export type AdminTeachersServicesColName =
-  (typeof adminTeachersServicesColNames)[number];
-
-export const adminTeachersTeachersColNames = [
-  "email",
-  "firstname",
-  "lastname",
-  "alias",
-  "positionLabel",
-  "baseServiceHours",
-  "visible",
-  "active",
-  "access",
-] as const;
-export type AdminTeachersTeachersColName =
-  (typeof adminTeachersTeachersColNames)[number];
+export type AdminCoordinationsCoursesColNames =
+  (typeof adminCoordinationsCoursesColNames)[number];

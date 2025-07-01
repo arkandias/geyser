@@ -19,7 +19,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit && pnpm -r --parallel run typecheck",
-    "validate": "pnpm run format:check && pnpm run typecheck && pnpm run lint && pnpm run test"
+    "validate": "pnpm run format:check && pnpm run test && pnpm run typecheck && pnpm run lint"
   },
   "devDependencies": {
     "@eslint/js": "^9.29.0",

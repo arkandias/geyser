@@ -118,10 +118,10 @@ CREATE TABLE public.course
     year                  integer NOT NULL,
     program_id            integer NOT NULL,
     track_id              integer,
+    term_id               integer NOT NULL,
     name                  text    NOT NULL,
     name_short            text,
     name_display          text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
-    term_id               integer NOT NULL,
     type_id               integer NOT NULL,
     groups                integer NOT NULL,
     groups_adjusted       integer,
@@ -139,7 +139,7 @@ CREATE TABLE public.course
     FOREIGN KEY (oid, program_id, track_id) REFERENCES public.track (oid, program_id, id) ON UPDATE CASCADE,
     FOREIGN KEY (oid, term_id) REFERENCES public.term ON UPDATE CASCADE,
     FOREIGN KEY (oid, type_id) REFERENCES public.course_type ON UPDATE CASCADE,
-    UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, term_id, type_id),
+    UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, term_id, name, type_id),
     UNIQUE (oid, id, year),        -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
     CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
@@ -148,6 +148,7 @@ CREATE TABLE public.course
 CREATE INDEX idx_course_oid ON public.course (oid);
 CREATE INDEX idx_course_oid_year ON public.course (oid, year);
 CREATE INDEX idx_course_oid_program_id ON public.course (oid, program_id);
+CREATE INDEX idx_course_oid_program_id_track_id ON public.course (oid, program_id, track_id);
 CREATE INDEX idx_course_oid_term_id ON public.course (oid, term_id);
 CREATE INDEX idx_course_oid_type_id ON public.course (oid, type_id);
 CREATE INDEX idx_course_oid_track_id_program_id ON public.course (oid, track_id, program_id);
@@ -158,10 +159,10 @@ COMMENT ON COLUMN public.course.id IS 'Unique identifier';
 COMMENT ON COLUMN public.course.year IS 'Academic year reference';
 COMMENT ON COLUMN public.course.program_id IS 'Program reference';
 COMMENT ON COLUMN public.course.track_id IS 'Optional track reference';
+COMMENT ON COLUMN public.course.term_id IS 'Academic term reference';
 COMMENT ON COLUMN public.course.name IS 'Full name';
 COMMENT ON COLUMN public.course.name_short IS 'Abbreviated name';
 COMMENT ON COLUMN public.course.name_display IS 'Computed display name';
-COMMENT ON COLUMN public.course.term_id IS 'Academic term reference';
 COMMENT ON COLUMN public.course.type_id IS 'Course type reference';
 COMMENT ON COLUMN public.course.groups IS 'Base number of groups';
 COMMENT ON COLUMN public.course.groups_adjusted IS 'Modified number of groups, if different from base';

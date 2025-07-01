@@ -1811,7 +1811,7 @@ enum CourseConstraint {
   """
   unique or primary key constraint on columns "track_id", "program_id", "term_id", "name", "oid", "year", "type_id"
   """
-  course_oid_year_program_id_track_id_name_term_id_type_id_key
+  course_oid_year_program_id_track_id_term_id_name_type_id_key
 
   """
   unique or primary key constraint on columns "id", "oid"

@@ -40,16 +40,16 @@ const {
   degreeFragments,
   programFragments,
   trackFragments,
-  courseFragments,
   termFragments,
+  courseFragments,
   typeFragments,
 } = defineProps<{
   fetching: boolean;
   degreeFragments: FragmentType<typeof AdminCoursesDegreeFragmentDoc>[];
   programFragments: FragmentType<typeof AdminCoursesProgramFragmentDoc>[];
   trackFragments: FragmentType<typeof AdminCoursesTrackFragmentDoc>[];
-  courseFragments: FragmentType<typeof AdminCourseFragmentDoc>[];
   termFragments: FragmentType<typeof AdminCoursesTermFragmentDoc>[];
+  courseFragments: FragmentType<typeof AdminCourseFragmentDoc>[];
   typeFragments: FragmentType<typeof AdminCoursesTypeFragmentDoc>[];
 }>();
 
@@ -78,6 +78,11 @@ const rowDescriptor = {
     field: (row) => row.track?.name,
     formComponent: "select",
   },
+  termLabel: {
+    type: "string",
+    field: (row) => row.term.label,
+    formComponent: "select",
+  },
   name: {
     type: "string",
     formComponent: "input",
@@ -86,11 +91,6 @@ const rowDescriptor = {
     type: "string",
     nullable: true,
     formComponent: "input",
-  },
-  termLabel: {
-    type: "string",
-    field: (row) => row.term.label,
-    formComponent: "select",
   },
   typeLabel: {
     type: "string",
@@ -147,6 +147,8 @@ graphql(`
   fragment AdminCourse on Course {
     id
     year
+    name
+    nameShort
     program {
       name
       degree {
@@ -156,8 +158,6 @@ graphql(`
     track {
       name
     }
-    name
-    nameShort
     term {
       label
     }
@@ -243,6 +243,9 @@ graphql(`
   }
 `);
 
+const courses = computed(() =>
+  courseFragments.map((f) => useFragment(AdminCourseFragmentDoc, f)),
+);
 const degrees = computed(() =>
   degreeFragments.map((f) => useFragment(AdminCoursesDegreeFragmentDoc, f)),
 );
@@ -251,9 +254,6 @@ const programs = computed(() =>
 );
 const tracks = computed(() =>
   trackFragments.map((f) => useFragment(AdminCoursesTrackFragmentDoc, f)),
-);
-const courses = computed(() =>
-  courseFragments.map((f) => useFragment(AdminCourseFragmentDoc, f)),
 );
 const terms = computed(() =>
   termFragments.map((f) => useFragment(AdminCoursesTermFragmentDoc, f)),
@@ -267,15 +267,15 @@ const updateCourses = useMutation(UpdateCoursesDocument);
 const deleteCourses = useMutation(DeleteCoursesDocument);
 
 const importConstraint =
-  CourseConstraint.CourseOidYearProgramIdTrackIdNameTermIdTypeIdKey;
+  CourseConstraint.CourseOidYearProgramIdTrackIdTermIdNameTypeIdKey;
 const importUpdateColumns = [
   CourseUpdateColumn.Oid,
   CourseUpdateColumn.Year,
   CourseUpdateColumn.ProgramId,
   CourseUpdateColumn.TrackId,
+  CourseUpdateColumn.TermId,
   CourseUpdateColumn.Name,
   CourseUpdateColumn.NameShort,
-  CourseUpdateColumn.TermId,
   CourseUpdateColumn.TypeId,
   CourseUpdateColumn.Hours,
   CourseUpdateColumn.HoursAdjusted,
@@ -351,10 +351,6 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     }
   }
 
-  if (flatRow.nameShort !== undefined) {
-    object.nameShort = flatRow.nameShort;
-  }
-
   // termId
   if (flatRow.termLabel !== undefined) {
     const term = terms.value.find((t) => t.label === flatRow.termLabel);
@@ -366,6 +362,14 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.termId = term.id;
   }
 
+  if (flatRow.name !== undefined) {
+    object.name = flatRow.name;
+  }
+
+  if (flatRow.nameShort !== undefined) {
+    object.nameShort = flatRow.nameShort;
+  }
+
   // typeId
   if (flatRow.typeLabel !== undefined) {
     const type = types.value.find((t) => t.label === flatRow.typeLabel);
@@ -375,10 +379,6 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       );
     }
     object.typeId = type.id;
-  }
-
-  if (flatRow.name !== undefined) {
-    object.name = flatRow.name;
   }
 
   if (flatRow.hours !== undefined) {

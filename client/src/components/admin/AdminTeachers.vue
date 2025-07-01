@@ -108,15 +108,6 @@ const messages = computed(() => data.value?.messages ?? []);
 <template>
   <QList bordered>
     <AdminSection
-      icon="sym_s_work"
-      :label="t('admin.teachers.positions.label')"
-    >
-      <AdminTeachersPositions :fetching :position-fragments="positions" />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
       icon="sym_s_groups"
       :label="t('admin.teachers.teachers.label')"
     >
@@ -125,6 +116,15 @@ const messages = computed(() => data.value?.messages ?? []);
         :teacher-fragments="teachers"
         :position-fragments="positions"
       />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
+      icon="sym_s_work"
+      :label="t('admin.teachers.positions.label')"
+    >
+      <AdminTeachersPositions :fetching :position-fragments="positions" />
     </AdminSection>
 
     <QSeparator />
@@ -143,18 +143,6 @@ const messages = computed(() => data.value?.messages ?? []);
     <QSeparator />
 
     <AdminSection
-      icon="sym_s_format_list_bulleted"
-      :label="t('admin.teachers.serviceModificationTypes.label')"
-    >
-      <AdminTeachersServiceModificationTypes
-        :fetching
-        :service-modification-type-fragments="serviceModificationTypes"
-      />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
       icon="sym_s_assignment_returned"
       :label="t('admin.teachers.serviceModifications.label')"
     >
@@ -164,6 +152,18 @@ const messages = computed(() => data.value?.messages ?? []);
         :service-modification-fragments="serviceModifications"
         :service-modification-type-fragments="serviceModificationTypes"
         :teacher-fragments="teachers"
+      />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
+      icon="sym_s_format_list_bulleted"
+      :label="t('admin.teachers.serviceModificationTypes.label')"
+    >
+      <AdminTeachersServiceModificationTypes
+        :fetching
+        :service-modification-type-fragments="serviceModificationTypes"
       />
     </AdminSection>
 

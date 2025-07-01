@@ -135,14 +135,14 @@ graphql(`
   }
 `);
 
+const tracks = computed(() =>
+  trackFragments.map((f) => useFragment(AdminTrackFragmentDoc, f)),
+);
 const degrees = computed(() =>
   degreeFragments.map((f) => useFragment(AdminTracksDegreeFragmentDoc, f)),
 );
 const programs = computed(() =>
   programFragments.map((f) => useFragment(AdminTracksProgramFragmentDoc, f)),
-);
-const tracks = computed(() =>
-  trackFragments.map((f) => useFragment(AdminTrackFragmentDoc, f)),
 );
 const insertTracks = useMutation(InsertTracksDocument);
 const upsertTracks = useMutation(UpsertTracksDocument);

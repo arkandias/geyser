@@ -118,11 +118,11 @@ graphql(`
   }
 `);
 
-const degrees = computed(() =>
-  degreeFragments.map((f) => useFragment(AdminProgramsDegreeFragmentDoc, f)),
-);
 const programs = computed(() =>
   programFragments.map((f) => useFragment(AdminProgramFragmentDoc, f)),
+);
+const degrees = computed(() =>
+  degreeFragments.map((f) => useFragment(AdminProgramsDegreeFragmentDoc, f)),
 );
 const insertPrograms = useMutation(InsertProgramsDocument);
 const upsertPrograms = useMutation(UpsertProgramsDocument);

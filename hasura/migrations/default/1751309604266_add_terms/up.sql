@@ -68,10 +68,11 @@ ALTER TABLE public.course
 
 -- Step 6: Add new unique constraint with term_id
 ALTER TABLE public.course
-    ADD CONSTRAINT course_oid_year_program_id_track_id_name_term_id_type_id_key
-        UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, term_id, type_id);
+    ADD CONSTRAINT course_oid_year_program_id_track_id_term_id_name_type_id_key
+        UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, term_id, name, type_id);
 
 -- Step 7: Add new index for term_id
+CREATE INDEX idx_course_oid_program_id_track_id ON public.course (oid, program_id, track_id); -- fix
 CREATE INDEX idx_course_oid_term_id ON public.course (oid, term_id);
 
 -- Step 8: Drop old semester column and cycle_year (which depends on semester)

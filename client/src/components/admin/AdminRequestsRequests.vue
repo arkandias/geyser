@@ -98,14 +98,14 @@ const rowDescriptor = {
     field: (row) => row.course.track?.name,
     formComponent: "select",
   },
-  courseName: {
-    type: "string",
-    field: (row) => row.course.name,
-    formComponent: "select",
-  },
   termLabel: {
     type: "string",
     field: (row) => row.course.term.label,
+    formComponent: "select",
+  },
+  courseName: {
+    type: "string",
+    field: (row) => row.course.name,
     formComponent: "select",
   },
   courseTypeLabel: {
@@ -172,18 +172,6 @@ graphql(`
     displayname
   }
 
-  fragment AdminRequestsDegree on Degree {
-    name
-  }
-
-  fragment AdminRequestsProgram on Program {
-    name
-  }
-
-  fragment AdminRequestsTrack on Track {
-    name
-  }
-
   fragment AdminRequestsCourse on Course {
     id
     year
@@ -209,6 +197,18 @@ graphql(`
     type {
       label
     }
+  }
+
+  fragment AdminRequestsDegree on Degree {
+    name
+  }
+
+  fragment AdminRequestsProgram on Program {
+    name
+  }
+
+  fragment AdminRequestsTrack on Track {
+    name
   }
 
   fragment AdminRequestsTerm on Term {
@@ -335,8 +335,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     flatRow.degreeName !== undefined ||
     flatRow.programName !== undefined ||
     flatRow.trackName !== undefined ||
-    flatRow.courseName !== undefined ||
     flatRow.termLabel !== undefined ||
+    flatRow.courseName !== undefined ||
     flatRow.courseTypeLabel !== undefined
   ) {
     if (
@@ -344,8 +344,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       flatRow.degreeName === undefined ||
       flatRow.programName === undefined ||
       flatRow.trackName === undefined ||
-      flatRow.courseName === undefined ||
       flatRow.termLabel === undefined ||
+      flatRow.courseName === undefined ||
       flatRow.courseTypeLabel === undefined
     ) {
       throw new Error(
@@ -359,8 +359,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
         c.program.degree.name === flatRow.degreeName &&
         c.program.name === flatRow.programName &&
         (c.track?.name ?? null) === flatRow.trackName &&
-        c.name === flatRow.courseName &&
         c.term.label === flatRow.termLabel &&
+        c.name === flatRow.courseName &&
         c.type.label === flatRow.courseTypeLabel,
     );
 
@@ -414,24 +414,24 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       )
       .map((c) => c.track?.name)
       .filter(unique),
-    courseName: courses.value
+    termLabel: courses.value
       .filter(
         (c) =>
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null),
       )
-      .map((c) => c.name)
+      .map((c) => c.term.label)
       .filter(unique),
-    termLabel: courses.value
+    courseName: courses.value
       .filter(
         (c) =>
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
-          c.name === formValues.value["courseName"],
+          c.term.label === formValues.value["termLabel"],
       )
-      .map((c) => c.term.label)
+      .map((c) => c.name)
       .filter(unique),
     courseTypeLabel: courses.value
       .filter(
@@ -439,8 +439,8 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
-          c.name === formValues.value["courseName"] &&
-          c.term.label === formValues.value["termLabel"],
+          c.term.label === formValues.value["termLabel"] &&
+          c.name === formValues.value["courseName"],
       )
       .map((c) => c.type.label)
       .filter(unique),
@@ -461,8 +461,8 @@ const filterOptions = computed<
   degreeName: degrees.value.map((d) => d.name),
   programName: programs.value.map((p) => p.name),
   trackName: tracks.value.map((t) => t.name),
-  courseName: courses.value.map((c) => c.name),
   termLabel: terms.value.map((t) => t.label),
+  courseName: courses.value.map((c) => c.name),
   courseTypeLabel: courseTypes.value.map((ct) => ct.label),
 }));
 </script>
