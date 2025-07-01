@@ -76,21 +76,21 @@ export default {
             label: "Name",
             tooltip: "",
           },
-          semester: {
-            label: "S.",
-            tooltip: "Semester",
+          term: {
+            label: "Période",
+            tooltip: "",
           },
           type: {
             label: "Type",
             tooltip: "",
           },
-          hours: {
-            label: "Hrs. ({unit})",
-            tooltip: "Number of hours per group",
-          },
           groups: {
-            label: "Grps.",
+            label: "Grps",
             tooltip: "Number of groups",
+          },
+          hours: {
+            label: "Hrs ({unit})",
+            tooltip: "Number of hours per group",
           },
           totalAssignment: {
             label: "A ({unit})",
@@ -121,7 +121,7 @@ export default {
         },
         filters: {
           degreeProgram: "Program",
-          semester: "Semester",
+          term: "Term",
           type: "Type",
           search: "Search…",
         },

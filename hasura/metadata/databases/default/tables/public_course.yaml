@@ -16,6 +16,11 @@ object_relationships:
         - oid
         - program_id
         - track_id
+  - name: term
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - term_id
   - name: type
     using:
       foreign_key_constraint_on:
@@ -69,7 +74,7 @@ insert_permissions:
         - track_id
         - name
         - name_short
-        - semester
+        - term_id
         - type_id
         - hours
         - hours_adjusted
@@ -90,9 +95,8 @@ select_permissions:
         - name
         - name_short
         - name_display
-        - semester
+        - term_id
         - type_id
-        - cycle_year
         - groups
         - groups_adjusted
         - groups_effective
@@ -123,9 +127,8 @@ select_permissions:
         - name
         - name_short
         - name_display
-        - semester
+        - term_id
         - type_id
-        - cycle_year
         - groups
         - groups_adjusted
         - groups_effective
@@ -151,9 +154,8 @@ select_permissions:
         - name
         - name_short
         - name_display
-        - semester
+        - term_id
         - type_id
-        - cycle_year
         - groups
         - groups_adjusted
         - groups_effective
@@ -221,7 +223,7 @@ update_permissions:
         - track_id
         - name
         - name_short
-        - semester
+        - term_id
         - type_id
         - hours
         - hours_adjusted

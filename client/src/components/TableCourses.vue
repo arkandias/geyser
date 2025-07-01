@@ -53,7 +53,9 @@ graphql(`
       name: nameDisplay
       visible
     }
-    semester
+    term {
+      label
+    }
     type {
       label
       coefficient
@@ -239,6 +241,17 @@ const columns = computed<Column<CourseRow>[]>(() => [
     searchable: true,
   },
   {
+    name: "term",
+    label: t("courses.table.courses.column.term.label"),
+    tooltip: t("courses.table.courses.column.term.tooltip"),
+    align: "left",
+    field: (row) => row.term.label,
+    required: true,
+    sortable: true,
+    visible: true,
+    searchable: false,
+  },
+  {
     name: "name",
     label: t("courses.table.courses.column.name.label"),
     tooltip: t("courses.table.courses.column.name.tooltip"),
@@ -250,18 +263,6 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sort: localeCompare,
     visible: true,
     searchable: true,
-  },
-  {
-    name: "semester",
-    label: t("courses.table.courses.column.semester.label"),
-    tooltip: t("courses.table.courses.column.semester.tooltip"),
-    align: "left",
-    field: "semester",
-    format: (val: number) => t("semester", { semester: val }),
-    required: true,
-    sortable: true,
-    visible: true,
-    searchable: false,
   },
   {
     name: "type",
@@ -464,25 +465,22 @@ const degreeProgramOptions = computed(() =>
     .sort(compare("label")),
 );
 
-// Semesters
-const semesters = ref<number[]>([]);
-const semesterOptions = computed(() =>
+// Terms
+const terms = ref<string[]>([]);
+const termOptions = computed(() =>
   courses.value
-    .map((c) => ({
-      value: c.semester,
-      label: t("semester", { semester: c.semester }),
-    }))
-    .filter(uniqueValue("value"))
-    .sort(compare("label")),
+    .map((c) => c.term.label)
+    .filter(unique)
+    .sort(localeCompare),
 );
 
-// Course types
-const courseTypes = ref<string[]>([]);
-const courseTypeOptions = computed(() =>
+// Types
+const types = ref<string[]>([]);
+const typeOptions = computed(() =>
   courses.value
     .map((c) => c.type.label)
     .filter(unique)
-    .sort(),
+    .sort(localeCompare),
 );
 
 // Search
@@ -492,8 +490,8 @@ const search = ref<string | null>(null);
 const filterObj = computed(() => ({
   serviceId: selectedService.value ?? null,
   programs: degreePrograms.value,
-  semesters: semesters.value,
-  courseTypes: courseTypes.value,
+  terms: terms.value,
+  types: types.value,
   search: normalizeForSearch(search.value ?? ""),
   searchColumns: columns.value.filter((col) => col.searchable),
 }));
@@ -506,10 +504,10 @@ const filterMethod = (
       ? row.requests.some((r) => r.serviceId === terms.serviceId)
       : (terms.programs.length === 0 ||
           terms.programs.some((p) => p === row.program.id)) &&
-        (terms.semesters.length === 0 ||
-          terms.semesters.includes(row.semester)) &&
-        (terms.courseTypes.length === 0 ||
-          terms.courseTypes.some((ct) => ct === row.type.label)) &&
+        (terms.terms.length === 0 ||
+          terms.terms.some((t) => t === row.term.label)) &&
+        (terms.types.length === 0 ||
+          terms.types.some((t) => t === row.type.label)) &&
         terms.searchColumns.some((col) =>
           normalizeForSearch(String(getField(row, col.field))).includes(
             terms.search,
@@ -649,10 +647,10 @@ const downloadTeacherAssignments = async () => {
           options-dense
         />
         <QSelect
-          v-model="semesters"
-          :options="semesterOptions"
+          v-model="terms"
+          :options="termOptions"
           :disable="!!teacher"
-          :label="t('courses.table.courses.filters.semester')"
+          :label="t('courses.table.courses.filters.term')"
           emit-value
           map-options
           multiple
@@ -662,8 +660,8 @@ const downloadTeacherAssignments = async () => {
           options-dense
         />
         <QSelect
-          v-model="courseTypes"
-          :options="courseTypeOptions"
+          v-model="types"
+          :options="typeOptions"
           :disable="!!teacher"
           :label="t('courses.table.courses.filters.type')"
           multiple

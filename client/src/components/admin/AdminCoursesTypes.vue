@@ -22,7 +22,7 @@ import type {
   Scalar,
 } from "@/types/data.ts";
 
-import type { AdminCoursesCourseTypesColName } from "@/components/admin/col-names.ts";
+import type { AdminCoursesTypesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseTypeFragment;
@@ -53,7 +53,7 @@ const rowDescriptor = {
     nullable: true,
     formComponent: "input",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesCourseTypesColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminCoursesTypesColName, Row>;
 
 graphql(`
   fragment AdminCourseType on CourseType {
@@ -148,7 +148,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
     section="courses"
-    name="courseTypes"
+    name="types"
     :row-descriptor
     :rows="courseTypes"
     :fetching

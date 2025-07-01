@@ -12,6 +12,52 @@ import type {
 export default {
   teachers: {
     title: "Intervenants",
+    positions: {
+      label: "Fonctions",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+        baseServiceHours: {
+          label: "S. base (@:unit.weightedHours)",
+          tooltip: "Service de base (@:unit.weightedHours)",
+        },
+      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Création d'une fonction | Édition d'une fonction | Édition de {count} fonctions",
+        error: {
+          baseServiceHoursNegative:
+            "Entrez un nombre d'heures de service de base positif ou nul",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "Aucune fonction créée | Fonction créée | {count} fonctions créées",
+          update:
+            "Aucune fonction mise à jour | Fonction mise à jour | {count} fonctions mises à jour",
+          delete:
+            "Aucune fonction supprimée | Fonction supprimée | {count} fonctions supprimées",
+          import:
+            "0 fonction importée | 1 fonction importée | {count} fonctions importées",
+          export:
+            "0 fonction exportée | 1 fonction exportée | {count} fonctions exportées",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer la fonction sélectionnée ?
+Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
+Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
     teachers: {
       label: "Intervenants",
       column: {
@@ -84,52 +130,6 @@ S'il existe des services, des responsabilités ou des rôles pour ces intervenan
         },
       },
     },
-    positions: {
-      label: "Fonctions",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-        baseServiceHours: {
-          label: "S. base (@:unit.weightedHours)",
-          tooltip: "Service de base (@:unit.weightedHours)",
-        },
-      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Création d'une fonction | Édition d'une fonction | Édition de {count} fonctions",
-        error: {
-          baseServiceHoursNegative:
-            "Entrez un nombre d'heures de service de base positif ou nul",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "Aucune fonction créée | Fonction créée | {count} fonctions créées",
-          update:
-            "Aucune fonction mise à jour | Fonction mise à jour | {count} fonctions mises à jour",
-          delete:
-            "Aucune fonction supprimée | Fonction supprimée | {count} fonctions supprimées",
-          import:
-            "0 fonction importée | 1 fonction importée | {count} fonctions importées",
-          export:
-            "0 fonction exportée | 1 fonction exportée | {count} fonctions exportées",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer la fonction sélectionnée ?
-Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer. ` +
-            `| Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
-Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les supprimer.`,
-        },
-      },
-    },
     services: {
       label: "Services",
       column: {
@@ -151,7 +151,7 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
           "Création d'un service | Édition d'un service | Édition de {count} services",
         error: {
           teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {email} »",
+            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },
@@ -173,6 +173,47 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
 S'il existe des modifications, des demandes ou des priorités pour ce service, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} services sélectionnés ?
 S'il existe des modifications, des demandes ou des priorités pour ces services, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
+    serviceModificationTypes: {
+      label: "Types de modification de service",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<
+        AdminTeachersServiceModificationTypesColName,
+        AdminColNameOptions
+      >,
+      form: {
+        title:
+          "Création d'un type de modification | Édition d'un type de modification | Édition de {count} types de modification",
+      },
+      data: {
+        success: {
+          insert:
+            "Aucun type de modification créé | Type de modification créé | {count} types de modification créés",
+          update:
+            "Aucun type de modification mis à jour | Type de modification mis à jour | {count} types de modification mis à jour",
+          delete:
+            "Aucun type de modification supprimé | Type de modification supprimé | {count} types de modification supprimés",
+          import:
+            "0 type de modification importé | 1 type de modification importé | {count} types de modification importés",
+          export:
+            "0 type de modification exporté | 1 type de modification exporté | {count} types de modification exportés",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le type de modification sélectionné ?
+Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
+Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -230,47 +271,6 @@ S'il existe des modifications, des demandes ou des priorités pour ces services,
         confirm: {
           delete:
             "Êtes-vous sûr de vouloir supprimer la modification de service sélectionnée ? | Êtes-vous sûr de vouloir supprimer les {count} modifications de service sélectionnées ?",
-        },
-      },
-    },
-    serviceModificationTypes: {
-      label: "Types de modification de service",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<
-        AdminTeachersServiceModificationTypesColName,
-        AdminColNameOptions
-      >,
-      form: {
-        title:
-          "Création d'un type de modification | Édition d'un type de modification | Édition de {count} types de modification",
-      },
-      data: {
-        success: {
-          insert:
-            "Aucun type de modification créé | Type de modification créé | {count} types de modification créés",
-          update:
-            "Aucun type de modification mis à jour | Type de modification mis à jour | {count} types de modification mis à jour",
-          delete:
-            "Aucun type de modification supprimé | Type de modification supprimé | {count} types de modification supprimés",
-          import:
-            "0 type de modification importé | 1 type de modification importé | {count} types de modification importés",
-          export:
-            "0 type de modification exporté | 1 type de modification exporté | {count} types de modification exportés",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer le type de modification sélectionné ?
-Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer. ` +
-            `| Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
-Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
         },
       },
     },

@@ -69,8 +69,8 @@ graphql(`
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
         { track: { name: ASC } }
+        { term: { label: ASC } }
         { name: ASC }
-        { semester: ASC }
         { type: { label: ASC } }
       ]
     ) {

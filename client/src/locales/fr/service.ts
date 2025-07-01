@@ -79,7 +79,7 @@ export default {
     priorities: {
       title: "Priorités",
       format: {
-        typeAndSemester: "{type} au S{semester}",
+        typeInTerm: "{type} au {term}",
         track: "parcours {track}",
       },
     },

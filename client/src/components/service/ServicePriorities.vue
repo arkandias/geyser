@@ -22,7 +22,7 @@ graphql(`
     priorities(
       where: { isPriority: { _isNull: false } }
       orderBy: [
-        { course: { semester: ASC } }
+        { course: { term: { label: ASC } } }
         { course: { type: { label: ASC } } }
         { course: { programId: ASC } }
         { course: { trackId: ASC } }
@@ -47,7 +47,9 @@ graphql(`
           }
         }
         name: nameDisplay
-        semester
+        term {
+          label
+        }
         type {
           label
         }
@@ -66,10 +68,10 @@ const priorities = computed(
 
 type Priority = ArrayElement<ServicePrioritiesFragment["priorities"]>;
 
-const formatTypeAndSemester = (priority: Priority) =>
-  t("service.priorities.format.typeAndSemester", {
+const formatTypeInTerm = (priority: Priority) =>
+  t("service.priorities.format.typeInTerm", {
     type: priority.course.type.label,
-    semester: priority.course.semester,
+    term: priority.course.term.label,
   });
 
 const formatPriority = (priority: Priority) => priority.course.name;
@@ -87,7 +89,7 @@ const formatPriorityExtra = (priority: Priority) =>
       <QItem v-for="p in priorities" :key="p.id">
         <QItemSection>
           <QItemLabel overline>
-            {{ formatTypeAndSemester(p) }}
+            {{ formatTypeInTerm(p) }}
           </QItemLabel>
           <QItemLabel>
             {{ formatPriority(p) }}

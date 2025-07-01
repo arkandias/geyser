@@ -23,8 +23,10 @@ graphql(`
       name
     }
     name
-    semester
-    courseType: type {
+    term {
+      label
+    }
+    type {
       label
     }
   }
@@ -45,8 +47,7 @@ const caption = computed(() =>
     ? `${data.value.program.degree.name} — ` +
       `${data.value.program.name} — ` +
       (data.value.track ? `${data.value.track.name} — ` : "") +
-      `${t("semester", { semester: data.value.semester })} — ` +
-      data.value.courseType.label
+      `${data.value.term.label} — ${data.value.type.label}`
     : t("courses.expansion.defaultCaption"),
 );
 </script>

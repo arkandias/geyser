@@ -36,14 +36,14 @@ export default {
         title:
           "Creating a coordination | Editing a coordination | Editing {count} coordinations",
         error: {
-          teacherNotFound: 'No teacher with email "{email}"',
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
           updateDegreeWithoutProgram:
             "You cannot modify the degree without selecting a program",
           updateProgramWithoutDegree:
             "You cannot modify the program without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degree}" exists',
+          degreeNotFound: 'No degree with the name "{degreeName}" exists',
           programNotFound:
-            'No program in the degree "{degree}" with the name "{program}" exists',
+            'No program in the degree "{degreeName}" with the name "{programName}" exists',
         },
       },
       data: {
@@ -93,18 +93,18 @@ export default {
         title:
           "Creating a coordination | Editing a coordination | Editing {count} coordinations",
         error: {
-          teacherNotFound: 'No teacher with email "{email}"',
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
           updateProgramOrTrackWithoutDegree:
             "You cannot modify the program or track without selecting a degree",
           updateDegreeOrTrackWithoutProgram:
             "You cannot modify the degree or track without selecting a program",
           updateDegreeOrProgramWithoutTrack:
             "You cannot modify the degree or program without selecting a track",
-          degreeNotFound: 'No degree with the name "{degree}" exists',
+          degreeNotFound: 'No degree with the name "{degreeName}" exists',
           programNotFound:
-            'No program in the degree "{degree}" with the name "{program}" exists',
+            'No program in the degree "{degreeName}" with the name "{programName}" exists',
           trackNotFound:
-            'No track in the program "{program}" of the degree "{degree}" with the name "{track}" exists',
+            'No track in the program "{programName}" of the degree "{degreeName}" with the name "{trackName}" exists',
         },
       },
       data: {
@@ -153,11 +153,11 @@ export default {
           label: "Course",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semester",
+        termLabel: {
+          label: "Term",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Course type",
           tooltip: "",
         },
@@ -173,11 +173,11 @@ export default {
         title:
           "Creating a coordination | Editing a coordination | Editing {count} coordinations",
         error: {
-          teacherNotFound: 'No teacher with email "{email}"',
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, semester, and course type",
+            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
           courseNotFound:
-            'No {type} in semester {semester} with the name "{name}" in the track "{track}" of the program "{program}" of the degree "{degree}" for year {year} exists',
+            'No {typeLabel} in term {termLabel} with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for year {year} exists',
         },
       },
       data: {

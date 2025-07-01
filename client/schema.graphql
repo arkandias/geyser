@@ -1422,9 +1422,6 @@ type Course {
   """Timestamp when the record was created"""
   createdAt: timestamptz!
 
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Int!
-
   """Optional description"""
   description: String
   ensIdImport: String
@@ -1553,8 +1550,11 @@ type Course {
     where: RequestBoolExp
   ): RequestAggregate!
 
-  """Academic semester"""
-  semester: Int!
+  """An object relationship"""
+  term: Term!
+
+  """Academic term reference"""
+  termId: Int!
 
   """An object relationship"""
   track: Track
@@ -1643,9 +1643,6 @@ input CourseArrRelInsertInput {
 
 """aggregate avg on columns"""
 type CourseAvgFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -1681,8 +1678,8 @@ type CourseAvgFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -1698,9 +1695,6 @@ type CourseAvgFields {
 order by avg() on columns of table "course"
 """
 input CourseAvgOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -1736,8 +1730,8 @@ input CourseAvgOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -1759,7 +1753,6 @@ input CourseBoolExp {
   coordinations: CoordinationBoolExp
   coordinationsAggregate: CoordinationAggregateBoolExp
   createdAt: TimestamptzComparisonExp
-  cycleYear: IntComparisonExp
   description: StringComparisonExp
   ensIdImport: StringComparisonExp
   formationIdImport: StringComparisonExp
@@ -1784,7 +1777,8 @@ input CourseBoolExp {
   programId: IntComparisonExp
   requests: RequestBoolExp
   requestsAggregate: RequestAggregateBoolExp
-  semester: IntComparisonExp
+  term: TermBoolExp
+  termId: IntComparisonExp
   track: TrackBoolExp
   trackId: IntComparisonExp
   type: CourseTypeBoolExp
@@ -1815,14 +1809,19 @@ enum CourseConstraint {
   course_oid_id_year_key
 
   """
-  unique or primary key constraint on columns "track_id", "semester", "program_id", "name", "oid", "year", "type_id"
+  unique or primary key constraint on columns "track_id", "program_id", "term_id", "name", "oid", "year", "type_id"
   """
-  course_oid_year_program_id_track_id_name_semester_type_id_key
+  course_oid_year_program_id_track_id_name_term_id_type_id_key
 
   """
   unique or primary key constraint on columns "id", "oid"
   """
   course_pkey
+
+  """
+  unique or primary key constraint on columns "track_id", "program_id", "term_id", "name", "oid", "year", "type_id"
+  """
+  course_unique_nulls_not_distinct
 }
 
 """
@@ -1850,8 +1849,8 @@ input CourseIncInput {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -1908,9 +1907,10 @@ input CourseInsertInput {
   """Program reference"""
   programId: Int
   requests: RequestArrRelInsertInput
+  term: TermObjRelInsertInput
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
   track: TrackObjRelInsertInput
 
   """Optional track reference"""
@@ -1938,9 +1938,6 @@ type CourseMaxFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
 
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Int
-
   """Optional description"""
   description: String
   ensIdImport: String
@@ -1991,8 +1988,8 @@ type CourseMaxFields {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -2016,9 +2013,6 @@ input CourseMaxOrderBy {
   """Timestamp when the record was created"""
   createdAt: OrderBy
 
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Optional description"""
   description: OrderBy
   ensIdImport: OrderBy
@@ -2069,8 +2063,8 @@ input CourseMaxOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -2091,9 +2085,6 @@ input CourseMaxOrderBy {
 type CourseMinFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Int
 
   """Optional description"""
   description: String
@@ -2145,8 +2136,8 @@ type CourseMinFields {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -2169,9 +2160,6 @@ order by min() on columns of table "course"
 input CourseMinOrderBy {
   """Timestamp when the record was created"""
   createdAt: OrderBy
-
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
 
   """Optional description"""
   description: OrderBy
@@ -2223,8 +2211,8 @@ input CourseMinOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -2275,7 +2263,6 @@ input CourseOnConflict {
 input CourseOrderBy {
   coordinationsAggregate: CoordinationAggregateOrderBy
   createdAt: OrderBy
-  cycleYear: OrderBy
   description: OrderBy
   ensIdImport: OrderBy
   formationIdImport: OrderBy
@@ -2298,7 +2285,8 @@ input CourseOrderBy {
   program: ProgramOrderBy
   programId: OrderBy
   requestsAggregate: RequestAggregateOrderBy
-  semester: OrderBy
+  term: TermOrderBy
+  termId: OrderBy
   track: TrackOrderBy
   trackId: OrderBy
   type: CourseTypeOrderBy
@@ -2324,9 +2312,6 @@ select columns of table "course"
 enum CourseSelectColumn {
   """column name"""
   createdAt
-
-  """column name"""
-  cycleYear
 
   """column name"""
   description
@@ -2383,7 +2368,7 @@ enum CourseSelectColumn {
   programId
 
   """column name"""
-  semester
+  termId
 
   """column name"""
   trackId
@@ -2457,8 +2442,8 @@ input CourseSetInput {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -2480,9 +2465,6 @@ input CourseSetInput {
 
 """aggregate stddev on columns"""
 type CourseStddevFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -2518,8 +2500,8 @@ type CourseStddevFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -2535,9 +2517,6 @@ type CourseStddevFields {
 order by stddev() on columns of table "course"
 """
 input CourseStddevOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -2573,8 +2552,8 @@ input CourseStddevOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -2588,9 +2567,6 @@ input CourseStddevOrderBy {
 
 """aggregate stddevPop on columns"""
 type CourseStddevPopFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -2626,8 +2602,8 @@ type CourseStddevPopFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -2643,9 +2619,6 @@ type CourseStddevPopFields {
 order by stddevPop() on columns of table "course"
 """
 input CourseStddevPopOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -2681,8 +2654,8 @@ input CourseStddevPopOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -2696,9 +2669,6 @@ input CourseStddevPopOrderBy {
 
 """aggregate stddevSamp on columns"""
 type CourseStddevSampFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -2734,8 +2704,8 @@ type CourseStddevSampFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -2751,9 +2721,6 @@ type CourseStddevSampFields {
 order by stddevSamp() on columns of table "course"
 """
 input CourseStddevSampOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -2789,8 +2756,8 @@ input CourseStddevSampOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -2817,9 +2784,6 @@ input CourseStreamCursorInput {
 input CourseStreamCursorValueInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Int
 
   """Optional description"""
   description: String
@@ -2871,8 +2835,8 @@ input CourseStreamCursorValueInput {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -2894,9 +2858,6 @@ input CourseStreamCursorValueInput {
 
 """aggregate sum on columns"""
 type CourseSumFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Int
-
   """Base number of groups"""
   groups: Int
 
@@ -2932,8 +2893,8 @@ type CourseSumFields {
   """Program reference"""
   programId: Int
 
-  """Academic semester"""
-  semester: Int
+  """Academic term reference"""
+  termId: Int
 
   """Optional track reference"""
   trackId: Int
@@ -2949,9 +2910,6 @@ type CourseSumFields {
 order by sum() on columns of table "course"
 """
 input CourseSumOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -2987,8 +2945,8 @@ input CourseSumOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -3735,7 +3693,7 @@ enum CourseUpdateColumn {
   programId
 
   """column name"""
-  semester
+  termId
 
   """column name"""
   trackId
@@ -3766,9 +3724,6 @@ input CourseUpdates {
 
 """aggregate varPop on columns"""
 type CourseVarPopFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -3804,8 +3759,8 @@ type CourseVarPopFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -3821,9 +3776,6 @@ type CourseVarPopFields {
 order by varPop() on columns of table "course"
 """
 input CourseVarPopOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -3859,8 +3811,8 @@ input CourseVarPopOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -3874,9 +3826,6 @@ input CourseVarPopOrderBy {
 
 """aggregate varSamp on columns"""
 type CourseVarSampFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -3912,8 +3861,8 @@ type CourseVarSampFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -3929,9 +3878,6 @@ type CourseVarSampFields {
 order by varSamp() on columns of table "course"
 """
 input CourseVarSampOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -3967,8 +3913,8 @@ input CourseVarSampOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -3982,9 +3928,6 @@ input CourseVarSampOrderBy {
 
 """aggregate variance on columns"""
 type CourseVarianceFields {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: Float
-
   """Base number of groups"""
   groups: Float
 
@@ -4020,8 +3963,8 @@ type CourseVarianceFields {
   """Program reference"""
   programId: Float
 
-  """Academic semester"""
-  semester: Float
+  """Academic term reference"""
+  termId: Float
 
   """Optional track reference"""
   trackId: Float
@@ -4037,9 +3980,6 @@ type CourseVarianceFields {
 order by variance() on columns of table "course"
 """
 input CourseVarianceOrderBy {
-  """Computed study year (1-3) based on semester"""
-  cycleYear: OrderBy
-
   """Base number of groups"""
   groups: OrderBy
 
@@ -4075,8 +4015,8 @@ input CourseVarianceOrderBy {
   """Program reference"""
   programId: OrderBy
 
-  """Academic semester"""
-  semester: OrderBy
+  """Academic term reference"""
+  termId: OrderBy
 
   """Optional track reference"""
   trackId: OrderBy
@@ -15155,6 +15095,379 @@ input TeacherVarianceOrderBy {
   positionId: OrderBy
 }
 
+"""Academic terms"""
+type Term {
+  """An array relationship"""
+  courses(
+    """distinct select on columns"""
+    distinctOn: [CourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CourseOrderBy!]
+
+    """filter the rows returned"""
+    where: CourseBoolExp
+  ): [Course!]!
+
+  """An aggregate relationship"""
+  coursesAggregate(
+    """distinct select on columns"""
+    distinctOn: [CourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CourseOrderBy!]
+
+    """filter the rows returned"""
+    where: CourseBoolExp
+  ): CourseAggregate!
+
+  """Optional description"""
+  description: String
+
+  """Unique identifier"""
+  id: Int!
+
+  """Term name (unique)"""
+  label: String!
+
+  """Organization reference"""
+  oid: Int!
+
+  """An object relationship"""
+  organization: Organization!
+}
+
+"""
+aggregated selection of "term"
+"""
+type TermAggregate {
+  aggregate: TermAggregateFields
+  nodes: [Term!]!
+}
+
+"""
+aggregate fields of "term"
+"""
+type TermAggregateFields {
+  avg: TermAvgFields
+  count(columns: [TermSelectColumn!], distinct: Boolean): Int!
+  max: TermMaxFields
+  min: TermMinFields
+  stddev: TermStddevFields
+  stddevPop: TermStddevPopFields
+  stddevSamp: TermStddevSampFields
+  sum: TermSumFields
+  varPop: TermVarPopFields
+  varSamp: TermVarSampFields
+  variance: TermVarianceFields
+}
+
+"""aggregate avg on columns"""
+type TermAvgFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+Boolean expression to filter rows from the table "term". All fields are combined with a logical 'AND'.
+"""
+input TermBoolExp {
+  _and: [TermBoolExp!]
+  _not: TermBoolExp
+  _or: [TermBoolExp!]
+  courses: CourseBoolExp
+  coursesAggregate: CourseAggregateBoolExp
+  description: StringComparisonExp
+  id: IntComparisonExp
+  label: StringComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
+}
+
+"""
+unique or primary key constraints on table "term"
+"""
+enum TermConstraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  term_id_key
+
+  """
+  unique or primary key constraint on columns "label", "oid"
+  """
+  term_oid_label_key
+
+  """
+  unique or primary key constraint on columns "id", "oid"
+  """
+  term_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "term"
+"""
+input TermIncInput {
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+input type for inserting data into table "term"
+"""
+input TermInsertInput {
+  courses: CourseArrRelInsertInput
+
+  """Optional description"""
+  description: String
+
+  """Term name (unique)"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
+}
+
+"""aggregate max on columns"""
+type TermMaxFields {
+  """Optional description"""
+  description: String
+
+  """Unique identifier"""
+  id: Int
+
+  """Term name (unique)"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""aggregate min on columns"""
+type TermMinFields {
+  """Optional description"""
+  description: String
+
+  """Unique identifier"""
+  id: Int
+
+  """Term name (unique)"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+response of any mutation on the table "term"
+"""
+type TermMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [Term!]!
+}
+
+"""
+input type for inserting object relation for remote table "term"
+"""
+input TermObjRelInsertInput {
+  data: TermInsertInput!
+
+  """upsert condition"""
+  onConflict: TermOnConflict
+}
+
+"""
+on_conflict condition type for table "term"
+"""
+input TermOnConflict {
+  constraint: TermConstraint!
+  updateColumns: [TermUpdateColumn!]! = []
+  where: TermBoolExp
+}
+
+"""Ordering options when selecting data from "term"."""
+input TermOrderBy {
+  coursesAggregate: CourseAggregateOrderBy
+  description: OrderBy
+  id: OrderBy
+  label: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
+}
+
+"""primary key columns input for table: term"""
+input TermPkColumnsInput {
+  """Unique identifier"""
+  id: Int!
+
+  """Organization reference"""
+  oid: Int!
+}
+
+"""
+select columns of table "term"
+"""
+enum TermSelectColumn {
+  """column name"""
+  description
+
+  """column name"""
+  id
+
+  """column name"""
+  label
+
+  """column name"""
+  oid
+}
+
+"""
+input type for updating data in table "term"
+"""
+input TermSetInput {
+  """Optional description"""
+  description: String
+
+  """Term name (unique)"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""aggregate stddev on columns"""
+type TermStddevFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""aggregate stddevPop on columns"""
+type TermStddevPopFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""aggregate stddevSamp on columns"""
+type TermStddevSampFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+Streaming cursor of the table "term"
+"""
+input TermStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: TermStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input TermStreamCursorValueInput {
+  """Optional description"""
+  description: String
+
+  """Unique identifier"""
+  id: Int
+
+  """Term name (unique)"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""aggregate sum on columns"""
+type TermSumFields {
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+update columns of table "term"
+"""
+enum TermUpdateColumn {
+  """column name"""
+  description
+
+  """column name"""
+  label
+
+  """column name"""
+  oid
+}
+
+input TermUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: TermIncInput
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: TermSetInput
+
+  """filter the rows which have to be updated"""
+  where: TermBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type TermVarPopFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""aggregate varSamp on columns"""
+type TermVarSampFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
+"""aggregate variance on columns"""
+type TermVarianceFields {
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+}
+
 """
 Boolean expression to compare columns of type "timestamptz". All fields are combined with logical 'AND'.
 """
@@ -17372,6 +17685,25 @@ type mutation_root {
   ): TeacherRole
 
   """
+  delete data from the table: "term"
+  """
+  deleteTerm(
+    """filter the rows which have to be deleted"""
+    where: TermBoolExp!
+  ): TermMutationResponse
+
+  """
+  delete single row from the table: "term"
+  """
+  deleteTermByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): Term
+
+  """
   delete data from the table: "track"
   """
   deleteTrack(
@@ -17890,6 +18222,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: TeacherRoleOnConflict
   ): TeacherRole
+
+  """
+  insert data into the table: "term"
+  """
+  insertTerm(
+    """the rows to be inserted"""
+    objects: [TermInsertInput!]!
+
+    """upsert condition"""
+    onConflict: TermOnConflict
+  ): TermMutationResponse
+
+  """
+  insert a single row into the table: "term"
+  """
+  insertTermOne(
+    """the row to be inserted"""
+    object: TermInsertInput!
+
+    """upsert condition"""
+    onConflict: TermOnConflict
+  ): Term
 
   """
   insert data into the table: "track"
@@ -18618,6 +18972,40 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [TeacherRoleUpdates!]!
   ): [TeacherRoleMutationResponse]
+
+  """
+  update data of the table: "term"
+  """
+  updateTerm(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: TermIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: TermSetInput
+
+    """filter the rows which have to be updated"""
+    where: TermBoolExp!
+  ): TermMutationResponse
+
+  """
+  update single row of the table: "term"
+  """
+  updateTermByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: TermIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: TermSetInput
+    pkColumns: TermPkColumnsInput!
+  ): Term
+
+  """
+  update multiples rows of table: "term"
+  """
+  updateTermMany(
+    """updates to execute, in order"""
+    updates: [TermUpdates!]!
+  ): [TermMutationResponse]
 
   """
   update data of the table: "track"
@@ -19752,6 +20140,55 @@ type query_root {
     """Organization reference"""
     oid: Int!
   ): TeacherRole
+
+  """
+  fetch data from the table: "term"
+  """
+  term(
+    """distinct select on columns"""
+    distinctOn: [TermSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [TermOrderBy!]
+
+    """filter the rows returned"""
+    where: TermBoolExp
+  ): [Term!]!
+
+  """
+  fetch aggregated fields from the table: "term"
+  """
+  termAggregate(
+    """distinct select on columns"""
+    distinctOn: [TermSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [TermOrderBy!]
+
+    """filter the rows returned"""
+    where: TermBoolExp
+  ): TermAggregate!
+
+  """fetch data from the table: "term" using primary key columns"""
+  termByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): Term
 
   """
   fetch data from the table: "track"
@@ -21191,6 +21628,69 @@ type subscription_root {
     """filter the rows returned"""
     where: TeacherBoolExp
   ): [Teacher!]!
+
+  """
+  fetch data from the table: "term"
+  """
+  term(
+    """distinct select on columns"""
+    distinctOn: [TermSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [TermOrderBy!]
+
+    """filter the rows returned"""
+    where: TermBoolExp
+  ): [Term!]!
+
+  """
+  fetch aggregated fields from the table: "term"
+  """
+  termAggregate(
+    """distinct select on columns"""
+    distinctOn: [TermSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [TermOrderBy!]
+
+    """filter the rows returned"""
+    where: TermBoolExp
+  ): TermAggregate!
+
+  """fetch data from the table: "term" using primary key columns"""
+  termByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): Term
+
+  """
+  fetch data from the table in a streaming manner: "term"
+  """
+  termStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [TermStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: TermBoolExp
+  ): [Term!]!
 
   """
   fetch data from the table: "track"

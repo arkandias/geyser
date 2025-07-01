@@ -7,11 +7,12 @@ import { graphql } from "@/gql";
 import { GetAdminCoursesDocument } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
-import AdminCoursesCourseTypes from "@/components/admin/AdminCoursesCourseTypes.vue";
 import AdminCoursesCourses from "@/components/admin/AdminCoursesCourses.vue";
 import AdminCoursesDegrees from "@/components/admin/AdminCoursesDegrees.vue";
 import AdminCoursesPrograms from "@/components/admin/AdminCoursesPrograms.vue";
+import AdminCoursesTerms from "@/components/admin/AdminCoursesTerms.vue";
 import AdminCoursesTracks from "@/components/admin/AdminCoursesTracks.vue";
+import AdminCoursesTypes from "@/components/admin/AdminCoursesTypes.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
 
 const { t } = useTypedI18n();
@@ -51,16 +52,20 @@ graphql(`
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
         { track: { name: ASC } }
+        { term: { label: ASC } }
         { name: ASC }
-        { semester: ASC }
         { type: { label: ASC } }
       ]
     ) {
       ...AdminCourse
     }
+    terms: term(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
+      ...AdminTerm
+      ...AdminCoursesTerm
+    }
     types: courseType(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
       ...AdminCourseType
-      ...AdminCoursesCourseType
+      ...AdminCoursesType
     }
   }
 `);
@@ -83,6 +88,7 @@ const degrees = computed(() => data.value?.degrees ?? []);
 const programs = computed(() => data.value?.programs ?? []);
 const tracks = computed(() => data.value?.tracks ?? []);
 const courses = computed(() => data.value?.courses ?? []);
+const terms = computed(() => data.value?.terms ?? []);
 const types = computed(() => data.value?.types ?? []);
 </script>
 
@@ -122,6 +128,24 @@ const types = computed(() => data.value?.types ?? []);
     <QSeparator />
 
     <AdminSection
+      icon="sym_s_calendar_month"
+      :label="t('admin.courses.terms.label')"
+    >
+      <AdminCoursesTerms :fetching :term-fragments="terms" />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
+      icon="sym_s_format_list_bulleted"
+      :label="t('admin.courses.types.label')"
+    >
+      <AdminCoursesTypes :fetching :course-type-fragments="types" />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
       icon="sym_s_menu_book"
       :label="t('admin.courses.courses.label')"
     >
@@ -131,17 +155,9 @@ const types = computed(() => data.value?.types ?? []);
         :program-fragments="programs"
         :track-fragments="tracks"
         :course-fragments="courses"
-        :course-type-fragments="types"
+        :term-fragments="terms"
+        :type-fragments="types"
       />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
-      icon="sym_s_format_list_bulleted"
-      :label="t('admin.courses.courseTypes.label')"
-    >
-      <AdminCoursesCourseTypes :fetching :course-type-fragments="types" />
     </AdminSection>
   </QList>
 </template>

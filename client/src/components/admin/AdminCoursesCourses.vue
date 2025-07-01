@@ -7,10 +7,11 @@ import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   type AdminCourseFragment,
   AdminCourseFragmentDoc,
-  AdminCoursesCourseTypeFragmentDoc,
   AdminCoursesDegreeFragmentDoc,
   AdminCoursesProgramFragmentDoc,
+  AdminCoursesTermFragmentDoc,
   AdminCoursesTrackFragmentDoc,
+  AdminCoursesTypeFragmentDoc,
   CourseConstraint,
   type CourseInsertInput,
   CourseUpdateColumn,
@@ -40,14 +41,16 @@ const {
   programFragments,
   trackFragments,
   courseFragments,
-  courseTypeFragments,
+  termFragments,
+  typeFragments,
 } = defineProps<{
   fetching: boolean;
   degreeFragments: FragmentType<typeof AdminCoursesDegreeFragmentDoc>[];
   programFragments: FragmentType<typeof AdminCoursesProgramFragmentDoc>[];
   trackFragments: FragmentType<typeof AdminCoursesTrackFragmentDoc>[];
   courseFragments: FragmentType<typeof AdminCourseFragmentDoc>[];
-  courseTypeFragments: FragmentType<typeof AdminCoursesCourseTypeFragmentDoc>[];
+  termFragments: FragmentType<typeof AdminCoursesTermFragmentDoc>[];
+  typeFragments: FragmentType<typeof AdminCoursesTypeFragmentDoc>[];
 }>();
 
 const { t, n } = useTypedI18n();
@@ -84,10 +87,10 @@ const rowDescriptor = {
     nullable: true,
     formComponent: "input",
   },
-  semester: {
-    type: "number",
-    format: (val: number) => t("semester", { semester: val }),
-    formComponent: "input",
+  termLabel: {
+    type: "string",
+    field: (row) => row.term.label,
+    formComponent: "select",
   },
   typeLabel: {
     type: "string",
@@ -155,7 +158,9 @@ graphql(`
     }
     name
     nameShort
-    semester
+    term {
+      label
+    }
     type {
       label
     }
@@ -188,7 +193,12 @@ graphql(`
     name
   }
 
-  fragment AdminCoursesCourseType on CourseType {
+  fragment AdminCoursesTerm on Term {
+    id
+    label
+  }
+
+  fragment AdminCoursesType on CourseType {
     id
     label
   }
@@ -245,10 +255,11 @@ const tracks = computed(() =>
 const courses = computed(() =>
   courseFragments.map((f) => useFragment(AdminCourseFragmentDoc, f)),
 );
-const courseTypes = computed(() =>
-  courseTypeFragments.map((f) =>
-    useFragment(AdminCoursesCourseTypeFragmentDoc, f),
-  ),
+const terms = computed(() =>
+  termFragments.map((f) => useFragment(AdminCoursesTermFragmentDoc, f)),
+);
+const types = computed(() =>
+  typeFragments.map((f) => useFragment(AdminCoursesTypeFragmentDoc, f)),
 );
 const insertCourses = useMutation(InsertCoursesDocument);
 const upsertCourses = useMutation(UpsertCoursesDocument);
@@ -256,7 +267,7 @@ const updateCourses = useMutation(UpdateCoursesDocument);
 const deleteCourses = useMutation(DeleteCoursesDocument);
 
 const importConstraint =
-  CourseConstraint.CourseOidYearProgramIdTrackIdNameSemesterTypeIdKey;
+  CourseConstraint.CourseOidYearProgramIdTrackIdNameTermIdTypeIdKey;
 const importUpdateColumns = [
   CourseUpdateColumn.Oid,
   CourseUpdateColumn.Year,
@@ -264,7 +275,7 @@ const importUpdateColumns = [
   CourseUpdateColumn.TrackId,
   CourseUpdateColumn.Name,
   CourseUpdateColumn.NameShort,
-  CourseUpdateColumn.Semester,
+  CourseUpdateColumn.TermId,
   CourseUpdateColumn.TypeId,
   CourseUpdateColumn.Hours,
   CourseUpdateColumn.HoursAdjusted,
@@ -344,16 +355,23 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.nameShort = flatRow.nameShort;
   }
 
-  if (flatRow.semester !== undefined) {
-    object.semester = flatRow.semester;
+  // termId
+  if (flatRow.termLabel !== undefined) {
+    const term = terms.value.find((t) => t.label === flatRow.termLabel);
+    if (term === undefined) {
+      throw new Error(
+        t("admin.courses.courses.form.error.termNotFound", flatRow),
+      );
+    }
+    object.termId = term.id;
   }
 
   // typeId
   if (flatRow.typeLabel !== undefined) {
-    const type = courseTypes.value.find((ct) => ct.label === flatRow.typeLabel);
+    const type = types.value.find((t) => t.label === flatRow.typeLabel);
     if (type === undefined) {
       throw new Error(
-        t("admin.courses.courses.form.error.courseTypeNotFound", flatRow),
+        t("admin.courses.courses.form.error.typeNotFound", flatRow),
       );
     }
     object.typeId = type.id;
@@ -430,11 +448,8 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
         .find((d) => d.name === formValues.value["degreeName"])
         ?.programs.find((p) => p.name === formValues.value["programName"])
         ?.tracks.map((t) => t.name) ?? [],
-    semester: [1, 2, 3, 4, 5, 6].map((s) => ({
-      value: s,
-      label: t("semester", { semester: s }),
-    })),
-    typeLabel: courseTypes.value.map((ct) => ct.label),
+    termLabel: terms.value.map((t) => t.label),
+    typeLabel: types.value.map((t) => t.label),
   }),
 );
 

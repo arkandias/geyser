@@ -24,7 +24,7 @@ graphql(`
     programId
     trackId
     name
-    semester
+    termId
     typeId
   }
 
@@ -34,7 +34,7 @@ graphql(`
     $programId: Int!
     $trackIdComp: IntComparisonExp
     $name: String!
-    $semester: Int!
+    $termId: Int!
     $typeId: Int!
   ) {
     courses: course(
@@ -45,7 +45,7 @@ graphql(`
           { programId: { _eq: $programId } }
           { trackId: $trackIdComp }
           { name: { _eq: $name } }
-          { semester: { _eq: $semester } }
+          { termId: { _eq: $termId } }
           { typeId: { _eq: $typeId } }
         ]
       }
@@ -81,7 +81,7 @@ const getCourseArchives = useQuery({
         ? { _eq: data.value.trackId }
         : { _isNull: true },
     name: data.value.name,
-    semester: data.value.semester,
+    termId: data.value.termId,
     typeId: data.value.typeId,
   }),
   context: { additionalTypenames: ["All"] },

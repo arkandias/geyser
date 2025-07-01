@@ -25,7 +25,7 @@ graphql(`
         { course: { program: { degree: { name: ASC } } } }
         { course: { program: { name: ASC } } }
         { course: { track: { name: ASC } } }
-        { course: { semester: ASC } }
+        { course: { term: { label: ASC } } }
         { course: { name: ASC } }
         { course: { type: { label: ASC } } }
         { service: { teacher: { lastname: ASC } } }
@@ -49,7 +49,9 @@ graphql(`
             }
           }
         }
-        semester
+        term {
+          label
+        }
         type {
           label
         }
@@ -95,8 +97,8 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.track")]: a.course.track
         ? a.course.track.name
         : null,
+      [t("downloadAssignments.term")]: a.course.term.label,
       [t("downloadAssignments.course")]: a.course.name,
-      [t("downloadAssignments.semester")]: a.course.semester,
       [t("downloadAssignments.type")]: a.course.type.label,
       [t("downloadAssignments.teacher")]: a.service.teacher.displayname,
       [t("downloadAssignments.email")]: a.service.teacher.email,

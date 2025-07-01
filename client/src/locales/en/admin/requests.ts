@@ -44,11 +44,11 @@ export default {
           label: "Course",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semester",
+        termLabel: {
+          label: "Term",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Course type",
           tooltip: "",
         },
@@ -62,9 +62,9 @@ export default {
           serviceNotFound:
             "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, semester, and course type",
+            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
           courseNotFound:
-            'No {type} in semester {semester} with the name "{name}" in the track "{track}" of the program "{program}" of the degree "{degree}" for year {year} exists',
+            'No course of type "{typeLabel}" in the term "{termLabel}" with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for the year {year} exists',
           invalidType: `The request type must be ${RequestTypeEnum.Assignment}, ${RequestTypeEnum.Primary} or ${RequestTypeEnum.Secondary}`,
           hoursNegative: "Enter a positive or zero number of hours",
         },
@@ -127,11 +127,11 @@ export default {
           label: "Course",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semester",
+        termLabel: {
+          label: "Term",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Course type",
           tooltip: "",
         },
@@ -145,9 +145,9 @@ export default {
           serviceNotFound:
             "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, semester, and course type",
+            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
           courseNotFound:
-            'No {type} in semester {semester} with the name "{name}" in the track "{track}" of the program "{program}" of the degree "{degree}" for year {year} exists',
+            'No course of type "{typeLabel}" in the term "{termLabel}" with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for the year {year} exists',
         },
       },
       data: {

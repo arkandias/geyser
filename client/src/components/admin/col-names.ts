@@ -24,8 +24,8 @@ export const adminCoordinationsCoursesColNames = [
   "programName",
   "trackName",
   "courseName",
-  "courseSemester",
-  "courseType",
+  "termLabel",
+  "courseTypeLabel",
   "comment",
 ] as const;
 export type AdminCoordinationsCoursesColNames =
@@ -38,7 +38,7 @@ export const adminCoursesCoursesColNames = [
   "trackName",
   "name",
   "nameShort",
-  "semester",
+  "termLabel",
   "typeLabel",
   "hours",
   "hoursAdjusted",
@@ -50,14 +50,6 @@ export const adminCoursesCoursesColNames = [
 ] as const;
 export type AdminCoursesCoursesColName =
   (typeof adminCoursesCoursesColNames)[number];
-
-export const adminCoursesCourseTypesColNames = [
-  "label",
-  "coefficient",
-  "description",
-] as const;
-export type AdminCoursesCourseTypesColName =
-  (typeof adminCoursesCourseTypesColNames)[number];
 
 export const adminCoursesDegreesColNames = [
   "name",
@@ -86,6 +78,18 @@ export const adminCoursesTracksColNames = [
 export type AdminCoursesTracksColName =
   (typeof adminCoursesTracksColNames)[number];
 
+export const adminCoursesTermsColNames = ["label", "description"] as const;
+export type AdminCoursesTermsColName =
+  (typeof adminCoursesTermsColNames)[number];
+
+export const adminCoursesTypesColNames = [
+  "label",
+  "coefficient",
+  "description",
+] as const;
+export type AdminCoursesTypesColName =
+  (typeof adminCoursesTypesColNames)[number];
+
 export const adminGeneralRolesColNames = [
   "teacherEmail",
   "role",
@@ -101,8 +105,8 @@ export const adminRequestsPrioritiesColNames = [
   "programName",
   "trackName",
   "courseName",
-  "courseSemester",
-  "courseType",
+  "termLabel",
+  "courseTypeLabel",
   "seniority",
   "isPriority",
   "computed",
@@ -117,8 +121,8 @@ export const adminRequestsRequestsColNames = [
   "programName",
   "trackName",
   "courseName",
-  "courseSemester",
-  "courseType",
+  "termLabel",
+  "courseTypeLabel",
   "type",
   "hours",
 ] as const;

@@ -1,0 +1,90 @@
+table:
+  name: term
+  schema: public
+object_relationships:
+  - name: organization
+    using:
+      foreign_key_constraint_on: oid
+array_relationships:
+  - name: courses
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - oid
+          - term_id
+        table:
+          name: course
+          schema: public
+insert_permissions:
+  - role: organizer
+    permission:
+      check:
+        oid:
+          _eq: X-Hasura-Org-Id
+      columns:
+        - oid
+        - label
+        - description
+    comment: Full permissions within their organization
+select_permissions:
+  - role: commissioner
+    permission:
+      columns:
+        - oid
+        - id
+        - label
+        - description
+      filter:
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _eq: assignments
+    comment: Can view all terms [during assignments phase only]
+  - role: organizer
+    permission:
+      columns:
+        - oid
+        - id
+        - label
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Full permissions within their organization
+  - role: teacher
+    permission:
+      columns:
+        - oid
+        - id
+        - label
+        - description
+      filter:
+        _and:
+          - oid:
+              _eq: X-Hasura-Org-Id
+          - organization:
+              currentPhases:
+                value:
+                  _neq: shutdown
+    comment: Can view all terms [except during shutdown phase]
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - label
+        - description
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: Full permissions within their organization
+delete_permissions:
+  - role: organizer
+    permission:
+      filter:
+        oid:
+          _eq: X-Hasura-Org-Id
+    comment: Full permissions within their organization

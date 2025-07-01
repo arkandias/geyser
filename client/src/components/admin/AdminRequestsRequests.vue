@@ -13,6 +13,7 @@ import {
   AdminRequestsProgramFragmentDoc,
   AdminRequestsServiceFragmentDoc,
   AdminRequestsTeacherFragmentDoc,
+  AdminRequestsTermFragmentDoc,
   AdminRequestsTrackFragmentDoc,
   DeleteRequestsDocument,
   InsertRequestsDocument,
@@ -31,7 +32,7 @@ import type {
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
-import { isRequestType, toLowerCase, unique, uniqueValue } from "@/utils";
+import { isRequestType, toLowerCase, unique } from "@/utils";
 
 import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
@@ -48,6 +49,7 @@ const {
   degreeFragments,
   programFragments,
   trackFragments,
+  termFragments,
   courseTypeFragments,
 } = defineProps<{
   fetching: boolean;
@@ -58,6 +60,7 @@ const {
   degreeFragments: FragmentType<typeof AdminRequestsDegreeFragmentDoc>[];
   programFragments: FragmentType<typeof AdminRequestsProgramFragmentDoc>[];
   trackFragments: FragmentType<typeof AdminRequestsTrackFragmentDoc>[];
+  termFragments: FragmentType<typeof AdminRequestsTermFragmentDoc>[];
   courseTypeFragments: FragmentType<
     typeof AdminRequestsCourseTypeFragmentDoc
   >[];
@@ -100,13 +103,12 @@ const rowDescriptor = {
     field: (row) => row.course.name,
     formComponent: "select",
   },
-  courseSemester: {
-    type: "number",
-    field: (row) => row.course.semester,
-    format: (val: number) => t("semester", { semester: val }),
+  termLabel: {
+    type: "string",
+    field: (row) => row.course.term.label,
     formComponent: "select",
   },
-  courseType: {
+  courseTypeLabel: {
     type: "string",
     field: (row) => row.course.type.label,
     formComponent: "select",
@@ -145,7 +147,9 @@ graphql(`
       track {
         name
       }
-      semester
+      term {
+        label
+      }
       type {
         label
       }
@@ -199,10 +203,16 @@ graphql(`
         }
       }
     }
-    semester
+    term {
+      label
+    }
     type {
       label
     }
+  }
+
+  fragment AdminRequestsTerm on Term {
+    label
   }
 
   fragment AdminRequestsCourseType on CourseType {
@@ -270,6 +280,9 @@ const programs = computed(() =>
 const tracks = computed(() =>
   trackFragments.map((f) => useFragment(AdminRequestsTrackFragmentDoc, f)),
 );
+const terms = computed(() =>
+  termFragments.map((f) => useFragment(AdminRequestsTermFragmentDoc, f)),
+);
 const courseTypes = computed(() =>
   courseTypeFragments.map((f) =>
     useFragment(AdminRequestsCourseTypeFragmentDoc, f),
@@ -323,8 +336,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     flatRow.programName !== undefined ||
     flatRow.trackName !== undefined ||
     flatRow.courseName !== undefined ||
-    flatRow.courseSemester !== undefined ||
-    flatRow.courseType !== undefined
+    flatRow.termLabel !== undefined ||
+    flatRow.courseTypeLabel !== undefined
   ) {
     if (
       flatRow.year === undefined ||
@@ -332,8 +345,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       flatRow.programName === undefined ||
       flatRow.trackName === undefined ||
       flatRow.courseName === undefined ||
-      flatRow.courseSemester === undefined ||
-      flatRow.courseType === undefined
+      flatRow.termLabel === undefined ||
+      flatRow.courseTypeLabel === undefined
     ) {
       throw new Error(
         t("admin.requests.requests.form.error.updateCourseMissingFields"),
@@ -347,8 +360,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
         c.program.name === flatRow.programName &&
         (c.track?.name ?? null) === flatRow.trackName &&
         c.name === flatRow.courseName &&
-        c.semester === flatRow.courseSemester &&
-        c.type.label === flatRow.courseType,
+        c.term.label === flatRow.termLabel &&
+        c.type.label === flatRow.courseTypeLabel,
     );
 
     if (course === undefined) {
@@ -410,7 +423,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       )
       .map((c) => c.name)
       .filter(unique),
-    courseSemester: courses.value
+    termLabel: courses.value
       .filter(
         (c) =>
           c.program.degree.name === formValues.value["degreeName"] &&
@@ -418,19 +431,16 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
           c.name === formValues.value["courseName"],
       )
-      .map((c) => ({
-        value: c.semester,
-        label: t("semester", { semester: c.semester }),
-      }))
-      .filter(uniqueValue("value")),
-    courseType: courses.value
+      .map((c) => c.term.label)
+      .filter(unique),
+    courseTypeLabel: courses.value
       .filter(
         (c) =>
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
           c.name === formValues.value["courseName"] &&
-          c.semester === formValues.value["courseSemester"],
+          c.term.label === formValues.value["termLabel"],
       )
       .map((c) => c.type.label)
       .filter(unique),
@@ -452,8 +462,8 @@ const filterOptions = computed<
   programName: programs.value.map((p) => p.name),
   trackName: tracks.value.map((t) => t.name),
   courseName: courses.value.map((c) => c.name),
-  courseSemester: [1, 2, 3, 4, 5, 6],
-  courseType: courseTypes.value.map((ct) => ct.label),
+  termLabel: terms.value.map((t) => t.label),
+  courseTypeLabel: courseTypes.value.map((ct) => ct.label),
 }));
 </script>
 

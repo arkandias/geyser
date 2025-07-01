@@ -75,7 +75,7 @@ la supprimer.`,
           "Création d'un rôle | Édition d'un rôle | Édition de {count} rôles",
         error: {
           teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {email} »",
+            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           invalidRole:
             "Le type de rôle doit être @:role.organizer ou @:role.commissioner",
         },

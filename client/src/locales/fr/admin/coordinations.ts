@@ -37,14 +37,15 @@ export default {
           "Création d'une responsabilité | Édition d'une responsabilité | Édition de {count} responsabilités",
         error: {
           teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {email} »",
+            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           updateDegreeWithoutProgram:
             "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
           updateProgramWithoutDegree:
             "Vous ne pouvez pas modifier la mention sans sélectionner un diplôme",
-          degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
+          degreeNotFound:
+            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degree} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
         },
       },
       data: {
@@ -95,18 +96,19 @@ export default {
           "Création d'une responsabilité | Édition d'une responsabilité | Édition de {count} responsabilités",
         error: {
           teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {email} »",
+            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           updateProgramOrTrackWithoutDegree:
             "Vous ne pouvez pas modifier la mention ou le parcours sans sélectionner un diplôme",
           updateDegreeOrTrackWithoutProgram:
             "Vous ne pouvez pas modifier le diplôme ou le parcours sans sélectionner une mention",
           updateDegreeOrProgramWithoutTrack:
             "Vous ne pouvez pas modifier le diplôme ou la mention sans sélectionner un parcours",
-          degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
+          degreeNotFound:
+            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degree} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
           trackNotFound:
-            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degree} » avec le nom « {track} »",
+            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degreeName} » avec le nom « {track} »",
         },
       },
       data: {
@@ -155,11 +157,11 @@ export default {
           label: "Enseignement",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semestre",
+        termLabel: {
+          label: "Période",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Type ens.",
           tooltip: "Type d'enseignement",
         },
@@ -176,11 +178,11 @@ export default {
           "Création d'une responsabilité | Édition d'une responsabilité | Édition de {count} responsabilités",
         error: {
           teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {email} »",
+            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           updateCourseMissingFields:
             "Pour mettre à jour le cours, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas de {type} au semestre {semester} avec le nom « {name} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degree} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
         },
       },
       data: {

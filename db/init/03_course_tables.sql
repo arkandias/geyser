@@ -73,6 +73,24 @@ COMMENT ON COLUMN public.track.name_display IS 'Computed display name';
 COMMENT ON COLUMN public.track.visible IS 'Controls visibility to teachers';
 
 
+CREATE TABLE public.term
+(
+    oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id          integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    label       text    NOT NULL,
+    description text,
+    PRIMARY KEY (oid, id),
+    UNIQUE (oid, label)
+);
+CREATE INDEX idx_term_oid ON public.term (oid);
+
+COMMENT ON TABLE public.term IS 'Academic terms';
+COMMENT ON COLUMN public.term.oid IS 'Organization reference';
+COMMENT ON COLUMN public.term.id IS 'Unique identifier';
+COMMENT ON COLUMN public.term.label IS 'Term name (unique)';
+COMMENT ON COLUMN public.term.description IS 'Optional description';
+
+
 CREATE TABLE public.course_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -103,9 +121,8 @@ CREATE TABLE public.course
     name                  text    NOT NULL,
     name_short            text,
     name_display          text GENERATED ALWAYS AS (coalesce(name_short, name)) STORED,
-    semester              integer NOT NULL CHECK (1 <= semester AND semester <= 6),
+    term_id               integer NOT NULL,
     type_id               integer NOT NULL,
-    cycle_year            integer NOT NULL GENERATED ALWAYS AS (ceil(semester / 2.0)) STORED,
     groups                integer NOT NULL,
     groups_adjusted       integer,
     groups_effective      integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
@@ -120,8 +137,9 @@ CREATE TABLE public.course
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id) REFERENCES public.program ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id, track_id) REFERENCES public.track (oid, program_id, id) ON UPDATE CASCADE,
+    FOREIGN KEY (oid, term_id) REFERENCES public.term ON UPDATE CASCADE,
     FOREIGN KEY (oid, type_id) REFERENCES public.course_type ON UPDATE CASCADE,
-    UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, semester, type_id),
+    UNIQUE NULLS NOT DISTINCT (oid, year, program_id, track_id, name, term_id, type_id),
     UNIQUE (oid, id, year),        -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT course_groups_non_negative_check CHECK (groups >= 0),
     CONSTRAINT course_hours_non_negative_check CHECK (hours >= 0),
@@ -130,6 +148,7 @@ CREATE TABLE public.course
 CREATE INDEX idx_course_oid ON public.course (oid);
 CREATE INDEX idx_course_oid_year ON public.course (oid, year);
 CREATE INDEX idx_course_oid_program_id ON public.course (oid, program_id);
+CREATE INDEX idx_course_oid_term_id ON public.course (oid, term_id);
 CREATE INDEX idx_course_oid_type_id ON public.course (oid, type_id);
 CREATE INDEX idx_course_oid_track_id_program_id ON public.course (oid, track_id, program_id);
 
@@ -142,9 +161,8 @@ COMMENT ON COLUMN public.course.track_id IS 'Optional track reference';
 COMMENT ON COLUMN public.course.name IS 'Full name';
 COMMENT ON COLUMN public.course.name_short IS 'Abbreviated name';
 COMMENT ON COLUMN public.course.name_display IS 'Computed display name';
+COMMENT ON COLUMN public.course.term_id IS 'Academic term reference';
 COMMENT ON COLUMN public.course.type_id IS 'Course type reference';
-COMMENT ON COLUMN public.course.semester IS 'Academic semester';
-COMMENT ON COLUMN public.course.cycle_year IS 'Computed study year (1-3) based on semester';
 COMMENT ON COLUMN public.course.groups IS 'Base number of groups';
 COMMENT ON COLUMN public.course.groups_adjusted IS 'Modified number of groups, if different from base';
 COMMENT ON COLUMN public.course.groups_effective IS 'Actual number of groups, defaulting to base if no adjustment';

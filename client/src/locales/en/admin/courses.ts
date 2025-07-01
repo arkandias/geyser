@@ -1,11 +1,12 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type {
-  AdminCoursesCourseTypesColName,
   AdminCoursesCoursesColName,
   AdminCoursesDegreesColName,
   AdminCoursesProgramsColName,
+  AdminCoursesTermsColName,
   AdminCoursesTracksColName,
+  AdminCoursesTypesColName,
 } from "@/components/admin/col-names.ts";
 
 export default {
@@ -76,7 +77,7 @@ If these degrees contain programs, you will not be able to delete them.`,
         title:
           "Creating a program | Editing a program | Editing {count} programs",
         error: {
-          degreeNotFound: 'No degree with the name "{degree}" exists',
+          degreeNotFound: 'No degree with the name "{degreeName}" exists',
         },
       },
       data: {
@@ -132,9 +133,9 @@ If there are tracks, courses, or coordinations for these programs, you will not 
             "You cannot modify the degree without selecting a program",
           updateProgramWithoutDegree:
             "You cannot modify the program without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degree}" exists',
+          degreeNotFound: 'No degree with the name "{degreeName}" exists',
           programNotFound:
-            'No program in the degree "{degree}" with the name "{program}" exists',
+            'No program in the degree "{degreeName}" with the name "{programName}" exists',
         },
       },
       data: {
@@ -153,6 +154,80 @@ If there are tracks, courses, or coordinations for these programs, you will not 
 If there are courses or coordinations for this track, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected tracks?
 If there are courses or coordinations for these tracks, you will not be able to delete them.`,
+        },
+      },
+    },
+    terms: {
+      label: "Terms",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesTermsColName, AdminColNameOptions>,
+      form: {
+        title: "Creating a term | Editing a term | Editing {count} terms",
+      },
+      data: {
+        success: {
+          insert: "No term created | Term created | {count} terms created",
+          update: "No term updated | Term updated | {count} terms updated",
+          delete: "No term deleted | Term deleted | {count} terms deleted",
+          import: "0 terms imported | 1 term imported | {count} terms imported",
+          export: "0 terms exported | 1 term exported | {count} terms exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected term?
+If this term contains courses, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected terms?
+If these terms contain courses, you will not be able to delete them.`,
+        },
+      },
+    },
+    types: {
+      label: "Course types",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        coefficient: {
+          label: "Coefficient",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesTypesColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Creating a course type | Editing a course type | Editing {count} course types",
+      },
+      data: {
+        success: {
+          insert:
+            "No course type created | Course type created | {count} course types created",
+          update:
+            "No course type updated | Course type updated | {count} course types updated",
+          delete:
+            "No course type deleted | Course type deleted | {count} course types deleted",
+          import:
+            "0 course types imported | 1 course type imported | {count} course types imported",
+          export:
+            "0 course types exported | 1 course type exported | {count} course types exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected course type?
+If this type is assigned to courses, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected course types?
+If these types are assigned to courses, you will not be able to delete them.`,
         },
       },
     },
@@ -183,12 +258,12 @@ If there are courses or coordinations for these tracks, you will not be able to 
           label: "Short name",
           tooltip: "",
         },
-        semester: {
-          label: "Semester",
+        termLabel: {
+          label: "Term",
           tooltip: "",
         },
         typeLabel: {
-          label: "Course type",
+          label: "Type",
           tooltip: "",
         },
         hours: {
@@ -231,12 +306,13 @@ If there are courses or coordinations for these tracks, you will not be able to 
             "You cannot modify the track without selecting a program",
           updateTrackWithoutDegree:
             "You cannot modify the track without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degree}" exists',
+          degreeNotFound: 'No degree with the name "{degreeName}" exists',
           programNotFound:
-            'No program in the degree "{degree}" with the name "{program}" exists',
+            'No program in the degree "{degreeName}" with the name "{programName}" exists',
           trackNotFound:
-            'No track in the program "{program}" of the degree "{degree}" with the name "{track}" exists',
-          courseTypeNotFound: 'No course type with the label "{type}" exists',
+            'No track in the program "{programName}" of the degree "{degreeName}" with the name "{trackName}" exists',
+          termNotFound: 'No term with the label "{termLabel}" exists',
+          typeNotFound: 'No course type with the label "{typeLabel}" exists',
           hoursNegative: "Enter a positive or zero number of hours",
           hoursAdjustedNegative:
             "Enter a positive or zero adjusted number of hours",
@@ -265,48 +341,6 @@ If there are courses or coordinations for these tracks, you will not be able to 
 If there are requests, priorities, or coordinations for this course, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected tracks?
 If there are requests, priorities, or coordinations for these courses, you will not be able to delete them.`,
-        },
-      },
-    },
-    courseTypes: {
-      label: "Course types",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        coefficient: {
-          label: "Coefficient",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Creating a course type | Editing a course type | Editing {count} course types",
-      },
-      data: {
-        success: {
-          insert:
-            "No course type created | Course type created | {count} course types created",
-          update:
-            "No course type updated | Course type updated | {count} course types updated",
-          delete:
-            "No course type deleted | Course type deleted | {count} course types deleted",
-          import:
-            "0 course types imported | 1 course type imported | {count} course types imported",
-          export:
-            "0 course types exported | 1 course type exported | {count} course types exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected course type?
-If this type is assigned to courses, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected course types?
-If these types are assigned to courses, you will not be able to delete them.`,
         },
       },
     },

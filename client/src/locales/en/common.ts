@@ -34,7 +34,6 @@ export default {
     number: "number",
     boolean: "boolean",
   } satisfies Record<PrimitiveType, string>,
-  semester: "S{semester}",
   unit: {
     hours: "h",
     weightedHours: "wh",

@@ -19,5 +19,6 @@
 - "!include public_service_modification_type.yaml"
 - "!include public_teacher.yaml"
 - "!include public_teacher_role.yaml"
+- "!include public_term.yaml"
 - "!include public_track.yaml"
 - "!include public_year.yaml"

@@ -12,6 +12,52 @@ import type {
 export default {
   teachers: {
     title: "Teachers",
+    positions: {
+      label: "Positions",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+        baseServiceHours: {
+          label: "Base service (@:unit.weightedHours)",
+          tooltip: "Base service (@:unit.weightedHours)",
+        },
+      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Creating a position | Editing a position | Editing {count} positions",
+        error: {
+          baseServiceHoursNegative:
+            "Enter a positive or zero number of base service hours",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No position created | Position created | {count} positions created",
+          update:
+            "No position updated | Position updated | {count} positions updated",
+          delete:
+            "No position deleted | Position deleted | {count} positions deleted",
+          import:
+            "0 positions imported | 1 position imported | {count} positions imported",
+          export:
+            "0 positions exported | 1 position exported | {count} positions exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected position?
+If this position is assigned to teachers, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected positions?
+If these positions are assigned to teachers, you will not be able to delete them.`,
+        },
+      },
+    },
     teachers: {
       label: "Teachers",
       column: {
@@ -83,52 +129,6 @@ If there are services, responsibilities, or roles for these teachers, you will n
         },
       },
     },
-    positions: {
-      label: "Positions",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-        baseServiceHours: {
-          label: "Base service (@:unit.weightedHours)",
-          tooltip: "Base service (@:unit.weightedHours)",
-        },
-      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Creating a position | Editing a position | Editing {count} positions",
-        error: {
-          baseServiceHoursNegative:
-            "Enter a positive or zero number of base service hours",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "No position created | Position created | {count} positions created",
-          update:
-            "No position updated | Position updated | {count} positions updated",
-          delete:
-            "No position deleted | Position deleted | {count} positions deleted",
-          import:
-            "0 positions imported | 1 position imported | {count} positions imported",
-          export:
-            "0 positions exported | 1 position exported | {count} positions exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected position?
-If this position is assigned to teachers, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected positions?
-If these positions are assigned to teachers, you will not be able to delete them.`,
-        },
-      },
-    },
     services: {
       label: "Services",
       column: {
@@ -149,7 +149,7 @@ If these positions are assigned to teachers, you will not be able to delete them
         title:
           "Creating a service | Editing a service | Editing {count} services",
         error: {
-          teacherNotFound: 'No teacher with email "{email}"',
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },
@@ -172,63 +172,6 @@ If these positions are assigned to teachers, you will not be able to delete them
 If there are modifications, requests, or priorities for this service, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected services?
 If there are modifications, requests, or priorities for these services, you will not be able to delete them.`,
-        },
-      },
-    },
-    serviceModifications: {
-      label: "Service modifications",
-      column: {
-        year: {
-          label: "Year",
-          tooltip: "",
-        },
-        teacherEmail: {
-          label: "Teacher",
-          tooltip: "",
-        },
-        typeLabel: {
-          label: "Type",
-          tooltip: "",
-        },
-        hours: {
-          label: "Hours (@:unit.weightedHours)",
-          tooltip: "",
-        },
-      } satisfies Record<
-        AdminTeachersServiceModificationsColName,
-        AdminColNameOptions
-      >,
-      form: {
-        title:
-          "Creating a service modification | Editing a service modification | Editing {count} service modification",
-        error: {
-          updateYearWithoutTeacher:
-            "You cannot modify the year without selecting a teacher",
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
-          serviceNotFound:
-            "No service exists for teacher {teacherEmail} and year {year}",
-          typeNotFound:
-            'No service modification with the label "{type}" exists',
-          hoursNegative: "Enter a positive or zero number of hours",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "No service modification created | Service modification created | {count} service modifications created",
-          update:
-            "No service modification updated | Service modification updated | {count} service modifications updated",
-          delete:
-            "No service modification deleted | Service modification deleted | {count} service modifications deleted",
-          import:
-            "0 service modifications imported | 1 service modification imported | {count} service modifications imported",
-          export:
-            "0 service modifications exported | 1 service modification exported | {count} service modifications exported",
-        },
-        confirm: {
-          delete:
-            "Are you sure you want to delete the selected service modification? | Are you sure you want to delete the {count} selected service modifications?",
         },
       },
     },
@@ -270,6 +213,63 @@ If there are modifications, requests, or priorities for these services, you will
 If this type is assigned to modifications, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected modification types?
 If these types are assigned to modifications, you will not be able to delete them.`,
+        },
+      },
+    },
+    serviceModifications: {
+      label: "Service modifications",
+      column: {
+        year: {
+          label: "Year",
+          tooltip: "",
+        },
+        teacherEmail: {
+          label: "Teacher",
+          tooltip: "",
+        },
+        typeLabel: {
+          label: "Type",
+          tooltip: "",
+        },
+        hours: {
+          label: "Hours (@:unit.weightedHours)",
+          tooltip: "",
+        },
+      } satisfies Record<
+        AdminTeachersServiceModificationsColName,
+        AdminColNameOptions
+      >,
+      form: {
+        title:
+          "Creating a service modification | Editing a service modification | Editing {count} service modification",
+        error: {
+          updateYearWithoutTeacher:
+            "You cannot modify the year without selecting a teacher",
+          updateTeacherWithoutYear:
+            "You cannot modify the teacher without selecting a year",
+          serviceNotFound:
+            "No service exists for teacher {teacherEmail} and year {year}",
+          typeNotFound:
+            'No service modification with the label "{typeLabel}" exists',
+          hoursNegative: "Enter a positive or zero number of hours",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No service modification created | Service modification created | {count} service modifications created",
+          update:
+            "No service modification updated | Service modification updated | {count} service modifications updated",
+          delete:
+            "No service modification deleted | Service modification deleted | {count} service modifications deleted",
+          import:
+            "0 service modifications imported | 1 service modification imported | {count} service modifications imported",
+          export:
+            "0 service modifications exported | 1 service modification exported | {count} service modifications exported",
+        },
+        confirm: {
+          delete:
+            "Are you sure you want to delete the selected service modification? | Are you sure you want to delete the {count} selected service modifications?",
         },
       },
     },

@@ -44,11 +44,11 @@ export default {
           label: "Enseignement",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semestre",
+        termLabel: {
+          label: "Période",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Type ens.",
           tooltip: "Type d'enseignement",
         },
@@ -64,7 +64,7 @@ export default {
           updateCourseMissingFields:
             "Pour mettre à jour le cours, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas de {type} au semestre {semester} avec le nom « {name} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degree} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
           invalidType: `Le type de la requête doit être ${RequestTypeEnum.Assignment}, ${RequestTypeEnum.Primary} ou ${RequestTypeEnum.Secondary}`,
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
@@ -127,11 +127,11 @@ export default {
           label: "Enseignement",
           tooltip: "",
         },
-        courseSemester: {
-          label: "Semestre",
+        termLabel: {
+          label: "Période",
           tooltip: "",
         },
-        courseType: {
+        courseTypeLabel: {
           label: "Type ens.",
           tooltip: "Type d'enseignement",
         },
@@ -147,7 +147,7 @@ export default {
           updateCourseMissingFields:
             "Pour mettre à jour le cours, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas de {type} au semestre {semester} avec le nom « {name} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degree} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
         },
       },
       data: {

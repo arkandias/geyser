@@ -3,7 +3,7 @@ export default {
     program: "Program",
     track: "Track",
     course: "Course",
-    semester: "Semester",
+    term: "Term",
     type: "Type",
     teacher: "Teacher",
     email: "Email",

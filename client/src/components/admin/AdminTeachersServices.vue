@@ -158,9 +158,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     );
     if (teacher === undefined) {
       throw new Error(
-        t("admin.teachers.services.form.error.teacherNotFound", {
-          email: flatRow.teacherEmail,
-        }),
+        t("admin.teachers.services.form.error.teacherNotFound", flatRow),
       );
     }
     object.teacherId = teacher.id;

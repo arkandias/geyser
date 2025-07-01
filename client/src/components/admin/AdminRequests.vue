@@ -26,8 +26,8 @@ graphql(`
         { course: { program: { degree: { name: ASC } } } }
         { course: { program: { name: ASC } } }
         { course: { track: { name: ASC } } }
+        { course: { term: { label: ASC } } }
         { course: { name: ASC } }
-        { course: { semester: ASC } }
         { course: { type: { label: ASC } } }
       ]
     ) {
@@ -42,8 +42,8 @@ graphql(`
         { course: { program: { degree: { name: ASC } } } }
         { course: { program: { name: ASC } } }
         { course: { track: { name: ASC } } }
+        { course: { term: { label: ASC } } }
         { course: { name: ASC } }
-        { course: { semester: ASC } }
         { course: { type: { label: ASC } } }
       ]
     ) {
@@ -96,13 +96,17 @@ graphql(`
         { program: { degree: { name: ASC } } }
         { program: { name: ASC } }
         { track: { name: ASC } }
+        { term: { label: ASC } }
         { name: ASC }
-        { semester: ASC }
         { type: { label: ASC } }
       ]
     ) {
       ...AdminRequestsCourse
       ...AdminPrioritiesCourse
+    }
+    terms: term(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
+      ...AdminRequestsTerm
+      ...AdminPrioritiesTerm
     }
     courseTypes: courseType(
       where: { oid: { _eq: $oid } }
@@ -129,6 +133,7 @@ const courses = computed(() => data.value?.courses ?? []);
 const degrees = computed(() => data.value?.degrees ?? []);
 const programs = computed(() => data.value?.programs ?? []);
 const tracks = computed(() => data.value?.tracks ?? []);
+const terms = computed(() => data.value?.terms ?? []);
 const courseTypes = computed(() => data.value?.courseTypes ?? []);
 </script>
 
@@ -147,6 +152,7 @@ const courseTypes = computed(() => data.value?.courseTypes ?? []);
         :degree-fragments="degrees"
         :program-fragments="programs"
         :track-fragments="tracks"
+        :term-fragments="terms"
         :course-type-fragments="courseTypes"
       />
     </AdminSection>
@@ -166,6 +172,7 @@ const courseTypes = computed(() => data.value?.courseTypes ?? []);
         :degree-fragments="degrees"
         :program-fragments="programs"
         :track-fragments="tracks"
+        :term-fragments="terms"
         :course-type-fragments="courseTypes"
       />
     </AdminSection>

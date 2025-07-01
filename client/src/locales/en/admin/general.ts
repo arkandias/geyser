@@ -73,7 +73,7 @@ If courses or services are associated with this year, you will not be able to de
       form: {
         title: "Creating a role | Editing a role | Editing {count} roles",
         error: {
-          teacherNotFound: 'No teacher with email "{email}"',
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
           invalidRole:
             "Role type must be @:role.organizer or @:role.commissioner",
         },

@@ -1,11 +1,12 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type {
-  AdminCoursesCourseTypesColName,
   AdminCoursesCoursesColName,
   AdminCoursesDegreesColName,
   AdminCoursesProgramsColName,
+  AdminCoursesTermsColName,
   AdminCoursesTracksColName,
+  AdminCoursesTypesColName,
 } from "@/components/admin/col-names.ts";
 
 export default {
@@ -76,7 +77,8 @@ Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
         title:
           "Création d'une mention | Édition d'une mention | Édition de {count} mentions",
         error: {
-          degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
+          degreeNotFound:
+            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
         },
       },
       data: {
@@ -133,9 +135,10 @@ S'il existe des parcours, des cours ou des responsabilités pour ces mentions, v
             "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
           updateProgramWithoutDegree:
             "Vous ne pouvez pas modifier la mention sans sélectionner un diplôme",
-          degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
+          degreeNotFound:
+            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degree} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
         },
       },
       data: {
@@ -157,6 +160,86 @@ S'il existe des parcours, des cours ou des responsabilités pour ces mentions, v
 S'il existe des cours ou des responsabilités pour ce parcours, vous ne pourrez pas le supprimer. ` +
             `Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
 S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
+    terms: {
+      label: "Période",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesTermsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Création d'une période | Édition d'une période | Édition de {count} périodes",
+      },
+      data: {
+        success: {
+          insert:
+            "Aucune période créée | Période créée | {count} périodes créées",
+          update:
+            "Aucune période mise à jour | Période mise à jour | {count} périodes mises à jour",
+          delete:
+            "Aucune période supprimée | Période supprimée | {count} périodes supprimées",
+          import:
+            "0 période importée | 1 période importée | {count} périodes importées",
+          export:
+            "0 période exportée | 1 période exportée | {count} périodes exportées",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer la période sélectionnée ?
+Si cette période contient des enseignements, vous ne pourrez pas la supprimer. ` +
+            `Êtes-vous sûr de vouloir supprimer les {count} périodes sélectionnées ?
+Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
+    types: {
+      label: "Types d'enseignement",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        coefficient: {
+          label: "Coefficient",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesTypesColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Création d'un type d'enseignement | Édition d'un type d'enseignement | Édition de {count} types d'enseignement",
+      },
+      data: {
+        success: {
+          insert:
+            "Aucun type d'enseignement créé | Type d'enseignement créé | {count} types d'enseignement créés",
+          update:
+            "Aucun type d'enseignement mis à jour | Type d'enseignement mis à jour | {count} types d'enseignement mis à jour",
+          delete:
+            "Aucun type d'enseignement supprimé | Type d'enseignement supprimé | {count} types d'enseignement supprimés",
+          import:
+            "0 type d'enseignement importé | 1 type d'enseignement importé | {count} types d'enseignement importés",
+          export:
+            "0 type d'enseignement exporté | 1 type d'enseignement exporté | {count} types d'enseignement exportés",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le type d'enseignement sélectionné ?
+Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer. ` +
+            `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
+Si ces types sont attribués à des enseignements, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -187,12 +270,12 @@ S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez
           label: "Nom court",
           tooltip: "",
         },
-        semester: {
-          label: "Semestre",
+        termLabel: {
+          label: "Période",
           tooltip: "",
         },
         typeLabel: {
-          label: "Type d'enseignement",
+          label: "Type",
           tooltip: "",
         },
         hours: {
@@ -236,12 +319,14 @@ S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez
             "Vous ne pouvez pas modifier le parcours sans sélectionner une mention",
           updateTrackWithoutDegree:
             "Vous ne pouvez pas modifier le parcours sans sélectionner un diplôme",
-          degreeNotFound: "Il n'existe pas de diplôme avec le nom « {degree} »",
+          degreeNotFound:
+            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degree} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
           trackNotFound:
-            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degree} » avec le nom « {track} »",
-          courseTypeNotFound:
+            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degreeName} » avec le nom « {track} »",
+          termNotFound: "Il n'existe pas de période avec le label « {term} »",
+          typeNotFound:
             "Il n'existe pas de type d'enseignement avec le label « {type} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
           hoursAdjustedNegative:
@@ -272,48 +357,6 @@ S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez
 S'il existe des demandes, des priorités ou des responsabilités pour cet enseignement, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
 S'il existe des demandes, des priorités ou des responsabilités pour ces enseignements, vous ne pourrez pas les supprimer.`,
-        },
-      },
-    },
-    courseTypes: {
-      label: "Types d'enseignement",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        coefficient: {
-          label: "Coefficient",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Création d'un type d'enseignement | Édition d'un type d'enseignement | Édition de {count} types d'enseignement",
-      },
-      data: {
-        success: {
-          insert:
-            "Aucun type d'enseignement créé | Type d'enseignement créé | {count} types d'enseignement créés",
-          update:
-            "Aucun type d'enseignement mis à jour | Type d'enseignement mis à jour | {count} types d'enseignement mis à jour",
-          delete:
-            "Aucun type d'enseignement supprimé | Type d'enseignement supprimé | {count} types d'enseignement supprimés",
-          import:
-            "0 type d'enseignement importé | 1 type d'enseignement importé | {count} types d'enseignement importés",
-          export:
-            "0 type d'enseignement exporté | 1 type d'enseignement exporté | {count} types d'enseignement exportés",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer le type d'enseignement sélectionné ?
-Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer. ` +
-            `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
-Si ces types sont attribués à des enseignements, vous ne pourrez pas les supprimer.`,
         },
       },
     },
