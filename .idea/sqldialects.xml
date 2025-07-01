@@ -8,8 +8,6 @@
     <file url="file://$PROJECT_DIR$/db/init/04_request_tables.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/init/05_functions.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/init/06_timestamps.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/db/migration/dumps/legacy.sql" dialect="PostgreSQL" />
-    <file url="file://$PROJECT_DIR$/db/migration/dumps/migrated.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/lpp.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1733949699890_remove_message_type/down.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/db/migration/migrations/1733949699890_remove_message_type/up.sql" dialect="PostgreSQL" />

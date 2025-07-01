@@ -22,7 +22,7 @@
     "axios": "^1.10.0",
     "dompurify": "^3.2.6",
     "graphql": "^16.11.0",
-    "marked": "^15.0.12",
+    "marked": "^16.0.0",
     "papaparse": "^5.5.3",
     "quasar": "^2.18.1",
     "vue": "^3.5.17",
@@ -32,7 +32,7 @@
   },
   "devDependencies": {
     "@graphql-codegen/cli": "^5.0.7",
-    "@graphql-codegen/client-preset": "^4.8.2",
+    "@graphql-codegen/client-preset": "^4.8.3",
     "@graphql-codegen/schema-ast": "^4.1.0",
     "@graphql-typed-document-node/core": "^3.2.0",
     "@quasar/vite-plugin": "^1.9.0",
@@ -46,6 +46,6 @@
     "vite": "^7.0.0",
     "vite-plugin-compression2": "^2.2.0",
     "vitest": "^3.2.4",
-    "vue-tsc": "^2.2.10"
+    "vue-tsc": "^3.0.0"
   }
 }
