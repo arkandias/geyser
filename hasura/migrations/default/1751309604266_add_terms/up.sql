@@ -140,15 +140,15 @@ BEGIN
     org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
     RETURN QUERY
-        INSERT INTO public.course (oid, year, program_id, track_id, name, name_short, term_id, type_id, groups,
+        INSERT INTO public.course (oid, year, program_id, track_id, term_id, name, name_short, type_id, groups,
                                    groups_adjusted, hours, hours_adjusted, description, priority_rule, visible)
             SELECT org_id,
                    p_year,
                    c.program_id,
                    c.track_id,
+                   c.term_id,
                    c.name,
                    c.name_short,
-                   c.term_id,
                    c.type_id,
                    c.groups,
                    c.groups_adjusted,
@@ -175,8 +175,8 @@ BEGIN
                       AND c_new.year = p_year
                       AND c_new.program_id = c_old.program_id
                       AND c_new.track_id IS NOT DISTINCT FROM c_old.track_id
-                      AND c_new.name = c_old.name
                       AND c_new.term_id = c_old.term_id
+                      AND c_new.name = c_old.name
                       AND c_new.type_id = c_old.type_id
     WHERE coord.oid = org_id
       AND c_old.year = p_year - 1

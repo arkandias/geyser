@@ -82,5 +82,6 @@
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751279080012_add_hours_effective_total/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751309604266_add_terms/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751470875351_priority_request_on_delete_cascade/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751482728862_add_oid_to_some_functions/up.sql" dialect="PostgreSQL" />
   </component>
 </project>
