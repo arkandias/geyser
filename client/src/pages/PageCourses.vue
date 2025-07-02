@@ -157,6 +157,7 @@ watch(
       v-model="vSplitterRatio"
       :limits="[0, 100]"
       :disable="!isLeftPanelOpen"
+      separator-class="bg-primary"
     >
       <template #before>
         <TableServices
@@ -170,6 +171,7 @@ watch(
           v-model="hSplitterRatio"
           horizontal
           :limits="[0, 100]"
+          separator-class="bg-primary"
         >
           <template #before>
             <TableCourses

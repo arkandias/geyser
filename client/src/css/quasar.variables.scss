@@ -24,7 +24,7 @@ $warning: $accent;
 $dark: #2a2a2a;
 $dark-page: $dark;
 
-// switch primary and secondary colors in dark mode for visibility purposes
+// Switch primary and secondary colors in dark mode for visibility purposes
 .body--dark {
   --q-primary: var(--q-secondary);
 }
