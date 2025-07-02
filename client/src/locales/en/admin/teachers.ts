@@ -169,9 +169,9 @@ If these positions are assigned to teachers, you will not be able to delete them
         confirm: {
           delete:
             `Are you sure you want to delete the selected service?
-If there are modifications, requests, or priorities for this service, you will not be able to delete it. ` +
+If there are modifications, requests, or a message for this service, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected services?
-If there are modifications, requests, or priorities for these services, you will not be able to delete them.`,
+If there are modifications, requests, or messages for these services, you will not be able to delete them.`,
         },
       },
     },

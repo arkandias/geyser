@@ -170,9 +170,9 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
         confirm: {
           delete:
             `Êtes-vous sûr de vouloir supprimer le service sélectionné ?
-S'il existe des modifications, des demandes ou des priorités pour ce service, vous ne pourrez pas le supprimer. ` +
+S'il existe des modifications, des demandes ou un message pour ce service, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} services sélectionnés ?
-S'il existe des modifications, des demandes ou des priorités pour ces services, vous ne pourrez pas les supprimer.`,
+S'il existe des modifications, des demandes ou des messages pour ces services, vous ne pourrez pas les supprimer.`,
         },
       },
     },

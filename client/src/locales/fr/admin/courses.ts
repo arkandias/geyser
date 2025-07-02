@@ -312,9 +312,9 @@ Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprime
         confirm: {
           delete:
             `Êtes-vous sûr de vouloir supprimer l'enseignement sélectionné ?
-S'il existe des demandes, des priorités ou des responsabilités pour cet enseignement, vous ne pourrez pas le supprimer. ` +
-            `| Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
-S'il existe des demandes, des priorités ou des responsabilités pour ces enseignements, vous ne pourrez pas les supprimer.`,
+S'il existe des demandes ou des responsabilités pour cet enseignement, vous ne pourrez pas le supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} enseignements sélectionnés ?
+S'il existe des demandes ou des responsabilités pour ces enseignements, vous ne pourrez pas les supprimer.`,
         },
       },
     },

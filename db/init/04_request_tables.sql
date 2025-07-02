@@ -10,8 +10,8 @@ CREATE TABLE public.priority
     computed    boolean NOT NULL DEFAULT FALSE,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
-    FOREIGN KEY (oid, year, service_id) REFERENCES public.service (oid, year, id) ON UPDATE CASCADE,
-    FOREIGN KEY (oid, year, course_id) REFERENCES public.course (oid, year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (oid, year, service_id) REFERENCES public.service (oid, year, id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (oid, year, course_id) REFERENCES public.course (oid, year, id) ON UPDATE CASCADE ON DELETE CASCADE,
     UNIQUE (oid, service_id, course_id),
     CONSTRAINT priority_seniority_non_negative_check CHECK (seniority >= 0)
 );
@@ -42,8 +42,8 @@ CREATE TABLE public.request
     hours      real    NOT NULL,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
-    FOREIGN KEY (oid, year, service_id) REFERENCES public.service (oid, year, id) ON UPDATE CASCADE,
-    FOREIGN KEY (oid, year, course_id) REFERENCES public.course (oid, year, id) ON UPDATE CASCADE,
+    FOREIGN KEY (oid, year, service_id) REFERENCES public.service (oid, year, id) ON UPDATE CASCADE ON DELETE CASCADE,
+    FOREIGN KEY (oid, year, course_id) REFERENCES public.course (oid, year, id) ON UPDATE CASCADE ON DELETE CASCADE,
     UNIQUE (oid, service_id, course_id, type),
     CONSTRAINT request_hours_positive_check CHECK (hours > 0)
 );

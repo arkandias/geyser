@@ -296,9 +296,9 @@ If these terms contain courses, you will not be able to delete them.`,
         confirm: {
           delete:
             `Are you sure you want to delete the selected course?
-If there are requests, priorities, or coordinations for this course, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected tracks?
-If there are requests, priorities, or coordinations for these courses, you will not be able to delete them.`,
+If there are requests or coordinations for this course, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected courses?
+If there are requests or coordinations for these courses, you will not be able to delete them.`,
         },
       },
     },
