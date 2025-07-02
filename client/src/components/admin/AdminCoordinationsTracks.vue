@@ -87,6 +87,7 @@ const rowDescriptor = {
   },
   comment: {
     type: "string",
+    nullable: true,
     formComponent: "input",
   },
 } as const satisfies RowDescriptorExtra<AdminCoordinationsTracksColNames, Row>;
