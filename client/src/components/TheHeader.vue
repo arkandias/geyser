@@ -127,7 +127,7 @@ const { hasService } = useProfileStore();
   overflow-x: auto;
 }
 .dev #main-toolbar {
-  background-color: $secondary;
+  background-color: $negative;
 }
 
 #warning-toolbar {
