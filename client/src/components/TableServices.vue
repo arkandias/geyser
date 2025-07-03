@@ -13,12 +13,7 @@ import {
   ServiceRowFragmentDoc,
 } from "@/gql/graphql.ts";
 import type { Column } from "@/types/column.ts";
-import {
-  getField,
-  localeCompare,
-  normalizeForSearch,
-  priorityColor,
-} from "@/utils";
+import { getField, localeCompare, normalizeForSearch } from "@/utils";
 
 const { serviceRowFragments } = defineProps<{
   serviceRowFragments: FragmentType<typeof ServiceRowFragmentDoc>[];
@@ -55,20 +50,18 @@ const $q = useQuasar();
 const { t, n } = useTypedI18n();
 const perm = usePermissions();
 
+// Table
+const title = computed(() => t("courses.table.services.title"));
+const noResultsLabel = computed(() =>
+  services.value.length
+    ? t("courses.table.services.noResults")
+    : t("courses.table.services.noData"),
+);
+
 // Options
 const stickyHeader = ref(false);
 
-// Badge color
-const greaterThanOrEqualToModifiedService = (
-  col: Column<ServiceRow>,
-  row: ServiceRow,
-) =>
-  priorityColor(
-    Number(row[col.name as keyof ServiceRow]) >= row.modifiedService,
-  );
-const nonPositive = (col: Column<ServiceRow>, row: ServiceRow) =>
-  priorityColor(Number(row[col.name as keyof ServiceRow]) <= 0);
-
+// Rows definition
 type ServiceRow = Omit<
   ServiceRowFragment,
   "hours" | "modifications" | "externalCourses" | "requests"
@@ -81,7 +74,6 @@ type ServiceRow = Omit<
   diffPrimary: number;
   diffSecondary: number;
 };
-
 const services = computed<ServiceRow[]>(() =>
   serviceRowFragments.map((f) => {
     const { hours, modifications, externalCourses, requests, ...rest } =
@@ -121,12 +113,6 @@ const services = computed<ServiceRow[]>(() =>
       diffSecondary: modifiedService - totalSecondary,
     };
   }),
-);
-
-const noResultsLabel = computed(() =>
-  services.value.length
-    ? t("courses.table.services.noResults")
-    : t("courses.table.services.noData"),
 );
 
 // Row selection
@@ -210,7 +196,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: perm.toViewAssignments,
     searchable: false,
-    badgeColor: greaterThanOrEqualToModifiedService,
+    badge: true,
   },
   {
     name: "totalPrimary",
@@ -223,7 +209,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
-    badgeColor: greaterThanOrEqualToModifiedService,
+    badge: true,
   },
   {
     name: "totalSecondary",
@@ -236,7 +222,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
-    badgeColor: greaterThanOrEqualToModifiedService,
+    badge: true,
   },
   {
     name: "diffAssignment",
@@ -249,7 +235,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: false,
     searchable: false,
-    badgeColor: nonPositive,
+    badge: true,
   },
   {
     name: "diffPrimary",
@@ -262,7 +248,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sortable: true,
     visible: false,
     searchable: false,
-    badgeColor: nonPositive,
+    badge: true,
   },
 ]);
 
@@ -360,7 +346,7 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
 
 <template>
   <QTable
-    :title="t('courses.table.services.title')"
+    :title
     :columns="orderedColumns"
     :visible-columns
     :rows="services"
@@ -482,10 +468,7 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
     </template>
     <template #body-cell="props">
       <QTd :props>
-        <QBadge
-          v-if="props.col.badgeColor"
-          :color="props.col.badgeColor(props.col, props.row)"
-        >
+        <QBadge v-if="props.col.badge" color="primary">
           {{ props.value }}
         </QBadge>
         <template v-else>{{ props.value }}</template>

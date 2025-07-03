@@ -22,7 +22,6 @@ import {
   getField,
   localeCompare,
   normalizeForSearch,
-  priorityColor,
   unique,
   uniqueValue,
 } from "@/utils";
@@ -99,8 +98,14 @@ const teacher = computed(
     services.value.find((s) => s.id === selectedService.value)?.teacher ?? null,
 );
 
+// Table
 const title = computed(
   () => teacher.value?.displayname ?? t("courses.table.courses.title"),
+);
+const noResultsLabel = computed(() =>
+  courses.value.length
+    ? t("courses.table.courses.noResults")
+    : t("courses.table.courses.noData"),
 );
 
 // Options
@@ -110,14 +115,7 @@ const unit = computed(() =>
   weightedHours.value ? t("unit.weightedHours") : t("unit.hours"),
 );
 
-// Badge color
-const lowerThanHoursTotal = (col: Column<CourseRow>, row: CourseRow) =>
-  priorityColor(
-    Number(row[col.name as keyof CourseRow]) < (row.hoursTotal ?? 0),
-  );
-const positive = (col: Column<CourseRow>, row: CourseRow) =>
-  priorityColor(Number(row[col.name as keyof CourseRow]) > 0);
-
+// Rows definition
 type CourseRow = Omit<CourseRowFragment, "hoursPerGroup" | "numberOfGroups"> & {
   hours: number;
   groups: number;
@@ -128,7 +126,6 @@ type CourseRow = Omit<CourseRowFragment, "hoursPerGroup" | "numberOfGroups"> & {
   diffPrimary: number | null;
   diffPrimaryPriority: number | null;
 };
-
 const courses = computed<CourseRow[]>(() =>
   courseRowFragments.map((f) => {
     const { hoursPerGroup, numberOfGroups, requests, ...rest } = useFragment(
@@ -173,7 +170,6 @@ const courses = computed<CourseRow[]>(() =>
     };
   }),
 );
-
 const teacherCourses = computed<CourseRow[]>(() =>
   courses.value.map((row) => {
     const teacherRequests = row.requests.filter(
@@ -196,12 +192,6 @@ const teacherCourses = computed<CourseRow[]>(() =>
       diffPrimaryPriority: null,
     };
   }),
-);
-
-const noResultsLabel = computed(() =>
-  courses.value.length
-    ? t("courses.table.courses.noResults")
-    : t("courses.table.courses.noData"),
 );
 
 // Row selection
@@ -311,7 +301,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: perm.toViewAssignments,
     searchable: false,
-    badgeColor: lowerThanHoursTotal,
+    badge: true,
   },
   {
     name: "totalPrimary",
@@ -324,7 +314,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
-    badgeColor: lowerThanHoursTotal,
+    badge: true,
   },
   {
     name: "totalSecondary",
@@ -337,7 +327,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: true,
     searchable: false,
-    badgeColor: lowerThanHoursTotal,
+    badge: true,
   },
   {
     name: "diffAssignment",
@@ -351,7 +341,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: false,
     searchable: false,
-    badgeColor: positive,
+    badge: true,
   },
   {
     name: "diffPrimary",
@@ -365,7 +355,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: false,
     searchable: false,
-    badgeColor: positive,
+    badge: true,
   },
   {
     name: "diffPrimaryPriority",
@@ -379,7 +369,7 @@ const columns = computed<Column<CourseRow>[]>(() => [
     sortable: true,
     visible: false,
     searchable: false,
-    badgeColor: positive,
+    badge: true,
   },
 ]);
 
@@ -776,10 +766,7 @@ const downloadTeacherAssignments = async () => {
     </template>
     <template #body-cell="props">
       <QTd :props>
-        <QBadge
-          v-if="props.col.badgeColor"
-          :color="props.col.badgeColor(props.col, props.row)"
-        >
+        <QBadge v-if="props.col.badge" color="primary">
           {{ props.value }}
         </QBadge>
         <template v-else>{{ props.value }}</template>

@@ -21,5 +21,5 @@ export type Column<R> = {
   tooltip?: string;
   visible?: boolean;
   searchable?: boolean;
-  badge?: (col: Column<R>, row: R) => boolean;
+  badge?: boolean;
 };

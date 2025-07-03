@@ -193,9 +193,6 @@ watch(
 .q-splitter :deep(.q-splitter__separator) {
   background-color: $primary;
 }
-.dev .q-splitter :deep(.q-splitter__separator) {
-  background-color: $secondary;
-}
 
 // Adjust splitters height to window's height and set tables height for sticky headers
 #first-splitter,
