@@ -47,6 +47,7 @@ const getServiceDetails = useQuery({
     additionalTypenames: [
       "All",
       "Coordination",
+      "ExternalCourse",
       "Message",
       "Priority",
       "Request",

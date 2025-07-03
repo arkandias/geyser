@@ -44,6 +44,13 @@ array_relationships:
         table:
           name: degree
           schema: public
+  - name: externalCourses
+    using:
+      foreign_key_constraint_on:
+        column: oid
+        table:
+          name: external_course
+          schema: public
   - name: messages
     using:
       foreign_key_constraint_on:

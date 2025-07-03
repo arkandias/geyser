@@ -20,7 +20,8 @@ export default {
       title: "Service",
       baseServiceHours: "Base",
       modifications: "Modifications",
-      total: "Total",
+      externalCourses: "Enseignements externes",
+      total: "Total à attribuer",
       baseServiceForm: {
         field: {
           hours: "Heures (@:unit.weightedHours)",
@@ -63,6 +64,34 @@ export default {
         success: {
           create: "Modification ajoutée",
           delete: "Modification supprimée",
+        },
+        error: {
+          create: "Échec de l'ajout",
+          delete: "Échec de la suppression",
+        },
+      },
+      externalCourseForm: {
+        field: {
+          label: "Libellé",
+          hours: "Heures (@:unit.weightedHours)",
+        },
+        button: {
+          add: "Ajouter",
+        },
+        tooltip: {
+          create: "Ajouter un enseignement externe",
+          delete: "Supprimer l'enseignement externe",
+        },
+        invalid: {
+          message: "Formulaire non valide",
+          caption: {
+            label: "Entrez un libellé",
+            hours: "Sélectionnez un nombre d'heures positif",
+          },
+        },
+        success: {
+          create: "Enseignement externe ajouté",
+          delete: "Enseignement externe supprimé",
         },
         error: {
           create: "Échec de l'ajout",

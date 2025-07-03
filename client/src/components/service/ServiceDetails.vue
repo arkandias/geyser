@@ -8,8 +8,10 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { TOOLTIP_DELAY } from "@/config/constants.ts";
 import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
+  DeleteExternalCourseDocument,
   DeleteModificationDocument,
   GetModificationTypesDocument,
+  InsertExternalCourseDocument,
   InsertModificationDocument,
   ServiceDetailsFragmentDoc,
   UpdateServiceHoursDocument,
@@ -37,6 +39,12 @@ graphql(`
       modificationType: type {
         label
       }
+      hours
+    }
+    externalCourses(orderBy: [{ label: ASC }]) {
+      oid
+      id
+      label
       hours
     }
   }
@@ -87,6 +95,27 @@ graphql(`
       id
     }
   }
+
+  mutation InsertExternalCourse(
+    $oid: Int!
+    $serviceId: Int!
+    $label: String!
+    $hours: Float!
+  ) {
+    insertExternalCourseOne(
+      object: { oid: $oid, serviceId: $serviceId, label: $label, hours: $hours }
+    ) {
+      oid
+      id
+    }
+  }
+
+  mutation DeleteExternalCourse($oid: Int!, $id: Int!) {
+    deleteExternalCourseByPk(oid: $oid, id: $id) {
+      oid
+      id
+    }
+  }
 `);
 
 const { t, n } = useTypedI18n();
@@ -94,17 +123,21 @@ const { notify } = useNotify();
 const perm = usePermissions();
 const { organization } = useOrganizationStore();
 
-const updateServiceHours = useMutation(UpdateServiceHoursDocument);
-const insertModification = useMutation(InsertModificationDocument);
-const deleteModification = useMutation(DeleteModificationDocument);
-
 const service = computed(() =>
   useFragment(ServiceDetailsFragmentDoc, dataFragment),
 );
+
+const updateServiceHours = useMutation(UpdateServiceHoursDocument);
+const insertModification = useMutation(InsertModificationDocument);
+const deleteModification = useMutation(DeleteModificationDocument);
+const insertExternalCourse = useMutation(InsertExternalCourseDocument);
+const deleteExternalCourse = useMutation(DeleteExternalCourseDocument);
+
 const totalService = computed(
   () =>
     service.value.hours -
-    service.value.modifications.reduce((t, m) => t + m.hours, 0),
+    service.value.modifications.reduce((t, m) => t + m.hours, 0) -
+    service.value.externalCourses.reduce((t, c) => t + c.hours, 0),
 );
 
 // Base service hours form
@@ -153,7 +186,9 @@ const { data } = useQuery({
   query: GetModificationTypesDocument,
   variables: { oid: organization.id },
   pause: () => !isModificationFormOpen.value,
-  context: { additionalTypenames: ["All", "ServiceModificationType"] },
+  context: {
+    additionalTypenames: ["All", "ServiceModificationType"],
+  },
 });
 const modificationTypesOptions = computed(
   () => data.value?.modificationTypes ?? [],
@@ -163,7 +198,7 @@ const modificationHours = ref<number | null>(null);
 const resetModificationForm = (): void => {
   isModificationFormOpen.value = false;
   modificationTypeId.value = null;
-  modificationHours.value = 0;
+  modificationHours.value = null;
 };
 const submitModificationForm = async (): Promise<void> => {
   if (!modificationTypeId.value) {
@@ -198,7 +233,6 @@ const submitModificationForm = async (): Promise<void> => {
   }
   resetModificationForm();
 };
-
 const handleModificationDeletion = async (
   oid: number,
   id: number,
@@ -219,22 +253,74 @@ const handleModificationDeletion = async (
   }
 };
 
+// External courses form
+const isExternalCourseFormOpen = ref(false);
+const externalCourseLabel = ref<string | null>(null);
+const externalCourseHours = ref<number | null>(null);
+const resetExternalCourseForm = (): void => {
+  isExternalCourseFormOpen.value = false;
+  externalCourseLabel.value = null;
+  externalCourseHours.value = null;
+};
+const submitExternalCourseForm = async (): Promise<void> => {
+  if (!externalCourseLabel.value) {
+    notify(NotifyType.Error, {
+      message: t("service.details.externalCourseForm.invalid.message"),
+      caption: t("service.details.externalCourseForm.invalid.caption.label"),
+    });
+    return;
+  }
+  if (externalCourseHours.value === null || externalCourseHours.value < 0) {
+    notify(NotifyType.Error, {
+      message: t("service.details.externalCourseForm.invalid.message"),
+      caption: t("service.details.externalCourseForm.invalid.caption.hours"),
+    });
+    return;
+  }
+  const { data, error } = await insertExternalCourse.executeMutation({
+    oid: service.value.oid,
+    serviceId: service.value.id,
+    label: externalCourseLabel.value,
+    hours: externalCourseHours.value,
+  });
+  if (data?.insertExternalCourseOne && !error) {
+    notify(NotifyType.Success, {
+      message: t("service.details.externalCourseForm.success.create"),
+    });
+  } else {
+    notify(NotifyType.Error, {
+      message: t("service.details.externalCourseForm.error.create"),
+      caption: error?.message,
+    });
+  }
+  resetExternalCourseForm();
+};
+const handleExternalCourseDeletion = async (
+  oid: number,
+  id: number,
+): Promise<void> => {
+  const { data, error } = await deleteExternalCourse.executeMutation({
+    oid,
+    id,
+  });
+  if (data?.deleteExternalCourseByPk && !error) {
+    notify(NotifyType.Success, {
+      message: t("service.details.externalCourseForm.success.delete"),
+    });
+  } else {
+    notify(NotifyType.Error, {
+      message: t("service.details.externalCourseForm.error.delete"),
+      caption: error?.message,
+    });
+  }
+};
+
 const formatWH = (hours: number) =>
   n(hours, "decimal") + "\u00A0" + t("unit.weightedHours");
 </script>
 
 <template>
   <DetailsSection :title="t('service.details.title')">
-    <form
-      id="edit-base-service"
-      @submit.prevent="submitBaseServiceForm"
-      @reset="resetBaseServiceForm"
-    />
-    <form
-      id="add-modification"
-      @submit.prevent="submitModificationForm"
-      @reset="resetModificationForm"
-    />
     <ServiceTable>
       <tbody>
         <tr>
@@ -302,6 +388,48 @@ const formatWH = (hours: number) =>
             {{ formatWH(m.hours) }}
           </td>
         </tr>
+        <tr>
+          <td>
+            {{ t("service.details.externalCourses") }}
+            <QBtn
+              v-if="perm.toEditAService(service)"
+              icon="sym_s_add_circle"
+              color="primary"
+              size="sm"
+              flat
+              square
+              dense
+              @click="isExternalCourseFormOpen = true"
+            >
+              <QTooltip :delay="TOOLTIP_DELAY">
+                {{ t("service.details.externalCourseForm.tooltip.create") }}
+              </QTooltip>
+            </QBtn>
+          </td>
+          <td />
+        </tr>
+        <tr v-for="c in service.externalCourses" :key="c.id">
+          <td>
+            <QBtn
+              v-if="perm.toEditAService(service)"
+              icon="sym_s_cancel"
+              color="primary"
+              size="sm"
+              flat
+              square
+              dense
+              @click="handleExternalCourseDeletion(c.oid, c.id)"
+            >
+              <QTooltip :delay="TOOLTIP_DELAY">
+                {{ t("service.details.externalCourseForm.tooltip.delete") }}
+              </QTooltip>
+            </QBtn>
+            {{ c.label }}
+          </td>
+          <td>
+            {{ formatWH(c.hours) }}
+          </td>
+        </tr>
         <tr class="text-bold">
           <td>
             {{ t("service.details.total") }}
@@ -320,7 +448,8 @@ const formatWH = (hours: number) =>
         <QForm
           id="edit-base-service"
           class="q-gutter-md"
-          @submit="submitBaseServiceForm"
+          @submit.prevent="submitBaseServiceForm"
+          @reset="resetBaseServiceForm"
         >
           <NumInput
             v-model="baseServiceHours"
@@ -348,7 +477,8 @@ const formatWH = (hours: number) =>
         <QForm
           id="add-modification"
           class="q-gutter-md"
-          @submit="submitModificationForm"
+          @submit.prevent="submitModificationForm"
+          @reset="resetModificationForm"
         >
           <QSelect
             v-model="modificationTypeId"
@@ -393,10 +523,45 @@ const formatWH = (hours: number) =>
       </QCardActions>
     </QCard>
   </QDialog>
+
+  <QDialog v-model="isExternalCourseFormOpen" square>
+    <QCard flat square>
+      <QCardSection>
+        <QForm
+          id="add-external-course"
+          class="q-gutter-md"
+          @submit.prevent="submitExternalCourseForm"
+          @reset="resetExternalCourseForm"
+        >
+          <QInput
+            v-model="externalCourseLabel"
+            :label="t('service.details.externalCourseForm.field.label')"
+            square
+            dense
+          />
+          <NumInput
+            v-model="externalCourseHours"
+            :label="t('service.details.externalCourseForm.field.hours')"
+          />
+        </QForm>
+      </QCardSection>
+      <QSeparator />
+      <QCardActions align="right">
+        <QBtn
+          form="add-external-course"
+          type="submit"
+          :label="t('service.details.externalCourseForm.button.add')"
+          color="primary"
+          flat
+          square
+        />
+      </QCardActions>
+    </QCard>
+  </QDialog>
 </template>
 
 <style scoped lang="scss">
-.q-dialog {
-  width: 240px;
+.q-dialog .q-card {
+  width: 360px;
 }
 </style>

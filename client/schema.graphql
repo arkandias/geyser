@@ -1817,11 +1817,6 @@ enum CourseConstraint {
   unique or primary key constraint on columns "id", "oid"
   """
   course_pkey
-
-  """
-  unique or primary key constraint on columns "track_id", "program_id", "term_id", "name", "oid", "year", "type_id"
-  """
-  course_unique_nulls_not_distinct
 }
 
 """
@@ -5136,6 +5131,616 @@ input DegreeVarianceOrderBy {
   oid: OrderBy
 }
 
+"""Assignments of courses which are not in the database"""
+type ExternalCourse {
+  """Number of weighted hours"""
+  hours: Float!
+
+  """Unique identifier"""
+  id: Int!
+
+  """Course name"""
+  label: String!
+
+  """Organization reference"""
+  oid: Int!
+
+  """An object relationship"""
+  organization: Organization!
+
+  """An object relationship"""
+  service: Service!
+
+  """Service reference"""
+  serviceId: Int!
+}
+
+"""
+aggregated selection of "external_course"
+"""
+type ExternalCourseAggregate {
+  aggregate: ExternalCourseAggregateFields
+  nodes: [ExternalCourse!]!
+}
+
+input ExternalCourseAggregateBoolExp {
+  count: externalCourseAggregateBoolExpCount
+}
+
+"""
+aggregate fields of "external_course"
+"""
+type ExternalCourseAggregateFields {
+  avg: ExternalCourseAvgFields
+  count(columns: [ExternalCourseSelectColumn!], distinct: Boolean): Int!
+  max: ExternalCourseMaxFields
+  min: ExternalCourseMinFields
+  stddev: ExternalCourseStddevFields
+  stddevPop: ExternalCourseStddevPopFields
+  stddevSamp: ExternalCourseStddevSampFields
+  sum: ExternalCourseSumFields
+  varPop: ExternalCourseVarPopFields
+  varSamp: ExternalCourseVarSampFields
+  variance: ExternalCourseVarianceFields
+}
+
+"""
+order by aggregate values of table "external_course"
+"""
+input ExternalCourseAggregateOrderBy {
+  avg: ExternalCourseAvgOrderBy
+  count: OrderBy
+  max: ExternalCourseMaxOrderBy
+  min: ExternalCourseMinOrderBy
+  stddev: ExternalCourseStddevOrderBy
+  stddevPop: ExternalCourseStddevPopOrderBy
+  stddevSamp: ExternalCourseStddevSampOrderBy
+  sum: ExternalCourseSumOrderBy
+  varPop: ExternalCourseVarPopOrderBy
+  varSamp: ExternalCourseVarSampOrderBy
+  variance: ExternalCourseVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "external_course"
+"""
+input ExternalCourseArrRelInsertInput {
+  data: [ExternalCourseInsertInput!]!
+
+  """upsert condition"""
+  onConflict: ExternalCourseOnConflict
+}
+
+"""aggregate avg on columns"""
+type ExternalCourseAvgFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by avg() on columns of table "external_course"
+"""
+input ExternalCourseAvgOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""
+Boolean expression to filter rows from the table "external_course". All fields are combined with a logical 'AND'.
+"""
+input ExternalCourseBoolExp {
+  _and: [ExternalCourseBoolExp!]
+  _not: ExternalCourseBoolExp
+  _or: [ExternalCourseBoolExp!]
+  hours: FloatComparisonExp
+  id: IntComparisonExp
+  label: StringComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
+  service: ServiceBoolExp
+  serviceId: IntComparisonExp
+}
+
+"""
+unique or primary key constraints on table "external_course"
+"""
+enum ExternalCourseConstraint {
+  """
+  unique or primary key constraint on columns "id"
+  """
+  external_course_id_key
+
+  """
+  unique or primary key constraint on columns "id", "oid"
+  """
+  external_course_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "external_course"
+"""
+input ExternalCourseIncInput {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""
+input type for inserting data into table "external_course"
+"""
+input ExternalCourseInsertInput {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Course name"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
+  service: ServiceObjRelInsertInput
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""aggregate max on columns"""
+type ExternalCourseMaxFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Int
+
+  """Course name"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""
+order by max() on columns of table "external_course"
+"""
+input ExternalCourseMaxOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Course name"""
+  label: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""aggregate min on columns"""
+type ExternalCourseMinFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Int
+
+  """Course name"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""
+order by min() on columns of table "external_course"
+"""
+input ExternalCourseMinOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Course name"""
+  label: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""
+response of any mutation on the table "external_course"
+"""
+type ExternalCourseMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [ExternalCourse!]!
+}
+
+"""
+on_conflict condition type for table "external_course"
+"""
+input ExternalCourseOnConflict {
+  constraint: ExternalCourseConstraint!
+  updateColumns: [ExternalCourseUpdateColumn!]! = []
+  where: ExternalCourseBoolExp
+}
+
+"""Ordering options when selecting data from "external_course"."""
+input ExternalCourseOrderBy {
+  hours: OrderBy
+  id: OrderBy
+  label: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
+  service: ServiceOrderBy
+  serviceId: OrderBy
+}
+
+"""primary key columns input for table: external_course"""
+input ExternalCoursePkColumnsInput {
+  """Unique identifier"""
+  id: Int!
+
+  """Organization reference"""
+  oid: Int!
+}
+
+"""
+select columns of table "external_course"
+"""
+enum ExternalCourseSelectColumn {
+  """column name"""
+  hours
+
+  """column name"""
+  id
+
+  """column name"""
+  label
+
+  """column name"""
+  oid
+
+  """column name"""
+  serviceId
+}
+
+"""
+input type for updating data in table "external_course"
+"""
+input ExternalCourseSetInput {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Course name"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""aggregate stddev on columns"""
+type ExternalCourseStddevFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by stddev() on columns of table "external_course"
+"""
+input ExternalCourseStddevOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""aggregate stddevPop on columns"""
+type ExternalCourseStddevPopFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by stddevPop() on columns of table "external_course"
+"""
+input ExternalCourseStddevPopOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""aggregate stddevSamp on columns"""
+type ExternalCourseStddevSampFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by stddevSamp() on columns of table "external_course"
+"""
+input ExternalCourseStddevSampOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""
+Streaming cursor of the table "external_course"
+"""
+input ExternalCourseStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: ExternalCourseStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input ExternalCourseStreamCursorValueInput {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Int
+
+  """Course name"""
+  label: String
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""aggregate sum on columns"""
+type ExternalCourseSumFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Int
+
+  """Organization reference"""
+  oid: Int
+
+  """Service reference"""
+  serviceId: Int
+}
+
+"""
+order by sum() on columns of table "external_course"
+"""
+input ExternalCourseSumOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""
+update columns of table "external_course"
+"""
+enum ExternalCourseUpdateColumn {
+  """column name"""
+  hours
+
+  """column name"""
+  label
+
+  """column name"""
+  oid
+
+  """column name"""
+  serviceId
+}
+
+input ExternalCourseUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: ExternalCourseIncInput
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: ExternalCourseSetInput
+
+  """filter the rows which have to be updated"""
+  where: ExternalCourseBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type ExternalCourseVarPopFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by varPop() on columns of table "external_course"
+"""
+input ExternalCourseVarPopOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""aggregate varSamp on columns"""
+type ExternalCourseVarSampFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by varSamp() on columns of table "external_course"
+"""
+input ExternalCourseVarSampOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
+"""aggregate variance on columns"""
+type ExternalCourseVarianceFields {
+  """Number of weighted hours"""
+  hours: Float
+
+  """Unique identifier"""
+  id: Float
+
+  """Organization reference"""
+  oid: Float
+
+  """Service reference"""
+  serviceId: Float
+}
+
+"""
+order by variance() on columns of table "external_course"
+"""
+input ExternalCourseVarianceOrderBy {
+  """Number of weighted hours"""
+  hours: OrderBy
+
+  """Unique identifier"""
+  id: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """Service reference"""
+  serviceId: OrderBy
+}
+
 """
 Boolean expression to compare columns of type "Float". All fields are combined with logical 'AND'.
 """
@@ -6211,6 +6816,42 @@ type Organization {
   ): DegreeAggregate!
   email: String!
 
+  """An array relationship"""
+  externalCourses(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): [ExternalCourse!]!
+
+  """An aggregate relationship"""
+  externalCoursesAggregate(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): ExternalCourseAggregate!
+
   """Unique identifier"""
   id: Int!
 
@@ -6715,6 +7356,8 @@ input OrganizationBoolExp {
   degrees: DegreeBoolExp
   degreesAggregate: DegreeAggregateBoolExp
   email: StringComparisonExp
+  externalCourses: ExternalCourseBoolExp
+  externalCoursesAggregate: ExternalCourseAggregateBoolExp
   id: IntComparisonExp
   key: StringComparisonExp
   label: StringComparisonExp
@@ -6777,6 +7420,7 @@ input OrganizationInsertInput {
   currentPhases: CurrentPhaseArrRelInsertInput
   degrees: DegreeArrRelInsertInput
   email: String
+  externalCourses: ExternalCourseArrRelInsertInput
 
   """Human-readable identifier (unique)"""
   key: String
@@ -6895,6 +7539,7 @@ input OrganizationOrderBy {
   currentPhasesAggregate: CurrentPhaseAggregateOrderBy
   degreesAggregate: DegreeAggregateOrderBy
   email: OrderBy
+  externalCoursesAggregate: ExternalCourseAggregateOrderBy
   id: OrderBy
   key: OrderBy
   label: OrderBy
@@ -11096,6 +11741,42 @@ type Service {
   """Timestamp when the record was created"""
   createdAt: timestamptz!
 
+  """An array relationship"""
+  externalCourses(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): [ExternalCourse!]!
+
+  """An aggregate relationship"""
+  externalCoursesAggregate(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): ExternalCourseAggregate!
+
   """Required teaching hours before modifications"""
   hours: Float!
 
@@ -11372,6 +12053,8 @@ input ServiceBoolExp {
   _not: ServiceBoolExp
   _or: [ServiceBoolExp!]
   createdAt: TimestamptzComparisonExp
+  externalCourses: ExternalCourseBoolExp
+  externalCoursesAggregate: ExternalCourseAggregateBoolExp
   hours: FloatComparisonExp
   id: IntComparisonExp
   messages: MessageBoolExp
@@ -11439,6 +12122,7 @@ input type for inserting data into table "service"
 input ServiceInsertInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
+  externalCourses: ExternalCourseArrRelInsertInput
 
   """Required teaching hours before modifications"""
   hours: Float
@@ -12958,6 +13642,7 @@ input ServiceOnConflict {
 """Ordering options when selecting data from "service"."""
 input ServiceOrderBy {
   createdAt: OrderBy
+  externalCoursesAggregate: ExternalCourseAggregateOrderBy
   hours: OrderBy
   id: OrderBy
   messagesAggregate: MessageAggregateOrderBy
@@ -17108,6 +17793,7 @@ input courseTypeAggregateBoolExpCount {
 }
 
 input createTeacherServiceArgs {
+  p_oid: Int
   p_teacher_id: Int
   p_year: Int
 }
@@ -17141,6 +17827,13 @@ input degreeAggregateBoolExpCount {
   arguments: [DegreeSelectColumn!]
   distinct: Boolean
   filter: DegreeBoolExp
+  predicate: IntComparisonExp!
+}
+
+input externalCourseAggregateBoolExpCount {
+  arguments: [ExternalCourseSelectColumn!]
+  distinct: Boolean
+  filter: ExternalCourseBoolExp
   predicate: IntComparisonExp!
 }
 
@@ -17413,6 +18106,25 @@ type mutation_root {
     """Organization reference"""
     oid: Int!
   ): Degree
+
+  """
+  delete data from the table: "external_course"
+  """
+  deleteExternalCourse(
+    """filter the rows which have to be deleted"""
+    where: ExternalCourseBoolExp!
+  ): ExternalCourseMutationResponse
+
+  """
+  delete single row from the table: "external_course"
+  """
+  deleteExternalCourseByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): ExternalCourse
 
   """
   delete data from the table: "locale"
@@ -17892,6 +18604,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: DegreeOnConflict
   ): Degree
+
+  """
+  insert data into the table: "external_course"
+  """
+  insertExternalCourse(
+    """the rows to be inserted"""
+    objects: [ExternalCourseInsertInput!]!
+
+    """upsert condition"""
+    onConflict: ExternalCourseOnConflict
+  ): ExternalCourseMutationResponse
+
+  """
+  insert a single row into the table: "external_course"
+  """
+  insertExternalCourseOne(
+    """the row to be inserted"""
+    object: ExternalCourseInsertInput!
+
+    """upsert condition"""
+    onConflict: ExternalCourseOnConflict
+  ): ExternalCourse
 
   """
   insert data into the table: "locale"
@@ -18492,6 +19226,40 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [DegreeUpdates!]!
   ): [DegreeMutationResponse]
+
+  """
+  update data of the table: "external_course"
+  """
+  updateExternalCourse(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: ExternalCourseIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: ExternalCourseSetInput
+
+    """filter the rows which have to be updated"""
+    where: ExternalCourseBoolExp!
+  ): ExternalCourseMutationResponse
+
+  """
+  update single row of the table: "external_course"
+  """
+  updateExternalCourseByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: ExternalCourseIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: ExternalCourseSetInput
+    pkColumns: ExternalCoursePkColumnsInput!
+  ): ExternalCourse
+
+  """
+  update multiples rows of table: "external_course"
+  """
+  updateExternalCourseMany(
+    """updates to execute, in order"""
+    updates: [ExternalCourseUpdates!]!
+  ): [ExternalCourseMutationResponse]
 
   """
   update data of the table: "locale"
@@ -19416,6 +20184,55 @@ type query_root {
     """Organization reference"""
     oid: Int!
   ): Degree
+
+  """
+  fetch data from the table: "external_course"
+  """
+  externalCourse(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): [ExternalCourse!]!
+
+  """
+  fetch aggregated fields from the table: "external_course"
+  """
+  externalCourseAggregate(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): ExternalCourseAggregate!
+
+  """fetch data from the table: "external_course" using primary key columns"""
+  externalCourseByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): ExternalCourse
 
   """
   fetch data from the table: "locale"
@@ -20694,6 +21511,69 @@ type subscription_root {
     """filter the rows returned"""
     where: DegreeBoolExp
   ): [Degree!]!
+
+  """
+  fetch data from the table: "external_course"
+  """
+  externalCourse(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): [ExternalCourse!]!
+
+  """
+  fetch aggregated fields from the table: "external_course"
+  """
+  externalCourseAggregate(
+    """distinct select on columns"""
+    distinctOn: [ExternalCourseSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ExternalCourseOrderBy!]
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): ExternalCourseAggregate!
+
+  """fetch data from the table: "external_course" using primary key columns"""
+  externalCourseByPk(
+    """Unique identifier"""
+    id: Int!
+
+    """Organization reference"""
+    oid: Int!
+  ): ExternalCourse
+
+  """
+  fetch data from the table in a streaming manner: "external_course"
+  """
+  externalCourseStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [ExternalCourseStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: ExternalCourseBoolExp
+  ): [ExternalCourse!]!
 
   """
   fetch data from the table: "locale"

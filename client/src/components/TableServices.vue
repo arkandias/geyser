@@ -38,6 +38,9 @@ graphql(`
     modifications {
       hours
     }
+    externalCourses {
+      hours
+    }
     requests {
       type
       hoursWeighted
@@ -68,7 +71,7 @@ const nonPositive = (col: Column<ServiceRow>, row: ServiceRow) =>
 
 type ServiceRow = Omit<
   ServiceRowFragment,
-  "hours" | "modifications" | "requests"
+  "hours" | "modifications" | "externalCourses" | "requests"
 > & {
   modifiedService: number;
   totalAssignment: number;
@@ -81,11 +84,13 @@ type ServiceRow = Omit<
 
 const services = computed<ServiceRow[]>(() =>
   serviceRowFragments.map((f) => {
-    const { hours, modifications, requests, ...rest } = useFragment(
-      ServiceRowFragmentDoc,
-      f,
-    );
+    const { hours, modifications, externalCourses, requests, ...rest } =
+      useFragment(ServiceRowFragmentDoc, f);
     const totalModifications = modifications.reduce((t, m) => t + m.hours, 0);
+    const totalExternalCourses = externalCourses.reduce(
+      (t, c) => t + c.hours,
+      0,
+    );
     const { totalAssignment, totalPrimary, totalSecondary } = requests.reduce(
       (t, r) => ({
         totalAssignment:
@@ -104,7 +109,7 @@ const services = computed<ServiceRow[]>(() =>
         totalSecondary: 0,
       },
     );
-    const modifiedService = hours - totalModifications;
+    const modifiedService = hours - totalModifications - totalExternalCourses;
     return {
       ...rest,
       modifiedService,

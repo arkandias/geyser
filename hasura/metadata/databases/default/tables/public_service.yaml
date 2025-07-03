@@ -34,6 +34,15 @@ array_relationships:
         table:
           name: service_modification
           schema: public
+  - name: externalCourses
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - oid
+          - service_id
+        table:
+          name: external_course
+          schema: public
   - name: priorities
     using:
       foreign_key_constraint_on:

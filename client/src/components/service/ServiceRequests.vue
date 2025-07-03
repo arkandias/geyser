@@ -37,6 +37,7 @@ const perm = usePermissions();
 const service = computed(() =>
   useFragment(ServiceRequestsFragmentDoc, dataFragment),
 );
+
 const totalRequests = computed(() => ({
   assignment: totalValue(service.value.assignment, "hoursWeighted"),
   primary: totalValue(service.value.primary, "hoursWeighted"),
@@ -51,7 +52,7 @@ const formatTotal = (type: "assignment" | "primary" | "secondary") =>
   <DetailsSection :title="t('service.requests.title')">
     <ServiceTable>
       <tbody>
-        <tr v-if="perm.toViewAssignments">
+        <tr v-if="perm.toViewAssignments" class="text-bold">
           <td>
             {{ t("service.requests.assignments") }}
           </td>

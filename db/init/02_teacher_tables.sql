@@ -105,26 +105,6 @@ COMMENT ON COLUMN public.service.teacher_id IS 'Teacher reference';
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifications';
 
 
-CREATE TABLE public.message
-(
-    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
-    service_id integer NOT NULL,
-    content    text    NOT NULL,
-    PRIMARY KEY (oid, id),
-    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
-    UNIQUE (oid, service_id)
-);
-CREATE INDEX idx_message_oid ON public.message (oid);
-CREATE INDEX idx_message_oid_service_id ON public.message (oid, service_id);
-
-COMMENT ON TABLE public.message IS 'Messages to the assignment committee';
-COMMENT ON COLUMN public.message.oid IS 'Organization reference';
-COMMENT ON COLUMN public.message.id IS 'Unique identifier';
-COMMENT ON COLUMN public.message.service_id IS 'Service reference';
-COMMENT ON COLUMN public.message.content IS 'Message content';
-
-
 CREATE TABLE public.service_modification_type
 (
     oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
@@ -164,3 +144,45 @@ COMMENT ON COLUMN public.service_modification.id IS 'Unique identifier';
 COMMENT ON COLUMN public.service_modification.service_id IS 'Service reference';
 COMMENT ON COLUMN public.service_modification.type_id IS 'Modification type reference';
 COMMENT ON COLUMN public.service_modification.hours IS 'Hour deduction amount';
+
+
+CREATE TABLE public.external_course
+(
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    service_id integer NOT NULL,
+    label      text    NOT NULL,
+    hours      real    NOT NULL,
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
+    CONSTRAINT priority_seniority_non_negative_check CHECK (hours >= 0)
+);
+CREATE INDEX idx_external_course_oid ON public.external_course (oid);
+CREATE INDEX idx_external_course_oid_service_id ON public.external_course (oid, service_id);
+
+COMMENT ON TABLE public.external_course IS 'Assignments of courses which are not in the database';
+COMMENT ON COLUMN public.external_course.oid IS 'Organization reference';
+COMMENT ON COLUMN public.external_course.id IS 'Unique identifier';
+COMMENT ON COLUMN public.external_course.service_id IS 'Service reference';
+COMMENT ON COLUMN public.external_course.label IS 'Course label';
+COMMENT ON COLUMN public.external_course.hours IS 'Number of weighted hours';
+
+
+CREATE TABLE public.message
+(
+    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    service_id integer NOT NULL,
+    content    text    NOT NULL,
+    PRIMARY KEY (oid, id),
+    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
+    UNIQUE (oid, service_id)
+);
+CREATE INDEX idx_message_oid ON public.message (oid);
+CREATE INDEX idx_message_oid_service_id ON public.message (oid, service_id);
+
+COMMENT ON TABLE public.message IS 'Messages to the assignment committee';
+COMMENT ON COLUMN public.message.oid IS 'Organization reference';
+COMMENT ON COLUMN public.message.id IS 'Unique identifier';
+COMMENT ON COLUMN public.message.service_id IS 'Service reference';
+COMMENT ON COLUMN public.message.content IS 'Message content';

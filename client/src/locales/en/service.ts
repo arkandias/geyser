@@ -20,7 +20,8 @@ export default {
       title: "Service",
       baseServiceHours: "Base",
       modifications: "Modifications",
-      total: "Total",
+      externalCourses: "External courses",
+      total: "Total to assign",
       baseServiceForm: {
         field: {
           hours: "Hours (@:unit.weightedHours)",
@@ -57,12 +58,40 @@ export default {
           message: "Invalid form",
           caption: {
             type: "Select a service modification type",
-            hours: "Select a strictly positive number of hours",
+            hours: "Select a positive number of hours",
           },
         },
         success: {
           create: "Modification added",
           delete: "Modification deleted",
+        },
+        error: {
+          create: "Addition failed",
+          delete: "Deletion failed",
+        },
+      },
+      externalCourseForm: {
+        field: {
+          label: "Label",
+          hours: "Hours (@:unit.weightedHours)",
+        },
+        tooltip: {
+          create: "Add an external course",
+          delete: "Delete external course",
+        },
+        button: {
+          add: "Add",
+        },
+        invalid: {
+          message: "Invalid form",
+          caption: {
+            label: "Enter a label",
+            hours: "Select a non-negative number of hours",
+          },
+        },
+        success: {
+          create: "External course added",
+          delete: "External course deleted",
         },
         error: {
           create: "Addition failed",
