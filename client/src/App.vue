@@ -171,16 +171,10 @@ const warningMessage = computed(() =>
       ? t("header.warning.archive", { year: activeYear.value })
       : "",
 );
-
-// Apply distinct styling in development vs production environments to provide
-// visual feedback to developers about which environment they're using
-const devClass = {
-  dev: import.meta.env.DEV,
-};
 </script>
 
 <template>
-  <QLayout view="hHh LpR fFf" class="text-body-1" :class="devClass">
+  <QLayout view="hHh LpR fFf" class="text-body-1">
     <TheHeader :disable="!!alertMessage" :warning="warningMessage" />
     <QPageContainer>
       <PageHome v-if="alertMessage" :alert="alertMessage" />

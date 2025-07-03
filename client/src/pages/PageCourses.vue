@@ -18,6 +18,7 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
+import { bgColor } from "@/utils";
 
 import TableCourses from "@/components/TableCourses.vue";
 import TableServices from "@/components/TableServices.vue";
@@ -157,7 +158,7 @@ watch(
       v-model="vSplitterRatio"
       :limits="[0, 100]"
       :disable="!isLeftPanelOpen"
-      separator-class="bg-primary"
+      :separator-class="bgColor"
     >
       <template #before>
         <TableServices
@@ -171,7 +172,7 @@ watch(
           v-model="hSplitterRatio"
           horizontal
           :limits="[0, 100]"
-          separator-class="bg-primary"
+          :separator-class="bgColor"
         >
           <template #before>
             <TableCourses
@@ -190,10 +191,6 @@ watch(
 </template>
 
 <style scoped lang="scss">
-.q-splitter :deep(.q-splitter__separator) {
-  background-color: $primary;
-}
-
 // Adjust splitters height to window's height and set tables height for sticky headers
 #first-splitter,
 #first-splitter :deep(.sticky-header-table) {

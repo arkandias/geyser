@@ -8,6 +8,7 @@ import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
+import { bgColor } from "@/utils";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
@@ -29,7 +30,7 @@ const { hasService } = useProfileStore();
 
 <template>
   <QHeader>
-    <QToolbar id="main-toolbar">
+    <QToolbar id="main-toolbar" :class="bgColor">
       <QToolbarTitle shrink class="title">
         <QAvatar icon="sym_s_spa" square size="xl" />
         Geyser
@@ -123,11 +124,7 @@ const { hasService } = useProfileStore();
 #main-toolbar {
   min-height: $main-toolbar-height;
   height: $main-toolbar-height;
-  background-color: $primary;
   overflow-x: auto;
-}
-.dev #main-toolbar {
-  background-color: $negative;
 }
 
 #warning-toolbar {
