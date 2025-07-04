@@ -2,6 +2,7 @@
 import { useQuery } from "@urql/vue";
 import { computed } from "vue";
 
+import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { graphql } from "@/gql";
@@ -18,6 +19,7 @@ import ServiceTeacher from "@/components/service/ServiceTeacher.vue";
 graphql(`
   query GetServiceDetails($oid: Int!, $id: Int!) {
     service: serviceByPk(oid: $oid, id: $id) {
+      teacherId
       teacher {
         ...ServiceTeacher
       }
@@ -33,6 +35,7 @@ const { t } = useTypedI18n();
 const { getValue: selectedService } = useQueryParam("serviceId", true);
 const { organization } = useOrganizationStore();
 const { currentServiceId: myServiceId } = useProfileStore();
+const perm = usePermissions();
 
 const serviceId = computed(() => selectedService.value ?? myServiceId.value);
 
@@ -72,7 +75,10 @@ const service = computed(() => getServiceDetails.data.value?.service ?? null);
       <ServiceDetails :data-fragment="service" />
       <ServiceRequests :data-fragment="service" />
       <ServicePriorities :data-fragment="service" />
-      <ServiceMessage :data-fragment="service" />
+      <ServiceMessage
+        v-if="perm.toViewAMessage(service)"
+        :data-fragment="service"
+      />
     </QCard>
     <QCard v-else flat square>
       <QCardSection class="text-h4 q-pa-xl">

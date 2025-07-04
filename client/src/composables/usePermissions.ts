@@ -74,6 +74,15 @@ export const usePermissions = () => {
         service.teacherId === profile.id),
   );
 
+  const toViewAMessage = computed(
+    () => (service: { teacherId: number }) =>
+      profile.activeRole === RoleEnum.Organizer ||
+      (profile.activeRole === RoleEnum.Commissioner &&
+        currentPhase.value === PhaseEnum.Assignments) ||
+      (profile.activeRole === RoleEnum.Teacher &&
+        service.teacherId === profile.id),
+  );
+
   const toEditAMessage = computed(
     () => (service: { year: number; teacherId: number }) =>
       toEditAService.value(service),
@@ -91,6 +100,7 @@ export const usePermissions = () => {
     toEditADescription,
     toViewAllServices,
     toEditAService,
+    toViewAMessage,
     toEditAMessage,
   });
 };
