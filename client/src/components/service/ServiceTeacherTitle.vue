@@ -11,6 +11,7 @@ const { dataFragment } = defineProps<{
 graphql(`
   fragment TeacherTitle on Teacher {
     displayname
+    email
     position {
       label
     }
@@ -30,6 +31,9 @@ const teacher = computed(() =>
       </div>
       <div v-if="teacher.position" class="text-body1 text-italic">
         {{ teacher.position.label }}
+      </div>
+      <div class="text-body2">
+        <a :href="'mailto:' + teacher.email">{{ teacher.email }}</a>
       </div>
     </QCardSection>
   </QCard>
