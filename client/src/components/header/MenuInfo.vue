@@ -71,6 +71,7 @@ const icons: Record<InfoTextKey, string> = {
 
 <style scoped lang="scss">
 .q-dialog .q-card {
+  max-width: 720px;
   width: 720px;
 }
 .q-item {

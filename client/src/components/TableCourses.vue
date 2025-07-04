@@ -776,6 +776,9 @@ const downloadTeacherAssignments = async () => {
 </template>
 
 <style scoped lang="scss">
+.q-layout-container {
+  width: $page-service-width;
+}
 .body--dark .page-service-layout {
   background-color: $dark;
 }
