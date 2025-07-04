@@ -103,8 +103,8 @@ graphql(`
 
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
-const perm = usePermissions();
 const { organization } = useOrganizationStore();
+const perm = usePermissions();
 
 const request = computed(() =>
   useFragment(RequestCardDataFragmentDoc, dataFragment),

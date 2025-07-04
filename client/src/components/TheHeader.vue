@@ -21,11 +21,11 @@ defineProps<{ disable: boolean; warning?: string }>();
 
 const { t } = useTypedI18n();
 const router = useRouter();
-const perm = usePermissions();
 const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
 const { organization } = useOrganizationStore();
 const { hasService } = useProfileStore();
+const perm = usePermissions();
 </script>
 
 <template>

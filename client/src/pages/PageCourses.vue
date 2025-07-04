@@ -65,11 +65,11 @@ graphql(`
   }
 `);
 
-const perm = usePermissions();
+const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
 const { organization } = useOrganizationStore();
 const { profile } = useProfileStore();
 const { activeYear } = useYearsStore();
-const { closeLeftPanel, isLeftPanelOpen, openLeftPanel } = useLeftPanelStore();
+const perm = usePermissions();
 
 // Course rows
 const getCourseRows = useQuery({
