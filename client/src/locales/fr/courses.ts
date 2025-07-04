@@ -196,12 +196,6 @@ export default {
 <p>Boutons dans la barre de menu (accessibles uniquement depuis cette page) :</p>
 <ul>
   <li>
-    <i class="q-icon text-primary material-symbols-sharp">history</i>
-    Année : permet de choisir l'année à consulter (par défaut l'année en cours
-    est affichée, mais il est possible de consulter les demandes et les
-    attributions des années antérieures).
-  </li>
-  <li>
     <i class="q-icon text-primary material-symbols-sharp">vertical_split</i>
     Table des services : permet d'afficher/masquer la liste des services de
     l'année en cours (fonctionnalité réservée aux membres de la commission et

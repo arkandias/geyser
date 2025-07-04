@@ -191,11 +191,6 @@ export default {
 <p>Buttons in the header (accessible only from this page):</p>
 <ul>
   <li>
-    <i class="q-icon text-primary material-symbols-sharp">history</i>
-    Year: allows you to choose the year to view (by default the current year
-    is displayed, but it is possible to view requests and assignments from previous years).
-  </li>
-  <li>
     <i class="q-icon text-primary material-symbols-sharp">vertical_split</i>
     Services table: allows you to show/hide the list of services for the current
     year (feature reserved for committee members and organizers).
