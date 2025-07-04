@@ -48,9 +48,11 @@ graphql(`
     }
   }
 
-  query GetServiceRows($where: ServiceBoolExp) {
+  query GetServiceRows($oid: Int!, $year: Int!, $where: ServiceBoolExp!) {
     services: service(
-      where: $where
+      where: {
+        _and: [{ oid: { _eq: $oid } }, { year: { _eq: $year } }, $where]
+      }
       orderBy: [{ teacher: { lastname: ASC } }, { teacher: { firstname: ASC } }]
     ) {
       ...ServiceRow
@@ -88,15 +90,11 @@ const courseRows = computed(() => getCourseRows.data.value?.courses ?? []);
 const getServiceRows = useQuery({
   query: GetServiceRowsDocument,
   variables: () => ({
-    where: {
-      _and: [
-        { oid: { _eq: organization.id } },
-        { year: { _eq: activeYear.value ?? -1 } },
-        ...(!perm.toViewAllServices
-          ? [{ teacher: { id: { _eq: profile.id } } }]
-          : []),
-      ],
-    },
+    oid: organization.id,
+    year: activeYear.value ?? -1,
+    where: perm.toViewAllServices
+      ? {}
+      : { teacher: { id: { _eq: profile.id } } },
   }),
   pause: () => activeYear.value === null,
   context: {

@@ -1,4 +1,5 @@
 <script setup lang="ts">
+import { usePermissions } from "@/composables/usePermissions.ts";
 import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
@@ -10,8 +11,9 @@ const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
   "serviceId",
   true,
 );
-const { hasService, currentServiceId } = useProfileStore();
 const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
+const { hasService, currentServiceId } = useProfileStore();
+const perm = usePermissions();
 </script>
 
 <template>
@@ -19,6 +21,7 @@ const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
   <QBtn
     icon="sym_s_vertical_split"
     :color="buttonColor(isLeftPanelOpen)"
+    :disable="!perm.toViewAllServices"
     flat
     square
     @click="toggleLeftPanel()"
