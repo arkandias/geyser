@@ -7,8 +7,8 @@ import { graphql } from "@/gql";
 import { GetAdminRolesDocument } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
+import AdminGeneralCurrentPhase from "@/components/admin/AdminGeneralCurrentPhase.vue";
 import AdminGeneralCustomTexts from "@/components/admin/AdminGeneralCustomTexts.vue";
-import AdminGeneralPhase from "@/components/admin/AdminGeneralPhase.vue";
 import AdminGeneralRoles from "@/components/admin/AdminGeneralRoles.vue";
 import AdminGeneralYears from "@/components/admin/AdminGeneralYears.vue";
 import AdminSection from "@/components/admin/core/AdminSection.vue";
@@ -51,7 +51,7 @@ const teachers = computed(() => data.value?.teachers ?? []);
 <template>
   <QList bordered>
     <AdminSection icon="sym_s_schedule" :label="t('admin.general.phase.label')">
-      <AdminGeneralPhase />
+      <AdminGeneralCurrentPhase />
     </AdminSection>
 
     <QSeparator />
