@@ -145,6 +145,7 @@ select_permissions:
         - sublabel
         - email
         - locale
+        - private_service
         - active
       filter:
         id:
@@ -159,6 +160,7 @@ select_permissions:
         - sublabel
         - email
         - locale
+        - private_service
         - active
       filter:
         id:
@@ -173,6 +175,7 @@ select_permissions:
         - sublabel
         - email
         - locale
+        - private_service
         - active
       filter:
         id:

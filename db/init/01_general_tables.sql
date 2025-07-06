@@ -1,12 +1,13 @@
 CREATE TABLE public.organization
 (
-    id       integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
-    key      text    NOT NULL UNIQUE,
-    label    text    NOT NULL,
-    sublabel text,
-    email    text    NOT NULL,
-    locale   text    NOT NULL REFERENCES public.locale ON UPDATE CASCADE,
-    active   boolean NOT NULL DEFAULT TRUE
+    id              integer PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    key             text    NOT NULL UNIQUE,
+    label           text    NOT NULL,
+    sublabel        text,
+    email           text    NOT NULL,
+    locale          text    NOT NULL REFERENCES public.locale ON UPDATE CASCADE,
+    private_service boolean NOT NULL DEFAULT FALSE,
+    active          boolean NOT NULL DEFAULT TRUE
 );
 CREATE INDEX idx_organization_locale ON public.organization (locale);
 
@@ -17,6 +18,7 @@ COMMENT ON COLUMN public.organization.label IS 'Label for display purposes';
 COMMENT ON COLUMN public.organization.sublabel IS 'Sublabel for display purposes';
 COMMENT ON COLUMN public.organization.email IS 'Contact email address';
 COMMENT ON COLUMN public.organization.locale IS 'Default locale';
+COMMENT ON COLUMN public.organization.private_service IS 'When true, teachers can only view their own services';
 COMMENT ON COLUMN public.organization.active IS 'Status flag';
 
 

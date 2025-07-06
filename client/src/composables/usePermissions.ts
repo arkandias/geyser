@@ -2,12 +2,14 @@ import { computed, readonly } from "vue";
 
 import { PhaseEnum, RoleEnum } from "@/gql/graphql.ts";
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
+import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 export const usePermissions = () => {
   const { currentYear, isCurrentYearActive } = useYearsStore();
   const { currentPhase } = useCurrentPhaseStore();
+  const { organization } = useOrganizationStore();
   const { profile, hasService } = useProfileStore();
 
   const toAdmin = computed(() => profile.activeRole === RoleEnum.Organizer);
@@ -60,6 +62,7 @@ export const usePermissions = () => {
 
   const toViewAllServices = computed(
     () =>
+      !organization.privateService ||
       profile.activeRole === RoleEnum.Organizer ||
       (profile.activeRole === RoleEnum.Commissioner &&
         currentPhase.value === PhaseEnum.Assignments),

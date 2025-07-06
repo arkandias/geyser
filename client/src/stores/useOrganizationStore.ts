@@ -9,6 +9,7 @@ type Organization = {
   sublabel: string | null;
   email: string;
   locale: LocaleEnum;
+  privateService: boolean;
 };
 
 const organization = reactive<Organization>({
@@ -17,6 +18,7 @@ const organization = reactive<Organization>({
   sublabel: null,
   email: "",
   locale: DEFAULT_LOCALE,
+  privateService: false,
 });
 
 const setOrganization = (newOrganization: Organization) => {

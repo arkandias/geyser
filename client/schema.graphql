@@ -6970,6 +6970,9 @@ type Organization {
     where: PriorityBoolExp
   ): PriorityAggregate!
 
+  """When true, teachers can only view their own services"""
+  privateService: Boolean!
+
   """An array relationship"""
   programs(
     """distinct select on columns"""
@@ -7368,6 +7371,7 @@ input OrganizationBoolExp {
   positionsAggregate: PositionAggregateBoolExp
   priorities: PriorityBoolExp
   prioritiesAggregate: PriorityAggregateBoolExp
+  privateService: BooleanComparisonExp
   programs: ProgramBoolExp
   programsAggregate: ProgramAggregateBoolExp
   requests: RequestBoolExp
@@ -7431,6 +7435,9 @@ input OrganizationInsertInput {
   messages: MessageArrRelInsertInput
   positions: PositionArrRelInsertInput
   priorities: PriorityArrRelInsertInput
+
+  """When true, teachers can only view their own services"""
+  privateService: Boolean
   programs: ProgramArrRelInsertInput
   requests: RequestArrRelInsertInput
   serviceModificationTypes: ServiceModificationTypeArrRelInsertInput
@@ -7547,6 +7554,7 @@ input OrganizationOrderBy {
   messagesAggregate: MessageAggregateOrderBy
   positionsAggregate: PositionAggregateOrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
+  privateService: OrderBy
   programsAggregate: ProgramAggregateOrderBy
   requestsAggregate: RequestAggregateOrderBy
   serviceModificationTypesAggregate: ServiceModificationTypeAggregateOrderBy
@@ -7592,6 +7600,9 @@ enum OrganizationSelectColumn {
   locale
 
   """column name"""
+  privateService
+
+  """column name"""
   sublabel
 
   """column name"""
@@ -7614,6 +7625,9 @@ input OrganizationSetInput {
   """Label for display purposes"""
   label: String
   locale: LocaleEnum
+
+  """When true, teachers can only view their own services"""
+  privateService: Boolean
 
   """Sublabel for display purposes"""
   sublabel: String
@@ -7671,6 +7685,9 @@ input OrganizationStreamCursorValueInput {
   label: String
   locale: LocaleEnum
 
+  """When true, teachers can only view their own services"""
+  privateService: Boolean
+
   """Sublabel for display purposes"""
   sublabel: String
 
@@ -7707,6 +7724,9 @@ enum OrganizationUpdateColumn {
 
   """column name"""
   locale
+
+  """column name"""
+  privateService
 
   """column name"""
   sublabel
