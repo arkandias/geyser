@@ -7,6 +7,7 @@ import { graphql } from "@/gql";
 import { GetAdminTeachersDocument } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
+import AdminTeachersExternalCourses from "@/components/admin/AdminTeachersExternalCourses.vue";
 import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
 import AdminTeachersServiceModificationTypes from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
@@ -27,6 +28,7 @@ graphql(`
       ...AdminTeacher
       ...AdminServicesTeacher
       ...AdminServiceModificationsTeacher
+      ...AdminExternalCoursesTeacher
       ...AdminMessagesTeacher
     }
     positions: position(
@@ -46,6 +48,7 @@ graphql(`
     ) {
       ...AdminService
       ...AdminServiceModificationsService
+      ...AdminExternalCoursesService
       ...AdminMessagesService
     }
     serviceModifications: serviceModification(
@@ -65,6 +68,17 @@ graphql(`
     ) {
       ...AdminServiceModificationType
       ...AdminServiceModificationsServiceModificationType
+    }
+    externalCourses: externalCourse(
+      where: { oid: { _eq: $oid } }
+      orderBy: [
+        { service: { year: DESC } }
+        { service: { teacher: { lastname: ASC } } }
+        { service: { teacher: { firstname: ASC } } }
+        { label: ASC }
+      ]
+    ) {
+      ...AdminExternalCourse
     }
     messages: message(
       where: { oid: { _eq: $oid } }
@@ -102,6 +116,7 @@ const serviceModifications = computed(
 const serviceModificationTypes = computed(
   () => data.value?.serviceModificationTypes ?? [],
 );
+const externalCourses = computed(() => data.value?.externalCourses ?? []);
 const messages = computed(() => data.value?.messages ?? []);
 </script>
 
@@ -164,6 +179,20 @@ const messages = computed(() => data.value?.messages ?? []);
       <AdminTeachersServiceModificationTypes
         :fetching
         :service-modification-type-fragments="serviceModificationTypes"
+      />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
+      icon="sym_s_arrow_outward"
+      :label="t('admin.teachers.externalCourses.label')"
+    >
+      <AdminTeachersExternalCourses
+        :fetching
+        :external-course-fragments="externalCourses"
+        :service-fragments="services"
+        :teacher-fragments="teachers"
       />
     </AdminSection>
 

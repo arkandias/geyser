@@ -1,6 +1,7 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type {
+  AdminTeachersExternalCoursesColName,
   AdminTeachersMessagesColName,
   AdminTeachersPositionsColName,
   AdminTeachersServiceModificationTypesColName,
@@ -170,9 +171,9 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
         confirm: {
           delete:
             `Êtes-vous sûr de vouloir supprimer le service sélectionné ?
-S'il existe des modifications, des demandes ou un message pour ce service, vous ne pourrez pas le supprimer. ` +
+S'il existe des modifications, des enseignements extérieurs, des demandes ou un message pour ce service, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} services sélectionnés ?
-S'il existe des modifications, des demandes ou des messages pour ces services, vous ne pourrez pas les supprimer.`,
+S'il existe des modifications, des enseignements extérieurs, des demandes ou des messages pour ces services, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -271,6 +272,61 @@ S'il existe des modifications, des demandes ou des messages pour ces services, v
 Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
 Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
+    externalCourses: {
+      label: "Enseignements extérieurs",
+      column: {
+        year: {
+          label: "Année",
+          tooltip: "",
+        },
+        teacherEmail: {
+          label: "Intervenant",
+          tooltip: "",
+        },
+        label: {
+          label: "Libellé",
+          tooltip: "",
+        },
+        hours: {
+          label: "Heures (@:unit.weightedHours)",
+          tooltip: "",
+        },
+      } satisfies Record<
+        AdminTeachersExternalCoursesColName,
+        AdminColNameOptions
+      >,
+      form: {
+        title:
+          "Création d'un enseignement extérieur | Édition d'un enseignement extérieur | Édition de {count} enseignements extérieurs",
+        error: {
+          updateYearWithoutTeacher:
+            "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
+          updateTeacherWithoutYear:
+            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
+          serviceNotFound:
+            "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
+          hoursNegative: "Entrez un nombre d'heures positif ou nul",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "Aucune enseignement extérieur créé | Enseignement extérieur créé | {count} enseignements extérieurs créés",
+          update:
+            "Aucun enseignement extérieur mis à jour | Enseignement extérieur mis à jour | {count} enseignements extérieurs mis à jour",
+          delete:
+            "Aucun enseignement extérieur supprimé | Enseignement extérieur supprimé | {count} enseignements extérieurs supprimés",
+          import:
+            "0 enseignement extérieur importé | 1 enseignement extérieur importé | {count} enseignements extérieurs importés",
+          export:
+            "0 enseignement extérieur exporté | 1 enseignement extérieur exporté | {count} enseignements extérieurs exportés",
+        },
+        confirm: {
+          delete:
+            "Êtes-vous sûr de vouloir supprimer l'enseignement extérieur sélectionné ? | Êtes-vous sûr de vouloir supprimer les {count} enseignements extérieurs sélectionnés ?",
         },
       },
     },

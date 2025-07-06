@@ -52,6 +52,15 @@ export const adminTeachersServiceModificationTypesColNames = [
 export type AdminTeachersServiceModificationTypesColName =
   (typeof adminTeachersServiceModificationTypesColNames)[number];
 
+export const adminTeachersExternalCoursesColNames = [
+  "year",
+  "teacherEmail",
+  "label",
+  "hours",
+] as const;
+export type AdminTeachersExternalCoursesColName =
+  (typeof adminTeachersExternalCoursesColNames)[number];
+
 export const adminTeachersMessagesColNames = [
   "year",
   "teacherEmail",

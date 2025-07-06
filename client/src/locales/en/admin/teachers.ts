@@ -1,6 +1,7 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
 import type {
+  AdminTeachersExternalCoursesColName,
   AdminTeachersMessagesColName,
   AdminTeachersPositionsColName,
   AdminTeachersServiceModificationTypesColName,
@@ -169,9 +170,9 @@ If these positions are assigned to teachers, you will not be able to delete them
         confirm: {
           delete:
             `Are you sure you want to delete the selected service?
-If there are modifications, requests, or a message for this service, you will not be able to delete it. ` +
+If there are modifications, external courses, requests, or a message for this service, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected services?
-If there are modifications, requests, or messages for these services, you will not be able to delete them.`,
+If there are modifications, external courses, requests, or messages for these services, you will not be able to delete them.`,
         },
       },
     },
@@ -270,6 +271,61 @@ If there are modifications, requests, or messages for these services, you will n
 If this type is assigned to modifications, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected modification types?
 If these types are assigned to modifications, you will not be able to delete them.`,
+        },
+      },
+    },
+    externalCourses: {
+      label: "External courses",
+      column: {
+        year: {
+          label: "Year",
+          tooltip: "",
+        },
+        teacherEmail: {
+          label: "Teacher",
+          tooltip: "",
+        },
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        hours: {
+          label: "Hours (@:unit.weightedHours)",
+          tooltip: "",
+        },
+      } satisfies Record<
+        AdminTeachersExternalCoursesColName,
+        AdminColNameOptions
+      >,
+      form: {
+        title:
+          "Creating an external course | Editing an external course | Editing {count} external course",
+        error: {
+          updateYearWithoutTeacher:
+            "You cannot modify the year without selecting a teacher",
+          updateTeacherWithoutYear:
+            "You cannot modify the teacher without selecting a year",
+          serviceNotFound:
+            "No service exists for teacher {teacherEmail} and year {year}",
+          hoursNegative: "Enter a positive or zero number of hours",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No external course created | External course created | {count} external courses created",
+          update:
+            "No external course updated | External course updated | {count} external courses updated",
+          delete:
+            "No external course deleted | External course deleted | {count} external courses deleted",
+          import:
+            "0 external courses imported | 1 external course imported | {count} external courses imported",
+          export:
+            "0 external courses exported | 1 external course exported | {count} external courses exported",
+        },
+        confirm: {
+          delete:
+            "Are you sure you want to delete the selected external course? | Are you sure you want to delete the {count} selected external courses?",
         },
       },
     },

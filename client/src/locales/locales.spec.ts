@@ -29,6 +29,7 @@ import {
   adminGeneralRolesColNames,
   adminRequestsPrioritiesColNames,
   adminRequestsRequestsColNames,
+  adminTeachersExternalCoursesColNames,
   adminTeachersMessagesColNames,
   adminTeachersPositionsColNames,
   adminTeachersServiceModificationTypesColNames,
@@ -175,6 +176,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
       services: adminTeachersServicesColNames,
       serviceModifications: adminTeachersServiceModificationsColNames,
       serviceModificationTypes: adminTeachersServiceModificationTypesColNames,
+      externalCourses: adminTeachersExternalCoursesColNames,
       messages: adminTeachersMessagesColNames,
     },
     courses: {
