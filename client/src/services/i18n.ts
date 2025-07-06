@@ -4,6 +4,19 @@ import { DEFAULT_LOCALE } from "@/config/constants.ts";
 import { LocaleEnum } from "@/gql/graphql.ts";
 import en from "@/locales/en";
 import fr from "@/locales/fr";
+import type { Option } from "@/types/data.ts";
+
+export const localeLabels: Record<LocaleEnum, string> = {
+  [LocaleEnum.Fr]: "Français",
+  [LocaleEnum.En]: "English",
+} as const;
+
+export const localeOptions: Option<LocaleEnum>[] = Object.values(
+  LocaleEnum,
+).map((l) => ({
+  value: l,
+  label: localeLabels[l],
+}));
 
 type MessageSchema = (typeof messages)[typeof DEFAULT_LOCALE];
 type NumberSchema = typeof numberFormat;
