@@ -27,6 +27,11 @@ export default {
         copyCourses: "Copy courses from previous year",
         computePriorities: "Compute priorities",
       },
+      tooltip: {
+        manage: "Manage year",
+        edit: "Edit year",
+        delete: "Delete year",
+      },
       confirm: {
         delete: `Are you sure you want to delete the year {year}?
 If courses or services are associated with this year, you will not be able to delete it.`,

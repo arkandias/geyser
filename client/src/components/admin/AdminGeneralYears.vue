@@ -4,6 +4,7 @@ import { ref } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
+import { TOOLTIP_DELAY } from "@/config/constants.ts";
 import { graphql } from "@/gql";
 import {
   ComputePrioritiesDocument,
@@ -389,6 +390,9 @@ const edit = (value: number) => {
               </QItem>
             </QList>
           </QMenu>
+          <QTooltip :delay="TOOLTIP_DELAY">
+            {{ t("admin.general.years.tooltip.manage") }}
+          </QTooltip>
         </QBtn>
       </QItemSection>
       <QItemSection side>
@@ -399,7 +403,11 @@ const edit = (value: number) => {
           square
           dense
           @click="edit(year.value)"
-        />
+        >
+          <QTooltip :delay="TOOLTIP_DELAY">
+            {{ t("admin.general.years.tooltip.edit") }}
+          </QTooltip>
+        </QBtn>
       </QItemSection>
       <QItemSection side>
         <QBtn
@@ -409,7 +417,11 @@ const edit = (value: number) => {
           square
           dense
           @click="deleteYearHandle(year.value)"
-        />
+        >
+          <QTooltip :delay="TOOLTIP_DELAY">
+            {{ t("admin.general.years.tooltip.delete") }}
+          </QTooltip>
+        </QBtn>
       </QItemSection>
       <QItemSection>
         {{ year.value }}

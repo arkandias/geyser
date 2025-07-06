@@ -27,6 +27,11 @@ export default {
         copyCourses: "Copier les enseignements de l'année précédente",
         computePriorities: "Calculer les priorités",
       },
+      tooltip: {
+        manage: "Administrer l'année",
+        edit: "Modifier l'année",
+        delete: "Supprimer l'année",
+      },
       confirm: {
         delete: `Êtes-vous sûr de vouloir supprimer l'année {year} ?
 Si des cours ou des services sont associés à cette année, vous ne pourrez pas \
