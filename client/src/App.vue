@@ -48,6 +48,7 @@ graphql(`
       sublabel
       email
       locale
+      privateService
       currentPhases {
         value
       }
@@ -56,7 +57,7 @@ graphql(`
         current
         visible
       }
-      customTexts: appSettings(orderBy: [{ key: ASC }]) {
+      customTexts(orderBy: [{ key: ASC }]) {
         key
         value
       }
@@ -82,8 +83,8 @@ const getAppData = useQuery({
   context: {
     additionalTypenames: [
       "All",
-      "AppSetting",
       "CurrentPhase",
+      "CustomText",
       "Service",
       "Year",
     ],
@@ -109,6 +110,7 @@ watch(
         sublabel: data.organization.sublabel ?? null,
         email: data.organization.email,
         locale: data.organization.locale,
+        privateService: data.organization.privateService,
       });
       setCurrentPhase(
         data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,

@@ -13,480 +13,6 @@ directive @cached(
   ttl: Int! = 60
 ) on QUERY
 
-"""Application settings (e.g., custom UI parameters)"""
-type AppSetting {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz!
-
-  """Setting name (unique)"""
-  key: String!
-
-  """Organization reference"""
-  oid: Int!
-
-  """An object relationship"""
-  organization: Organization!
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz!
-
-  """Setting value"""
-  value: String!
-}
-
-"""
-aggregated selection of "app_setting"
-"""
-type AppSettingAggregate {
-  aggregate: AppSettingAggregateFields
-  nodes: [AppSetting!]!
-}
-
-input AppSettingAggregateBoolExp {
-  count: appSettingAggregateBoolExpCount
-}
-
-"""
-aggregate fields of "app_setting"
-"""
-type AppSettingAggregateFields {
-  avg: AppSettingAvgFields
-  count(columns: [AppSettingSelectColumn!], distinct: Boolean): Int!
-  max: AppSettingMaxFields
-  min: AppSettingMinFields
-  stddev: AppSettingStddevFields
-  stddevPop: AppSettingStddevPopFields
-  stddevSamp: AppSettingStddevSampFields
-  sum: AppSettingSumFields
-  varPop: AppSettingVarPopFields
-  varSamp: AppSettingVarSampFields
-  variance: AppSettingVarianceFields
-}
-
-"""
-order by aggregate values of table "app_setting"
-"""
-input AppSettingAggregateOrderBy {
-  avg: AppSettingAvgOrderBy
-  count: OrderBy
-  max: AppSettingMaxOrderBy
-  min: AppSettingMinOrderBy
-  stddev: AppSettingStddevOrderBy
-  stddevPop: AppSettingStddevPopOrderBy
-  stddevSamp: AppSettingStddevSampOrderBy
-  sum: AppSettingSumOrderBy
-  varPop: AppSettingVarPopOrderBy
-  varSamp: AppSettingVarSampOrderBy
-  variance: AppSettingVarianceOrderBy
-}
-
-"""
-input type for inserting array relation for remote table "app_setting"
-"""
-input AppSettingArrRelInsertInput {
-  data: [AppSettingInsertInput!]!
-
-  """upsert condition"""
-  onConflict: AppSettingOnConflict
-}
-
-"""aggregate avg on columns"""
-type AppSettingAvgFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by avg() on columns of table "app_setting"
-"""
-input AppSettingAvgOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-Boolean expression to filter rows from the table "app_setting". All fields are combined with a logical 'AND'.
-"""
-input AppSettingBoolExp {
-  _and: [AppSettingBoolExp!]
-  _not: AppSettingBoolExp
-  _or: [AppSettingBoolExp!]
-  createdAt: TimestamptzComparisonExp
-  key: StringComparisonExp
-  oid: IntComparisonExp
-  organization: OrganizationBoolExp
-  updatedAt: TimestamptzComparisonExp
-  value: StringComparisonExp
-}
-
-"""
-unique or primary key constraints on table "app_setting"
-"""
-enum AppSettingConstraint {
-  """
-  unique or primary key constraint on columns "key", "oid"
-  """
-  app_setting_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "app_setting"
-"""
-input AppSettingIncInput {
-  """Organization reference"""
-  oid: Int
-}
-
-"""
-input type for inserting data into table "app_setting"
-"""
-input AppSettingInsertInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Setting name (unique)"""
-  key: String
-
-  """Organization reference"""
-  oid: Int
-  organization: OrganizationObjRelInsertInput
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Setting value"""
-  value: String
-}
-
-"""aggregate max on columns"""
-type AppSettingMaxFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Setting name (unique)"""
-  key: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Setting value"""
-  value: String
-}
-
-"""
-order by max() on columns of table "app_setting"
-"""
-input AppSettingMaxOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Setting name (unique)"""
-  key: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-
-  """Setting value"""
-  value: OrderBy
-}
-
-"""aggregate min on columns"""
-type AppSettingMinFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Setting name (unique)"""
-  key: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Setting value"""
-  value: String
-}
-
-"""
-order by min() on columns of table "app_setting"
-"""
-input AppSettingMinOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Setting name (unique)"""
-  key: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-
-  """Setting value"""
-  value: OrderBy
-}
-
-"""
-response of any mutation on the table "app_setting"
-"""
-type AppSettingMutationResponse {
-  """number of rows affected by the mutation"""
-  affectedRows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [AppSetting!]!
-}
-
-"""
-on_conflict condition type for table "app_setting"
-"""
-input AppSettingOnConflict {
-  constraint: AppSettingConstraint!
-  updateColumns: [AppSettingUpdateColumn!]! = []
-  where: AppSettingBoolExp
-}
-
-"""Ordering options when selecting data from "app_setting"."""
-input AppSettingOrderBy {
-  createdAt: OrderBy
-  key: OrderBy
-  oid: OrderBy
-  organization: OrganizationOrderBy
-  updatedAt: OrderBy
-  value: OrderBy
-}
-
-"""primary key columns input for table: app_setting"""
-input AppSettingPkColumnsInput {
-  """Setting name (unique)"""
-  key: String!
-
-  """Organization reference"""
-  oid: Int!
-}
-
-"""
-select columns of table "app_setting"
-"""
-enum AppSettingSelectColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  key
-
-  """column name"""
-  oid
-
-  """column name"""
-  updatedAt
-
-  """column name"""
-  value
-}
-
-"""
-input type for updating data in table "app_setting"
-"""
-input AppSettingSetInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Setting name (unique)"""
-  key: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Setting value"""
-  value: String
-}
-
-"""aggregate stddev on columns"""
-type AppSettingStddevFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddev() on columns of table "app_setting"
-"""
-input AppSettingStddevOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate stddevPop on columns"""
-type AppSettingStddevPopFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddevPop() on columns of table "app_setting"
-"""
-input AppSettingStddevPopOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate stddevSamp on columns"""
-type AppSettingStddevSampFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddevSamp() on columns of table "app_setting"
-"""
-input AppSettingStddevSampOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-Streaming cursor of the table "app_setting"
-"""
-input AppSettingStreamCursorInput {
-  """Stream column input with initial value"""
-  initialValue: AppSettingStreamCursorValueInput!
-
-  """cursor ordering"""
-  ordering: CursorOrdering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input AppSettingStreamCursorValueInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Setting name (unique)"""
-  key: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-
-  """Setting value"""
-  value: String
-}
-
-"""aggregate sum on columns"""
-type AppSettingSumFields {
-  """Organization reference"""
-  oid: Int
-}
-
-"""
-order by sum() on columns of table "app_setting"
-"""
-input AppSettingSumOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-update columns of table "app_setting"
-"""
-enum AppSettingUpdateColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  key
-
-  """column name"""
-  oid
-
-  """column name"""
-  updatedAt
-
-  """column name"""
-  value
-}
-
-input AppSettingUpdates {
-  """increments the numeric columns with given value of the filtered values"""
-  _inc: AppSettingIncInput
-
-  """sets the columns of the filtered rows to the given values"""
-  _set: AppSettingSetInput
-
-  """filter the rows which have to be updated"""
-  where: AppSettingBoolExp!
-}
-
-"""aggregate varPop on columns"""
-type AppSettingVarPopFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by varPop() on columns of table "app_setting"
-"""
-input AppSettingVarPopOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate varSamp on columns"""
-type AppSettingVarSampFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by varSamp() on columns of table "app_setting"
-"""
-input AppSettingVarSampOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate variance on columns"""
-type AppSettingVarianceFields {
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by variance() on columns of table "app_setting"
-"""
-input AppSettingVarianceOrderBy {
-  """Organization reference"""
-  oid: OrderBy
-}
-
 """
 Boolean expression to compare columns of type "Boolean". All fields are combined with logical 'AND'.
 """
@@ -4465,6 +3991,480 @@ enum CursorOrdering {
   DESC
 }
 
+"""Application settings (e.g., custom UI parameters)"""
+type CustomText {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
+
+  """Text key"""
+  key: String!
+
+  """Organization reference"""
+  oid: Int!
+
+  """An object relationship"""
+  organization: Organization!
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
+
+  """Text value"""
+  value: String!
+}
+
+"""
+aggregated selection of "custom_text"
+"""
+type CustomTextAggregate {
+  aggregate: CustomTextAggregateFields
+  nodes: [CustomText!]!
+}
+
+input CustomTextAggregateBoolExp {
+  count: customTextAggregateBoolExpCount
+}
+
+"""
+aggregate fields of "custom_text"
+"""
+type CustomTextAggregateFields {
+  avg: CustomTextAvgFields
+  count(columns: [CustomTextSelectColumn!], distinct: Boolean): Int!
+  max: CustomTextMaxFields
+  min: CustomTextMinFields
+  stddev: CustomTextStddevFields
+  stddevPop: CustomTextStddevPopFields
+  stddevSamp: CustomTextStddevSampFields
+  sum: CustomTextSumFields
+  varPop: CustomTextVarPopFields
+  varSamp: CustomTextVarSampFields
+  variance: CustomTextVarianceFields
+}
+
+"""
+order by aggregate values of table "custom_text"
+"""
+input CustomTextAggregateOrderBy {
+  avg: CustomTextAvgOrderBy
+  count: OrderBy
+  max: CustomTextMaxOrderBy
+  min: CustomTextMinOrderBy
+  stddev: CustomTextStddevOrderBy
+  stddevPop: CustomTextStddevPopOrderBy
+  stddevSamp: CustomTextStddevSampOrderBy
+  sum: CustomTextSumOrderBy
+  varPop: CustomTextVarPopOrderBy
+  varSamp: CustomTextVarSampOrderBy
+  variance: CustomTextVarianceOrderBy
+}
+
+"""
+input type for inserting array relation for remote table "custom_text"
+"""
+input CustomTextArrRelInsertInput {
+  data: [CustomTextInsertInput!]!
+
+  """upsert condition"""
+  onConflict: CustomTextOnConflict
+}
+
+"""aggregate avg on columns"""
+type CustomTextAvgFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by avg() on columns of table "custom_text"
+"""
+input CustomTextAvgOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""
+Boolean expression to filter rows from the table "custom_text". All fields are combined with a logical 'AND'.
+"""
+input CustomTextBoolExp {
+  _and: [CustomTextBoolExp!]
+  _not: CustomTextBoolExp
+  _or: [CustomTextBoolExp!]
+  createdAt: TimestamptzComparisonExp
+  key: StringComparisonExp
+  oid: IntComparisonExp
+  organization: OrganizationBoolExp
+  updatedAt: TimestamptzComparisonExp
+  value: StringComparisonExp
+}
+
+"""
+unique or primary key constraints on table "custom_text"
+"""
+enum CustomTextConstraint {
+  """
+  unique or primary key constraint on columns "key", "oid"
+  """
+  custom_text_pkey
+}
+
+"""
+input type for incrementing numeric columns in table "custom_text"
+"""
+input CustomTextIncInput {
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+input type for inserting data into table "custom_text"
+"""
+input CustomTextInsertInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Text key"""
+  key: String
+
+  """Organization reference"""
+  oid: Int
+  organization: OrganizationObjRelInsertInput
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Text value"""
+  value: String
+}
+
+"""aggregate max on columns"""
+type CustomTextMaxFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Text key"""
+  key: String
+
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Text value"""
+  value: String
+}
+
+"""
+order by max() on columns of table "custom_text"
+"""
+input CustomTextMaxOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Text key"""
+  key: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Text value"""
+  value: OrderBy
+}
+
+"""aggregate min on columns"""
+type CustomTextMinFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Text key"""
+  key: String
+
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Text value"""
+  value: String
+}
+
+"""
+order by min() on columns of table "custom_text"
+"""
+input CustomTextMinOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
+  """Text key"""
+  key: OrderBy
+
+  """Organization reference"""
+  oid: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
+
+  """Text value"""
+  value: OrderBy
+}
+
+"""
+response of any mutation on the table "custom_text"
+"""
+type CustomTextMutationResponse {
+  """number of rows affected by the mutation"""
+  affectedRows: Int!
+
+  """data from the rows affected by the mutation"""
+  returning: [CustomText!]!
+}
+
+"""
+on_conflict condition type for table "custom_text"
+"""
+input CustomTextOnConflict {
+  constraint: CustomTextConstraint!
+  updateColumns: [CustomTextUpdateColumn!]! = []
+  where: CustomTextBoolExp
+}
+
+"""Ordering options when selecting data from "custom_text"."""
+input CustomTextOrderBy {
+  createdAt: OrderBy
+  key: OrderBy
+  oid: OrderBy
+  organization: OrganizationOrderBy
+  updatedAt: OrderBy
+  value: OrderBy
+}
+
+"""primary key columns input for table: custom_text"""
+input CustomTextPkColumnsInput {
+  """Text key"""
+  key: String!
+
+  """Organization reference"""
+  oid: Int!
+}
+
+"""
+select columns of table "custom_text"
+"""
+enum CustomTextSelectColumn {
+  """column name"""
+  createdAt
+
+  """column name"""
+  key
+
+  """column name"""
+  oid
+
+  """column name"""
+  updatedAt
+
+  """column name"""
+  value
+}
+
+"""
+input type for updating data in table "custom_text"
+"""
+input CustomTextSetInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Text key"""
+  key: String
+
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Text value"""
+  value: String
+}
+
+"""aggregate stddev on columns"""
+type CustomTextStddevFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddev() on columns of table "custom_text"
+"""
+input CustomTextStddevOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevPop on columns"""
+type CustomTextStddevPopFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevPop() on columns of table "custom_text"
+"""
+input CustomTextStddevPopOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate stddevSamp on columns"""
+type CustomTextStddevSampFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by stddevSamp() on columns of table "custom_text"
+"""
+input CustomTextStddevSampOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""
+Streaming cursor of the table "custom_text"
+"""
+input CustomTextStreamCursorInput {
+  """Stream column input with initial value"""
+  initialValue: CustomTextStreamCursorValueInput!
+
+  """cursor ordering"""
+  ordering: CursorOrdering
+}
+
+"""Initial value of the column from where the streaming should start"""
+input CustomTextStreamCursorValueInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
+  """Text key"""
+  key: String
+
+  """Organization reference"""
+  oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
+
+  """Text value"""
+  value: String
+}
+
+"""aggregate sum on columns"""
+type CustomTextSumFields {
+  """Organization reference"""
+  oid: Int
+}
+
+"""
+order by sum() on columns of table "custom_text"
+"""
+input CustomTextSumOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""
+update columns of table "custom_text"
+"""
+enum CustomTextUpdateColumn {
+  """column name"""
+  createdAt
+
+  """column name"""
+  key
+
+  """column name"""
+  oid
+
+  """column name"""
+  updatedAt
+
+  """column name"""
+  value
+}
+
+input CustomTextUpdates {
+  """increments the numeric columns with given value of the filtered values"""
+  _inc: CustomTextIncInput
+
+  """sets the columns of the filtered rows to the given values"""
+  _set: CustomTextSetInput
+
+  """filter the rows which have to be updated"""
+  where: CustomTextBoolExp!
+}
+
+"""aggregate varPop on columns"""
+type CustomTextVarPopFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varPop() on columns of table "custom_text"
+"""
+input CustomTextVarPopOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate varSamp on columns"""
+type CustomTextVarSampFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by varSamp() on columns of table "custom_text"
+"""
+input CustomTextVarSampOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
+"""aggregate variance on columns"""
+type CustomTextVarianceFields {
+  """Organization reference"""
+  oid: Float
+}
+
+"""
+order by variance() on columns of table "custom_text"
+"""
+input CustomTextVarianceOrderBy {
+  """Organization reference"""
+  oid: OrderBy
+}
+
 """Academic degrees offered by the institution"""
 type Degree {
   """Timestamp when the record was created"""
@@ -6597,42 +6597,6 @@ type Organization {
   active: Boolean!
 
   """An array relationship"""
-  appSettings(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): [AppSetting!]!
-
-  """An aggregate relationship"""
-  appSettingsAggregate(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): AppSettingAggregate!
-
-  """An array relationship"""
   coordinations(
     """distinct select on columns"""
     distinctOn: [CoordinationSelectColumn!]
@@ -6778,6 +6742,42 @@ type Organization {
     """filter the rows returned"""
     where: CurrentPhaseBoolExp
   ): CurrentPhaseAggregate!
+
+  """An array relationship"""
+  customTexts(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): [CustomText!]!
+
+  """An aggregate relationship"""
+  customTextsAggregate(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): CustomTextAggregate!
 
   """An array relationship"""
   degrees(
@@ -7342,8 +7342,6 @@ input OrganizationBoolExp {
   _not: OrganizationBoolExp
   _or: [OrganizationBoolExp!]
   active: BooleanComparisonExp
-  appSettings: AppSettingBoolExp
-  appSettingsAggregate: AppSettingAggregateBoolExp
   coordinations: CoordinationBoolExp
   coordinationsAggregate: CoordinationAggregateBoolExp
   courseTypes: CourseTypeBoolExp
@@ -7353,6 +7351,8 @@ input OrganizationBoolExp {
   createdAt: TimestamptzComparisonExp
   currentPhases: CurrentPhaseBoolExp
   currentPhasesAggregate: CurrentPhaseAggregateBoolExp
+  customTexts: CustomTextBoolExp
+  customTextsAggregate: CustomTextAggregateBoolExp
   degrees: DegreeBoolExp
   degreesAggregate: DegreeAggregateBoolExp
   email: StringComparisonExp
@@ -7410,7 +7410,6 @@ input type for inserting data into table "organization"
 """
 input OrganizationInsertInput {
   active: Boolean
-  appSettings: AppSettingArrRelInsertInput
   coordinations: CoordinationArrRelInsertInput
   courseTypes: CourseTypeArrRelInsertInput
   courses: CourseArrRelInsertInput
@@ -7418,6 +7417,7 @@ input OrganizationInsertInput {
   """Timestamp when the record was created"""
   createdAt: timestamptz
   currentPhases: CurrentPhaseArrRelInsertInput
+  customTexts: CustomTextArrRelInsertInput
   degrees: DegreeArrRelInsertInput
   email: String
   externalCourses: ExternalCourseArrRelInsertInput
@@ -7531,12 +7531,12 @@ input OrganizationOnConflict {
 """Ordering options when selecting data from "organization"."""
 input OrganizationOrderBy {
   active: OrderBy
-  appSettingsAggregate: AppSettingAggregateOrderBy
   coordinationsAggregate: CoordinationAggregateOrderBy
   courseTypesAggregate: CourseTypeAggregateOrderBy
   coursesAggregate: CourseAggregateOrderBy
   createdAt: OrderBy
   currentPhasesAggregate: CurrentPhaseAggregateOrderBy
+  customTextsAggregate: CustomTextAggregateOrderBy
   degreesAggregate: DegreeAggregateOrderBy
   email: OrderBy
   externalCoursesAggregate: ExternalCourseAggregateOrderBy
@@ -17734,13 +17734,6 @@ input YearVarianceOrderBy {
   value: OrderBy
 }
 
-input appSettingAggregateBoolExpCount {
-  arguments: [AppSettingSelectColumn!]
-  distinct: Boolean
-  filter: AppSettingBoolExp
-  predicate: IntComparisonExp!
-}
-
 input computeServicePrioritiesArgs {
   service_row: service_scalar
 }
@@ -17806,6 +17799,13 @@ input currentPhaseAggregateBoolExpCount {
   arguments: [CurrentPhaseSelectColumn!]
   distinct: Boolean
   filter: CurrentPhaseBoolExp
+  predicate: IntComparisonExp!
+}
+
+input customTextAggregateBoolExpCount {
+  arguments: [CustomTextSelectColumn!]
+  distinct: Boolean
+  filter: CustomTextBoolExp
   predicate: IntComparisonExp!
 }
 
@@ -17997,25 +17997,6 @@ type mutation_root {
   ): [Service!]!
 
   """
-  delete data from the table: "app_setting"
-  """
-  deleteAppSetting(
-    """filter the rows which have to be deleted"""
-    where: AppSettingBoolExp!
-  ): AppSettingMutationResponse
-
-  """
-  delete single row from the table: "app_setting"
-  """
-  deleteAppSettingByPk(
-    """Setting name (unique)"""
-    key: String!
-
-    """Organization reference"""
-    oid: Int!
-  ): AppSetting
-
-  """
   delete data from the table: "coordination"
   """
   deleteCoordination(
@@ -18087,6 +18068,25 @@ type mutation_root {
     """Organization reference"""
     oid: Int!
   ): CurrentPhase
+
+  """
+  delete data from the table: "custom_text"
+  """
+  deleteCustomText(
+    """filter the rows which have to be deleted"""
+    where: CustomTextBoolExp!
+  ): CustomTextMutationResponse
+
+  """
+  delete single row from the table: "custom_text"
+  """
+  deleteCustomTextByPk(
+    """Text key"""
+    key: String!
+
+    """Organization reference"""
+    oid: Int!
+  ): CustomText
 
   """
   delete data from the table: "degree"
@@ -18454,11 +18454,11 @@ type mutation_root {
   ): Year
 
   """
-  execute VOLATILE function "dummy_function" which returns "app_setting"
+  execute VOLATILE function "dummy_function" which returns "custom_text"
   """
   dummyFunction(
     """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
+    distinctOn: [CustomTextSelectColumn!]
 
     """limit the number of rows returned"""
     limit: Int
@@ -18467,33 +18467,11 @@ type mutation_root {
     offset: Int
 
     """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
+    orderBy: [CustomTextOrderBy!]
 
     """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): [AppSetting!]!
-
-  """
-  insert data into the table: "app_setting"
-  """
-  insertAppSetting(
-    """the rows to be inserted"""
-    objects: [AppSettingInsertInput!]!
-
-    """upsert condition"""
-    onConflict: AppSettingOnConflict
-  ): AppSettingMutationResponse
-
-  """
-  insert a single row into the table: "app_setting"
-  """
-  insertAppSettingOne(
-    """the row to be inserted"""
-    object: AppSettingInsertInput!
-
-    """upsert condition"""
-    onConflict: AppSettingOnConflict
-  ): AppSetting
+    where: CustomTextBoolExp
+  ): [CustomText!]!
 
   """
   insert data into the table: "coordination"
@@ -18582,6 +18560,28 @@ type mutation_root {
     """upsert condition"""
     onConflict: CurrentPhaseOnConflict
   ): CurrentPhase
+
+  """
+  insert data into the table: "custom_text"
+  """
+  insertCustomText(
+    """the rows to be inserted"""
+    objects: [CustomTextInsertInput!]!
+
+    """upsert condition"""
+    onConflict: CustomTextOnConflict
+  ): CustomTextMutationResponse
+
+  """
+  insert a single row into the table: "custom_text"
+  """
+  insertCustomTextOne(
+    """the row to be inserted"""
+    object: CustomTextInsertInput!
+
+    """upsert condition"""
+    onConflict: CustomTextOnConflict
+  ): CustomText
 
   """
   insert data into the table: "degree"
@@ -19024,40 +19024,6 @@ type mutation_root {
   ): Year
 
   """
-  update data of the table: "app_setting"
-  """
-  updateAppSetting(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: AppSettingIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: AppSettingSetInput
-
-    """filter the rows which have to be updated"""
-    where: AppSettingBoolExp!
-  ): AppSettingMutationResponse
-
-  """
-  update single row of the table: "app_setting"
-  """
-  updateAppSettingByPk(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: AppSettingIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: AppSettingSetInput
-    pkColumns: AppSettingPkColumnsInput!
-  ): AppSetting
-
-  """
-  update multiples rows of table: "app_setting"
-  """
-  updateAppSettingMany(
-    """updates to execute, in order"""
-    updates: [AppSettingUpdates!]!
-  ): [AppSettingMutationResponse]
-
-  """
   update data of the table: "coordination"
   """
   updateCoordination(
@@ -19192,6 +19158,40 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [CurrentPhaseUpdates!]!
   ): [CurrentPhaseMutationResponse]
+
+  """
+  update data of the table: "custom_text"
+  """
+  updateCustomText(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: CustomTextIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: CustomTextSetInput
+
+    """filter the rows which have to be updated"""
+    where: CustomTextBoolExp!
+  ): CustomTextMutationResponse
+
+  """
+  update single row of the table: "custom_text"
+  """
+  updateCustomTextByPk(
+    """increments the numeric columns with given value of the filtered values"""
+    _inc: CustomTextIncInput
+
+    """sets the columns of the filtered rows to the given values"""
+    _set: CustomTextSetInput
+    pkColumns: CustomTextPkColumnsInput!
+  ): CustomText
+
+  """
+  update multiples rows of table: "custom_text"
+  """
+  updateCustomTextMany(
+    """updates to execute, in order"""
+    updates: [CustomTextUpdates!]!
+  ): [CustomTextMutationResponse]
 
   """
   update data of the table: "degree"
@@ -19895,55 +19895,6 @@ input programAggregateBoolExpCount {
 
 type query_root {
   """
-  fetch data from the table: "app_setting"
-  """
-  appSetting(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): [AppSetting!]!
-
-  """
-  fetch aggregated fields from the table: "app_setting"
-  """
-  appSettingAggregate(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): AppSettingAggregate!
-
-  """fetch data from the table: "app_setting" using primary key columns"""
-  appSettingByPk(
-    """Setting name (unique)"""
-    key: String!
-
-    """Organization reference"""
-    oid: Int!
-  ): AppSetting
-
-  """
   fetch data from the table: "coordination"
   """
   coordination(
@@ -20135,6 +20086,55 @@ type query_root {
     """Organization reference"""
     oid: Int!
   ): CurrentPhase
+
+  """
+  fetch data from the table: "custom_text"
+  """
+  customText(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): [CustomText!]!
+
+  """
+  fetch aggregated fields from the table: "custom_text"
+  """
+  customTextAggregate(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): CustomTextAggregate!
+
+  """fetch data from the table: "custom_text" using primary key columns"""
+  customTextByPk(
+    """Text key"""
+    key: String!
+
+    """Organization reference"""
+    oid: Int!
+  ): CustomText
 
   """
   fetch data from the table: "degree"
@@ -21138,69 +21138,6 @@ scalar service_scalar
 
 type subscription_root {
   """
-  fetch data from the table: "app_setting"
-  """
-  appSetting(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): [AppSetting!]!
-
-  """
-  fetch aggregated fields from the table: "app_setting"
-  """
-  appSettingAggregate(
-    """distinct select on columns"""
-    distinctOn: [AppSettingSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [AppSettingOrderBy!]
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): AppSettingAggregate!
-
-  """fetch data from the table: "app_setting" using primary key columns"""
-  appSettingByPk(
-    """Setting name (unique)"""
-    key: String!
-
-    """Organization reference"""
-    oid: Int!
-  ): AppSetting
-
-  """
-  fetch data from the table in a streaming manner: "app_setting"
-  """
-  appSettingStream(
-    """maximum number of rows returned in a single batch"""
-    batchSize: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [AppSettingStreamCursorInput]!
-
-    """filter the rows returned"""
-    where: AppSettingBoolExp
-  ): [AppSetting!]!
-
-  """
   fetch data from the table: "coordination"
   """
   coordination(
@@ -21448,6 +21385,69 @@ type subscription_root {
     """filter the rows returned"""
     where: CurrentPhaseBoolExp
   ): [CurrentPhase!]!
+
+  """
+  fetch data from the table: "custom_text"
+  """
+  customText(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): [CustomText!]!
+
+  """
+  fetch aggregated fields from the table: "custom_text"
+  """
+  customTextAggregate(
+    """distinct select on columns"""
+    distinctOn: [CustomTextSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [CustomTextOrderBy!]
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): CustomTextAggregate!
+
+  """fetch data from the table: "custom_text" using primary key columns"""
+  customTextByPk(
+    """Text key"""
+    key: String!
+
+    """Organization reference"""
+    oid: Int!
+  ): CustomText
+
+  """
+  fetch data from the table in a streaming manner: "custom_text"
+  """
+  customTextStream(
+    """maximum number of rows returned in a single batch"""
+    batchSize: Int!
+
+    """cursor to stream the results returned by the query"""
+    cursor: [CustomTextStreamCursorInput]!
+
+    """filter the rows returned"""
+    where: CustomTextBoolExp
+  ): [CustomText!]!
 
   """
   fetch data from the table: "degree"

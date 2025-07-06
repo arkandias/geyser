@@ -71,16 +71,16 @@ CREATE TRIGGER year_before_update_clear_current_flag_trigger
 EXECUTE FUNCTION clear_current_year_flag_trigger_fn();
 
 
-CREATE TABLE public.app_setting
+CREATE TABLE public.custom_text
 (
     oid   integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
     key   text    NOT NULL,
     value text    NOT NULL,
     PRIMARY KEY (oid, key)
 );
-CREATE INDEX idx_app_setting_oid ON public.app_setting (oid);
+CREATE INDEX idx_custom_text_oid ON public.custom_text (oid);
 
-COMMENT ON TABLE public.app_setting IS 'Application settings (e.g., custom UI parameters)';
-COMMENT ON COLUMN public.app_setting.oid IS 'Organization reference';
-COMMENT ON COLUMN public.app_setting.key IS 'Setting name (unique)';
-COMMENT ON COLUMN public.app_setting.value IS 'Setting value';
+COMMENT ON TABLE public.custom_text IS 'Application settings (e.g., custom UI parameters)';
+COMMENT ON COLUMN public.custom_text.oid IS 'Organization reference';
+COMMENT ON COLUMN public.custom_text.key IS 'Text key';
+COMMENT ON COLUMN public.custom_text.value IS 'Text value';

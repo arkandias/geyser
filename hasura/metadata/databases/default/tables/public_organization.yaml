@@ -2,12 +2,12 @@ table:
   name: organization
   schema: public
 array_relationships:
-  - name: appSettings
+  - name: customTexts
     using:
       foreign_key_constraint_on:
         column: oid
         table:
-          name: app_setting
+          name: custom_text
           schema: public
   - name: coordinations
     using:
