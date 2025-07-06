@@ -448,7 +448,7 @@ const formatWH = (hours: number) =>
         <QForm
           id="edit-base-service"
           class="q-gutter-md"
-          @submit.prevent="submitBaseServiceForm"
+          @submit="submitBaseServiceForm"
           @reset="resetBaseServiceForm"
         >
           <NumInput
@@ -477,7 +477,7 @@ const formatWH = (hours: number) =>
         <QForm
           id="add-modification"
           class="q-gutter-md"
-          @submit.prevent="submitModificationForm"
+          @submit="submitModificationForm"
           @reset="resetModificationForm"
         >
           <QSelect
@@ -530,7 +530,7 @@ const formatWH = (hours: number) =>
         <QForm
           id="add-external-course"
           class="q-gutter-md"
-          @submit.prevent="submitExternalCourseForm"
+          @submit="submitExternalCourseForm"
           @reset="resetExternalCourseForm"
         >
           <QInput
