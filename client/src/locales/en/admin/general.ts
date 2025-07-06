@@ -5,6 +5,26 @@ import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
 export default {
   general: {
     title: "General Settings",
+    organization: {
+      label: "Organization",
+      parameter: {
+        label: "Label",
+        sublabel: "Sublabel",
+        email: "Contact email",
+        locale: "Default locale",
+        privateService: "Private services",
+      },
+      button: {
+        submit: "Save",
+        reset: "Reset",
+      },
+      error: {
+        update: "Failed to update parameters",
+      },
+      success: {
+        update: "Parameters updated",
+      },
+    },
     phase: {
       label: "Current phase",
       error: {

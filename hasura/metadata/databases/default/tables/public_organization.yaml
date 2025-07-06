@@ -181,3 +181,17 @@ select_permissions:
         id:
           _eq: X-Hasura-Org-Id
     comment: Can view their own organization
+update_permissions:
+  - role: organizer
+    permission:
+      columns:
+        - label
+        - sublabel
+        - email
+        - locale
+        - private_service
+      filter:
+        id:
+          _eq: X-Hasura-Org-Id
+      check: null
+    comment: Can update their own organization parameters
