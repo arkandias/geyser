@@ -198,6 +198,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     object.alias = flatRow.alias;
   }
 
+  // positionId
   if (flatRow.positionLabel !== undefined) {
     const position = flatRow.positionLabel
       ? positions.value.find((p) => p.label === flatRow.positionLabel)

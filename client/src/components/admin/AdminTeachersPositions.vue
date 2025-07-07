@@ -42,6 +42,11 @@ const rowDescriptor = {
     type: "string",
     formComponent: "input",
   },
+  labelShort: {
+    type: "string",
+    nullable: true,
+    formComponent: "input",
+  },
   description: {
     type: "string",
     nullable: true,
@@ -59,6 +64,7 @@ graphql(`
   fragment AdminPosition on Position {
     id
     label
+    labelShort
     description
     baseServiceHours
   }
@@ -126,6 +132,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   if (flatRow.label !== undefined) {
     object.label = flatRow.label;
+  }
+
+  if (flatRow.labelShort !== undefined) {
+    object.labelShort = flatRow.labelShort;
   }
 
   if (flatRow.description !== undefined) {

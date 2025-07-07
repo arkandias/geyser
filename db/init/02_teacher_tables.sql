@@ -3,6 +3,7 @@ CREATE TABLE public.position
     oid                integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
     id                 integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     label              text    NOT NULL,
+    label_short        text,
     description        text,
     base_service_hours real,
     PRIMARY KEY (oid, id),
@@ -15,6 +16,7 @@ COMMENT ON TABLE public.position IS 'Teaching positions with associated service 
 COMMENT ON COLUMN public.position.oid IS 'Organization reference';
 COMMENT ON COLUMN public.position.id IS 'Unique identifier';
 COMMENT ON COLUMN public.position.label IS 'Position name (unique)';
+COMMENT ON COLUMN public.position.label_short IS 'Abbreviated name';
 COMMENT ON COLUMN public.position.base_service_hours IS 'Default annual teaching hours';
 COMMENT ON COLUMN public.position.description IS 'Optional description';
 
@@ -81,14 +83,16 @@ COMMENT ON COLUMN public.teacher_role.comment IS 'Additional information about t
 
 CREATE TABLE public.service
 (
-    oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
-    year       integer NOT NULL,
-    teacher_id integer NOT NULL,
-    hours      real    NOT NULL,
+    oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
+    id          integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
+    year        integer NOT NULL,
+    teacher_id  integer NOT NULL,
+    position_id integer,
+    hours       real    NOT NULL,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, teacher_id) REFERENCES public.teacher ON UPDATE CASCADE,
+    FOREIGN KEY (oid, position_id) REFERENCES public.position ON UPDATE CASCADE,
     UNIQUE (oid, year, teacher_id),
     UNIQUE (oid, id, year), -- referenced in requests and priorities to ensure data consistency
     CONSTRAINT service_hours_non_negative CHECK (hours >= 0)
@@ -96,12 +100,14 @@ CREATE TABLE public.service
 CREATE INDEX idx_service_oid ON public.service (oid);
 CREATE INDEX idx_service_oid_year ON public.service (oid, year);
 CREATE INDEX idx_service_oid_teacher_id ON public.service (oid, teacher_id);
+CREATE INDEX idx_service_oid_position_id ON public.service (oid, position_id);
 
 COMMENT ON TABLE public.service IS 'Annual teaching service records';
 COMMENT ON COLUMN public.service.oid IS 'Organization reference';
 COMMENT ON COLUMN public.service.id IS 'Unique identifier';
 COMMENT ON COLUMN public.service.year IS 'Academic year reference';
 COMMENT ON COLUMN public.service.teacher_id IS 'Teacher reference';
+COMMENT ON COLUMN public.service.position_id IS 'Teacher''s position reference';
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifications';
 
 

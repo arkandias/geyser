@@ -29,6 +29,10 @@ graphql(`
       alias
       visible
     }
+    position {
+      label
+      labelShort
+    }
     hours
     modifications {
       hours
@@ -161,6 +165,17 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     sort: localeCompare,
     visible: false,
     searchable: true,
+  },
+  {
+    name: "position",
+    label: t("courses.table.services.column.position.label"),
+    tooltip: t("courses.table.services.column.position.tooltip"),
+    align: "left",
+    field: (row) => row.position?.labelShort ?? row.position?.label,
+    sortable: true,
+    sort: localeCompare,
+    visible: false,
+    searchable: false,
   },
   {
     name: "message",

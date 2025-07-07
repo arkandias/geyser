@@ -7990,11 +7990,50 @@ type Position {
   """Position name (unique)"""
   label: String!
 
+  """Abbreviated name"""
+  labelShort: String
+
   """Organization reference"""
   oid: Int!
 
   """An object relationship"""
   organization: Organization!
+
+  """An array relationship"""
+  services(
+    """distinct select on columns"""
+    distinctOn: [ServiceSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ServiceOrderBy!]
+
+    """filter the rows returned"""
+    where: ServiceBoolExp
+  ): [Service!]!
+
+  """An aggregate relationship"""
+  servicesAggregate(
+    """distinct select on columns"""
+    distinctOn: [ServiceSelectColumn!]
+
+    """limit the number of rows returned"""
+    limit: Int
+
+    """skip the first n rows. Use only with order_by"""
+    offset: Int
+
+    """sort the rows by one or more columns"""
+    orderBy: [ServiceOrderBy!]
+
+    """filter the rows returned"""
+    where: ServiceBoolExp
+  ): ServiceAggregate!
 
   """An array relationship"""
   teachers(
@@ -8132,8 +8171,11 @@ input PositionBoolExp {
   description: StringComparisonExp
   id: IntComparisonExp
   label: StringComparisonExp
+  labelShort: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
+  services: ServiceBoolExp
+  servicesAggregate: ServiceAggregateBoolExp
   teachers: TeacherBoolExp
   teachersAggregate: TeacherAggregateBoolExp
   updatedAt: TimestamptzComparisonExp
@@ -8186,9 +8228,13 @@ input PositionInsertInput {
   """Position name (unique)"""
   label: String
 
+  """Abbreviated name"""
+  labelShort: String
+
   """Organization reference"""
   oid: Int
   organization: OrganizationObjRelInsertInput
+  services: ServiceArrRelInsertInput
   teachers: TeacherArrRelInsertInput
 
   """
@@ -8213,6 +8259,9 @@ type PositionMaxFields {
 
   """Position name (unique)"""
   label: String
+
+  """Abbreviated name"""
+  labelShort: String
 
   """Organization reference"""
   oid: Int
@@ -8242,6 +8291,9 @@ input PositionMaxOrderBy {
   """Position name (unique)"""
   label: OrderBy
 
+  """Abbreviated name"""
+  labelShort: OrderBy
+
   """Organization reference"""
   oid: OrderBy
 
@@ -8267,6 +8319,9 @@ type PositionMinFields {
 
   """Position name (unique)"""
   label: String
+
+  """Abbreviated name"""
+  labelShort: String
 
   """Organization reference"""
   oid: Int
@@ -8295,6 +8350,9 @@ input PositionMinOrderBy {
 
   """Position name (unique)"""
   label: OrderBy
+
+  """Abbreviated name"""
+  labelShort: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -8342,8 +8400,10 @@ input PositionOrderBy {
   description: OrderBy
   id: OrderBy
   label: OrderBy
+  labelShort: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
+  servicesAggregate: ServiceAggregateOrderBy
   teachersAggregate: TeacherAggregateOrderBy
   updatedAt: OrderBy
 }
@@ -8377,6 +8437,9 @@ enum PositionSelectColumn {
   label
 
   """column name"""
+  labelShort
+
+  """column name"""
   oid
 
   """column name"""
@@ -8398,6 +8461,9 @@ input PositionSetInput {
 
   """Position name (unique)"""
   label: String
+
+  """Abbreviated name"""
+  labelShort: String
 
   """Organization reference"""
   oid: Int
@@ -8514,6 +8580,9 @@ input PositionStreamCursorValueInput {
   """Position name (unique)"""
   label: String
 
+  """Abbreviated name"""
+  labelShort: String
+
   """Organization reference"""
   oid: Int
 
@@ -8564,6 +8633,9 @@ enum PositionUpdateColumn {
 
   """column name"""
   label
+
+  """column name"""
+  labelShort
 
   """column name"""
   oid
@@ -11881,6 +11953,12 @@ type Service {
   """An object relationship"""
   organization: Organization!
 
+  """An object relationship"""
+  position: Position
+
+  """Teacher's position reference"""
+  positionId: Int
+
   """An array relationship"""
   priorities(
     """distinct select on columns"""
@@ -12038,6 +12116,9 @@ type ServiceAvgFields {
   """Organization reference"""
   oid: Float
 
+  """Teacher's position reference"""
+  positionId: Float
+
   """Teacher reference"""
   teacherId: Float
 
@@ -12057,6 +12138,9 @@ input ServiceAvgOrderBy {
 
   """Organization reference"""
   oid: OrderBy
+
+  """Teacher's position reference"""
+  positionId: OrderBy
 
   """Teacher reference"""
   teacherId: OrderBy
@@ -12083,6 +12167,8 @@ input ServiceBoolExp {
   modificationsAggregate: ServiceModificationAggregateBoolExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
+  position: PositionBoolExp
+  positionId: IntComparisonExp
   priorities: PriorityBoolExp
   prioritiesAggregate: PriorityAggregateBoolExp
   requests: RequestBoolExp
@@ -12129,6 +12215,9 @@ input ServiceIncInput {
   """Organization reference"""
   oid: Int
 
+  """Teacher's position reference"""
+  positionId: Int
+
   """Teacher reference"""
   teacherId: Int
 
@@ -12152,6 +12241,10 @@ input ServiceInsertInput {
   """Organization reference"""
   oid: Int
   organization: OrganizationObjRelInsertInput
+  position: PositionObjRelInsertInput
+
+  """Teacher's position reference"""
+  positionId: Int
   priorities: PriorityArrRelInsertInput
   requests: RequestArrRelInsertInput
   teacher: TeacherObjRelInsertInput
@@ -12183,6 +12276,9 @@ type ServiceMaxFields {
   """Organization reference"""
   oid: Int
 
+  """Teacher's position reference"""
+  positionId: Int
+
   """Teacher reference"""
   teacherId: Int
 
@@ -12211,6 +12307,9 @@ input ServiceMaxOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -12236,6 +12335,9 @@ type ServiceMinFields {
 
   """Organization reference"""
   oid: Int
+
+  """Teacher's position reference"""
+  positionId: Int
 
   """Teacher reference"""
   teacherId: Int
@@ -12264,6 +12366,9 @@ input ServiceMinOrderBy {
 
   """Organization reference"""
   oid: OrderBy
+
+  """Teacher's position reference"""
+  positionId: OrderBy
 
   """Teacher reference"""
   teacherId: OrderBy
@@ -13669,6 +13774,8 @@ input ServiceOrderBy {
   modificationsAggregate: ServiceModificationAggregateOrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
+  position: PositionOrderBy
+  positionId: OrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
   requestsAggregate: RequestAggregateOrderBy
   teacher: TeacherOrderBy
@@ -13704,6 +13811,9 @@ enum ServiceSelectColumn {
   oid
 
   """column name"""
+  positionId
+
+  """column name"""
   teacherId
 
   """column name"""
@@ -13725,6 +13835,9 @@ input ServiceSetInput {
 
   """Organization reference"""
   oid: Int
+
+  """Teacher's position reference"""
+  positionId: Int
 
   """Teacher reference"""
   teacherId: Int
@@ -13749,6 +13862,9 @@ type ServiceStddevFields {
   """Organization reference"""
   oid: Float
 
+  """Teacher's position reference"""
+  positionId: Float
+
   """Teacher reference"""
   teacherId: Float
 
@@ -13769,6 +13885,9 @@ input ServiceStddevOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -13786,6 +13905,9 @@ type ServiceStddevPopFields {
 
   """Organization reference"""
   oid: Float
+
+  """Teacher's position reference"""
+  positionId: Float
 
   """Teacher reference"""
   teacherId: Float
@@ -13807,6 +13929,9 @@ input ServiceStddevPopOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -13824,6 +13949,9 @@ type ServiceStddevSampFields {
 
   """Organization reference"""
   oid: Float
+
+  """Teacher's position reference"""
+  positionId: Float
 
   """Teacher reference"""
   teacherId: Float
@@ -13844,6 +13972,9 @@ input ServiceStddevSampOrderBy {
 
   """Organization reference"""
   oid: OrderBy
+
+  """Teacher's position reference"""
+  positionId: OrderBy
 
   """Teacher reference"""
   teacherId: OrderBy
@@ -13877,6 +14008,9 @@ input ServiceStreamCursorValueInput {
   """Organization reference"""
   oid: Int
 
+  """Teacher's position reference"""
+  positionId: Int
+
   """Teacher reference"""
   teacherId: Int
 
@@ -13900,6 +14034,9 @@ type ServiceSumFields {
   """Organization reference"""
   oid: Int
 
+  """Teacher's position reference"""
+  positionId: Int
+
   """Teacher reference"""
   teacherId: Int
 
@@ -13920,6 +14057,9 @@ input ServiceSumOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -13939,6 +14079,9 @@ enum ServiceUpdateColumn {
 
   """column name"""
   oid
+
+  """column name"""
+  positionId
 
   """column name"""
   teacherId
@@ -13972,6 +14115,9 @@ type ServiceVarPopFields {
   """Organization reference"""
   oid: Float
 
+  """Teacher's position reference"""
+  positionId: Float
+
   """Teacher reference"""
   teacherId: Float
 
@@ -13992,6 +14138,9 @@ input ServiceVarPopOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -14009,6 +14158,9 @@ type ServiceVarSampFields {
 
   """Organization reference"""
   oid: Float
+
+  """Teacher's position reference"""
+  positionId: Float
 
   """Teacher reference"""
   teacherId: Float
@@ -14030,6 +14182,9 @@ input ServiceVarSampOrderBy {
   """Organization reference"""
   oid: OrderBy
 
+  """Teacher's position reference"""
+  positionId: OrderBy
+
   """Teacher reference"""
   teacherId: OrderBy
 
@@ -14047,6 +14202,9 @@ type ServiceVarianceFields {
 
   """Organization reference"""
   oid: Float
+
+  """Teacher's position reference"""
+  positionId: Float
 
   """Teacher reference"""
   teacherId: Float
@@ -14067,6 +14225,9 @@ input ServiceVarianceOrderBy {
 
   """Organization reference"""
   oid: OrderBy
+
+  """Teacher's position reference"""
+  positionId: OrderBy
 
   """Teacher reference"""
   teacherId: OrderBy

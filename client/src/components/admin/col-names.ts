@@ -23,6 +23,7 @@ export type AdminTeachersTeachersColName =
 export const adminTeachersServicesColNames = [
   "year",
   "teacherEmail",
+  "positionLabel",
   "hours",
 ] as const;
 export type AdminTeachersServicesColName =
@@ -30,6 +31,7 @@ export type AdminTeachersServicesColName =
 
 export const adminTeachersPositionsColNames = [
   "label",
+  "labelShort",
   "description",
   "baseServiceHours",
 ] as const;

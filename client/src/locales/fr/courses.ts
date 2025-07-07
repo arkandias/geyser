@@ -16,6 +16,10 @@ export default {
             label: "Alias",
             tooltip: "",
           },
+          position: {
+            label: "Fonction",
+            tooltip: "",
+          },
           message: {
             label: "M",
             tooltip: "Message",

@@ -10,6 +10,11 @@ object_relationships:
       foreign_key_constraint_on:
         - oid
         - teacher_id
+  - name: position
+    using:
+      foreign_key_constraint_on:
+        - oid
+        - position_id
   - name: yearByYear
     using:
       foreign_key_constraint_on:
@@ -73,6 +78,7 @@ insert_permissions:
         - oid
         - year
         - teacher_id
+        - position_id
         - hours
     comment: Full permissions within their organization
 select_permissions:
@@ -83,6 +89,7 @@ select_permissions:
         - id
         - year
         - teacher_id
+        - position_id
         - hours
       filter:
         _and:
@@ -100,6 +107,7 @@ select_permissions:
         - id
         - year
         - teacher_id
+        - position_id
         - hours
       filter:
         oid:
@@ -112,6 +120,7 @@ select_permissions:
         - id
         - year
         - teacher_id
+        - position_id
         - hours
       filter:
         _and:
@@ -137,6 +146,7 @@ update_permissions:
       columns:
         - year
         - teacher_id
+        - position_id
         - hours
       filter:
         oid:

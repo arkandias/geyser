@@ -89,7 +89,11 @@ S'il existe des services, des responsabilités ou des rôles pour ces intervenan
       label: "Fonctions",
       column: {
         label: {
-          label: "Label",
+          label: "Libellé",
+          tooltip: "",
+        },
+        labelShort: {
+          label: "Libellé court",
           tooltip: "",
         },
         description: {
@@ -142,6 +146,10 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
           label: "Intervenant",
           tooltip: "",
         },
+        positionLabel: {
+          label: "Fonction",
+          tooltip: "",
+        },
         hours: {
           label: "Heures (@:unit.weightedHours)",
           tooltip: "",
@@ -153,6 +161,8 @@ Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les s
         error: {
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
+          positionNotFound:
+            "Il n'existe pas de fonction avec le label « {position} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },
@@ -238,7 +248,7 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
       label: "Types de modification de service",
       column: {
         label: {
-          label: "Label",
+          label: "Libellé",
           tooltip: "",
         },
         description: {

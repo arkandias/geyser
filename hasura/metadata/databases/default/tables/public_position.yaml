@@ -15,6 +15,15 @@ array_relationships:
         table:
           name: teacher
           schema: public
+  - name: services
+    using:
+      foreign_key_constraint_on:
+        columns:
+          - oid
+          - position_id
+        table:
+          name: service
+          schema: public
 insert_permissions:
   - role: organizer
     permission:
@@ -24,6 +33,7 @@ insert_permissions:
       columns:
         - oid
         - label
+        - label_short
         - description
         - base_service_hours
     comment: Full permissions within their organization
@@ -34,6 +44,7 @@ select_permissions:
         - oid
         - id
         - label
+        - label_short
         - description
         - base_service_hours
       filter:
@@ -51,6 +62,7 @@ select_permissions:
         - oid
         - id
         - label
+        - label_short
         - description
         - base_service_hours
       filter:
@@ -63,6 +75,7 @@ select_permissions:
         - oid
         - id
         - label
+        - label_short
         - description
         - base_service_hours
       filter:
@@ -79,6 +92,7 @@ update_permissions:
     permission:
       columns:
         - label
+        - label_short
         - description
         - base_service_hours
       filter:

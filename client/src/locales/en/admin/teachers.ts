@@ -91,6 +91,10 @@ If there are services, responsibilities, or roles for these teachers, you will n
           label: "Label",
           tooltip: "",
         },
+        labelShort: {
+          label: "Label short",
+          tooltip: "",
+        },
         description: {
           label: "Description",
           tooltip: "",
@@ -141,6 +145,10 @@ If these positions are assigned to teachers, you will not be able to delete them
           label: "Teacher",
           tooltip: "",
         },
+        positionLabel: {
+          label: "Position",
+          tooltip: "",
+        },
         hours: {
           label: "Hours (@:unit.weightedHours)",
           tooltip: "",
@@ -151,6 +159,7 @@ If these positions are assigned to teachers, you will not be able to delete them
           "Creating a service | Editing a service | Editing {count} services",
         error: {
           teacherNotFound: 'No teacher with email "{teacherEmail}"',
+          positionNotFound: 'No position exists with the label "{position}"',
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },

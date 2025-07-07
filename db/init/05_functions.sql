@@ -14,8 +14,8 @@ COMMENT ON FUNCTION public.dummy_function() IS 'Dummy function that does nothing
 
 CREATE FUNCTION public.create_teacher_service(p_oid integer, p_year integer, p_teacher_id integer) RETURNS setof public.service AS
 $$
-INSERT INTO public.service (oid, year, teacher_id, hours)
-SELECT p_oid, p_year, p_teacher_id, coalesce(t.base_service_hours, p.base_service_hours, 0)
+INSERT INTO public.service (oid, year, teacher_id, position_id, hours)
+SELECT p_oid, p_year, p_teacher_id, t.position_id, coalesce(t.base_service_hours, p.base_service_hours, 0)
 FROM public.teacher t
          LEFT JOIN public.position p
                    ON p.oid = t.oid
@@ -136,8 +136,8 @@ BEGIN
     org_id := (session_variables ->> 'x-hasura-org-id')::integer;
 
     RETURN QUERY
-        INSERT INTO public.service (oid, year, teacher_id, hours)
-            SELECT org_id, p_year, s.teacher_id, s.hours
+        INSERT INTO public.service (oid, year, teacher_id, position_id, hours)
+            SELECT org_id, p_year, s.teacher_id, s.position_id, s.hours
             FROM public.service s
                      JOIN public.teacher t
                           ON t.oid = s.oid

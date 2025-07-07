@@ -7,6 +7,7 @@ import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   type AdminServiceFragment,
   AdminServiceFragmentDoc,
+  AdminServicesPositionFragmentDoc,
   AdminServicesTeacherFragmentDoc,
   DeleteServicesDocument,
   InsertServicesDocument,
@@ -32,10 +33,11 @@ type Row = AdminServiceFragment;
 type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = ServiceInsertInput;
 
-const { serviceFragments, teacherFragments } = defineProps<{
+const { serviceFragments, teacherFragments, positionFragments } = defineProps<{
   fetching: boolean;
   serviceFragments: FragmentType<typeof AdminServiceFragmentDoc>[];
   teacherFragments: FragmentType<typeof AdminServicesTeacherFragmentDoc>[];
+  positionFragments: FragmentType<typeof AdminServicesPositionFragmentDoc>[];
 }>();
 
 const { t, n } = useTypedI18n();
@@ -54,6 +56,12 @@ const rowDescriptor = {
       teachers.value.find((t) => t.email === val)?.displayname,
     formComponent: "select",
   },
+  positionLabel: {
+    type: "string",
+    nullable: true,
+    field: (row) => row.position?.label,
+    formComponent: "select",
+  },
   hours: {
     type: "number",
     nullable: true,
@@ -70,6 +78,9 @@ graphql(`
     teacher {
       email
     }
+    position {
+      label
+    }
     hours
   }
 
@@ -81,6 +92,11 @@ graphql(`
       baseServiceHours
     }
     baseServiceHours
+  }
+
+  fragment AdminServicesPosition on Position {
+    id
+    label
   }
 
   mutation InsertServices($objects: [ServiceInsertInput!]!) {
@@ -129,6 +145,11 @@ const services = computed(() =>
 const teachers = computed(() =>
   teacherFragments.map((f) => useFragment(AdminServicesTeacherFragmentDoc, f)),
 );
+const positions = computed(() =>
+  positionFragments.map((f) =>
+    useFragment(AdminServicesPositionFragmentDoc, f),
+  ),
+);
 const insertServices = useMutation(InsertServicesDocument);
 const upsertServices = useMutation(UpsertServicesDocument);
 const updateServices = useMutation(UpdateServicesDocument);
@@ -162,6 +183,19 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       );
     }
     object.teacherId = teacher.id;
+  }
+
+  // positionId
+  if (flatRow.positionLabel !== undefined) {
+    const position = flatRow.positionLabel
+      ? positions.value.find((p) => p.label === flatRow.positionLabel)
+      : null;
+    if (position === undefined) {
+      throw new Error(
+        t("admin.teachers.services.form.error.positionNotFound", flatRow),
+      );
+    }
+    object.positionId = position !== null ? position.id : null;
   }
 
   // hours

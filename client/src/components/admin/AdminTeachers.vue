@@ -37,6 +37,7 @@ graphql(`
     ) {
       ...AdminPosition
       ...AdminTeachersPosition
+      ...AdminServicesPosition
     }
     services: service(
       where: { oid: { _eq: $oid } }
@@ -152,6 +153,7 @@ const messages = computed(() => data.value?.messages ?? []);
         :fetching
         :service-fragments="services"
         :teacher-fragments="teachers"
+        :position-fragments="positions"
       />
     </AdminSection>
 
