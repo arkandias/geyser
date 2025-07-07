@@ -225,6 +225,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       value: t.email,
       label: t.displayname ?? "",
     })),
+    positionLabel: positions.value.map((p) => p.label),
   }),
 );
 
