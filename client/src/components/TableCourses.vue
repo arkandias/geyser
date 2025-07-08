@@ -522,7 +522,12 @@ const isVisible = (row: CourseRow) =>
   (row.track?.visible ?? true);
 const tableRowClassFn = computed(
   () => (row: CourseRow) =>
-    isAssigned.value(row) ? "assigned" : !isVisible(row) ? "non-visible" : "",
+    "table-courses-row" +
+    (isAssigned.value(row)
+      ? " assigned"
+      : !isVisible(row)
+        ? " non-visible"
+        : ""),
 );
 
 // Teacher buttons
@@ -579,6 +584,7 @@ const downloadTeacherAssignments = async () => {
       <div class="q-table__title">
         {{ title }}
         <QBtn
+          id="table-courses-button-service"
           v-if="teacher"
           icon="sym_s_id_card"
           color="primary"
@@ -589,11 +595,12 @@ const downloadTeacherAssignments = async () => {
           @click="showTeacherDetails = true"
         >
           <QTooltip :delay="TOOLTIP_DELAY">
-            {{ t("courses.table.courses.options.teacher.viewDetails") }}
+            {{ t("courses.table.courses.options.teacher.viewService") }}
           </QTooltip>
         </QBtn>
         <QBtn
-          v-if="teacher && perm.toViewAssignments"
+          id="table-courses-button-download"
+          v-if="teacher"
           icon="sym_s_download"
           color="primary"
           size="sm"
@@ -607,6 +614,7 @@ const downloadTeacherAssignments = async () => {
           </QTooltip>
         </QBtn>
         <QBtn
+          id="table-courses-button-deselect"
           v-if="teacher"
           icon="sym_s_close"
           color="primary"
@@ -624,6 +632,7 @@ const downloadTeacherAssignments = async () => {
       <QSpace />
       <div class="row q-gutter-md">
         <QSelect
+          id="table-courses-filter-degree-program"
           v-model="degreePrograms"
           :options="degreeProgramOptions"
           :disable="!!teacher"
@@ -637,6 +646,7 @@ const downloadTeacherAssignments = async () => {
           options-dense
         />
         <QSelect
+          id="table-courses-filter-term"
           v-model="terms"
           :options="termOptions"
           :disable="!!teacher"
@@ -650,6 +660,7 @@ const downloadTeacherAssignments = async () => {
           options-dense
         />
         <QSelect
+          id="table-courses-filter-type"
           v-model="types"
           :options="typeOptions"
           :disable="!!teacher"
@@ -668,18 +679,30 @@ const downloadTeacherAssignments = async () => {
           clear-icon="sym_s_close"
           square
           dense
+          input-class="table-courses-filter-search"
         />
-        <QToggle v-model="weightedHours" icon="sym_s_function" dense>
+        <QToggle
+          id="table-courses-weighted-hours"
+          v-model="weightedHours"
+          icon="sym_s_function"
+          dense
+        >
           <QTooltip>
             {{ t("courses.table.courses.options.weightedHours") }}
           </QTooltip>
         </QToggle>
-        <QToggle v-model="stickyHeader" icon="sym_s_scrollable_header" dense>
+        <QToggle
+          id="table-courses-sticky-header"
+          v-model="stickyHeader"
+          icon="sym_s_scrollable_header"
+          dense
+        >
           <QTooltip>
             {{ t("courses.table.courses.options.stickyHeader") }}
           </QTooltip>
         </QToggle>
         <QBtn
+          id="table-courses-columns"
           icon="sym_s_view_column"
           :color="isMenuColumnsOpen ? 'primary' : 'grey'"
           flat
@@ -690,6 +713,7 @@ const downloadTeacherAssignments = async () => {
             {{ t("courses.table.courses.options.columns") }}
           </QTooltip>
           <QMenu
+            id="table-courses-columns-menu"
             v-model="isMenuColumnsOpen"
             square
             dense
@@ -738,7 +762,12 @@ const downloadTeacherAssignments = async () => {
                 />
               </QItem>
               <QSeparator />
-              <QItem clickable class="text-no-wrap" @click="resetColumns()">
+              <QItem
+                id="table-courses-columns-reset"
+                clickable
+                class="text-no-wrap"
+                @click="resetColumns()"
+              >
                 <QItemSection side>
                   <QIcon name="sym_s_restart_alt" color="primary" />
                 </QItemSection>

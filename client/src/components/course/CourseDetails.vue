@@ -38,7 +38,7 @@ const details = computed(() =>
 watch(
   () => details.value?.courseId,
   () => {
-    document.getElementById("volet")?.scrollIntoView();
+    document.getElementById("course-details-expansion-item")?.scrollIntoView();
   },
   {
     flush: "sync",

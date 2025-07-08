@@ -104,6 +104,7 @@ const setDescription = (text: string) =>
 
 <template>
   <DetailsSubsection
+    id="course-details-description"
     v-model="editDescription"
     :title="t('courses.expansion.description.title')"
     :editable

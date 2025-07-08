@@ -91,7 +91,10 @@ const archives = computed(() => getCourseArchives.data.value?.courses ?? []);
 </script>
 
 <template>
-  <DetailsSection :title="t('courses.details.archives.title')">
+  <DetailsSection
+    id="course-details-archives"
+    :title="t('courses.details.archives.title')"
+  >
     <DetailsSubsection
       v-for="a in archives"
       :key="a.year"

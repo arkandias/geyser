@@ -14,21 +14,26 @@ export default {
     },
     courses: {
       label: "Enseignements",
-      year: "Année",
       servicesTable: "Table des services",
       myService: "Mes demandes",
     },
     admin: {
       label: "Paramètres",
     },
-    lang: {
-      label: "Langue",
-    },
     refreshData: {
       label: "Rafraîchir les données",
     },
     darkMode: {
       label: "Mode sombre",
+    },
+    year: {
+      label: "Année active",
+    },
+    lang: {
+      label: "Langue",
+    },
+    tutorial: {
+      label: "Tutoriel",
     },
     info: {
       label: "Informations",

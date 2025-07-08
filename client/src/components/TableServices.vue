@@ -356,7 +356,7 @@ const filterMethod = (
 
 // Row styling
 const tableRowClassFn = (row: ServiceRowFragment) =>
-  row.teacher.visible ? "" : "non-visible";
+  "table-services-row" + (row.teacher.visible ? "" : " non-visible");
 </script>
 
 <template>
@@ -382,7 +382,7 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
     @row-click="selectRow"
   >
     <template #top-right>
-      <div class="row q-gutter-md">
+      <div id="table-services-top" class="row q-gutter-md">
         <QInput
           v-model="search"
           :placeholder="t('courses.table.services.filters.search')"

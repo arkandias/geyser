@@ -42,7 +42,10 @@ const priorities = computed(() =>
 </script>
 
 <template>
-  <DetailsSection :title="t('courses.details.priorities.title')">
+  <DetailsSection
+    id="course-details-priorities"
+    :title="t('courses.details.priorities.title')"
+  >
     <DetailsSubsection v-if="perm.toEditPriorities">
       <PriorityForm :data-fragment="data" />
     </DetailsSubsection>

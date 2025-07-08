@@ -54,13 +54,14 @@ const caption = computed(() =>
 
 <template>
   <QExpansionItem
-    id="volet"
+    id="course-details-expansion-item"
     v-model="isExpanded"
     expand-separator
     :label
     :caption
     dense
     dense-toggle
+    header-class="course-details-expansion-header"
   >
     <slot />
   </QExpansionItem>

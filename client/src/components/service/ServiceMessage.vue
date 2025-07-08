@@ -104,6 +104,7 @@ const setMessage = computed(
 
 <template>
   <DetailsSection
+    id="service-message"
     v-model="editMessage"
     :title="t('service.message.title')"
     :editable

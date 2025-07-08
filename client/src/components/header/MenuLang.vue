@@ -10,8 +10,12 @@ const { setLocale } = useLocale();
 </script>
 
 <template>
-  <MenuBase :label="t('header.lang.label')" icon="sym_s_language">
-    <QList>
+  <MenuBase
+    id="lang-button"
+    :label="t('header.lang.label')"
+    icon="sym_s_language"
+  >
+    <QList id="lang-menu">
       <QItem class="flex-center text-no-wrap">
         <QItemLabel header>
           {{ t("header.lang.label") }}

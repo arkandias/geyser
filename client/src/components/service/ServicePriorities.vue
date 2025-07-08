@@ -84,7 +84,10 @@ const formatPriorityExtra = (priority: Priority) =>
 </script>
 
 <template>
-  <DetailsSection :title="t('service.priorities.title')">
+  <DetailsSection
+    id="service-priorities"
+    :title="t('service.priorities.title')"
+  >
     <ServiceList>
       <QItem v-for="p in priorities" :key="p.id">
         <QItemSection>

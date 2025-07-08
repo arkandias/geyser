@@ -49,7 +49,7 @@ const formatTotal = (type: "assignment" | "primary" | "secondary") =>
 </script>
 
 <template>
-  <DetailsSection :title="t('service.requests.title')">
+  <DetailsSection id="service-requests" :title="t('service.requests.title')">
     <ServiceTable>
       <tbody>
         <tr v-if="perm.toViewAssignments" class="text-bold">

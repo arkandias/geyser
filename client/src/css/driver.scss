@@ -1,0 +1,75 @@
+@import "@/css/quasar.variables.scss";
+
+.custom-popover {
+  border: none;
+  border-radius: 0;
+
+  .driver-popover-progress-text {
+    color: $primary;
+  }
+
+  .driver-popover-close-btn {
+    border: none;
+    color: $primary;
+  }
+
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    border: 1px solid $primary;
+    border-radius: 0;
+    color: $primary;
+    text-shadow: none;
+  }
+}
+
+.body--dark .custom-popover {
+  background-color: $dark;
+  color: white;
+
+  .driver-popover-progress-text {
+    color: $secondary;
+  }
+
+  .driver-popover-close-btn {
+    border: none;
+    color: $secondary;
+  }
+
+  .driver-popover-prev-btn,
+  .driver-popover-next-btn {
+    border: 1px solid $secondary;
+    border-radius: 0;
+    color: $secondary;
+    text-shadow: none;
+  }
+}
+
+.large-popover {
+  max-width: 480px;
+  width: 480px;
+}
+
+//.custom-popover .driver-popover-progress-text {
+//  color: var(--driver-primary);
+//}
+//
+//.custom-popover .driver-popover-close-btn {
+//  border: none;
+//  color: var(--driver-primary);
+//}
+//
+//.custom-popover .driver-popover-prev-btn {
+//  background-color: var(--driver-background-color);
+//  border: 1px solid var(--driver-primary);
+//  border-radius: 0;
+//  color: var(--driver-primary);
+//  text-shadow: none;
+//}
+//
+//.custom-popover .driver-popover-next-btn {
+//  background-color: var(--driver-background-color);
+//  border: 1px solid var(--driver-primary);
+//  border-radius: 0;
+//  color: var(--driver-primary);
+//  text-shadow: none;
+//}

@@ -52,9 +52,12 @@ const requestsByType = computed(() =>
 </script>
 
 <template>
-  <DetailsSection :title="t('courses.details.requests.title')">
+  <DetailsSection
+    id="course-details-requests"
+    :title="t('courses.details.requests.title')"
+  >
     <DetailsSubsection v-if="perm.toSubmitRequests || perm.toEditAssignments">
-      <RequestForm :data-fragment="data" />
+      <RequestForm id="course-details-request-form" :data-fragment="data" />
     </DetailsSubsection>
     <DetailsSubsection
       v-for="opt in requestsByType"

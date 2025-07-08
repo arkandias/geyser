@@ -64,7 +64,7 @@ const service = computed(() => getServiceDetails.data.value?.service ?? null);
 </script>
 
 <template>
-  <QPage class="column items-center">
+  <QPage id="service-page" class="column items-center">
     <QCard v-if="fetching" flat square>
       <QCardSection class="text-h4 q-pa-xl">
         {{ t("service.fetching") }}

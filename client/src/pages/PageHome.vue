@@ -26,7 +26,7 @@ const message = computed(() =>
 </script>
 
 <template>
-  <QPage class="column items-center">
+  <QPage id="home-page" class="column items-center">
     <QCard flat square class="text-center">
       <QCardSection class="text-h4">
         {{ alert || title }}

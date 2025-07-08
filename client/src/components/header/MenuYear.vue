@@ -33,11 +33,15 @@ const update = async () => {
 </script>
 
 <template>
-  <MenuBase :label="t('header.courses.year')" icon="sym_s_calendar_month">
-    <QList>
+  <MenuBase
+    id="year-button"
+    :label="t('header.year.label')"
+    icon="sym_s_calendar_month"
+  >
+    <QList id="year-menu">
       <QItem class="flex-center">
         <QItemLabel header>
-          {{ t("header.courses.year") }}
+          {{ t("header.year.label") }}
         </QItemLabel>
       </QItem>
       <QSeparator />

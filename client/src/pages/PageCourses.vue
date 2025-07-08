@@ -150,13 +150,14 @@ watch(
 </script>
 
 <template>
-  <QPage>
+  <QPage id="courses-page">
     <QSplitter
       id="first-splitter"
       v-model="vSplitterRatio"
       :limits="[0, 100]"
       :disable="!isLeftPanelOpen"
       :separator-class="bgColor"
+      before-class="table-services"
     >
       <template #before>
         <TableServices
@@ -171,6 +172,8 @@ watch(
           horizontal
           :limits="[0, 100]"
           :separator-class="bgColor"
+          before-class="table-courses"
+          after-class="course-details"
         >
           <template #before>
             <TableCourses

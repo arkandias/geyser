@@ -4,6 +4,7 @@ import { useRouter } from "vue-router";
 import { useDarkMode } from "@/composables/useDarkMode.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
+import { useTutorial } from "@/composables/useTutorial.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
@@ -26,6 +27,7 @@ const { isDarkModeActive, toggleDarkMode } = useDarkMode();
 const { organization } = useOrganizationStore();
 const { hasService } = useProfileStore();
 const perm = usePermissions();
+const { startTour } = useTutorial();
 </script>
 
 <template>
@@ -51,6 +53,7 @@ const perm = usePermissions();
       </div>
       <QSpace />
       <NavBtn
+        id="home-page-button"
         name="home"
         icon="sym_s_home"
         :disable
@@ -58,6 +61,7 @@ const perm = usePermissions();
       />
       <QSeparator vertical inset />
       <NavBtn
+        id="service-page-button"
         name="service"
         icon="sym_s_id_card"
         :disable="disable || !hasService"
@@ -65,6 +69,7 @@ const perm = usePermissions();
       />
       <QSeparator vertical inset />
       <NavBtn
+        id="courses-page-button"
         name="courses"
         icon="sym_s_menu_book"
         :disable
@@ -83,6 +88,7 @@ const perm = usePermissions();
       />
       <QSeparator v-if="perm.toAdmin" vertical inset />
       <QBtn
+        id="refresh-button"
         icon="sym_s_refresh"
         :disable
         :loading="isRefreshing"
@@ -94,8 +100,8 @@ const perm = usePermissions();
           {{ t("header.refreshData.label") }}
         </QTooltip>
       </QBtn>
-      <MenuYear />
       <QBtn
+        id="dark-mode-button"
         :icon="isDarkModeActive ? 'sym_s_dark_mode' : 'sym_s_light_mode'"
         flat
         square
@@ -105,7 +111,19 @@ const perm = usePermissions();
           {{ t("header.darkMode.label") }}
         </QTooltip>
       </QBtn>
+      <MenuYear />
       <MenuLang />
+      <QBtn
+        id="tutorial-button"
+        icon="sym_s_help"
+        flat
+        square
+        @click="startTour()"
+      >
+        <QTooltip>
+          {{ t("header.tutorial.label") }}
+        </QTooltip>
+      </QBtn>
       <MenuInfo />
       <MenuUser />
     </QToolbar>

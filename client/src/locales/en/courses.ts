@@ -131,7 +131,7 @@ export default {
         },
         options: {
           teacher: {
-            viewDetails: "View teacher information",
+            viewService: "View teacher service",
             downloadAssignments: "Download teacher assignments",
             deselect: "Deselect teacher",
           },

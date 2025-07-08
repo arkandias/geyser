@@ -320,9 +320,9 @@ const formatWH = (hours: number) =>
 </script>
 
 <template>
-  <DetailsSection :title="t('service.details.title')">
+  <DetailsSection id="service-details" :title="t('service.details.title')">
     <ServiceTable>
-      <tbody>
+      <tbody id="service-details-base">
         <tr>
           <td>
             {{ t("service.details.baseServiceHours") }}
@@ -346,6 +346,8 @@ const formatWH = (hours: number) =>
             {{ formatWH(service.hours) }}
           </td>
         </tr>
+      </tbody>
+      <tbody id="service-details-modifications">
         <tr>
           <td>
             {{ t("service.details.modifications") }}
@@ -388,6 +390,8 @@ const formatWH = (hours: number) =>
             {{ formatWH(m.hours) }}
           </td>
         </tr>
+      </tbody>
+      <tbody id="service-details-external-courses">
         <tr>
           <td>
             {{ t("service.details.externalCourses") }}
@@ -430,6 +434,8 @@ const formatWH = (hours: number) =>
             {{ formatWH(c.hours) }}
           </td>
         </tr>
+      </tbody>
+      <tbody id="service-details-total">
         <tr class="text-bold">
           <td>
             {{ t("service.details.total") }}

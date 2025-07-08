@@ -29,8 +29,12 @@ const isCoordinator = computed(() => !!teacher.value.coordinationIds.length);
 </script>
 
 <template>
-  <ServiceTeacherTitle :data-fragment="teacher" />
-  <ServiceTeacherCoordinations v-if="isCoordinator" :data-fragment="teacher" />
+  <ServiceTeacherTitle id="service-teacher" :data-fragment="teacher" />
+  <ServiceTeacherCoordinations
+    v-if="isCoordinator"
+    id="service-coordinations"
+    :data-fragment="teacher"
+  />
 </template>
 
 <style scoped lang="scss"></style>

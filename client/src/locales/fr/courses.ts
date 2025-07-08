@@ -131,7 +131,7 @@ export default {
         },
         options: {
           teacher: {
-            viewDetails: "Afficher les informations de l'intervenant",
+            viewService: "Afficher le service de l'intervenant",
             downloadAssignments:
               "Télécharger les attributions de l'intervenant",
             deselect: "Désélectionner l'intervenant",

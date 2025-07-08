@@ -55,7 +55,10 @@ const trackCoordinations = computed(
 </script>
 
 <template>
-  <DetailsSubsection :title="t('courses.expansion.coordinators.title')">
+  <DetailsSubsection
+    id="course-details-coordination"
+    :title="t('courses.expansion.coordinators.title')"
+  >
     <CoordinationsList
       v-if="programCoordinations.length"
       :title="

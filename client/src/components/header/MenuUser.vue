@@ -29,8 +29,12 @@ const updateRole = async (value: RoleEnum) => {
 </script>
 
 <template>
-  <MenuBase :label="t('header.user.label')" icon="sym_s_account_circle">
-    <QList>
+  <MenuBase
+    id="user-button"
+    :label="t('header.user.label')"
+    icon="sym_s_account_circle"
+  >
+    <QList id="user-menu">
       <template v-if="profile.displayname">
         <QItem class="flex-center text-no-wrap">
           <QItemLabel header>
