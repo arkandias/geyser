@@ -13,3 +13,6 @@ runs:
     - name: Install dependencies
       run: pnpm install
       shell: bash
+    - name: Build shared package
+      run: pnpm --filter @geyser/shared build
+      shell: bash

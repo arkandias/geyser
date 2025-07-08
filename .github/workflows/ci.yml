@@ -50,7 +50,5 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - uses: ./.github/actions/setup
-      - name: Build shared package
-        run: pnpm --filter @geyser/shared build
       - name: Lint with ESLint
         run: pnpm run lint
