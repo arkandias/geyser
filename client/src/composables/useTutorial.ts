@@ -722,12 +722,6 @@ N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un inter
         title: "Bouton Mes demandes",
         description: `Ce bouton permet de sélectionner votre propre service (sans ouvrir le panneau de gauche).<br />
 <b>En particulier, il vous permet de consulter rapidement le détail de vos demandes et de vos attributions.</b>`,
-        onNextClick: () => {
-          void (async () => {
-            await router.push({ name: "home" });
-            driverObj.value?.moveNext();
-          })();
-        },
       },
     },
     {
@@ -921,6 +915,7 @@ N'hésitez pas à faire part de vos remarques en utilisant l'adresse de contact 
       progressText: "{{current}} / {{total}}",
       nextBtnText: "Suivant",
       prevBtnText: "Précédent",
+      doneBtnText: "Terminer",
       allowClose: false,
       stagePadding: 5,
       stageRadius: 0,
