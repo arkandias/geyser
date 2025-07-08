@@ -18,7 +18,7 @@
     "format:check": "prettier . --check",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "typecheck": "tsc --noEmit && pnpm -r --parallel run typecheck",
+    "typecheck": "pnpm run build:shared && tsc --noEmit && pnpm -r --parallel run typecheck",
     "validate": "pnpm run format:check && pnpm run test && pnpm run typecheck && pnpm run lint"
   },
   "devDependencies": {
