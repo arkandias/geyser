@@ -1,5 +1,6 @@
 import { type DriveStep, type Driver, driver } from "driver.js";
 import "driver.js/dist/driver.css";
+import { useQuasar } from "quasar";
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 
@@ -8,11 +9,15 @@ import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
 import "@/css/driver.scss";
 
 export const useTutorial = () => {
+  const $q = useQuasar();
   const router = useRouter();
   const { openLeftPanel, closeLeftPanel } = useLeftPanelStore();
 
-  const isFirstVisit = ref(true);
   const driverObj = ref<Driver | null>(null);
+
+  const dontShowTutorialOnStartup = !!$q.localStorage.getItem(
+    "dont_show_tutorial_on_startup",
+  );
 
   const steps: DriveStep[] = [
     {
@@ -22,8 +27,47 @@ export const useTutorial = () => {
 <ul>
 <li>Vous pouvez avancer ou revenir en arrière en utilisant les flèches gauche/droite du clavier.</li>
 <li>Vous pouvez sortir du tutoriel à tout moment en cliquant sur la petite croix en haut à droite de la fenêtre.</li>
-</ul>`,
+</ul>
+<br />
+<label>
+  <input type="checkbox" id="tutorial-checkbox" style="margin-right: 8px;">
+  Ne plus afficher ce tutoriel au démarrage.
+</label>`,
+        showButtons: ["next", "previous", "close"],
         popoverClass: "custom-popover large-popover",
+        onPopoverRender: (popover) => {
+          const checkbox = document.getElementById(
+            "tutorial-checkbox",
+          ) as HTMLInputElement;
+          checkbox.checked = dontShowTutorialOnStartup;
+          checkbox.addEventListener("click", () => {
+            $q.localStorage.set(
+              "dont_show_tutorial_on_startup",
+              checkbox.checked,
+            );
+          });
+
+          const servicePageButton = document.createElement("button");
+          servicePageButton.innerText = ">>> Mon service";
+          popover.footerButtons.append(servicePageButton);
+          servicePageButton.addEventListener("click", () => {
+            driverObj.value?.moveTo(6);
+          });
+
+          const coursesPageButton = document.createElement("button");
+          coursesPageButton.innerText = ">>> Enseignements";
+          popover.footerButtons.append(coursesPageButton);
+          coursesPageButton.addEventListener("click", () => {
+            driverObj.value?.moveTo(18);
+          });
+
+          const toolbarButton = document.createElement("button");
+          toolbarButton.innerText = ">>> Barre de menu";
+          popover.footerButtons.append(toolbarButton);
+          toolbarButton.addEventListener("click", () => {
+            driverObj.value?.moveTo(57);
+          });
+        },
       },
     },
     {
@@ -177,7 +221,7 @@ Il s'agit du nombre d'heures équivalent TD que la commission des services doit 
       popover: {
         title: "Vos priorités",
         description:
-          "Les enseignements sur lesquels vous avez une priorité (positive ou négative) et votre ancienneté dans chacun d'eux.",
+          "Les enseignements sur lesquels vous avez une priorité (positive en vert ou négative en rouge) et votre ancienneté dans chacun d'eux.",
       },
     },
     {
@@ -679,8 +723,10 @@ N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un inter
         description: `Ce bouton permet de sélectionner votre propre service (sans ouvrir le panneau de gauche).<br />
 <b>En particulier, il vous permet de consulter rapidement le détail de vos demandes et de vos attributions.</b>`,
         onNextClick: () => {
-          document.querySelector<HTMLElement>(".table-services-row")?.click();
-          driverObj.value?.moveNext();
+          void (async () => {
+            await router.push({ name: "home" });
+            driverObj.value?.moveNext();
+          })();
         },
       },
     },
@@ -691,8 +737,13 @@ N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un inter
           "Passons en revue les boutons de la barre de menu restants.",
         popoverClass: "custom-popover large-popover",
         onPrevClick: () => {
-          document.querySelector<HTMLElement>(".table-services-row")?.click();
-          driverObj.value?.movePrevious();
+          void (async () => {
+            await router.push({ name: "courses" });
+            openLeftPanel();
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            document.querySelector<HTMLElement>(".table-services-row")?.click();
+            driverObj.value?.movePrevious();
+          })();
         },
       },
     },
@@ -881,32 +932,18 @@ N'hésitez pas à faire part de vos remarques en utilisant l'adresse de contact 
   };
 
   const startTour = () => {
-    if (driverObj.value) {
-      driverObj.value.drive();
-    }
+    driverObj.value?.drive();
   };
-
-  // const checkFirstVisit = () => {
-  //   const hasCompletedTutorial = localStorage.getItem("tutorialCompleted");
-  //   if (!hasCompletedTutorial) {
-  //     // Small delay to ensure DOM is ready
-  //     setTimeout(() => {
-  //       startTour();
-  //     }, 500);
-  //   } else {
-  //     isFirstVisit.value = false;
-  //   }
-  // };
-  //
-  // const resetTutorial = () => {
-  //   localStorage.removeItem("tutorialCompleted");
-  //   isFirstVisit.value = true;
-  //   startTour();
-  // };
 
   onMounted(() => {
     initDriver();
-    // checkFirstVisit();
+
+    if (!dontShowTutorialOnStartup) {
+      // Small delay to ensure DOM is ready
+      setTimeout(() => {
+        startTour();
+      }, 500);
+    }
   });
 
   return {

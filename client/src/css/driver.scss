@@ -13,8 +13,7 @@
     color: $primary;
   }
 
-  .driver-popover-prev-btn,
-  .driver-popover-next-btn {
+  .driver-popover-navigation-btns button {
     border: 1px solid $primary;
     border-radius: 0;
     color: $primary;
@@ -34,8 +33,7 @@
     color: $secondary;
   }
 
-  .driver-popover-prev-btn,
-  .driver-popover-next-btn {
+  .driver-popover-navigation-btns button {
     background-color: $dark;
     border: 1px solid $secondary;
     color: $secondary;
@@ -46,28 +44,3 @@
   max-width: 720px;
   width: 720px;
 }
-
-//.custom-popover .driver-popover-progress-text {
-//  color: var(--driver-primary);
-//}
-//
-//.custom-popover .driver-popover-close-btn {
-//  border: none;
-//  color: var(--driver-primary);
-//}
-//
-//.custom-popover .driver-popover-prev-btn {
-//  background-color: var(--driver-background-color);
-//  border: 1px solid var(--driver-primary);
-//  border-radius: 0;
-//  color: var(--driver-primary);
-//  text-shadow: none;
-//}
-//
-//.custom-popover .driver-popover-next-btn {
-//  background-color: var(--driver-background-color);
-//  border: 1px solid var(--driver-primary);
-//  border-radius: 0;
-//  color: var(--driver-primary);
-//  text-shadow: none;
-//}
