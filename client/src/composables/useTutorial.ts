@@ -29,9 +29,11 @@ export const useTutorial = () => {
     {
       popover: {
         title: "Principe",
-        description: `Le but de Geyser est d'attribuer des enseignements à des intervenants.<br />
-D'un côté, un certain nombre d'enseignements doivent être attribués.<br />
-De l'autre, chaque intervenant a un service (c'est-à-dire un nombre d'heures d'enseignement) à réaliser.<br />
+        description: `Le but de Geyser est d'attribuer des enseignements à des intervenants.
+<ul>
+<li>D'un côté, un certain nombre d'enseignements doivent être attribués.</li>
+<li>De l'autre, chaque intervenant a un service (c'est-à-dire un nombre d'heures d'enseignement) à réaliser.</li>
+</ul>
 Par ailleurs, certaines règles de priorités peuvent être mises en place pour l'attribution des enseignements.`,
         popoverClass: "custom-popover large-popover",
       },
@@ -45,6 +47,15 @@ Par ailleurs, certaines règles de priorités peuvent être mises en place pour 
 <li><b>Phase de commission :</b> les membres de la commission des services se réunissent pour attribuer les enseignements aux intervenants.</li>
 <li><b>Phase de consultation :</b> les intervenants peuvent consulter leurs attributions.</li>
 </ul>`,
+        popoverClass: "custom-popover large-popover",
+      },
+    },
+    {
+      popover: {
+        title: "Début de la visite",
+        description:
+          "Nous allons à présent visiter chacune des pages de l'application.",
+        popoverClass: "custom-popover large-popover",
       },
     },
     {
@@ -65,6 +76,7 @@ Par ailleurs, certaines règles de priorités peuvent être mises en place pour 
         title: "Page d'accueil",
         description:
           "Sur cette page, vous pouvez voir quelle est la phase en cours et les instructions associées.",
+        popoverClass: "custom-popover large-popover",
       },
     },
     {
@@ -92,8 +104,7 @@ Par ailleurs, certaines règles de priorités peuvent être mises en place pour 
         title: "Page de service",
         description: `Cette page regroupe différentes informations sur vous et votre service pour l'année active.<br />
 Elle contient surtout des informations synthétiques (le détail de vos demandes et attributions sera visible sur la page des cours).`,
-        side: "top",
-        align: "start",
+        popoverClass: "custom-popover large-popover",
       },
     },
     {
@@ -101,7 +112,7 @@ Elle contient surtout des informations synthétiques (le détail de vos demandes
       popover: {
         title: "Vos informations",
         description:
-          "Votre nom, votre position (si renseignée) et votre adresse mail.",
+          "Votre nom, votre fonction (si renseignée) et votre adresse mail.",
       },
     },
     {
@@ -141,7 +152,7 @@ Vous pouvez modifier cette information lors de la phase de vœux.`,
       popover: {
         title: "Vos enseignements externes",
         description:
-          "Vous devez ajouter ici vos enseignements externes (c'est-à-dire tous vos enseignements qui n'apparaissent pas dans Geyser) lors de la phase de vœux.",
+          "Vous devez ajouter ici vos enseignements externes (c'est-à-dire tous les enseignements qui compteront dans votre service mais qui ne figurent pas dans Geyser) lors de la phase de vœux.",
       },
     },
     {
@@ -149,7 +160,7 @@ Vous pouvez modifier cette information lors de la phase de vœux.`,
       popover: {
         title: "Le nombre d'heures total à attribuer",
         description: `La différence entre votre service de base d'une part, et vos modifications de services et vos enseignements externes d'autre part.<br />
-Il s'agit du nombre d'heures équivalent TD que la commission des services doit vous attribuer <i>avec des enseignements présents dans Geyser</i>.<br />
+Il s'agit du nombre d'heures équivalent TD que la commission des services doit vous attribuer avec des enseignements présents dans Geyser.<br />
 <b>Il est très important pour faciliter le travail de la commission que ce total soit correct.</b>`,
       },
     },
@@ -158,7 +169,7 @@ Il s'agit du nombre d'heures équivalent TD que la commission des services doit 
       popover: {
         title: "Vos demandes",
         description:
-          "Un résumé synthétiques de vos demandes et de vos attributions (ces dernières ne sont visibles que lors de la phase de consultation).",
+          "Le nombre d'heures équivalent TD demandées en vœux principaux et en vœux secondaire et, lors de la phase de consultation, le nombre d'heures équivalent TD attribuées.",
       },
     },
     {
@@ -202,6 +213,7 @@ Il s'agit du nombre d'heures équivalent TD que la commission des services doit 
       popover: {
         title: "Page des enseignements",
         description: "Cette page est composée de plusieurs panneaux.",
+        popoverClass: "custom-popover large-popover",
       },
     },
     {
@@ -535,6 +547,7 @@ Vous pouvez parcourir les pages ou modifier le nombre de lignes affichées par p
 Vous devez indiquer le nombre (pas nécessairement entier) d'heures ou de groupes (au choix) demandé, sélectionner le type de la demande (principale ou secondaire) et valider la demande en cliquant sur le premier bouton (celui avec une coche).<br />
 Si vous aviez déjà fait une demande du même type, la nouvelle demande remplace la précédente.<br />
 Vous pouvez supprimer une demande soit en faisant une nouvelle demande du même type de 0 heures / 0 groupes, soit en sélectionnant le type de la demande à supprimer et en cliquant sur le second bouton (celui avec une croix).`,
+        popoverClass: "custom-popover large-popover",
       },
     },
     {
@@ -606,11 +619,24 @@ Contrairement à la table des enseignements, les heures sont toujours affichées
       element: ".table-services-row",
       popover: {
         title: "Sélection d'un intervenant",
-        description: `Vous pouvez sélectionner un intervenant en cliquant sur la ligne correspondante.<br />
-La table des enseignements contient alors exclusivement les enseignements pour lesquels l'intervenant sélectionné a fait une demande ou a reçu une attribution.<br />
-Les filtres de la table des enseignements sont désactivés.`,
+        description:
+          "Vous pouvez sélectionner un intervenant en cliquant sur la ligne correspondante.",
         onPrevClick: () => {
           document.querySelector<HTMLElement>(".table-services-row")?.click();
+          driverObj.value?.movePrevious();
+        },
+      },
+    },
+    {
+      element: ".table-courses",
+      popover: {
+        title: "Table des enseignements lorsqu'un intervenant est sélectionné",
+        description: `Lorsqu'un intervenant est sélectionné, la table des enseignements contient exclusivement les enseignements pour lesquels l'intervenant a fait une demande ou reçu une attribution.<br />
+Les enseignements qui lui ont été attribués apparaissent en vert clair.<br />
+<br />
+N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un intervenant est sélectionné.`,
+        onPrevClick: () => {
+          openLeftPanel();
           driverObj.value?.movePrevious();
         },
       },
@@ -620,7 +646,7 @@ Les filtres de la table des enseignements sont désactivés.`,
       popover: {
         title: "Titre et nouveaux boutons",
         description:
-          "Lorsqu'un intervenant est sélectionné, le titre de la table des enseignements est remplacé par le nom de l'intervenant et trois nouveaux boutons sont apparaissent à côté du titre.",
+          "Le titre de la table des enseignements est remplacé par le nom de l'intervenant et trois nouveaux boutons sont apparaissent à côté.",
       },
     },
     {
@@ -628,7 +654,7 @@ Les filtres de la table des enseignements sont désactivés.`,
       popover: {
         title: "Afficher le service",
         description:
-          "Ce bouton permet d'afficher la page du service de l'intervenant sélectionné dans une fenêtre superposée.",
+          "Ce bouton permet d'afficher la page du service de l'intervenant dans une fenêtre superposée.",
       },
     },
     {
@@ -636,7 +662,7 @@ Les filtres de la table des enseignements sont désactivés.`,
       popover: {
         title: "Télécharger les attributions",
         description:
-          "Ce bouton permet de télécharger les attributions de l'intervenant sélectionné (lors de la phase de consultation).",
+          "Ce bouton permet de télécharger les attributions de l'intervenant (lors de la phase de consultation).",
       },
     },
     {
@@ -647,11 +673,11 @@ Les filtres de la table des enseignements sont désactivés.`,
       },
     },
     {
-      element: "#my-service-button",
+      element: "#my-requests-button",
       popover: {
-        title: "Bouton Mon service",
+        title: "Bouton Mes demandes",
         description: `Ce bouton permet de sélectionner votre propre service (sans ouvrir le panneau de gauche).<br />
-<b>En particulier, ce bouton vous permet de consulter rapidement le détail de vos demandes et de vos attributions.</b>`,
+<b>En particulier, il vous permet de consulter rapidement le détail de vos demandes et de vos attributions.</b>`,
         onNextClick: () => {
           document.querySelector<HTMLElement>(".table-services-row")?.click();
           driverObj.value?.moveNext();
@@ -662,7 +688,8 @@ Les filtres de la table des enseignements sont désactivés.`,
       popover: {
         title: "Autres boutons de la barre de menu",
         description:
-          "Passons en revue les différents boutons de la barre de menu.",
+          "Passons en revue les boutons de la barre de menu restants.",
+        popoverClass: "custom-popover large-popover",
         onPrevClick: () => {
           document.querySelector<HTMLElement>(".table-services-row")?.click();
           driverObj.value?.movePrevious();
@@ -831,6 +858,7 @@ Il permet de voir son nom, de changer de rôle (intervenant / commissaire / orga
         title: "Fin du tutoriel",
         description: `Merci d'avoir suivi ce tutoriel !<br />
 N'hésitez pas à faire part de vos remarques en utilisant l'adresse de contact dans le menu Informations.`,
+        popoverClass: "custom-popover large-popover",
       },
     },
   ];

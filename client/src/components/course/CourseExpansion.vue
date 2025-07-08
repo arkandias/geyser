@@ -7,6 +7,7 @@ import { CourseExpansionFragmentDoc } from "@/gql/graphql.ts";
 
 const isExpanded = defineModel<boolean>();
 const { dataFragment } = defineProps<{
+  disable?: boolean;
   dataFragment: FragmentType<typeof CourseExpansionFragmentDoc> | null;
 }>();
 defineSlots<{ default(): unknown }>();
@@ -56,9 +57,10 @@ const caption = computed(() =>
   <QExpansionItem
     id="course-details-expansion-item"
     v-model="isExpanded"
-    expand-separator
+    :disable
     :label
     :caption
+    expand-separator
     dense
     dense-toggle
     header-class="course-details-expansion-header"

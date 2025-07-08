@@ -9,33 +9,39 @@ export default {
     },
     message: {
       requests: `
-<p>
-  On the <i class="q-icon text-primary material-symbols-sharp">badge</i>
-  My Service page, enter your base service (in teaching equivalent hours), then add
-  any service modifications (delegation, release, leave, etc.).
-  <b>
-    The total shown should correspond to the number of teaching equivalent hours that the commission
-    needs to assign to you from the courses available on Geyser.
-  </b>
-</p>
-<p>
-  You can then make primary and secondary requests on the
-  <i class="q-icon text-primary material-symbols-sharp">menu_book</i>
-  Courses page. Please request the equivalent of your total service in
-  both primary and secondary requests.
-</p>`,
+<ol>
+  <li>
+    On the <i class="q-icon text-primary material-symbols-sharp">badge</i>
+    My Service page, enter your base service, then add any service modifications
+    (release, delegation, leave, etc.) and your external teaching assignments
+    (i.e., all teaching that will count toward your service but is not listed in
+    Geyser).
+    <br />
+    <b>
+      The total shown must correspond to the number of hours that the commission
+      needs to assign to you with courses available in Geyser.
+    </b>
+  </li>
+  <br />
+  <li>
+    On the <i class="q-icon text-primary material-symbols-sharp">menu_book</i>
+    Courses page, make your primary and secondary requests.
+    <br />
+    <b>Please request a number of hours at least equivalent to your total
+    service in primary requests and make sufficient secondary requests in case
+    your primary requests cannot all be satisfied.</b>
+  </li>
+</ol>`,
       assignments: `
 <p>
-  The commission's work is in progress. You will be informed when it
-  is complete so you can view the assignments.
-  In the meantime, you can still view requests but it is no longer
-  possible to modify them.
+  The commission's work is in progress. You will be informed when it is complete
+  so you can view the assignments. In the meantime, you can still view requests
+  but it is no longer possible to modify them.
 </p>`,
       results: `
 <p>
-  You can now view the course assignments for this
-  year. You also still have access to requests and assignments from
-  previous years.
+  You can now view the course assignments for this year. You also still have
+  access to requests and assignments from previous years.
 </p>`,
       shutdown: "",
     },

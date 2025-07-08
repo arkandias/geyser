@@ -9,21 +9,29 @@ export default {
     },
     message: {
       requests: `
-<p>
-  Sur la page <i class="q-icon text-primary material-symbols-sharp">badge</i>
-  Mon service, entrez votre service de base, puis ajoutez vos modifications de
-  service éventuelles (délégation, décharge, congé, etc.).
-  <b>
-    Le total indiqué doit correspondre au nombre d'heures que la commission doit
-    vous attribuer avec des enseignements disponibles sur Geyser.
-  </b>
-</p>
-<p>
-  Vous pouvez ensuite faire des demandes principales et secondaires sur la page
-  <i class="q-icon text-primary material-symbols-sharp">menu_book</i>
-  Enseignements. Merci de demander l’équivalent de votre service total en
-  demandes principales et en demandes secondaires.
-</p>`,
+<ol>
+  <li>
+    Sur la page <i class="q-icon text-primary material-symbols-sharp">badge</i>
+    Mon service, entrez votre service de base, puis ajoutez vos modifications de
+    service éventuelles (décharge, délégation, congé, etc.) et vos enseignements
+    externes (c'est-à-dire tous les enseignements qui compteront dans votre
+    service mais qui ne figurent pas dans Geyser).
+    <br />
+    <b>
+      Le total indiqué doit correspondre au nombre d'heures que la commission
+      doit vous attribuer avec des enseignements présents dans Geyser.
+    </b>
+  </li>
+  <br />
+  <li>
+    Sur la page <i class="q-icon text-primary material-symbols-sharp">menu_book</i>
+    Enseignements, faites vos demandes principales et secondaires.
+    <br />
+    <b>Merci de demander un nombre d'heures au moins équivalent à votre service
+    total en vœux principaux et de faire un nombre suffisant de vœux secondaires
+    au cas où vos vœux principaux ne pourraient être tous satisfaits.
+  </li>
+</ol>`,
       assignments: `
 <p>
   Les travaux de la commission sont en cours. Vous serez informé lorsqu'ils

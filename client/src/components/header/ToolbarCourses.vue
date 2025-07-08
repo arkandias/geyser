@@ -30,7 +30,7 @@ const { hasService, currentServiceId } = useProfileStore();
       </QTooltip>
     </QBtn>
     <QBtn
-      id="my-service-button"
+      id="my-requests-button"
       icon="sym_s_assignment"
       :color="buttonColor(hasService && selectedService === currentServiceId)"
       :disable="!hasService"
@@ -39,7 +39,7 @@ const { hasService, currentServiceId } = useProfileStore();
       @click="toggleService(currentServiceId)"
     >
       <QTooltip>
-        {{ t("header.courses.myService") }}
+        {{ t("header.courses.myRequests") }}
       </QTooltip>
     </QBtn>
   </div>

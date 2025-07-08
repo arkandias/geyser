@@ -31,22 +31,20 @@
   }
 
   .driver-popover-close-btn {
-    border: none;
     color: $secondary;
   }
 
   .driver-popover-prev-btn,
   .driver-popover-next-btn {
+    background-color: $dark;
     border: 1px solid $secondary;
-    border-radius: 0;
     color: $secondary;
-    text-shadow: none;
   }
 }
 
 .large-popover {
-  max-width: 480px;
-  width: 480px;
+  max-width: 720px;
+  width: 720px;
 }
 
 //.custom-popover .driver-popover-progress-text {

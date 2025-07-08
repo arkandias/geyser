@@ -163,21 +163,8 @@ export default {
         defaultText: "Pas de description (contactez un responsable)",
         defaultTextWithEdition: `[Cliquez sur l'icône <i class="q-icon text-primary material-symbols-sharp">edit</i> pour ajouter une description.]`,
       },
-      defaultText: `
-<p>
-  Lorsqu'un course est sélectionné, les informations suivantes sont affichées
-  ici :
-</p>
-<ul>
-  <li>les responsables de la mention, du parcours et de l'enseignement ;</li>
-  <li>une description de l'enseignement.</li>
-</ul>
-<p>
-  La description peut être éditée par les responsables sus-mentionnés en
-  cliquant sur le bouton
-  <i class="q-icon text-primary material-symbols-sharp">edit</i>
-  (visible par eux seuls) qui apparaît à côté de «&nbsp;Description&nbsp;».
-</p>`,
+      defaultText:
+        "Lorsqu'un cours est sélectionné, des informations supplémentaires sont affichées ici.",
     },
     details: {
       requests: {
@@ -189,50 +176,6 @@ export default {
       archives: {
         title: "Archives",
       },
-      defaultText: `
-<p>
-  Cliquez sur la ligne d'un enseignement pour afficher ici des informations
-  détaillées. Si un enseignement et un intervenant sont sélectionnés en même
-  temps, ce sont les informations de l'enseignement qui sont affichées. Vous
-  pouvez désélectionner un enseignement ou un intervenant en cliquant à nouveau
-  sur la ligne correspondante.
-</p>
-<p>Boutons dans la barre de menu (accessibles uniquement depuis cette page) :</p>
-<ul>
-  <li>
-    <i class="q-icon text-primary material-symbols-sharp">vertical_split</i>
-    Table des services : permet d'afficher/masquer la liste des services de
-    l'année en cours (fonctionnalité réservée aux membres de la commission et
-    aux organisateurs).
-  </li>
-  <li>
-    <i class="q-icon text-primary material-symbols-sharp">assignment</i>
-    Mes demandes : permet de sélectionner/désélectionner votre propre service
-    afin de voir vos demandes (sans passer par la table des services).
-  </li>
-</ul>
-<p>
-  Lorsqu'un intervenant est sélectionné dans la table des services, les
-  enseignements qui apparaissent dans la table ci-dessus sont seulement ceux
-  qui ont été demandés par l'intervenant ou attribués à l'intervenant et les
-  filtres de recherche sont désactivés. Le nom de l'intervenant apparaît alors
-  en haut de la table (à la place de «&nbsp;Enseignements&nbsp;»).
-  Trois raccourcis sont présents à droite du nom de l'intervenant :
-</p>
-<ul>
-  <li>
-    <i class="q-icon text-primary material-symbols-sharp">badge</i>
-    permet d'afficher des informations détaillées sur l'intervenant ;
-  </li>
-  <li>
-    <i class="q-icon text-primary material-symbols-sharp">download</i>
-    permet de télécharger les attributions de l'intervenant ;
-  </li>
-  <li>
-    <i class="q-icon text-primary material-symbols-sharp">close</i>
-    permet de désélectionner l'intervenant.
-  </li>
-</ul>`,
     },
   },
 } as const;

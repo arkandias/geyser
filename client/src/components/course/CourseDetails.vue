@@ -70,13 +70,6 @@ watch(
       <QSeparator />
       <CourseArchives :data-fragment="details" />
     </template>
-    <!-- eslint-disable vue/no-v-html vue/no-v-text-v-html-on-component -->
-    <QCardSection
-      v-else
-      class="text-body2 text-justify"
-      v-html="t('courses.details.defaultText')"
-    />
-    <!-- eslint-enable vue/no-v-html vue/no-v-text-v-html-on-component -->
   </QCard>
 </template>
 

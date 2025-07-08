@@ -15,7 +15,7 @@ export default {
     courses: {
       label: "Courses",
       servicesTable: "Services table",
-      myService: "My requests",
+      myRequests: "My requests",
     },
     admin: {
       label: "Parameters",
