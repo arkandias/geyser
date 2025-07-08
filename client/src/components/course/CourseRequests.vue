@@ -57,8 +57,8 @@ const requestsByType = computed(() =>
     :title="t('courses.details.requests.title')"
   >
     <DetailsSubsection
-      id="course-details-request-form"
       v-if="perm.toSubmitRequests || perm.toEditAssignments"
+      id="course-details-request-form"
     >
       <RequestForm :data-fragment="data" />
     </DetailsSubsection>

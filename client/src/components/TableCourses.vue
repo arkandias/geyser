@@ -584,8 +584,8 @@ const downloadTeacherAssignments = async () => {
       <div class="q-table__title">
         {{ title }}
         <QBtn
-          id="table-courses-button-service"
           v-if="teacher"
+          id="table-courses-button-service"
           icon="sym_s_id_card"
           color="primary"
           size="sm"
@@ -599,8 +599,8 @@ const downloadTeacherAssignments = async () => {
           </QTooltip>
         </QBtn>
         <QBtn
-          id="table-courses-button-download"
           v-if="teacher"
+          id="table-courses-button-download"
           icon="sym_s_download"
           color="primary"
           size="sm"
@@ -614,8 +614,8 @@ const downloadTeacherAssignments = async () => {
           </QTooltip>
         </QBtn>
         <QBtn
-          id="table-courses-button-deselect"
           v-if="teacher"
+          id="table-courses-button-deselect"
           icon="sym_s_close"
           color="primary"
           size="sm"
