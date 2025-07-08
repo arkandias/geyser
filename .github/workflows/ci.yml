@@ -26,6 +26,24 @@ jobs:
       - name: Format check with Prettier
         run: pnpm run format:check
 
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Run tests with Vitest
+        run: pnpm run test
+
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - uses: ./.github/actions/setup
+      - name: Type check with TypeScript
+        run: pnpm run typecheck
+
   lint:
     runs-on: ubuntu-latest
     steps:
@@ -36,12 +54,3 @@ jobs:
         run: pnpm --filter @geyser/shared build
       - name: Lint with ESLint
         run: pnpm run lint
-
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-      - uses: ./.github/actions/setup
-      - name: Run tests with Vitest
-        run: pnpm run test
