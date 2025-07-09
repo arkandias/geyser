@@ -700,6 +700,14 @@ const exportDataHandle = () => {
       </QCardSection>
       <QCardActions align="right">
         <QBtn
+          v-if="selection && !multipleSelection"
+          :label="t('admin.data.button.delete')"
+          color="primary"
+          flat
+          square
+          @click="deleteDataHandle()"
+        />
+        <QBtn
           :form="`admin-data-${name}-form`"
           type="submit"
           :label="
