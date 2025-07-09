@@ -51,10 +51,24 @@ handle_init() {
     _compose build --pull --no-cache
 
     info "Initializing Keycloak..."
+
+    info "Creating Master realm with bootstrap admin user..."
+    local password=""
+    while [[ -z "${password}" ]]; do
+        echo -n "Enter a password for Keycloak temporary admin account: "
+        read -rs password
+    done
+    _compose run --rm \
+        keycloak bootstrap-admin user \
+        --no-prompt \
+        --password "${password}" \
+        --optimized
+
+    info "Creating Geyser realm..."
     if [[ "${GEYSER_MODE}" == "production" ]]; then
         CLIENT_ROOT_URL="https://api.${GEYSER_DOMAIN}"
         CLIENT_WEB_ORIGINS="https://*.${GEYSER_DOMAIN}"
-    elif [[ "${GEYSER_MODE}" == "development" ]]; then
+    else
         # shellcheck disable=SC2034
         CLIENT_ROOT_URL="http://api.${GEYSER_DOMAIN}"
         # shellcheck disable=SC2034
@@ -65,12 +79,13 @@ handle_init() {
     _compose run --rm \
         -e CLIENT_ROOT_URL \
         -e CLIENT_WEB_ORIGINS \
-        -e CLIENT_SECRET keycloak \
-        import --file /opt/keycloak/data/import/geyser-realm.json
+        -e CLIENT_SECRET \
+        keycloak import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."
     _compose run --rm \
-        -v "${GEYSER_HOME}"/db/init:/docker-entrypoint-initdb.d db docker-ensure-initdb.sh
+        -v "${GEYSER_HOME}"/db/init:/docker-entrypoint-initdb.d \
+        db docker-ensure-initdb.sh
 
     info "Initializing Hasura..."
     _compose up -d hasura

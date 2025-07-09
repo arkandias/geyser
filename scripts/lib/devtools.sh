@@ -11,7 +11,6 @@ _compose() {
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
 
     local -a ENV_VARS=(
-        "KC_BOOTSTRAP_ADMIN_PASSWORD"
         "KC_DB_PASSWORD"
         "DB_PASSWORD"
         "HASURA_GRAPHQL_ADMIN_SECRET"
@@ -44,11 +43,7 @@ _kcadm() {
     if [[ "$1" == "--login" ]]; then
         _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
             --server http://localhost:8080 --realm master \
-            --user admin --password "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
-        shift
-        if [[ "$#" -ne 0 ]]; then
-            _kcadm "$@"
-        fi
+            --user "$2" --password "$3"
     else
         _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
             2> >(sed '/./!{1d;}' >&2) # remove blank line on stderr

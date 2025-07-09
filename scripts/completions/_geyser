@@ -2,7 +2,6 @@
 
 # shellcheck disable=SC2120
 # shellcheck disable=SC2153
-#compdef geyser
 
 _geyser() {
     # Handle completion for wrappers
@@ -180,11 +179,12 @@ _geyser_kcadm() {
         *) return 1 ;;
         esac
     done
-    # Remove option --login
-    if [[ "${words[i]}" == "--login" ]]; then
-        ((i++))
-    fi
     words_after_kcadm=("${words[@]:$((i))}")
+    
+    # No completion after --login option
+    if [[ "${words[i]}" == "--login" ]]; then
+        return
+    fi
 
     words=("kcadm.sh" "${words_after_kcadm[@]}")
     ((CURRENT = CURRENT + 1 - i))

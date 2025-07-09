@@ -37,8 +37,6 @@ services:
       start_period: 120s
       start_interval: 1s
     environment:
-      KC_BOOTSTRAP_ADMIN_USERNAME: "admin"
-      KC_BOOTSTRAP_ADMIN_PASSWORD: "${KC_BOOTSTRAP_ADMIN_PASSWORD}"
       KC_DB_URL: "jdbc:postgresql://kc-db:5432/keycloak"
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${KC_DB_PASSWORD}"
