@@ -4,22 +4,29 @@ ENV PATH="$PNPM_HOME:$PATH"
 RUN corepack enable
 RUN corepack prepare pnpm@10 --activate
 
-FROM base AS build
+FROM base AS build-shared
 COPY . /app
 WORKDIR /app
+
+RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+RUN pnpm --filter=shared run build
+
+FROM build-shared AS build-backend
+
+RUN pnpm --filter=server run build
+RUN pnpm --filter=server deploy --prod /prod/server
+
+FROM build-shared AS build-frontend
 
 ARG VITE_BUILD_VERSION
 ARG VITE_API_URL
 ARG VITE_GRAPHQL_URL
 ARG VITE_ORGANIZATION_KEY
 
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-RUN pnpm run -r build
-RUN pnpm --filter=server deploy --prod /prod/server
-RUN mkdir -p /prod/client && cp -r client/dist/* /prod/client/
+RUN pnpm --filter=client run build
 
 FROM base AS backend
-COPY --from=build /prod/server /app
+COPY --from=build-backend /prod/server /app
 WORKDIR /app
 
 # Add curl for health check
@@ -33,9 +40,8 @@ ENV API_PORT=3000
 EXPOSE 3000
 CMD ["pnpm", "start:prod"]
 
-
 FROM nginx:1.27 AS frontend
-COPY --from=build /prod/client /usr/share/nginx/html
+COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
 
 ARG GEYSER_TENANCY
 RUN test -n "${GEYSER_TENANCY}" || (echo "ERROR: GEYSER_TENANCY build argument is required" && exit 1)
