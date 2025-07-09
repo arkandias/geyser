@@ -180,7 +180,7 @@ _geyser_kcadm() {
         esac
     done
     words_after_kcadm=("${words[@]:$((i))}")
-    
+
     # No completion after --login option
     if [[ "${words[i]}" == "--login" ]]; then
         return
