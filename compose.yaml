@@ -41,8 +41,8 @@ services:
       KC_DB_USERNAME: "postgres"
       KC_DB_PASSWORD: "${KC_DB_PASSWORD}"
       KC_DB_SCHEMA: "public"
-      KC_HOSTNAME: "https://auth.${GEYSER_DOMAIN}"
-      KC_HOSTNAME_ADMIN: "https://auth-admin.${GEYSER_DOMAIN}"
+      KC_HOSTNAME: "${KC_HOSTNAME}"
+      KC_HOSTNAME_ADMIN: "${KC_HOSTNAME_ADMIN}"
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_DEBUG: "false"
       KC_HTTP_ENABLED: "true"
@@ -124,8 +124,8 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
-      API_URL: "https://api.${GEYSER_DOMAIN}"
-      API_ORIGINS: "https://*.${GEYSER_DOMAIN}"
+      API_URL: "${API_URL}"
+      API_ORIGINS: "${API_ORIGINS}"
       API_ADMIN_SECRET: "${API_ADMIN_SECRET}"
       API_DATABASE_URL: "postgresql://postgres:${DB_PASSWORD}@db:5432/geyser"
       API_GRAPHQL_URL: "http://hasura:8080/v1/graphql"
@@ -145,8 +145,9 @@ services:
       target: frontend
       args:
         VITE_BUILD_VERSION: "${GEYSER_VERSION}"
-        VITE_API_URL: "https://api.${GEYSER_DOMAIN}"
-        VITE_GRAPHQL_URL: "https://api.${GEYSER_DOMAIN}/graphql"
+        VITE_API_URL: "${API_URL}"
+        VITE_GRAPHQL_URL: "${API_URL}/graphql"
+        VITE_ORGANIZATION_KEY: "${GEYSER_ORGANIZATION_KEY}"
     restart: always
     depends_on:
       keycloak:

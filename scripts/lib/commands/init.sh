@@ -65,21 +65,10 @@ handle_init() {
         --optimized
 
     info "Creating Geyser realm..."
-    if [[ "${GEYSER_MODE}" == "production" ]]; then
-        CLIENT_ROOT_URL="https://api.${GEYSER_DOMAIN}"
-        CLIENT_WEB_ORIGINS="https://*.${GEYSER_DOMAIN}"
-    else
-        # shellcheck disable=SC2034
-        CLIENT_ROOT_URL="http://api.${GEYSER_DOMAIN}"
-        # shellcheck disable=SC2034
-        CLIENT_WEB_ORIGINS="http://*.${GEYSER_DOMAIN}"
-    fi
-    # shellcheck disable=SC2034
-    CLIENT_SECRET=OIDC_CLIENT_SECRET
     _compose run --rm \
-        -e CLIENT_ROOT_URL \
-        -e CLIENT_WEB_ORIGINS \
-        -e CLIENT_SECRET \
+        -e CLIENT_ROOT_URL="${API_URL}" \
+        -e CLIENT_WEB_ORIGINS="${API_ORIGINS}" \
+        -e CLIENT_SECRET="${OIDC_CLIENT_SECRET}" \
         keycloak import --file /opt/keycloak/data/import/geyser-realm.json
 
     info "Initializing database..."

@@ -1,0 +1,49 @@
+# Use Docker's DNS resolver
+resolver 127.0.0.11 valid=1y ipv6=off;
+
+# Restrict to modern TLS protocols
+ssl_protocols TLSv1.2 TLSv1.3;
+
+# Enable serving pre-compressed files
+gzip_static on;
+
+# For WebSocket proxying
+map $http_upgrade $connection_upgrade {
+    default upgrade;
+    ''      close;
+}
+
+# Redirect HTTP traffic to HTTPS
+server {
+    listen 80 default_server;
+    server_name _;
+    return 301 https://$host$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name ${NGINX_DOMAIN};
+
+    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+
+    location /auth/ {
+        rewrite ^/auth/(.*)$ /$1 break;
+        proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
+        include /etc/nginx/includes/proxy-common.conf;
+        proxy_set_header X-Forwarded-Prefix /auth;
+    }
+
+    location /api/ {
+        rewrite ^/api/(.*)$ /$1 break;
+        proxy_pass ${NGINX_PROXY_API_URL};
+        include /etc/nginx/includes/proxy-common.conf;
+        proxy_set_header X-Forwarded-Prefix /api;
+        proxy_set_header X-Admin-Secret "";
+    }
+
+    location / {
+        root /usr/share/nginx/html;
+        try_files $uri $uri/ /index.html =404;
+    }
+}
