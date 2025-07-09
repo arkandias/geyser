@@ -39,6 +39,7 @@ load_environment() {
     _validate_geyser_env_vars
     _validate_required_env_vars
     _validate_optional_env_vars
+    _initialize_computed_env_vars
     _env_summary
 }
 
