@@ -25,6 +25,44 @@ export default {
         update: "Parameters updated",
       },
     },
+    roles: {
+      label: "Roles",
+      column: {
+        teacherEmail: {
+          label: "Teacher",
+          tooltip: "",
+        },
+        role: {
+          label: "Type",
+          tooltip: "",
+        },
+        comment: {
+          label: "Comment",
+          tooltip: "",
+        },
+      } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
+      form: {
+        title: "Creating a role | Editing a role | Editing {count} roles",
+        error: {
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
+          invalidRole:
+            "Role type must be @:role.organizer or @:role.commissioner",
+        },
+      },
+      data: {
+        success: {
+          insert: "No role created | Role created | {count} roles created",
+          update: "No role updated | Role updated | {count} roles updated",
+          delete: "No role deleted | Role deleted | {count} roles deleted",
+          import: "0 roles imported | 1 role imported | {count} roles imported",
+          export: "0 roles exported | 1 role exported | {count} roles exported",
+        },
+        confirm: {
+          delete:
+            "Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?",
+        },
+      },
+    },
     phase: {
       label: "Current phase",
       error: {
@@ -77,44 +115,6 @@ If courses or services are associated with this year, you will not be able to de
           "0 courses copied | 1 course copied | {count} courses copied",
         computePriorities:
           "0 priorities computed | 1 priority computed | {count} priorities computed",
-      },
-    },
-    roles: {
-      label: "Roles",
-      column: {
-        teacherEmail: {
-          label: "Teacher",
-          tooltip: "",
-        },
-        role: {
-          label: "Type",
-          tooltip: "",
-        },
-        comment: {
-          label: "Comment",
-          tooltip: "",
-        },
-      } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
-      form: {
-        title: "Creating a role | Editing a role | Editing {count} roles",
-        error: {
-          teacherNotFound: 'No teacher with email "{teacherEmail}"',
-          invalidRole:
-            "Role type must be @:role.organizer or @:role.commissioner",
-        },
-      },
-      data: {
-        success: {
-          insert: "No role created | Role created | {count} roles created",
-          update: "No role updated | Role updated | {count} roles updated",
-          delete: "No role deleted | Role deleted | {count} roles deleted",
-          import: "0 roles imported | 1 role imported | {count} roles imported",
-          export: "0 roles exported | 1 role exported | {count} roles exported",
-        },
-        confirm: {
-          delete:
-            "Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?",
-        },
       },
     },
     customTexts: {

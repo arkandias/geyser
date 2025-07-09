@@ -60,6 +60,19 @@ const teachers = computed(() => data.value?.teachers ?? []);
 
     <QSeparator />
 
+    <AdminSection
+      icon="sym_s_shield_person"
+      :label="t('admin.general.roles.label')"
+    >
+      <AdminGeneralRoles
+        :fetching
+        :role-fragments="roles"
+        :teacher-fragments="teachers"
+      />
+    </AdminSection>
+
+    <QSeparator />
+
     <AdminSection icon="sym_s_schedule" :label="t('admin.general.phase.label')">
       <AdminGeneralCurrentPhase />
     </AdminSection>
@@ -71,19 +84,6 @@ const teachers = computed(() => data.value?.teachers ?? []);
       :label="t('admin.general.years.label')"
     >
       <AdminGeneralYears />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
-      icon="sym_s_shield_person"
-      :label="t('admin.general.roles.label')"
-    >
-      <AdminGeneralRoles
-        :fetching
-        :role-fragments="roles"
-        :teacher-fragments="teachers"
-      />
     </AdminSection>
 
     <QSeparator />
