@@ -7,8 +7,9 @@ _compose() {
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
-    [[ "${GEYSER_MODE}" == "development" ]] &&
+    if [[ "${GEYSER_MODE}" == "development" ]]; then
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
+    fi
 
     local -a ENV_VARS=(
         "API_URL"

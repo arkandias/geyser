@@ -15,7 +15,7 @@ ARG VITE_ORGANIZATION_KEY
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 RUN pnpm run -r build
-RUN pnpm deploy --filter=@geyser/server --prod /prod/server
+RUN pnpm --filter=server deploy --prod /prod/server
 RUN mkdir -p /prod/client && cp -r client/dist/* /prod/client/
 
 FROM base AS backend

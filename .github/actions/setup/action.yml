@@ -14,5 +14,5 @@ runs:
       run: pnpm install
       shell: bash
     - name: Build shared package
-      run: pnpm --filter @geyser/shared build
+      run: pnpm --filter=shared build
       shell: bash
