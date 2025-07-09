@@ -38,8 +38,8 @@ FROM nginx:1.27 AS frontend
 COPY --from=build /prod/client /usr/share/nginx/html
 
 ARG GEYSER_TENANCY
-RUN test -n "$GEYSER_TENANCY" || (echo "ERROR: GEYSER_TENANCY build argument is required" && exit 1) && \
-    bash -c '[[ "$GEYSER_TENANCY" =~ ^(multi|single)$ ]] || (echo "ERROR: GEYSER_TENANCY must be \'multi\' or \'single\', got: \'$GEYSER_TENANCY\'" && exit 1)'
+RUN test -n "${GEYSER_TENANCY}" || (echo "ERROR: GEYSER_TENANCY build argument is required" && exit 1) && \
+    bash -c '[[ "${GEYSER_TENANCY}" =~ ^(multi|single)$ ]] || (echo "ERROR: GEYSER_TENANCY must be \'multi\' or \'single\', got: \'${GEYSER_TENANCY}\'" && exit 1)'
 
 COPY nginx/templates/${GEYSER_TENANCY}-tenant.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/

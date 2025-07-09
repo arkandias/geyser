@@ -144,6 +144,7 @@ services:
       context: .
       target: frontend
       args:
+        GEYSER_TENANCY: "${GEYSER_TENANCY}"
         VITE_BUILD_VERSION: "${GEYSER_VERSION}"
         VITE_API_URL: "${API_URL}"
         VITE_GRAPHQL_URL: "${API_URL}/graphql"
