@@ -104,7 +104,7 @@ _validate_geyser_env_vars() {
         warn "GEYSER_LOG_LEVEL is not set. Defaulting to 'info'"
         GEYSER_LOG_LEVEL="info"
     elif [[ ! "${GEYSER_LOG_LEVEL}" =~ ^(silent|debug|info|warn|error)$ ]]; then
-        warn "Invalid value: GEYSER_LOG_LEVEL='${GEYSER_LOG_LEVEL}'. Defaulting to 'info'"
+        warn "GEYSER_LOG_LEVEL must be one of 'silent', 'debug', 'info', 'warn', or 'error'; got '${GEYSER_LOG_LEVEL}'. Defaulting to 'info'"
         GEYSER_LOG_LEVEL="info"
     fi
     declare -grx GEYSER_LOG_LEVEL
@@ -114,7 +114,7 @@ _validate_geyser_env_vars() {
         warn "GEYSER_MODE is not set. Defaulting to 'production'"
         GEYSER_MODE="production"
     elif [[ ! "${GEYSER_MODE}" =~ ^(development|production)$ ]]; then
-        warn "Invalid value GEYSER_MODE='${GEYSER_MODE}'. Defaulting to 'production'"
+        warn "GEYSER_MODE must be 'development' or 'production'; got '${GEYSER_MODE}'. Defaulting to 'production'"
         GEYSER_MODE="production"
     fi
     declare -grx GEYSER_MODE
@@ -131,7 +131,7 @@ _validate_geyser_env_vars() {
         warn "GEYSER_TENANCY is not set. Defaulting to 'multi'"
         GEYSER_TENANCY="multi"
     elif [[ ! "${GEYSER_TENANCY}" =~ ^(single|multi)$ ]]; then
-        warn "Invalid value GEYSER_TENANCY='${GEYSER_TENANCY}'. Defaulting to 'multi'"
+        warn "GEYSER_TENANCY must be 'single' or 'multi'; got '${GEYSER_TENANCY}'. Defaulting to 'multi'"
         GEYSER_TENANCY="multi"
     fi
     declare -grx GEYSER_TENANCY
@@ -152,7 +152,7 @@ _validate_geyser_env_vars() {
         debug "GEYSER_AS_SERVICE is not set. Defaulting to 'false'"
         GEYSER_AS_SERVICE="false"
     elif [[ ! "${GEYSER_AS_SERVICE}" =~ ^(true|false)$ ]]; then
-        warn "Invalid value: GEYSER_AS_SERVICE='${GEYSER_AS_SERVICE}'. Defaulting to 'false'"
+        warn "GEYSER_AS_SERVICE must be 'true' or 'false'; got '${GEYSER_AS_SERVICE}'. Defaulting to 'false'"
         GEYSER_AS_SERVICE="false"
     fi
     declare -grx GEYSER_AS_SERVICE
