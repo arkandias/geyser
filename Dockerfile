@@ -37,5 +37,5 @@ CMD ["pnpm", "start:prod"]
 FROM nginx:1.27 AS frontend
 COPY --from=build /prod/client /usr/share/nginx/html
 
-COPY ./nginx/templates/prod.conf.template /etc/nginx/templates/default.conf.template
+COPY nginx/templates/multi-tenant.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
