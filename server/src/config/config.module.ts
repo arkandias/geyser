@@ -9,6 +9,7 @@ import { envSchema } from "./env.schema";
     NestConfigModule.forRoot({
       isGlobal: false,
       ignoreEnvFile: process.env["NODE_ENV"] === "production",
+      envFilePath: ".env.development",
       validate: (config: Record<string, unknown>) => envSchema.parse(config),
     }),
   ],
