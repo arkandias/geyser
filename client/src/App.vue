@@ -166,13 +166,18 @@ const alertMessage = computed(() => {
   return "";
 });
 
-const warningMessage = computed(() =>
-  activeYear.value === null
-    ? t("header.warning.noActiveYear")
-    : !isCurrentYearActive.value
-      ? t("header.warning.archive", { year: activeYear.value })
-      : "",
-);
+const warningMessage = computed(() => {
+  if (alertMessage.value) {
+    return "";
+  }
+  if (activeYear.value === null) {
+    return t("header.warning.noActiveYear");
+  }
+  if (!isCurrentYearActive.value) {
+    return t("header.warning.archive", { year: activeYear.value });
+  }
+  return "";
+});
 </script>
 
 <template>

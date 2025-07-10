@@ -39,13 +39,14 @@ const { startTour } = useTutorial();
 <template>
   <QHeader>
     <QToolbar id="main-toolbar" :class="bgColor">
-      <QToolbarTitle shrink class="title">
+      <QToolbarTitle shrink>
         <QAvatar icon="sym_s_spa" square size="xl" />
         Geyser
         <QBadge v-if="version" outline align="middle">
           {{ version }}
         </QBadge>
       </QToolbarTitle>
+
       <div class="organization-info">
         <QSeparator vertical />
         <div class="organization-text">
@@ -57,7 +58,9 @@ const { startTour } = useTutorial();
           </div>
         </div>
       </div>
+
       <QSpace />
+
       <NavBtn
         id="home-page-button"
         name="home"
@@ -65,7 +68,9 @@ const { startTour } = useTutorial();
         :disable
         :tooltip="t('header.home.label')"
       />
+
       <QSeparator vertical inset />
+
       <NavBtn
         id="service-page-button"
         name="service"
@@ -73,7 +78,9 @@ const { startTour } = useTutorial();
         :disable="disable || !hasService"
         :tooltip="t('header.service.label')"
       />
+
       <QSeparator vertical inset />
+
       <NavBtn
         id="courses-page-button"
         name="courses"
@@ -81,6 +88,7 @@ const { startTour } = useTutorial();
         :disable
         :tooltip="t('header.courses.label')"
       />
+
       <div
         v-if="!disable && router.currentRoute.value.name === 'courses'"
         id="toolbar-courses"
@@ -114,15 +122,19 @@ const { startTour } = useTutorial();
           </QTooltip>
         </QBtn>
       </div>
+
+      <template v-if="perm.toAdmin">
+        <QSeparator vertical inset />
+        <NavBtn
+          name="admin"
+          icon="sym_s_settings"
+          :disable
+          :tooltip="t('header.admin.label')"
+        />
+      </template>
+
       <QSeparator vertical inset />
-      <NavBtn
-        v-if="perm.toAdmin"
-        name="admin"
-        icon="sym_s_settings"
-        :disable
-        :tooltip="t('header.admin.label')"
-      />
-      <QSeparator v-if="perm.toAdmin" vertical inset />
+
       <QBtn
         id="refresh-button"
         icon="sym_s_refresh"
@@ -136,6 +148,7 @@ const { startTour } = useTutorial();
           {{ t("header.refreshData.label") }}
         </QTooltip>
       </QBtn>
+
       <QBtn
         id="dark-mode-button"
         :icon="isDarkModeActive ? 'sym_s_dark_mode' : 'sym_s_light_mode'"
@@ -147,8 +160,11 @@ const { startTour } = useTutorial();
           {{ t("header.darkMode.label") }}
         </QTooltip>
       </QBtn>
+
       <MenuYear />
+
       <MenuLang />
+
       <QBtn
         id="tutorial-button"
         icon="sym_s_help"
@@ -160,13 +176,15 @@ const { startTour } = useTutorial();
           {{ t("header.tutorial.label") }}
         </QTooltip>
       </QBtn>
+
       <MenuInfo />
+
       <MenuUser />
     </QToolbar>
 
-    <QToolbar v-if="!disable && warning" id="warning-toolbar">
+    <QToolbar v-if="warning" id="warning-toolbar">
       <QSpace />
-      <QToolbarTitle shrink class="text-center text-body1">
+      <QToolbarTitle shrink class="text-body1">
         {{ warning }}
       </QToolbarTitle>
       <QSpace />
@@ -188,7 +206,7 @@ const { startTour } = useTutorial();
   color: black;
 }
 
-.title {
+.q-toolbar__title {
   flex-shrink: 0;
 }
 
