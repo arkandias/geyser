@@ -170,7 +170,7 @@ const openForm = (rows?: Row[]) => {
 
 // ===== Data Operations =====
 const validateForm = (fields?: (keyof T)[]): FlatRow => {
-  const flatRow: Record<string, Scalar> = {};
+  const flatRow: FlatRow = {};
 
   Object.entries(rowDescriptor).forEach(([key, fieldDescriptor]) => {
     if (fields && !fields.includes(key)) {
@@ -208,10 +208,10 @@ const validateForm = (fields?: (keyof T)[]): FlatRow => {
       }
     }
 
-    flatRow[key] = value;
+    (flatRow as Record<string, Scalar>)[key] = value;
   });
 
-  return flatRow as FlatRow;
+  return flatRow;
 };
 
 const insertDataHandle = async () => {

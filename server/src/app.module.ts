@@ -6,7 +6,7 @@ import { DatabaseModule } from "./database/database.module";
 import { GraphqlModule } from "./graphql/graphql.module";
 import { HealthModule } from "./health/health.module";
 import { KeysModule } from "./keys/keys.module";
-import { RolesModule } from "./roles/roles.module";
+import { RoleModule } from "./role/role.module";
 import { UserModule } from "./user/user.module";
 
 @Module({
@@ -17,7 +17,7 @@ import { UserModule } from "./user/user.module";
     GraphqlModule,
     HealthModule,
     KeysModule,
-    RolesModule,
+    RoleModule,
     UserModule,
   ],
 })

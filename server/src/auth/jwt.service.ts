@@ -16,14 +16,14 @@ import jose from "jose";
 
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
-import { RolesService } from "../roles/roles.service";
+import { RoleService } from "../role/role.service";
 
 @Injectable()
 export class JwtService {
   constructor(
     private configService: ConfigService,
     private keysService: KeysService,
-    private rolesService: RolesService,
+    private roleService: RoleService,
   ) {}
 
   private async makeToken(
@@ -69,8 +69,10 @@ export class JwtService {
   }
 
   async makeAccessToken(orgId: number, userId: number): Promise<string> {
-    const userRoles = await this.rolesService.findByUserId(userId);
-    const roles = userRoles.map((role) => roleTypeSchema.parse(role.role));
+    const userRoles = await this.roleService.findByUserId(userId);
+    const roles = userRoles.map((userRole) =>
+      roleTypeSchema.parse(userRole.role),
+    );
     if (!roles.includes("teacher")) {
       roles.push("teacher");
     }

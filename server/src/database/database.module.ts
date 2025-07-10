@@ -4,7 +4,7 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { ConfigModule } from "../config/config.module";
 import { ConfigService } from "../config/config.service";
 import { Organization } from "../organization/organization.entity";
-import { Role } from "../roles/role.entity";
+import { Role } from "../role/role.entity";
 import { User } from "../user/user.entity";
 
 @Module({

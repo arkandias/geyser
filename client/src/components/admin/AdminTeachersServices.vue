@@ -89,6 +89,7 @@ graphql(`
     email
     displayname
     position {
+      id
       baseServiceHours
     }
     baseServiceHours
@@ -187,15 +188,22 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   // positionId
   if (flatRow.positionLabel !== undefined) {
-    const position = flatRow.positionLabel
-      ? positions.value.find((p) => p.label === flatRow.positionLabel)
-      : null;
-    if (position === undefined) {
-      throw new Error(
-        t("admin.teachers.services.form.error.positionNotFound", flatRow),
+    if (flatRow.positionLabel === null) {
+      const teacher = teachers.value.find(
+        (t) => t.email === flatRow.teacherEmail,
       );
+      object.positionId = teacher?.position?.id ?? null;
+    } else {
+      const position = flatRow.positionLabel
+        ? positions.value.find((p) => p.label === flatRow.positionLabel)
+        : null;
+      if (position === undefined) {
+        throw new Error(
+          t("admin.teachers.services.form.error.positionNotFound", flatRow),
+        );
+      }
+      object.positionId = position?.id ?? null;
     }
-    object.positionId = position !== null ? position.id : null;
   }
 
   // hours

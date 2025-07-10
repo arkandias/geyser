@@ -3,7 +3,7 @@ import { Module } from "@nestjs/common";
 import { ConfigModule } from "../config/config.module";
 import { KeysModule } from "../keys/keys.module";
 import { OrganizationModule } from "../organization/organization.module";
-import { RolesModule } from "../roles/roles.module";
+import { RoleModule } from "../role/role.module";
 import { UserModule } from "../user/user.module";
 import { AuthController } from "./auth.controller";
 import { AuthService } from "./auth.service";
@@ -16,7 +16,7 @@ import { OidcService } from "./oidc.service";
     ConfigModule,
     KeysModule,
     OrganizationModule,
-    RolesModule,
+    RoleModule,
     UserModule,
   ],
   controllers: [AuthController],
