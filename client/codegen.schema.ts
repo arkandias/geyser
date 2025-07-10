@@ -1,16 +1,16 @@
+import dotenvx from "@dotenvx/dotenvx";
 import type { CodegenConfig } from "@graphql-codegen/cli";
-import dotenv from "dotenv";
 
-dotenv.config({ path: ".env.development" });
+dotenvx.config({ path: ".env.development" });
 
-const graphqlUrl = process.env["VITE_GRAPHQL_URL"];
+const graphqlUrl = process.env["GRAPHQL_URL"];
 if (!graphqlUrl) {
-  throw new Error("Missing VITE_GRAPHQL_URL environment variable");
+  throw new Error("Missing GRAPHQL_URL environment variable");
 }
 
-const apiAdminSecret = process.env["VITE_ADMIN_SECRET"];
+const apiAdminSecret = process.env["API_ADMIN_SECRET"];
 if (!apiAdminSecret) {
-  throw new Error("Missing VITE_ADMIN_SECRET environment variable");
+  throw new Error("Missing API_ADMIN_SECRET environment variable");
 }
 
 const config: CodegenConfig = {
