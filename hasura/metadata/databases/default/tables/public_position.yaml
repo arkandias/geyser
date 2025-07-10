@@ -52,7 +52,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
     comment: Can view all teaching positions [during assignments phase only]
@@ -83,7 +83,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _neq: shutdown
     comment: Can view all teaching positions [except during shutdown phase]

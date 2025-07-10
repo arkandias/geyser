@@ -67,7 +67,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
     comment: Can view all programs [during assignments phase only]
@@ -100,7 +100,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _neq: shutdown
           - visible:

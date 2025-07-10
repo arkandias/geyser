@@ -44,7 +44,7 @@ insert_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
           - yearByYear:
@@ -80,7 +80,7 @@ insert_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - yearByYear:
@@ -155,7 +155,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
     comment: Can view all requests [during assignments phase only]
@@ -194,7 +194,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _neq: shutdown
           - yearByYear:
@@ -242,7 +242,7 @@ select_permissions:
                                         _eq: true
           - _or:
               - organization:
-                  currentPhases:
+                  currentPhase:
                     value:
                       _eq: results
               - yearByYear:
@@ -261,7 +261,7 @@ update_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
           - yearByYear:
@@ -293,7 +293,7 @@ update_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - yearByYear:
@@ -314,7 +314,7 @@ delete_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
           - yearByYear:
@@ -336,7 +336,7 @@ delete_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - yearByYear:

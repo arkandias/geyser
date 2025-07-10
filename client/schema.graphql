@@ -6708,7 +6708,7 @@ type Organization {
   createdAt: timestamptz!
 
   """An array relationship"""
-  currentPhases(
+  currentPhase(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]
 
@@ -6726,7 +6726,7 @@ type Organization {
   ): [CurrentPhase!]!
 
   """An aggregate relationship"""
-  currentPhasesAggregate(
+  currentPhaseAggregate(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]
 
@@ -7352,8 +7352,8 @@ input OrganizationBoolExp {
   courses: CourseBoolExp
   coursesAggregate: CourseAggregateBoolExp
   createdAt: TimestamptzComparisonExp
-  currentPhases: CurrentPhaseBoolExp
-  currentPhasesAggregate: CurrentPhaseAggregateBoolExp
+  currentPhase: CurrentPhaseBoolExp
+  currentPhaseAggregate: CurrentPhaseAggregateBoolExp
   customTexts: CustomTextBoolExp
   customTextsAggregate: CustomTextAggregateBoolExp
   degrees: DegreeBoolExp
@@ -7420,7 +7420,7 @@ input OrganizationInsertInput {
 
   """Timestamp when the record was created"""
   createdAt: timestamptz
-  currentPhases: CurrentPhaseArrRelInsertInput
+  currentPhase: CurrentPhaseArrRelInsertInput
   customTexts: CustomTextArrRelInsertInput
   degrees: DegreeArrRelInsertInput
   email: String
@@ -7542,7 +7542,7 @@ input OrganizationOrderBy {
   courseTypesAggregate: CourseTypeAggregateOrderBy
   coursesAggregate: CourseAggregateOrderBy
   createdAt: OrderBy
-  currentPhasesAggregate: CurrentPhaseAggregateOrderBy
+  currentPhaseAggregate: CurrentPhaseAggregateOrderBy
   customTextsAggregate: CustomTextAggregateOrderBy
   degreesAggregate: DegreeAggregateOrderBy
   email: OrderBy
@@ -20222,9 +20222,7 @@ type query_root {
     oid: Int!
   ): CourseType
 
-  """
-  fetch data from the table: "current_phase"
-  """
+  """An array relationship"""
   currentPhase(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]
@@ -20242,9 +20240,7 @@ type query_root {
     where: CurrentPhaseBoolExp
   ): [CurrentPhase!]!
 
-  """
-  fetch aggregated fields from the table: "current_phase"
-  """
+  """An aggregate relationship"""
   currentPhaseAggregate(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]
@@ -21507,9 +21503,7 @@ type subscription_root {
     where: CourseTypeBoolExp
   ): [CourseType!]!
 
-  """
-  fetch data from the table: "current_phase"
-  """
+  """An array relationship"""
   currentPhase(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]
@@ -21527,9 +21521,7 @@ type subscription_root {
     where: CurrentPhaseBoolExp
   ): [CurrentPhase!]!
 
-  """
-  fetch aggregated fields from the table: "current_phase"
-  """
+  """An aggregate relationship"""
   currentPhaseAggregate(
     """distinct select on columns"""
     distinctOn: [CurrentPhaseSelectColumn!]

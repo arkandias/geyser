@@ -49,7 +49,7 @@ graphql(`
       email
       locale
       privateService
-      currentPhases {
+      currentPhase {
         value
       }
       years(orderBy: { value: DESC }) {
@@ -113,7 +113,7 @@ watch(
         privateService: data.organization.privateService,
       });
       setCurrentPhase(
-        data.organization.currentPhases[0]?.value ?? PhaseEnum.Shutdown,
+        data.organization.currentPhase[0]?.value ?? PhaseEnum.Shutdown,
       );
       setYears(data.organization.years);
       setCustomTexts(data.organization.customTexts);

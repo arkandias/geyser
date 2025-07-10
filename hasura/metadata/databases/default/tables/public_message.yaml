@@ -28,7 +28,7 @@ insert_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - service:
@@ -56,7 +56,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: assignments
     comment: Can view all messages [during assignments phase only]
@@ -83,7 +83,7 @@ select_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _neq: shutdown
           - service:
@@ -114,7 +114,7 @@ update_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - service:
@@ -140,7 +140,7 @@ delete_permissions:
           - oid:
               _eq: X-Hasura-Org-Id
           - organization:
-              currentPhases:
+              currentPhase:
                 value:
                   _eq: requests
           - service:

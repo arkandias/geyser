@@ -30,7 +30,7 @@ array_relationships:
         table:
           name: course
           schema: public
-  - name: currentPhases
+  - name: currentPhase
     using:
       foreign_key_constraint_on:
         column: oid
