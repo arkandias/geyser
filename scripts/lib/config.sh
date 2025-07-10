@@ -186,23 +186,21 @@ _validate_optional_env_vars() {
 }
 
 _initialize_computed_env_vars() {
-    local protocole
-    if [[ "${GEYSER_MODE}" == "production" ]]; then
-        protocole="https"
+    if [[ "${GEYSER_MODE}" == "development" ]]; then
+        API_URL="http://api.${GEYSER_DOMAIN}"
+        API_ORIGINS="http://*.${GEYSER_DOMAIN}"
+        KC_HOSTNAME="http://localhost:8081"
+        KC_HOSTNAME_ADMIN="http://localhost:8081"
+    elif [[ "${GEYSER_TENANCY}" == "multi" ]]; then
+        API_URL="https://api.${GEYSER_DOMAIN}"
+        API_ORIGINS="https://*.${GEYSER_DOMAIN}"
+        KC_HOSTNAME="https://auth.${GEYSER_DOMAIN}"
+        KC_HOSTNAME_ADMIN="https://auth-admin.${GEYSER_DOMAIN}"
     else
-        protocole="http"
-    fi
-
-    if [[ "${GEYSER_TENANCY}" == "multi" ]]; then
-        API_URL="${protocole}://api.${GEYSER_DOMAIN}"
-        API_ORIGINS="${protocole}://*.${GEYSER_DOMAIN}"
-        KC_HOSTNAME="${protocole}://auth.${GEYSER_DOMAIN}"
-        KC_HOSTNAME_ADMIN="${protocole}://auth-admin.${GEYSER_DOMAIN}"
-    else
-        API_URL="${protocole}://${GEYSER_DOMAIN}/api"
-        API_ORIGINS="${protocole}://${GEYSER_DOMAIN}"
-        KC_HOSTNAME="${protocole}://${GEYSER_DOMAIN}/auth"
-        KC_HOSTNAME_ADMIN="${protocole}://${GEYSER_DOMAIN}/auth"
+        API_URL="https://${GEYSER_DOMAIN}/api"
+        API_ORIGINS="https://${GEYSER_DOMAIN}"
+        KC_HOSTNAME="https://${GEYSER_DOMAIN}/auth"
+        KC_HOSTNAME_ADMIN="https://${GEYSER_DOMAIN}/auth"
     fi
 
     # shellcheck disable=SC2034
