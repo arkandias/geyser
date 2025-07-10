@@ -159,27 +159,21 @@ const { startTour } = useTutorial();
 .organization-info {
   display: flex;
   align-items: center;
-  margin: 0 12px;
-
-  .q-separator {
-    margin: 0;
-  }
+  height: 34px;
 
   .organization-text {
-    margin-left: 12px;
-    line-height: 1.2;
+    padding: 0 12px;
+    line-height: 1.25;
     white-space: nowrap;
 
     .label {
       font-size: 0.875rem;
       font-weight: 500;
-      color: rgba(255, 255, 255, 0.9);
     }
 
     .sublabel {
       font-size: 0.75rem;
-      color: rgba(255, 255, 255, 0.7);
-      margin-top: 1px;
+      opacity: 0.75;
     }
   }
 }
