@@ -5,7 +5,7 @@ CREATE TABLE public.organization
     label           text    NOT NULL,
     sublabel        text,
     email           text    NOT NULL,
-    locale          text    NOT NULL REFERENCES public.locale ON UPDATE CASCADE,
+    locale          text    NOT NULL DEFAULT 'fr' REFERENCES public.locale ON UPDATE CASCADE,
     private_service boolean NOT NULL DEFAULT FALSE,
     active          boolean NOT NULL DEFAULT TRUE
 );
