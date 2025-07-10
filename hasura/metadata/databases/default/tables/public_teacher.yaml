@@ -76,10 +76,13 @@ select_permissions:
         _and:
           - oid:
               _eq: X-Hasura-Org-Id
-          - organization:
-              currentPhase:
-                value:
-                  _eq: assignments
+          - _or:
+              - id:
+                  _eq: X-Hasura-User-Id
+              - organization:
+                  currentPhase:
+                    value:
+                      _eq: assignments
     comment: Can view all teachers [during assignments phase only]
   - role: organizer
     permission:
