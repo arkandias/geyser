@@ -3,29 +3,35 @@ import { useRouter } from "vue-router";
 
 import { useDarkMode } from "@/composables/useDarkMode.ts";
 import { usePermissions } from "@/composables/usePermissions.ts";
+import { useQueryParam } from "@/composables/useQueryParam.ts";
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTutorial } from "@/composables/useTutorial.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { version } from "@/config/environment.ts";
+import { useLeftPanelStore } from "@/stores/useLeftPanelStore.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
-import { bgColor } from "@/utils";
+import { bgColor, buttonColor } from "@/utils";
 
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
 import MenuUser from "@/components/header/MenuUser.vue";
 import MenuYear from "@/components/header/MenuYear.vue";
 import NavBtn from "@/components/header/NavBtn.vue";
-import ToolbarCourses from "@/components/header/ToolbarCourses.vue";
 
 defineProps<{ disable: boolean; warning?: string }>();
 
-const { t } = useTypedI18n();
 const router = useRouter();
+const { t } = useTypedI18n();
+const { getValue: selectedService, toggleValue: toggleService } = useQueryParam(
+  "serviceId",
+  true,
+);
+const { isLeftPanelOpen, toggleLeftPanel } = useLeftPanelStore();
 const { isRefreshing, refreshData } = useRefreshData();
 const { isDarkModeActive, toggleDarkMode } = useDarkMode();
 const { organization } = useOrganizationStore();
-const { hasService } = useProfileStore();
+const { hasService, currentServiceId } = useProfileStore();
 const perm = usePermissions();
 const { startTour } = useTutorial();
 </script>
@@ -75,9 +81,39 @@ const { startTour } = useTutorial();
         :disable
         :tooltip="t('header.courses.label')"
       />
-      <ToolbarCourses
+      <div
         v-if="!disable && router.currentRoute.value.name === 'courses'"
-      />
+        id="toolbar-courses"
+      >
+        <QIcon name="sym_s_chevron_right" />
+        <QBtn
+          id="left-panel-button"
+          icon="sym_s_vertical_split"
+          :color="buttonColor(isLeftPanelOpen)"
+          flat
+          square
+          @click="toggleLeftPanel()"
+        >
+          <QTooltip>
+            {{ t("header.courses.servicesTable") }}
+          </QTooltip>
+        </QBtn>
+        <QBtn
+          id="my-requests-button"
+          icon="sym_s_assignment"
+          :color="
+            buttonColor(hasService && selectedService === currentServiceId)
+          "
+          :disable="!hasService"
+          flat
+          square
+          @click="toggleService(currentServiceId)"
+        >
+          <QTooltip>
+            {{ t("header.courses.myRequests") }}
+          </QTooltip>
+        </QBtn>
+      </div>
       <QSeparator vertical inset />
       <NavBtn
         v-if="perm.toAdmin"
