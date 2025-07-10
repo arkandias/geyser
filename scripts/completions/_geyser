@@ -94,9 +94,6 @@ _geyser() {
                 '(-h --help)'{-h,--help}'[Show help message]' \
                 '--path[Set the path of the file or directory]:path'
             ;;
-        kcadm)
-            _arguments '--login[Start an authenticated session]'
-            ;;
         init | start | stop | restart | show | update | cleanup | purge)
             _arguments '(-h --help)'{-h,--help}'[Show help message]'
             ;;
@@ -180,11 +177,6 @@ _geyser_kcadm() {
         esac
     done
     words_after_kcadm=("${words[@]:$((i))}")
-
-    # No completion after --login option
-    if [[ "${words[i]}" == "--login" ]]; then
-        return
-    fi
 
     words=("kcadm.sh" "${words_after_kcadm[@]}")
     ((CURRENT = CURRENT + 1 - i))

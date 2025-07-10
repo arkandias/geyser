@@ -53,14 +53,21 @@ handle_init() {
     info "Initializing Keycloak..."
 
     info "Creating Master realm with bootstrap admin user..."
+    local username=""
+    echo -n "Enter a username for Keycloak temporary admin account [temp-admin]: "
+    read -r username
+    if [[ -z "${username}" ]]; then
+        username="temp-admin"
+    fi
     local password=""
     while [[ -z "${password}" ]]; do
         echo -n "Enter a password for Keycloak temporary admin account: "
         read -rs password
+        echo
     done
     _compose run --rm \
         keycloak bootstrap-admin user \
-        --no-prompt \
+        --username "${username}" \
         --password "${password}" \
         --optimized
 

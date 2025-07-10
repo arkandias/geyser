@@ -43,16 +43,10 @@ _kc() {
     _compose exec -T keycloak /opt/keycloak/bin/kc.sh "$@"
 }
 
-# Run Keycloak admin CLI with authentication
+# Run Keycloak admin CLI
 _kcadm() {
-    if [[ "$1" == "--login" ]]; then
-        _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh config credentials \
-            --server http://localhost:8080 --realm master \
-            --user "$2" --password "$3"
-    else
-        _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
-            2> >(sed '/./!{1d;}' >&2) # remove blank line on stderr
-    fi
+    _compose exec -T keycloak /opt/keycloak/bin/kcadm.sh "$@" \
+        2> >(sed '/./!{1d;}' >&2) # remove blank line on stderr
 }
 
 # Run a secure webhook with predefined configuration
