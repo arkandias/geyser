@@ -136,6 +136,7 @@ const { startTour } = useTutorial();
       <QSeparator vertical inset />
 
       <QBtn
+        v-if="!disable"
         id="refresh-button"
         icon="sym_s_refresh"
         :disable
@@ -161,11 +162,12 @@ const { startTour } = useTutorial();
         </QTooltip>
       </QBtn>
 
-      <MenuYear />
+      <MenuYear v-if="!disable" />
 
       <MenuLang />
 
       <QBtn
+        v-if="!disable"
         id="tutorial-button"
         icon="sym_s_help"
         flat
