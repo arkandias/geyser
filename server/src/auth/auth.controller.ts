@@ -81,8 +81,8 @@ export class AuthController {
         throw new BadRequestException("Missing state");
       }
 
-      const { orgId, redirectUrl: url } = this.authService.getState(state);
-      redirectUrl = url;
+      const { orgId, ...rest } = this.authService.getState(state);
+      redirectUrl = rest.redirectUrl;
 
       const identityToken = await this.oidcService.requestToken({
         client_id: this.configService.oidc.clientId,
