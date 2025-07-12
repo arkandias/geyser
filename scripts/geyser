@@ -61,7 +61,6 @@ Options:
   --mode MODE           Set deployment mode [development|production]
   --dev                 Set mode to development
   --prod                Set mode to production
-  --tag TAG             Set tag for frontend/backend images
   --domain DOMAIN       Set domain name for deployment (e.g., geyser.example.com)
   --origins ORIGINS     Set allowed origins for CORS policy and post login/logout redirection (comma-separated, wildcard allowed)
   --as-service          Run as a systemd service (affects logging)

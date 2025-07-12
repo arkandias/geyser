@@ -56,7 +56,6 @@ _geyser() {
         '--mode[Set deployment mode]:mode:(development production)' \
         '--dev[Set mode to development]' \
         '--prod[Set mode to production]' \
-        '--tag[Set tag for frontend/backend images]:tag' \
         '--domain[Set domain name for deployment]:domain' \
         '--origins[Set allowed origins (comma-separated, wildcard allowed)]:origins' \
         '--as-service[Run as a systemd service]' \
