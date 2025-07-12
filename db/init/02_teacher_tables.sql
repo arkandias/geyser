@@ -38,6 +38,7 @@ CREATE TABLE public.teacher
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, position_id) REFERENCES public.position ON UPDATE CASCADE,
     UNIQUE (oid, email),
+    CONSTRAINT teacher_id_positive CHECK (id > 0), -- 0 is reserved for admin
     CONSTRAINT teacher_base_service_hours_non_negative CHECK (base_service_hours >= 0)
 );
 CREATE INDEX idx_teacher_oid ON public.teacher (oid);
