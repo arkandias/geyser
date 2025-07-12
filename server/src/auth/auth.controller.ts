@@ -22,7 +22,8 @@ import { OidcService } from "./oidc.service";
 
 @Controller("auth")
 export class AuthController {
-  readonly callbackUrl: URL;
+  readonly postLoginUrl: URL;
+  readonly postLogoutUrl: URL;
 
   constructor(
     private authService: AuthService,
@@ -32,8 +33,13 @@ export class AuthController {
     private oidcService: OidcService,
     private userService: UserService,
   ) {
-    this.callbackUrl = new URL(
-      this.configService.api.url.href.replace(/\/$/, "") + "/auth/callback",
+    this.postLoginUrl = new URL(
+      this.configService.api.url.href.replace(/\/$/, "") +
+        "/auth/login/callback",
+    );
+    this.postLogoutUrl = new URL(
+      this.configService.api.url.href.replace(/\/$/, "") +
+        "/auth/logout/callback",
     );
   }
 
@@ -49,7 +55,7 @@ export class AuthController {
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
     authUrl.searchParams.set("client_id", this.configService.oidc.clientId);
-    authUrl.searchParams.set("redirect_uri", this.callbackUrl.href);
+    authUrl.searchParams.set("redirect_uri", this.postLoginUrl.href);
     authUrl.searchParams.set("response_type", "code");
     authUrl.searchParams.set("scope", "email");
     authUrl.searchParams.set("prompt", "login");
@@ -58,8 +64,8 @@ export class AuthController {
     res.redirect(authUrl.href);
   }
 
-  @Get("callback")
-  async callback(
+  @Get("login/callback")
+  async loginCallback(
     @Query("error") error: string | undefined,
     @Query("error_description") errorDescription: string | undefined,
     @Query("code") code: string | undefined,
@@ -89,7 +95,7 @@ export class AuthController {
         client_secret: this.configService.oidc.clientSecret,
         grant_type: "authorization_code",
         code,
-        redirect_uri: this.callbackUrl.href,
+        redirect_uri: this.postLoginUrl.href,
       });
 
       const { email, roles } =
@@ -133,15 +139,64 @@ export class AuthController {
   }
 
   @Get("logout")
-  logout(@Res() res: Response): void {
+  logout(
+    @Query("org_id", ParseIntPipe) orgId: number,
+    @Query("redirect_url") redirectUrl: string | undefined,
+    @Res() res: Response,
+  ): void {
+    // Use state parameter to prevent CSRF attacks
+    const stateId = this.authService.setState({ orgId, redirectUrl });
+
     // Building logout URL
     const logoutUrl = new URL(this.oidcService.metadata.logoutUrl);
     logoutUrl.searchParams.set("client_id", this.configService.oidc.clientId);
+    logoutUrl.searchParams.set(
+      "post_logout_redirect_uri",
+      this.postLogoutUrl.href,
+    );
+    logoutUrl.searchParams.set("state", stateId);
 
     // Removing cookies
     this.cookiesService.unsetAuthCookies(res);
 
     res.redirect(logoutUrl.href);
+  }
+
+  @Get("logout/callback")
+  logoutCallback(
+    @Query("error") error: string | undefined,
+    @Query("error_description") errorDescription: string | undefined,
+    @Query("state") state: string | undefined,
+    @Res() res: Response,
+  ): void {
+    if (error) {
+      throw new InternalServerErrorException(
+        `Identity provider returned error ${error}: ${errorDescription}`,
+      );
+    }
+
+    let redirectUrl: URL | null = null;
+    try {
+      if (!state) {
+        throw new BadRequestException("Missing state");
+      }
+
+      redirectUrl = this.authService.getState(state).redirectUrl;
+
+      if (redirectUrl) {
+        redirectUrl.searchParams.set("post_logout", "true");
+        res.redirect(redirectUrl.href);
+      } else {
+        res.status(200).json({ message: "Logged out" });
+      }
+    } catch (error) {
+      if (redirectUrl) {
+        redirectUrl.searchParams.set("auth_error", errorMessage(error));
+        res.redirect(redirectUrl.href);
+      } else {
+        throw error;
+      }
+    }
   }
 
   @Get("token/verify")

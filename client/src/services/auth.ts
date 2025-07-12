@@ -27,19 +27,38 @@ const api = axios.create({
 });
 
 export class AuthManager {
+  private _postLogin = false;
+  private _postLogout = false;
+  private _authError: string | null = null;
   private _organizationKey: string | null = null;
   private _organizationId: number | null = null;
   private _payload: AccessTokenPayload | null = null;
-  private _authError: string | null = null;
   private _role: RoleType | null = null;
 
   async init(): Promise<void> {
-    // Get organization key
+    // Get organization id
     await this.getOrganizationId();
     if (!this._organizationId) {
       return;
     }
 
+    // Check URL params for authentication state
+    const url = new URL(window.location.href);
+    this._postLogin = url.searchParams.get("post_login") === "true";
+    this._postLogout = url.searchParams.get("post_logout") === "true";
+    this._authError = url.searchParams.get("auth_error");
+
+    // Exit early if error or logout
+    if (this._authError) {
+      console.error(`[AuthManager] Authentication error: ${this._authError}`);
+      return;
+    }
+    if (this._postLogout) {
+      console.debug(`[AuthManager] Logged out`);
+      return;
+    }
+
+    // Bypass authentication (dev only)
     if (bypassAuth) {
       this._payload = {
         orgId: this._organizationId,
@@ -58,38 +77,28 @@ export class AuthManager {
       return;
     }
 
-    // Check for authentication errors from API in query params
-    const url = new URL(window.location.href);
-    this._authError = url.searchParams.get("auth_error");
-    if (this._authError) {
-      console.error(`[AuthManager] Authentication error: ${this._authError}`);
-      return;
-    }
-
-    // Verify access token
+    // Try to verify existing token
     const verified = await this.verify();
-
-    // Verification succeeded
     if (verified) {
       console.debug("[AuthManager] Logged in");
       return;
     }
 
-    // Verification failed post login - do not continue
-    if (url.searchParams.get("post_login") === "true") {
+    // Don't retry if we just came from login
+    if (this._postLogin) {
       console.error("[AuthManager] Verification failed post login");
       return;
     }
 
-    // Verification failed - attempt to refresh tokens
+    // Try to refresh token
     const refreshed = await this.refresh();
     if (refreshed) {
-      // Refresh succeeded - verify again to store payload
+      // Re-verify to store payload
       await this.verify();
       return;
     }
 
-    // Refresh failed - redirect to login
+    // Redirect to login
     await this.login();
   }
 
@@ -145,6 +154,8 @@ export class AuthManager {
     }
 
     const redirectUrl = new URL(window.location.href);
+    redirectUrl.searchParams.delete("post_login");
+    redirectUrl.searchParams.delete("post_logout");
     redirectUrl.searchParams.delete("auth_error");
 
     console.debug("[AuthManager] Logging in...");
@@ -167,9 +178,18 @@ export class AuthManager {
       return;
     }
 
+    const redirectUrl = new URL(window.location.href);
+    redirectUrl.searchParams.delete("post_login");
+    redirectUrl.searchParams.delete("post_logout");
+    redirectUrl.searchParams.delete("auth_error");
+
     console.debug("[AuthManager] Logging out...");
     window.location.href = api.getUri({
       url: "/auth/logout",
+      params: {
+        redirect_url: redirectUrl,
+        org_id: this._organizationId,
+      },
     });
 
     // Prevent further execution since we're redirecting to logout page
@@ -240,6 +260,14 @@ export class AuthManager {
       !this._payload ||
       this._payload.exp - Math.floor(Date.now() / 1000) < API_TOKEN_MIN_VALIDITY
     );
+  }
+
+  get postLogin(): boolean {
+    return this._postLogin;
+  }
+
+  get postLogout(): boolean {
+    return this._postLogout;
   }
 
   get authError(): string | null {

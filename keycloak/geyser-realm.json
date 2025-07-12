@@ -36,7 +36,7 @@
       "alwaysDisplayInConsole": false,
       "clientAuthenticatorType": "client-secret",
       "secret": "${CLIENT_SECRET}",
-      "redirectUris": ["/auth/callback"],
+      "redirectUris": ["/auth/login/callback"],
       "webOrigins": ["${CLIENT_WEB_ORIGINS}"],
       "notBefore": 0,
       "bearerOnly": false,
@@ -54,7 +54,7 @@
         "backchannel.logout.session.required": "true",
         "standard.token.exchange.enabled": "false",
         "frontchannel.logout.session.required": "true",
-        "post.logout.redirect.uris": "-",
+        "post.logout.redirect.uris": "/auth/logout/callback",
         "display.on.consent.screen": "false",
         "oauth2.device.authorization.grant.enabled": "false",
         "backchannel.logout.revoke.offline.tokens": "false"

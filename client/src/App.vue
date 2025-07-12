@@ -141,7 +141,9 @@ watch(
         data?.profile?.displayname ??
         (authManager.isAdmin ? t("adminName") : ""),
       services: data?.profile?.services ?? [],
+      login: () => authManager.login(),
       logout: () => authManager.logout(),
+      isLoggedOut: authManager.postLogout,
     });
   },
   { immediate: true },
@@ -151,6 +153,9 @@ watch(
 const alertMessage = computed(() => {
   if (!authManager.organizationFound) {
     return t("home.alert.organizationNotFound");
+  }
+  if (authManager.postLogout) {
+    return t("home.alert.postLogout");
   }
   if (!authManager.hasAccess) {
     return t("home.alert.noAccess");

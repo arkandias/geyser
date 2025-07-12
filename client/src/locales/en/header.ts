@@ -134,6 +134,7 @@ The source code for Geyser is available at
       Record<string, unknown>,
     user: {
       label: "User",
+      login: "Login",
       logout: "Logout",
     },
   },

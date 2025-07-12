@@ -42,33 +42,45 @@ const updateRole = async (value: RoleEnum) => {
     :icon="profile.isAdmin ? 'sym_s_shield_person' : 'sym_s_account_circle'"
   >
     <QList id="user-menu">
-      <template v-if="profile.displayname">
-        <QItem class="flex-center text-no-wrap">
-          <QItemLabel header>
-            {{ profile.displayname }}
-          </QItemLabel>
+      <template v-if="profile.isLoggedOut">
+        <QItem v-close-popup clickable @click="profile.login()">
+          <QItemSection side>
+            <QIcon name="sym_s_login" color="primary" />
+          </QItemSection>
+          <QItemSection>
+            {{ t("header.user.login") }}
+          </QItemSection>
         </QItem>
-        <QSeparator />
       </template>
-      <template v-if="roleOptions.length">
-        <QItem class="q-pl-sm">
-          <QOptionGroup
-            :model-value="profile.activeRole"
-            :options="roleOptions"
-            type="radio"
-            @update:model-value="updateRole"
-          />
+      <template v-else>
+        <template v-if="profile.displayname">
+          <QItem class="flex-center text-no-wrap">
+            <QItemLabel header>
+              {{ profile.displayname }}
+            </QItemLabel>
+          </QItem>
+          <QSeparator />
+        </template>
+        <template v-if="roleOptions.length">
+          <QItem class="q-pl-sm">
+            <QOptionGroup
+              :model-value="profile.activeRole"
+              :options="roleOptions"
+              type="radio"
+              @update:model-value="updateRole"
+            />
+          </QItem>
+          <QSeparator />
+        </template>
+        <QItem v-close-popup clickable @click="profile.logout()">
+          <QItemSection side>
+            <QIcon name="sym_s_logout" color="primary" />
+          </QItemSection>
+          <QItemSection>
+            {{ t("header.user.logout") }}
+          </QItemSection>
         </QItem>
-        <QSeparator />
       </template>
-      <QItem v-close-popup clickable @click="profile.logout()">
-        <QItemSection side>
-          <QIcon name="sym_s_logout" color="primary" />
-        </QItemSection>
-        <QItemSection>
-          {{ t("header.user.logout") }}
-        </QItemSection>
-      </QItem>
     </QList>
   </MenuBase>
 </template>
