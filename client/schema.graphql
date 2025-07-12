@@ -5133,6 +5133,9 @@ input DegreeVarianceOrderBy {
 
 """Assignments of courses which are not in the database"""
 type ExternalCourse {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
+
   """Number of weighted hours"""
   hours: Float!
 
@@ -5153,6 +5156,11 @@ type ExternalCourse {
 
   """Service reference"""
   serviceId: Int!
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
 }
 
 """
@@ -5250,6 +5258,7 @@ input ExternalCourseBoolExp {
   _and: [ExternalCourseBoolExp!]
   _not: ExternalCourseBoolExp
   _or: [ExternalCourseBoolExp!]
+  createdAt: TimestamptzComparisonExp
   hours: FloatComparisonExp
   id: IntComparisonExp
   label: StringComparisonExp
@@ -5257,6 +5266,7 @@ input ExternalCourseBoolExp {
   organization: OrganizationBoolExp
   service: ServiceBoolExp
   serviceId: IntComparisonExp
+  updatedAt: TimestamptzComparisonExp
 }
 
 """
@@ -5292,6 +5302,9 @@ input ExternalCourseIncInput {
 input type for inserting data into table "external_course"
 """
 input ExternalCourseInsertInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Number of weighted hours"""
   hours: Float
 
@@ -5305,10 +5318,18 @@ input ExternalCourseInsertInput {
 
   """Service reference"""
   serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate max on columns"""
 type ExternalCourseMaxFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Number of weighted hours"""
   hours: Float
 
@@ -5323,12 +5344,20 @@ type ExternalCourseMaxFields {
 
   """Service reference"""
   serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """
 order by max() on columns of table "external_course"
 """
 input ExternalCourseMaxOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
   """Number of weighted hours"""
   hours: OrderBy
 
@@ -5343,10 +5372,18 @@ input ExternalCourseMaxOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
 }
 
 """aggregate min on columns"""
 type ExternalCourseMinFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Number of weighted hours"""
   hours: Float
 
@@ -5361,12 +5398,20 @@ type ExternalCourseMinFields {
 
   """Service reference"""
   serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """
 order by min() on columns of table "external_course"
 """
 input ExternalCourseMinOrderBy {
+  """Timestamp when the record was created"""
+  createdAt: OrderBy
+
   """Number of weighted hours"""
   hours: OrderBy
 
@@ -5381,6 +5426,11 @@ input ExternalCourseMinOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: OrderBy
 }
 
 """
@@ -5405,6 +5455,7 @@ input ExternalCourseOnConflict {
 
 """Ordering options when selecting data from "external_course"."""
 input ExternalCourseOrderBy {
+  createdAt: OrderBy
   hours: OrderBy
   id: OrderBy
   label: OrderBy
@@ -5412,6 +5463,7 @@ input ExternalCourseOrderBy {
   organization: OrganizationOrderBy
   service: ServiceOrderBy
   serviceId: OrderBy
+  updatedAt: OrderBy
 }
 
 """primary key columns input for table: external_course"""
@@ -5428,6 +5480,9 @@ select columns of table "external_course"
 """
 enum ExternalCourseSelectColumn {
   """column name"""
+  createdAt
+
+  """column name"""
   hours
 
   """column name"""
@@ -5441,12 +5496,18 @@ enum ExternalCourseSelectColumn {
 
   """column name"""
   serviceId
+
+  """column name"""
+  updatedAt
 }
 
 """
 input type for updating data in table "external_course"
 """
 input ExternalCourseSetInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Number of weighted hours"""
   hours: Float
 
@@ -5458,6 +5519,11 @@ input ExternalCourseSetInput {
 
   """Service reference"""
   serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate stddev on columns"""
@@ -5569,6 +5635,9 @@ input ExternalCourseStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input ExternalCourseStreamCursorValueInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Number of weighted hours"""
   hours: Float
 
@@ -5583,6 +5652,11 @@ input ExternalCourseStreamCursorValueInput {
 
   """Service reference"""
   serviceId: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate sum on columns"""
@@ -5622,6 +5696,9 @@ update columns of table "external_course"
 """
 enum ExternalCourseUpdateColumn {
   """column name"""
+  createdAt
+
+  """column name"""
   hours
 
   """column name"""
@@ -5632,6 +5709,9 @@ enum ExternalCourseUpdateColumn {
 
   """column name"""
   serviceId
+
+  """column name"""
+  updatedAt
 }
 
 input ExternalCourseUpdates {
@@ -15999,6 +16079,9 @@ type Term {
     where: CourseBoolExp
   ): CourseAggregate!
 
+  """Timestamp when the record was created"""
+  createdAt: timestamptz!
+
   """Optional description"""
   description: String
 
@@ -16013,6 +16096,11 @@ type Term {
 
   """An object relationship"""
   organization: Organization!
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz!
 }
 
 """
@@ -16058,11 +16146,13 @@ input TermBoolExp {
   _or: [TermBoolExp!]
   courses: CourseBoolExp
   coursesAggregate: CourseAggregateBoolExp
+  createdAt: TimestamptzComparisonExp
   description: StringComparisonExp
   id: IntComparisonExp
   label: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
+  updatedAt: TimestamptzComparisonExp
 }
 
 """
@@ -16099,6 +16189,9 @@ input type for inserting data into table "term"
 input TermInsertInput {
   courses: CourseArrRelInsertInput
 
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Optional description"""
   description: String
 
@@ -16108,10 +16201,18 @@ input TermInsertInput {
   """Organization reference"""
   oid: Int
   organization: OrganizationObjRelInsertInput
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate max on columns"""
 type TermMaxFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Optional description"""
   description: String
 
@@ -16123,10 +16224,18 @@ type TermMaxFields {
 
   """Organization reference"""
   oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate min on columns"""
 type TermMinFields {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Optional description"""
   description: String
 
@@ -16138,6 +16247,11 @@ type TermMinFields {
 
   """Organization reference"""
   oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """
@@ -16173,11 +16287,13 @@ input TermOnConflict {
 """Ordering options when selecting data from "term"."""
 input TermOrderBy {
   coursesAggregate: CourseAggregateOrderBy
+  createdAt: OrderBy
   description: OrderBy
   id: OrderBy
   label: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
+  updatedAt: OrderBy
 }
 
 """primary key columns input for table: term"""
@@ -16194,6 +16310,9 @@ select columns of table "term"
 """
 enum TermSelectColumn {
   """column name"""
+  createdAt
+
+  """column name"""
   description
 
   """column name"""
@@ -16204,12 +16323,18 @@ enum TermSelectColumn {
 
   """column name"""
   oid
+
+  """column name"""
+  updatedAt
 }
 
 """
 input type for updating data in table "term"
 """
 input TermSetInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Optional description"""
   description: String
 
@@ -16218,6 +16343,11 @@ input TermSetInput {
 
   """Organization reference"""
   oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate stddev on columns"""
@@ -16260,6 +16390,9 @@ input TermStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input TermStreamCursorValueInput {
+  """Timestamp when the record was created"""
+  createdAt: timestamptz
+
   """Optional description"""
   description: String
 
@@ -16271,6 +16404,11 @@ input TermStreamCursorValueInput {
 
   """Organization reference"""
   oid: Int
+
+  """
+  Timestamp when the record was last updated, automatically managed by trigger
+  """
+  updatedAt: timestamptz
 }
 
 """aggregate sum on columns"""
@@ -16287,6 +16425,9 @@ update columns of table "term"
 """
 enum TermUpdateColumn {
   """column name"""
+  createdAt
+
+  """column name"""
   description
 
   """column name"""
@@ -16294,6 +16435,9 @@ enum TermUpdateColumn {
 
   """column name"""
   oid
+
+  """column name"""
+  updatedAt
 }
 
 input TermUpdates {
