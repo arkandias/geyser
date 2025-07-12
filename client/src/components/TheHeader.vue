@@ -92,6 +92,7 @@ const { startTour } = useTutorial();
       <div
         v-if="!disable && router.currentRoute.value.name === 'courses'"
         id="toolbar-courses"
+        class="row no-wrap items-center"
       >
         <QIcon name="sym_s_chevron_right" />
         <QBtn
