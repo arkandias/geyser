@@ -14,5 +14,5 @@ export const isPhase = (phase: unknown): phase is PhaseEnum =>
 export const isRequestType = (rt: unknown): rt is RequestTypeEnum =>
   Object.values(RequestTypeEnum).includes(rt as RequestTypeEnum);
 
-export const isRole = (rt: unknown): rt is RoleEnum =>
-  Object.values(RoleEnum).includes(rt as RoleEnum);
+export const isRole = (role: unknown): role is RoleEnum =>
+  Object.values(RoleEnum).includes(role as RoleEnum);
