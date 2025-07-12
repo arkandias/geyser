@@ -1,7 +1,3 @@
-import type { AdminColNameOptions } from "@/locales/types.ts";
-
-import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
-
 export default {
   general: {
     title: "Paramètres généraux",
@@ -23,48 +19,6 @@ export default {
       },
       success: {
         update: "Paramètres mis à jour",
-      },
-    },
-    roles: {
-      label: "Rôles",
-      column: {
-        teacherEmail: {
-          label: "Intervenant",
-          tooltip: "",
-        },
-        role: {
-          label: "Type",
-          tooltip: "",
-        },
-        comment: {
-          label: "Commentaire",
-          tooltip: "",
-        },
-      } satisfies Record<AdminGeneralRolesColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Création d'un rôle | Édition d'un rôle | Édition de {count} rôles",
-        error: {
-          teacherNotFound:
-            "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
-          invalidRole:
-            "Le type de rôle doit être @:role.organizer ou @:role.commissioner",
-        },
-      },
-      data: {
-        success: {
-          insert: "Aucun rôle créé | Rôle créé | {count} rôles créés",
-          update:
-            "Aucun rôle mis à jour | Rôle mis à jour | {count} rôles mis à jour",
-          delete:
-            "Aucun rôle supprimé | Rôle supprimé | {count} rôles supprimés",
-          import: "0 rôle importé | 1 rôle importé | {count} rôles importés",
-          export: "0 rôle exporté | 1 rôle exporté | {count} rôles exportés",
-        },
-        confirm: {
-          delete:
-            "Êtes-vous sûr de vouloir supprimer le rôle sélectionné ? | Êtes-vous sûr de vouloir supprimer les {count} rôles sélectionnés ?",
-        },
       },
     },
     phase: {

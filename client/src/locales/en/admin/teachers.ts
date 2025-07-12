@@ -4,6 +4,7 @@ import type {
   AdminTeachersExternalCoursesColName,
   AdminTeachersMessagesColName,
   AdminTeachersPositionsColName,
+  AdminTeachersRolesColName,
   AdminTeachersServiceModificationTypesColName,
   AdminTeachersServiceModificationsColName,
   AdminTeachersServicesColName,
@@ -131,6 +132,44 @@ If there are services, responsibilities, or roles for these teachers, you will n
 If this position is assigned to teachers, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected positions?
 If these positions are assigned to teachers, you will not be able to delete them.`,
+        },
+      },
+    },
+    roles: {
+      label: "Roles",
+      column: {
+        teacherEmail: {
+          label: "Teacher",
+          tooltip: "",
+        },
+        role: {
+          label: "Type",
+          tooltip: "",
+        },
+        comment: {
+          label: "Comment",
+          tooltip: "",
+        },
+      } satisfies Record<AdminTeachersRolesColName, AdminColNameOptions>,
+      form: {
+        title: "Creating a role | Editing a role | Editing {count} roles",
+        error: {
+          teacherNotFound: 'No teacher with email "{teacherEmail}"',
+          invalidRole:
+            "Role type must be @:role.organizer or @:role.commissioner",
+        },
+      },
+      data: {
+        success: {
+          insert: "No role created | Role created | {count} roles created",
+          update: "No role updated | Role updated | {count} roles updated",
+          delete: "No role deleted | Role deleted | {count} roles deleted",
+          import: "0 roles imported | 1 role imported | {count} roles imported",
+          export: "0 roles exported | 1 role exported | {count} roles exported",
+        },
+        confirm: {
+          delete:
+            "Are you sure you want to delete the selected role? | Are you sure you want to delete the {count} selected roles?",
         },
       },
     },

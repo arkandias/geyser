@@ -1,11 +1,3 @@
-export const adminGeneralRolesColNames = [
-  "teacherEmail",
-  "role",
-  "comment",
-] as const;
-export type AdminGeneralRolesColName =
-  (typeof adminGeneralRolesColNames)[number];
-
 export const adminTeachersTeachersColNames = [
   "email",
   "firstname",
@@ -37,6 +29,14 @@ export const adminTeachersPositionsColNames = [
 ] as const;
 export type AdminTeachersPositionsColName =
   (typeof adminTeachersPositionsColNames)[number];
+
+export const adminTeachersRolesColNames = [
+  "teacherEmail",
+  "role",
+  "comment",
+] as const;
+export type AdminTeachersRolesColName =
+  (typeof adminTeachersRolesColNames)[number];
 
 export const adminTeachersServiceModificationsColNames = [
   "year",

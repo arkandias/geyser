@@ -26,12 +26,12 @@ import {
   adminCoursesProgramsColNames,
   adminCoursesTermsColNames,
   adminCoursesTracksColNames,
-  adminGeneralRolesColNames,
   adminRequestsPrioritiesColNames,
   adminRequestsRequestsColNames,
   adminTeachersExternalCoursesColNames,
   adminTeachersMessagesColNames,
   adminTeachersPositionsColNames,
+  adminTeachersRolesColNames,
   adminTeachersServiceModificationTypesColNames,
   adminTeachersServiceModificationsColNames,
   adminTeachersServicesColNames,
@@ -167,12 +167,10 @@ const findKeysInFiles = async (): Promise<string[]> => {
   deleteTemplateStringsKey("primitiveTypeName.${val}");
 
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
-    general: {
-      roles: adminGeneralRolesColNames,
-    },
     teachers: {
       teachers: adminTeachersTeachersColNames,
       positions: adminTeachersPositionsColNames,
+      roles: adminTeachersRolesColNames,
       services: adminTeachersServicesColNames,
       serviceModifications: adminTeachersServiceModificationsColNames,
       serviceModificationTypes: adminTeachersServiceModificationTypesColNames,

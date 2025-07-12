@@ -10,6 +10,7 @@ import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import AdminTeachersExternalCourses from "@/components/admin/AdminTeachersExternalCourses.vue";
 import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
+import AdminTeachersRoles from "@/components/admin/AdminTeachersRoles.vue";
 import AdminTeachersServiceModificationTypes from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import AdminTeachersServiceModifications from "@/components/admin/AdminTeachersServiceModifications.vue";
 import AdminTeachersServices from "@/components/admin/AdminTeachersServices.vue";
@@ -26,6 +27,7 @@ graphql(`
       orderBy: [{ lastname: ASC }, { firstname: ASC }]
     ) {
       ...AdminTeacher
+      ...AdminRolesTeacher
       ...AdminServicesTeacher
       ...AdminServiceModificationsTeacher
       ...AdminExternalCoursesTeacher
@@ -38,6 +40,16 @@ graphql(`
       ...AdminPosition
       ...AdminTeachersPosition
       ...AdminServicesPosition
+    }
+    teacherRoles: teacherRole(
+      where: { oid: { _eq: $oid } }
+      orderBy: [
+        { role: ASC }
+        { teacher: { lastname: ASC } }
+        { teacher: { firstname: ASC } }
+      ]
+    ) {
+      ...AdminRole
     }
     services: service(
       where: { oid: { _eq: $oid } }
@@ -110,6 +122,7 @@ const { data, fetching } = useQuery({
 });
 const teachers = computed(() => data.value?.teachers ?? []);
 const positions = computed(() => data.value?.positions ?? []);
+const roles = computed(() => data.value?.teacherRoles ?? []);
 const services = computed(() => data.value?.services ?? []);
 const serviceModifications = computed(
   () => data.value?.serviceModifications ?? [],
@@ -141,6 +154,19 @@ const messages = computed(() => data.value?.messages ?? []);
       :label="t('admin.teachers.positions.label')"
     >
       <AdminTeachersPositions :fetching :position-fragments="positions" />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
+      icon="sym_s_local_police"
+      :label="t('admin.teachers.roles.label')"
+    >
+      <AdminTeachersRoles
+        :fetching
+        :role-fragments="roles"
+        :teacher-fragments="teachers"
+      />
     </AdminSection>
 
     <QSeparator />

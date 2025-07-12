@@ -26,7 +26,7 @@ import type {
 } from "@/types/data.ts";
 import { toLowerCase } from "@/utils";
 
-import type { AdminGeneralRolesColName } from "@/components/admin/col-names.ts";
+import type { AdminTeachersRolesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRoleFragment;
@@ -60,7 +60,7 @@ const rowDescriptor = {
     nullable: true,
     formComponent: "input",
   },
-} as const satisfies RowDescriptorExtra<AdminGeneralRolesColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminTeachersRolesColName, Row>;
 
 graphql(`
   fragment AdminRole on TeacherRole {
@@ -152,7 +152,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     );
     if (teacher === undefined) {
       throw new Error(
-        t("admin.general.roles.form.error.teacherNotFound", flatRow),
+        t("admin.teachers.roles.form.error.teacherNotFound", flatRow),
       );
     }
     object.teacherId = teacher.id;
@@ -163,7 +163,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
       flatRow.role !== RoleEnum.Organizer &&
       flatRow.role !== RoleEnum.Commissioner
     ) {
-      throw new Error(t("admin.general.roles.form.error.invalidRole"));
+      throw new Error(t("admin.teachers.roles.form.error.invalidRole"));
     }
     object.role = flatRow.role;
   }
@@ -198,7 +198,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
   <AdminData
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
-    section="general"
+    section="teachers"
     name="roles"
     :row-descriptor
     :rows="roles"
