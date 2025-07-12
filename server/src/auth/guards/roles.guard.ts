@@ -33,33 +33,31 @@ export class RolesGuard extends AuthGuard implements CanActivate {
       return false;
     }
 
-    // Get the required roles from the decorator metadata
-    const requiredRoles = this.reflector.getAllAndOverride<
+    // Get the authorized roles from the decorator metadata
+    const authorizedRoles = this.reflector.getAllAndOverride<
       string[] | undefined
     >(ROLES_KEY, [context.getHandler(), context.getClass()]);
 
     // If no roles are specified, just authentication is enough
-    if (!requiredRoles || requiredRoles.length === 0) {
+    if (!authorizedRoles || authorizedRoles.length === 0) {
       return true;
     }
 
     const request = context.switchToHttp().getRequest<Request>();
 
-    // Super admin bypasses all role checks
-    if (request.auth?.isSuperAdmin) {
+    // Admin bypasses all role checks
+    if (request.auth?.isAdmin) {
       return true;
     }
 
-    // For JWT users, check if their role matches any of the required roles
-    const userRole = request.auth?.userRole;
+    // For users, check if their role matches any of the required roles
+    const userRole = request.auth?.role;
     if (!userRole) {
       throw new ForbiddenException("User role not found");
     }
-
-    const hasRole = requiredRoles.includes(userRole);
-    if (!hasRole) {
+    if (!authorizedRoles.includes(userRole)) {
       throw new ForbiddenException(
-        `Access denied. Required roles: [${requiredRoles.join(", ")}], user role: ${userRole}`,
+        `Access denied. Authorized roles: [${authorizedRoles.join(", ")}], user role: ${userRole}`,
       );
     }
 

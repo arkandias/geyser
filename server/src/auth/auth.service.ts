@@ -9,12 +9,12 @@ import {
 import { ConfigService } from "../config/config.service";
 
 interface StateParams {
-  organizationKey: string;
+  orgId: number;
   redirectUrl?: string;
 }
 
 interface State {
-  organizationKey: string;
+  orgId: number;
   redirectUrl: URL | null;
   expiresAt: number;
 }
@@ -51,7 +51,7 @@ export class AuthService {
   setState(params: StateParams): string {
     const id = randomUUID();
     this.stateRecord.set(id, {
-      organizationKey: params.organizationKey,
+      orgId: params.orgId,
       redirectUrl: this.validateRedirectUrl(params.redirectUrl),
       expiresAt: Date.now() + this.configService.jwt.stateExpirationTime,
     });

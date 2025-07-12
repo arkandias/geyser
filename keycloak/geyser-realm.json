@@ -25,8 +25,8 @@
   "defaultLocale": "fr",
   "clients": [
     {
-      "clientId": "backend",
-      "name": "client_backend",
+      "clientId": "app",
+      "name": "client_app",
       "description": "",
       "rootUrl": "${CLIENT_ROOT_URL}",
       "adminUrl": "",
@@ -65,6 +65,31 @@
       "protocolMappers": [],
       "defaultClientScopes": ["email"],
       "optionalClientScopes": []
+    }
+  ],
+  "roles": {
+    "client": {
+      "app": [
+        {
+          "name": "admin",
+          "description": "",
+          "composite": false,
+          "clientRole": true,
+          "attributes": {}
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "name": "AppAdmin",
+      "path": "/AppAdmin",
+      "subGroups": [],
+      "attributes": {},
+      "realmRoles": [],
+      "clientRoles": {
+        "app": ["admin"]
+      }
     }
   ]
 }

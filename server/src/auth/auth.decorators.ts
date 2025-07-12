@@ -33,18 +33,18 @@ export const UserRole = createParamDecorator(
       throw new Error("UserRole decorator can only be used with AuthGuard");
     }
 
-    return request.auth.userRole;
+    return request.auth.role;
   },
 );
 
-export const IsSuperAdmin = createParamDecorator(
+export const IsAdmin = createParamDecorator(
   (_: unknown, ctx: ExecutionContext): boolean => {
     const request = ctx.switchToHttp().getRequest<Request>();
 
     if (!request.auth) {
-      throw new Error("IsSuperAdmin decorator can only be used with AuthGuard");
+      throw new Error("IsAdmin decorator can only be used with AuthGuard");
     }
 
-    return request.auth.isSuperAdmin ?? false;
+    return request.auth.isAdmin ?? false;
   },
 );

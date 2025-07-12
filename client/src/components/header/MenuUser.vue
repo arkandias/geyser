@@ -3,7 +3,8 @@ import { computed } from "vue";
 
 import { useRefreshData } from "@/composables/useRefreshData.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { RoleEnum } from "@/gql/graphql.ts";
+import { PhaseEnum, RoleEnum } from "@/gql/graphql.ts";
+import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useProfileStore } from "@/stores/useProfileStore.ts";
 import { toLowerCase } from "@/utils";
 
@@ -12,10 +13,16 @@ import MenuBase from "@/components/header/MenuBase.vue";
 const { t } = useTypedI18n();
 const { refreshData } = useRefreshData();
 const { profile, setActiveRole } = useProfileStore();
+const { currentPhase } = useCurrentPhaseStore();
 
 const roleOptions = computed(() =>
   [RoleEnum.Organizer, RoleEnum.Commissioner, RoleEnum.Teacher]
     .filter((role) => profile.roles.includes(role))
+    .filter(
+      (role) =>
+        role !== RoleEnum.Commissioner ||
+        currentPhase.value === PhaseEnum.Assignments,
+    )
     .map((role) => ({
       value: role,
       label: t(`role.${toLowerCase(role)}`),
@@ -32,7 +39,7 @@ const updateRole = async (value: RoleEnum) => {
   <MenuBase
     id="user-button"
     :label="t('header.user.label')"
-    icon="sym_s_account_circle"
+    :icon="profile.isAdmin ? 'sym_s_shield_person' : 'sym_s_account_circle'"
   >
     <QList id="user-menu">
       <template v-if="profile.displayname">

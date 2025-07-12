@@ -4,6 +4,7 @@ import {
   AccessTokenPayload,
   type BaseTokenPayload,
   type OmitWithIndex,
+  RoleType,
   accessTokenPayloadSchema,
   roleTypeSchema,
 } from "@geyser/shared";
@@ -68,11 +69,15 @@ export class JwtService {
     return result.payload;
   }
 
-  async makeAccessToken(orgId: number, userId: number): Promise<string> {
+  async makeAccessToken(
+    orgId: number,
+    userId: number,
+    isAdmin: boolean,
+  ): Promise<string> {
     const userRoles = await this.roleService.findByUserId(userId);
-    const roles = userRoles.map((userRole) =>
-      roleTypeSchema.parse(userRole.role),
-    );
+    const roles: RoleType[] = isAdmin
+      ? ["organizer", "commissioner", "teacher"]
+      : userRoles.map((userRole) => roleTypeSchema.parse(userRole.role));
     if (!roles.includes("teacher")) {
       roles.push("teacher");
     }
@@ -87,12 +92,17 @@ export class JwtService {
       typ: "Bearer",
       orgId,
       userId,
+      isAdmin,
       allowedRoles: roles,
-      defaultRole: roles.includes("organizer") ? "organizer" : "teacher",
+      defaultRole: "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  async makeRefreshToken(orgId: number, userId: number): Promise<string> {
+  async makeRefreshToken(
+    orgId: number,
+    userId: number,
+    isAdmin: boolean,
+  ): Promise<string> {
     return this.makeToken({
       sub: userId,
       aud: this.configService.api.url.href,
@@ -102,6 +112,7 @@ export class JwtService {
       typ: "Refresh",
       orgId,
       userId,
+      isAdmin,
     } satisfies OmitWithIndex<BaseTokenPayload, "iss" | "iat" | "jti">);
   }
 

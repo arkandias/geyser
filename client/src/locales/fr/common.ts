@@ -2,6 +2,7 @@ import type { CustomTextKey } from "@/config/custom-text-keys.ts";
 import type { PrimitiveType } from "@/config/primitive-types.ts";
 
 export default {
+  adminName: "Administrateur",
   phase: {
     requests: "Vœux",
     assignments: "Commission",

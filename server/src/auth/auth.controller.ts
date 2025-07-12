@@ -2,12 +2,9 @@ import { AccessTokenPayload, errorMessage } from "@geyser/shared";
 import {
   BadRequestException,
   Controller,
-  ForbiddenException,
   Get,
-  Head,
   InternalServerErrorException,
-  NotFoundException,
-  Param,
+  ParseIntPipe,
   Post,
   Query,
   Res,
@@ -17,7 +14,6 @@ import type { Response } from "express";
 
 import { Cookies } from "../common/cookies.decorator";
 import { ConfigService } from "../config/config.service";
-import { OrganizationService } from "../organization/organization.service";
 import { UserService } from "../user/user.service";
 import { AuthService } from "./auth.service";
 import { CookiesService } from "./cookies.service";
@@ -34,7 +30,6 @@ export class AuthController {
     private cookiesService: CookiesService,
     private jwtService: JwtService,
     private oidcService: OidcService,
-    private organizationService: OrganizationService,
     private userService: UserService,
   ) {
     this.callbackUrl = new URL(
@@ -42,29 +37,14 @@ export class AuthController {
     );
   }
 
-  @Head("org/:key")
-  async checkOrganization(@Param("key") key: string): Promise<void> {
-    const organization = await this.organizationService.findByKey(key);
-    if (!organization) {
-      throw new NotFoundException("Organization not found");
-    }
-    if (!organization.active) {
-      throw new ForbiddenException("Organization not active");
-    }
-  }
-
   @Get("login")
   login(
-    @Query("organization_key") organizationKey: string | undefined,
+    @Query("org_id", ParseIntPipe) orgId: number,
     @Query("redirect_url") redirectUrl: string | undefined,
     @Res() res: Response,
-  ) {
-    if (!organizationKey) {
-      throw new BadRequestException("Missing organization_key query param");
-    }
-
+  ): void {
     // Use state parameter to prevent CSRF attacks
-    const stateId = this.authService.setState({ organizationKey, redirectUrl });
+    const stateId = this.authService.setState({ orgId, redirectUrl });
 
     // Building authentication URL
     const authUrl = new URL(this.oidcService.metadata.authUrl);
@@ -101,14 +81,8 @@ export class AuthController {
         throw new BadRequestException("Missing state");
       }
 
-      const { organizationKey: key, redirectUrl: url } =
-        this.authService.getState(state);
+      const { orgId, redirectUrl: url } = this.authService.getState(state);
       redirectUrl = url;
-
-      const organization = await this.organizationService.findByKey(key);
-      if (!organization) {
-        throw new UnauthorizedException(`Organization '${key}' not found`);
-      }
 
       const identityToken = await this.oidcService.requestToken({
         client_id: this.configService.oidc.clientId,
@@ -118,19 +92,32 @@ export class AuthController {
         redirect_uri: this.callbackUrl.href,
       });
 
-      const { email } = await this.oidcService.verifyToken(identityToken);
+      const { email, roles } =
+        await this.oidcService.verifyToken(identityToken);
 
-      const user = await this.userService.findByEmail(email);
-      if (!user) {
-        throw new UnauthorizedException(`User '${email}' not found`);
-      }
-      if (!user.access) {
-        throw new UnauthorizedException("User does not have access");
+      const user = await this.userService.findByOidEmail(orgId, email);
+      const isAdmin = !!roles?.includes("admin");
+
+      if (!isAdmin) {
+        if (!user) {
+          throw new UnauthorizedException(
+            `User '${email}' not found in organization ${orgId}`,
+          );
+        }
+        if (!user.access) {
+          throw new UnauthorizedException("User does not have access");
+        }
       }
 
-      await this.cookiesService.setAuthCookies(res, organization.id, user.id);
+      await this.cookiesService.setAuthCookies(
+        res,
+        orgId,
+        user?.id ?? 0, // 0 is a special id for non-user admin
+        isAdmin,
+      );
 
       if (redirectUrl) {
+        redirectUrl.searchParams.set("post_login", "true");
         res.redirect(redirectUrl.href);
       } else {
         res.status(200).json({ message: "Logged in" });
@@ -175,9 +162,9 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");
     }
-    const { orgId, userId } =
+    const { orgId, userId, isAdmin } =
       await this.jwtService.verifyRefreshToken(refreshToken);
-    await this.cookiesService.setAuthCookies(res, orgId, userId);
+    await this.cookiesService.setAuthCookies(res, orgId, userId, isAdmin);
 
     res.status(200).json({ message: "Token refreshed successfully" });
   }

@@ -121,9 +121,25 @@ watch(
 
     setProfile({
       id: authManager.userId,
+      isAdmin: authManager.isAdmin,
       roles: authManager.allowedRoles,
-      activeRole: authManager.role,
-      displayname: data?.profile?.displayname ?? "",
+      activeRole:
+        // Keep current role if it's still allowed, otherwise activate highest priority available role
+        // Role priority: organizer > commissioner (assignments phase only) > teacher > null
+        profile.activeRole &&
+        authManager.allowedRoles.includes(profile.activeRole)
+          ? profile.activeRole
+          : authManager.allowedRoles.includes(RoleEnum.Organizer)
+            ? RoleEnum.Organizer
+            : authManager.allowedRoles.includes(RoleEnum.Commissioner) &&
+                currentPhase.value === PhaseEnum.Assignments
+              ? RoleEnum.Commissioner
+              : authManager.allowedRoles.includes(RoleEnum.Teacher)
+                ? RoleEnum.Teacher
+                : null,
+      displayname:
+        data?.profile?.displayname ??
+        (authManager.isAdmin ? t("adminName") : ""),
       services: data?.profile?.services ?? [],
       logout: () => authManager.logout(),
     });
@@ -133,7 +149,7 @@ watch(
 
 // Access check and alert message
 const alertMessage = computed(() => {
-  if (!authManager.organizationKey) {
+  if (!authManager.organizationFound) {
     return t("home.alert.organizationNotFound");
   }
   if (!authManager.hasAccess) {
@@ -160,7 +176,7 @@ const alertMessage = computed(() => {
   ) {
     return t("home.alert.commissioner");
   }
-  if (!getAppData.data.value.profile) {
+  if (!authManager.isAdmin && !getAppData.data.value.profile) {
     return t("home.alert.profileNotLoaded");
   }
   return "";

@@ -3,9 +3,9 @@ import type { AccessTokenPayload } from "@geyser/shared";
 interface AuthContext {
   orgId?: number;
   userId?: number;
-  userRole?: string;
+  isAdmin?: boolean;
+  role?: string;
   jwtPayload?: AccessTokenPayload;
-  isSuperAdmin?: boolean;
 }
 
 declare global {

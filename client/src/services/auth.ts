@@ -2,6 +2,7 @@ import {
   type AccessTokenPayload,
   type RoleType,
   accessTokenPayloadSchema,
+  organizationDataSchema,
 } from "@geyser/shared";
 import axios from "axios";
 import { z } from "zod/v4";
@@ -10,7 +11,12 @@ import {
   API_REQUEST_TIMEOUT,
   API_TOKEN_MIN_VALIDITY,
 } from "@/config/constants.ts";
-import { apiUrl, bypassAuth, organizationKey } from "@/config/environment.ts";
+import {
+  adminSecret,
+  apiUrl,
+  bypassAuth,
+  organizationKey,
+} from "@/config/environment.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { capitalize, toLowerCase } from "@/utils";
 
@@ -22,18 +28,33 @@ const api = axios.create({
 
 export class AuthManager {
   private _organizationKey: string | null = null;
-  private _payload?: AccessTokenPayload;
-  private _role: RoleType | null = null;
+  private _organizationId: number | null = null;
+  private _payload: AccessTokenPayload | null = null;
   private _authError: string | null = null;
+  private _role: RoleType | null = null;
 
   async init(): Promise<void> {
-    if (bypassAuth) {
+    // Get organization key
+    await this.getOrganizationId();
+    if (!this._organizationId) {
       return;
     }
 
-    // Get organization key
-    await this.getOrganizationKey();
-    if (!this._organizationKey) {
+    if (bypassAuth) {
+      this._payload = {
+        orgId: this._organizationId,
+        userId: 0,
+        isAdmin: true,
+        allowedRoles: ["organizer", "commissioner", "teacher"],
+        defaultRole: "teacher",
+        iss: "",
+        sub: 0,
+        aud: "",
+        exp: Infinity,
+        iat: 0,
+        jti: "",
+        typ: "",
+      };
       return;
     }
 
@@ -48,9 +69,15 @@ export class AuthManager {
     // Verify access token
     const verified = await this.verify();
 
-    // Verification succeeded - we're done
+    // Verification succeeded
     if (verified) {
       console.debug("[AuthManager] Logged in");
+      return;
+    }
+
+    // Verification failed post login - do not continue
+    if (url.searchParams.get("post_login") === "true") {
+      console.error("[AuthManager] Verification failed post login");
       return;
     }
 
@@ -66,46 +93,49 @@ export class AuthManager {
     await this.login();
   }
 
-  async getOrganizationKey(): Promise<void> {
-    // Set organization key from environment
-    this._organizationKey = organizationKey;
+  async getOrganizationId(): Promise<void> {
+    // Set organization key from environment if provided
+    if (organizationKey) {
+      this._organizationKey = organizationKey;
+      console.debug(
+        `[AuthManager] Organization key from environment: ${this._organizationKey}`,
+      );
+      return;
+    }
 
     // If not provided, use current location hostname
-    if (!this._organizationKey) {
-      const domainLabels = window.location.hostname.split(".");
-      if (domainLabels.length < 3) {
-        console.debug(
-          "[AuthManager] Could not determine organization key: no subdomain",
-        );
-        return;
-      }
-
-      this._organizationKey = domainLabels[0] ?? null;
-      if (!this._organizationKey) {
-        console.debug("[AuthManager] Could not determine organization key");
-        return;
-      }
+    const domainLabels = window.location.hostname.split(".");
+    if (domainLabels.length < 3 || !domainLabels[0]) {
+      console.error("[AuthManager] Could not determine organization key");
+      return;
     }
-    console.debug(`[AuthManager] Organization key: ${this._organizationKey}`);
+    this._organizationKey = domainLabels[0];
+    console.debug(
+      `[AuthManager] Organization key from subdomain: ${this._organizationKey}`,
+    );
 
     try {
-      await api.head(`/auth/org/${this._organizationKey}`);
-      console.debug("[AuthManager] Organization key checked successfully");
+      const response = await api.get(`/organization/${this._organizationKey}`);
+      this._organizationId = organizationDataSchema.parse(response.data).id;
+      console.debug(`[AuthManager] Organization id: ${this._organizationId}`);
     } catch (error) {
-      if (axios.isAxiosError(error)) {
+      if (error instanceof z.ZodError) {
+        console.error("[AuthManager] Invalid organization data");
+      } else if (axios.isAxiosError(error)) {
         if (error.response) {
           console.debug(
-            `[AuthManager] Organization check failed: ${error.response.status} ${error.response.statusText}`,
+            `[AuthManager] Could not get organization data: ${error.response.status} ${error.response.statusText}`,
           );
         } else {
           console.debug(
-            "[AuthManager] Organization check failed: Network error",
+            "[AuthManager] Could not get organization data: Network error",
           );
         }
       } else {
-        console.debug("[AuthManager] Organization check failed: Unknown error");
+        console.debug(
+          "[AuthManager] Could not get organization data: Unknown error",
+        );
       }
-      this._organizationKey = null;
     }
   }
 
@@ -122,7 +152,7 @@ export class AuthManager {
       url: "/auth/login",
       params: {
         redirect_url: redirectUrl,
-        organization_key: this._organizationKey,
+        org_id: this._organizationId,
       },
     });
 
@@ -157,15 +187,13 @@ export class AuthManager {
     try {
       const response = await api.get("/auth/token/verify");
       this._payload = accessTokenPayloadSchema.parse(response.data);
-      this._role = this._payload.defaultRole;
       console.debug("[AuthManager] Verification succeeded");
       console.debug("[AuthManager] Token payload:", this._payload);
       return true;
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.debug("[AuthManager] Verification failed: Invalid token");
-      }
-      if (axios.isAxiosError(error)) {
+      } else if (axios.isAxiosError(error)) {
         if (error.response) {
           console.debug(
             `[AuthManager] Verification failed: ${error.response.status} ${error.response.statusText}`,
@@ -176,7 +204,7 @@ export class AuthManager {
       } else {
         console.debug("[AuthManager] Verification failed: Unknown error");
       }
-      delete this._payload;
+      this._payload = null;
       return false;
     }
   }
@@ -208,67 +236,67 @@ export class AuthManager {
   }
 
   shouldRefresh(): boolean {
-    return bypassAuth
-      ? false
-      : !this._payload ||
-          this._payload.exp - Math.floor(Date.now() / 1000) <
-            API_TOKEN_MIN_VALIDITY;
-  }
-
-  get organizationKey(): string | null {
-    return this._organizationKey;
+    return (
+      !this._payload ||
+      this._payload.exp - Math.floor(Date.now() / 1000) < API_TOKEN_MIN_VALIDITY
+    );
   }
 
   get authError(): string | null {
     return this._authError;
   }
 
+  get organizationFound(): boolean {
+    return !!this._organizationId;
+  }
+
   get hasAccess(): boolean {
-    return !!bypassAuth || !!this._payload;
+    return !!this._payload;
   }
 
   get orgId(): number {
-    return bypassAuth?.orgId ?? this._payload?.orgId ?? -1;
+    return this._payload?.orgId ?? -1;
   }
 
   get userId(): number {
-    return bypassAuth?.userId ?? this._payload?.userId ?? -1;
+    return this._payload?.userId ?? -1;
+  }
+
+  get isAdmin(): boolean {
+    return this._payload?.isAdmin ?? false;
   }
 
   get allowedRoles(): RoleEnum[] {
-    return bypassAuth
-      ? Object.values(RoleEnum)
-      : (this._payload?.allowedRoles.map(
-          (role) => RoleEnum[capitalize(role)],
-        ) ?? []);
+    return (
+      this._payload?.allowedRoles.map((role) => RoleEnum[capitalize(role)]) ??
+      []
+    );
   }
 
   get role(): RoleEnum | null {
-    return this._role ? RoleEnum[capitalize(this._role)] : null;
+    if (!this._role) {
+      return null;
+    }
+    return RoleEnum[capitalize(this._role)];
   }
 
-  setRole(role?: RoleEnum | null) {
-    if (!role) {
-      this._role = null;
-      return;
-    }
+  setRole(role: RoleEnum | null) {
+    this._role = role ? toLowerCase(role) : null;
 
-    if (this.allowedRoles.includes(role)) {
-      this._role = toLowerCase(role);
-    } else {
+    if (role && !this.allowedRoles.includes(role)) {
       console.warn("[AuthManager] Role not allowed");
     }
   }
 
   get headers(): Record<string, string> {
     const headers: Record<string, string> = {};
-    if (bypassAuth) {
-      headers["X-Admin-Secret"] = bypassAuth.adminSecret;
-      headers["X-Org-Id"] = bypassAuth.orgId.toString();
-      headers["X-User-Id"] = bypassAuth.userId.toString();
+    if (this.isAdmin) {
+      headers["X-Admin-Secret"] = adminSecret ?? "";
+      headers["X-Org-Id"] = this.orgId.toString();
+      headers["X-User-Id"] = this.userId.toString();
     }
     if (this._role) {
-      headers["X-User-Role"] = this._role;
+      headers["X-Role"] = this._role;
     }
     return headers;
   }

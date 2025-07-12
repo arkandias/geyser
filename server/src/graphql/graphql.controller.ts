@@ -26,13 +26,13 @@ export class GraphqlController {
       "Content-Type": "application/json",
       "X-Hasura-Admin-Secret": this.configService.graphql.adminSecret,
     };
-    if (orgId) {
+    if (orgId !== undefined) {
       headers["X-Hasura-Org-Id"] = orgId;
     }
-    if (userId) {
+    if (userId !== undefined) {
       headers["X-Hasura-User-Id"] = userId;
     }
-    if (userRole) {
+    if (userRole !== undefined) {
       headers["X-Hasura-Role"] = userRole;
     }
 

@@ -40,8 +40,13 @@ export class CookiesService {
     res: Response,
     orgId: number,
     userId: number,
+    isAdmin: boolean,
   ): Promise<void> {
-    const accessToken = await this.jwtService.makeAccessToken(orgId, userId);
+    const accessToken = await this.jwtService.makeAccessToken(
+      orgId,
+      userId,
+      isAdmin,
+    );
     res.cookie("access_token", accessToken, this.accessCookieOptions());
   }
 
@@ -49,8 +54,13 @@ export class CookiesService {
     res: Response,
     orgId: number,
     userId: number,
+    isAdmin: boolean,
   ): Promise<void> {
-    const refreshToken = await this.jwtService.makeRefreshToken(orgId, userId);
+    const refreshToken = await this.jwtService.makeRefreshToken(
+      orgId,
+      userId,
+      isAdmin,
+    );
     res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
@@ -58,9 +68,10 @@ export class CookiesService {
     res: Response,
     orgId: number,
     userId: number,
+    isAdmin: boolean,
   ): Promise<void> {
-    await this.setAccessCookie(res, orgId, userId);
-    await this.setRefreshCookie(res, orgId, userId);
+    await this.setAccessCookie(res, orgId, userId, isAdmin);
+    await this.setRefreshCookie(res, orgId, userId, isAdmin);
   }
 
   unsetAccessCookie(res: Response): void {

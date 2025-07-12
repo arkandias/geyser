@@ -5,6 +5,7 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 type Profile = {
   id: number;
+  isAdmin: boolean;
   roles: RoleEnum[];
   activeRole: RoleEnum | null;
   displayname: string;
@@ -17,9 +18,10 @@ type Profile = {
 
 const profile = reactive<Profile>({
   id: -1,
-  displayname: "",
+  isAdmin: false,
   roles: [],
   activeRole: null,
+  displayname: "",
   services: [],
   logout: (): Promise<void> => {
     return Promise.resolve();
