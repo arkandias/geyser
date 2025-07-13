@@ -28,12 +28,12 @@ import {
   adminCoursesTracksColNames,
   adminRequestsPrioritiesColNames,
   adminRequestsRequestsColNames,
-  adminTeachersExternalCoursesColNames,
-  adminTeachersMessagesColNames,
+  adminServicesExternalCoursesColNames,
+  adminServicesMessagesColNames,
+  adminServicesServiceModificationsColNames,
+  adminServicesServicesColNames,
   adminTeachersPositionsColNames,
   adminTeachersRolesColNames,
-  adminTeachersServiceModificationsColNames,
-  adminTeachersServicesColNames,
   adminTeachersTeachersColNames,
 } from "@/components/admin/col-names.ts";
 
@@ -170,10 +170,12 @@ const findKeysInFiles = async (): Promise<string[]> => {
       teachers: adminTeachersTeachersColNames,
       positions: adminTeachersPositionsColNames,
       roles: adminTeachersRolesColNames,
-      services: adminTeachersServicesColNames,
-      serviceModifications: adminTeachersServiceModificationsColNames,
-      externalCourses: adminTeachersExternalCoursesColNames,
-      messages: adminTeachersMessagesColNames,
+    },
+    services: {
+      services: adminServicesServicesColNames,
+      serviceModifications: adminServicesServiceModificationsColNames,
+      externalCourses: adminServicesExternalCoursesColNames,
+      messages: adminServicesMessagesColNames,
     },
     courses: {
       degrees: adminCoursesDegreesColNames,

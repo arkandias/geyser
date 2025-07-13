@@ -26,7 +26,7 @@ import type {
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminTeachersMessagesColName } from "@/components/admin/col-names.ts";
+import type { AdminServicesMessagesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminMessageFragment;
@@ -62,7 +62,7 @@ const rowDescriptor = {
     formComponent: "input",
     inputType: "textarea",
   },
-} as const satisfies RowDescriptorExtra<AdminTeachersMessagesColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminServicesMessagesColName, Row>;
 
 graphql(`
   fragment AdminMessage on Message {
@@ -159,12 +159,12 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
     if (flatRow.teacherEmail === undefined) {
       throw new Error(
-        t("admin.teachers.messages.form.error.updateYearWithoutTeacher"),
+        t("admin.services.messages.form.error.updateYearWithoutTeacher"),
       );
     }
     if (flatRow.year === undefined) {
       throw new Error(
-        t("admin.teachers.messages.form.error.updateTeacherWithoutYear"),
+        t("admin.services.messages.form.error.updateTeacherWithoutYear"),
       );
     }
     object.serviceId = services.value.find(
@@ -173,14 +173,14 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     )?.id;
     if (object.serviceId === undefined) {
       throw new Error(
-        t("admin.teachers.messages.form.error.serviceNotFound", flatRow),
+        t("admin.services.messages.form.error.serviceNotFound", flatRow),
       );
     }
   }
 
   if (flatRow.content !== undefined) {
     if (flatRow.content === null) {
-      throw new Error(t("admin.teachers.messages.form.error.noContent"));
+      throw new Error(t("admin.services.messages.form.error.noContent"));
     }
     object.content = flatRow.content;
   }
@@ -206,7 +206,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
   <AdminData
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
-    section="teachers"
+    section="services"
     name="messages"
     :row-descriptor
     :rows="messages"

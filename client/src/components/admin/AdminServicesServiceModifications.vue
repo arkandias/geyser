@@ -26,7 +26,7 @@ import type {
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminTeachersServiceModificationsColName } from "@/components/admin/col-names.ts";
+import type { AdminServicesServiceModificationsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminServiceModificationFragment;
@@ -76,7 +76,7 @@ const rowDescriptor = {
     inputType: "number",
   },
 } as const satisfies RowDescriptorExtra<
-  AdminTeachersServiceModificationsColName,
+  AdminServicesServiceModificationsColName,
   Row
 >;
 
@@ -203,14 +203,14 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     if (flatRow.teacherEmail === undefined) {
       throw new Error(
         t(
-          "admin.teachers.serviceModifications.form.error.updateYearWithoutTeacher",
+          "admin.services.serviceModifications.form.error.updateYearWithoutTeacher",
         ),
       );
     }
     if (flatRow.year === undefined) {
       throw new Error(
         t(
-          "admin.teachers.serviceModifications.form.error.updateTeacherWithoutYear",
+          "admin.services.serviceModifications.form.error.updateTeacherWithoutYear",
         ),
       );
     }
@@ -221,7 +221,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     if (object.serviceId === undefined) {
       throw new Error(
         t(
-          "admin.teachers.serviceModifications.form.error.serviceNotFound",
+          "admin.services.serviceModifications.form.error.serviceNotFound",
           flatRow,
         ),
       );
@@ -235,7 +235,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   if (flatRow.hours !== undefined) {
     if (flatRow.hours === null || flatRow.hours < 0) {
       throw new Error(
-        t("admin.teachers.serviceModifications.form.error.hoursNegative"),
+        t("admin.services.serviceModifications.form.error.hoursNegative"),
       );
     }
     object.hours = flatRow.hours;
@@ -262,7 +262,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
   <AdminData
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
-    section="teachers"
+    section="services"
     name="serviceModifications"
     :row-descriptor
     :rows="serviceModifications"

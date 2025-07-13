@@ -7,6 +7,7 @@ import AdminCoordinations from "@/components/admin/AdminCoordinations.vue";
 import AdminCourses from "@/components/admin/AdminCourses.vue";
 import AdminGeneral from "@/components/admin/AdminGeneral.vue";
 import AdminRequests from "@/components/admin/AdminRequests.vue";
+import AdminServices from "@/components/admin/AdminServices.vue";
 import AdminTeachers from "@/components/admin/AdminTeachers.vue";
 
 const { section = "general" } = defineProps<{
@@ -25,6 +26,11 @@ const routeTabs = computed(() => [
     name: "teachers",
     label: t("admin.teachers.title"),
     to: "/admin/teachers",
+  },
+  {
+    name: "services",
+    label: t("admin.services.title"),
+    to: "/admin/services",
   },
   {
     name: "courses",
@@ -64,6 +70,10 @@ const routeTabs = computed(() => [
 
       <QTabPanel name="teachers">
         <AdminTeachers />
+      </QTabPanel>
+
+      <QTabPanel name="services">
+        <AdminServices />
       </QTabPanel>
 
       <QTabPanel name="courses">

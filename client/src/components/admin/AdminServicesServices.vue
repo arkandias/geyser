@@ -26,7 +26,7 @@ import type {
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminTeachersServicesColName } from "@/components/admin/col-names.ts";
+import type { AdminServicesServicesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminServiceFragment;
@@ -69,7 +69,7 @@ const rowDescriptor = {
     formComponent: "input",
     inputType: "number",
   },
-} as const satisfies RowDescriptorExtra<AdminTeachersServicesColName, Row>;
+} as const satisfies RowDescriptorExtra<AdminServicesServicesColName, Row>;
 
 graphql(`
   fragment AdminService on Service {
@@ -180,7 +180,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     );
     if (teacher === undefined) {
       throw new Error(
-        t("admin.teachers.services.form.error.teacherNotFound", flatRow),
+        t("admin.services.services.form.error.teacherNotFound", flatRow),
       );
     }
     object.teacherId = teacher.id;
@@ -199,7 +199,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
         : null;
       if (position === undefined) {
         throw new Error(
-          t("admin.teachers.services.form.error.positionNotFound", flatRow),
+          t("admin.services.services.form.error.positionNotFound", flatRow),
         );
       }
       object.positionId = position?.id ?? null;
@@ -209,7 +209,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   // hours
   if (flatRow.hours !== undefined) {
     if (flatRow.hours !== null && flatRow.hours < 0) {
-      throw new Error(t("admin.teachers.services.form.error.hoursNegative"));
+      throw new Error(t("admin.services.services.form.error.hoursNegative"));
     }
     if (flatRow.hours !== null) {
       object.hours = flatRow.hours;
@@ -244,7 +244,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
   <AdminData
     v-model:form-values="formValues"
     v-model:filter-values="filterValues"
-    section="teachers"
+    section="services"
     name="services"
     :row-descriptor
     :rows="services"

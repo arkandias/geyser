@@ -3,6 +3,7 @@ import courses from "./courses.ts";
 import data from "./data.ts";
 import general from "./general.ts";
 import requests from "./requests.ts";
+import services from "./services.ts";
 import teachers from "./teachers.ts";
 
 export default {
@@ -10,6 +11,7 @@ export default {
     ...data,
     ...general,
     ...teachers,
+    ...services,
     ...courses,
     ...requests,
     ...coordinations,

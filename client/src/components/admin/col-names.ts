@@ -12,15 +12,6 @@ export const adminTeachersTeachersColNames = [
 export type AdminTeachersTeachersColName =
   (typeof adminTeachersTeachersColNames)[number];
 
-export const adminTeachersServicesColNames = [
-  "year",
-  "teacherEmail",
-  "positionLabel",
-  "hours",
-] as const;
-export type AdminTeachersServicesColName =
-  (typeof adminTeachersServicesColNames)[number];
-
 export const adminTeachersPositionsColNames = [
   "label",
   "labelShort",
@@ -38,31 +29,40 @@ export const adminTeachersRolesColNames = [
 export type AdminTeachersRolesColName =
   (typeof adminTeachersRolesColNames)[number];
 
-export const adminTeachersServiceModificationsColNames = [
+export const adminServicesServicesColNames = [
+  "year",
+  "teacherEmail",
+  "positionLabel",
+  "hours",
+] as const;
+export type AdminServicesServicesColName =
+  (typeof adminServicesServicesColNames)[number];
+
+export const adminServicesServiceModificationsColNames = [
   "year",
   "teacherEmail",
   "label",
   "hours",
 ] as const;
-export type AdminTeachersServiceModificationsColName =
-  (typeof adminTeachersServiceModificationsColNames)[number];
+export type AdminServicesServiceModificationsColName =
+  (typeof adminServicesServiceModificationsColNames)[number];
 
-export const adminTeachersExternalCoursesColNames = [
+export const adminServicesExternalCoursesColNames = [
   "year",
   "teacherEmail",
   "label",
   "hours",
 ] as const;
-export type AdminTeachersExternalCoursesColName =
-  (typeof adminTeachersExternalCoursesColNames)[number];
+export type AdminServicesExternalCoursesColName =
+  (typeof adminServicesExternalCoursesColNames)[number];
 
-export const adminTeachersMessagesColNames = [
+export const adminServicesMessagesColNames = [
   "year",
   "teacherEmail",
   "content",
 ] as const;
-export type AdminTeachersMessagesColName =
-  (typeof adminTeachersMessagesColNames)[number];
+export type AdminServicesMessagesColName =
+  (typeof adminServicesMessagesColNames)[number];
 
 export const adminCoursesDegreesColNames = [
   "name",

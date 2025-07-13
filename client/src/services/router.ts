@@ -30,7 +30,7 @@ const routes: RouteRecordRaw[] = [
     component: PageCourses,
   },
   {
-    path: "/admin/:section(general|teachers|courses|requests|coordinations)?",
+    path: "/admin/:section(general|teachers|services|courses|requests|coordinations)?",
     name: "admin",
     component: PageAdmin,
     props: true,
