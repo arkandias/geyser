@@ -5,10 +5,13 @@ CREATE TABLE public.organization
     label           text    NOT NULL,
     sublabel        text,
     email           text    NOT NULL,
-    locale          text    NOT NULL DEFAULT 'fr' REFERENCES public.locale ON UPDATE CASCADE,
+    locale          text    NOT NULL REFERENCES public.locale ON UPDATE CASCADE,
     private_service boolean NOT NULL DEFAULT FALSE,
-    active          boolean NOT NULL DEFAULT TRUE,
-    CONSTRAINT organization_id_positive CHECK (id > 0) -- 0 is reserved for admin
+    active          boolean NOT NULL DEFAULT TRUE
+        CONSTRAINT organization_key_valid CHECK (
+            key ~ '^[a-z0-9-]+$' AND
+            key NOT IN ('admin', 'api', 'auth', 'auth-admin') -- reserved subdomains
+            )
 );
 CREATE INDEX idx_organization_locale ON public.organization (locale);
 
