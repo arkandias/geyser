@@ -15,6 +15,8 @@ export default {
         reset: "Reset",
       },
       error: {
+        emptyLabel: "Enter a label",
+        emptyEmail: "Enter a contact email",
         update: "Failed to update parameters",
       },
       success: {

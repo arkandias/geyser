@@ -41,6 +41,23 @@ const resetParameters = () => {
 watch(organization, resetParameters, { immediate: true });
 
 const updateParameters = async (): Promise<void> => {
+  // Validate parameters
+  label.value = label.value.trim();
+  if (!label.value) {
+    notify(NotifyType.Error, {
+      message: t("admin.general.organization.error.emptyLabel"),
+    });
+    return;
+  }
+  sublabel.value = sublabel.value?.trim() ?? null;
+  email.value = email.value.trim();
+  if (!email.value) {
+    notify(NotifyType.Error, {
+      message: t("admin.general.organization.error.emptyEmail"),
+    });
+    return;
+  }
+
   const { error } = await updateOrganization.executeMutation({
     oid: organization.id,
     input: {

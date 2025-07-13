@@ -15,6 +15,8 @@ export default {
         reset: "Réinitialiser",
       },
       error: {
+        emptyLabel: "Entrez un libellé",
+        emptyEmail: "Entez un email de contact",
         update: "Échec de la mise à jour des paramètres",
       },
       success: {
