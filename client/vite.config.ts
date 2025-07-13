@@ -14,7 +14,7 @@ export default defineConfig(() => ({
     rollupOptions: {
       output: {
         manualChunks: {
-          "vendor-core": ["vue", "vue-i18n", "vue-router"],
+          "vendor-core": ["driver.js", "vue", "vue-i18n", "vue-router"],
           "vendor-data": [
             "@geyser/shared",
             "@urql/exchange-auth",
