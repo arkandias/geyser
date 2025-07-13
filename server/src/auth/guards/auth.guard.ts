@@ -1,4 +1,3 @@
-import { RoleType } from "@geyser/shared";
 import {
   CanActivate,
   ExecutionContext,
@@ -81,7 +80,7 @@ export class AuthGuard implements CanActivate {
       }
 
       // Validate X-Role header against JWT allowed roles
-      if (role && !payload.allowedRoles.includes(role as RoleType)) {
+      if (role && !payload.allowedRoles.includes(role)) {
         throw new UnauthorizedException(
           `X-Role header '${role}' not in user allowed roles from access token: [${payload.allowedRoles.join(", ")}]`,
         );

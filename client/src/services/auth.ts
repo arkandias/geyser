@@ -1,7 +1,6 @@
 import {
   type AccessTokenPayload,
   type OrganizationData,
-  type RoleType,
   accessTokenPayloadSchema,
   organizationDataSchema,
 } from "@geyser/shared";
@@ -19,7 +18,7 @@ import {
   organizationKey,
 } from "@/config/environment.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
-import { capitalize, toLowerCase } from "@/utils";
+import { isRole } from "@/utils";
 
 const api = axios.create({
   baseURL: apiUrl,
@@ -34,11 +33,14 @@ export class AuthManager {
   private _organizationKey: string | null = null;
   private _organization: OrganizationData | null = null;
   private _payload: AccessTokenPayload | null = null;
-  private _role: RoleType | null = null;
+  private _role: string | null = null;
 
   async init(): Promise<void> {
     // Get organization
     this.getOrganizationKey();
+    if (!this._organizationKey) {
+      return;
+    }
     await this.getOrganization();
     if (!this._organization) {
       return;
@@ -130,9 +132,6 @@ export class AuthManager {
   }
 
   async getOrganization(): Promise<void> {
-    if (!this._organizationKey) {
-      return;
-    }
     try {
       const response = await api.get(`/organization/${this._organizationKey}`);
       this._organization = organizationDataSchema.parse(response.data);
@@ -305,21 +304,15 @@ export class AuthManager {
   }
 
   get allowedRoles(): RoleEnum[] {
-    return (
-      this._payload?.allowedRoles.map((role) => RoleEnum[capitalize(role)]) ??
-      []
-    );
-  }
-
-  get role(): RoleEnum | null {
-    if (!this._role) {
-      return null;
-    }
-    return RoleEnum[capitalize(this._role)];
+    return this._payload?.isAdmin
+      ? Object.values(RoleEnum)
+      : (this._payload?.allowedRoles
+          .map((role) => role.toUpperCase())
+          .filter((role) => isRole(role)) ?? []);
   }
 
   setRole(role: RoleEnum | null) {
-    this._role = role ? toLowerCase(role) : null;
+    this._role = role?.toLowerCase() ?? null;
 
     if (role && !this.allowedRoles.includes(role)) {
       console.warn("[AuthManager] Role not allowed");

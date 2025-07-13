@@ -4,9 +4,7 @@ import {
   AccessTokenPayload,
   type BaseTokenPayload,
   type OmitWithIndex,
-  RoleType,
   accessTokenPayloadSchema,
-  roleTypeSchema,
 } from "@geyser/shared";
 import {
   RefreshTokenPayload,
@@ -75,9 +73,8 @@ export class JwtService {
     isAdmin: boolean,
   ): Promise<string> {
     const userRoles = await this.roleService.findByUserId(userId);
-    const roles: RoleType[] = isAdmin
-      ? ["organizer", "commissioner", "teacher"]
-      : userRoles.map((userRole) => roleTypeSchema.parse(userRole.role));
+    const roles = userRoles.map((userRole) => userRole.role);
+    // Add base role
     if (!roles.includes("teacher")) {
       roles.push("teacher");
     }

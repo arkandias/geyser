@@ -15,6 +15,13 @@ export class OrganizationController {
 
   @Get(":key")
   async getOrganization(@Param("key") key: string): Promise<OrganizationData> {
+    // Admin organization
+    if (key === "admin") {
+      return {
+        id: 0,
+      };
+    }
+
     const organization = await this.organizationService.findByKey(key);
     if (!organization) {
       throw new NotFoundException("Organization not found");

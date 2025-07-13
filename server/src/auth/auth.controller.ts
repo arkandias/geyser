@@ -101,26 +101,30 @@ export class AuthController {
       const { email, roles } =
         await this.oidcService.verifyToken(identityToken);
 
-      const user = await this.userService.findByOidEmail(orgId, email);
       const isAdmin = !!roles?.includes("admin");
 
-      if (!isAdmin) {
-        if (!user) {
-          throw new UnauthorizedException(
-            `User '${email}' not found in organization ${orgId}`,
-          );
+      let userId: number;
+      // Admin organization
+      if (orgId === 0) {
+        if (!isAdmin) {
+          throw new UnauthorizedException("Admin access denied");
         }
-        if (!user.access) {
-          throw new UnauthorizedException("User does not have access");
+        userId = 0;
+      } else {
+        const user = await this.userService.findByOidEmail(orgId, email);
+        if (!isAdmin) {
+          if (!user) {
+            throw new UnauthorizedException(
+              `User '${email}' not found in organization ${orgId}`,
+            );
+          }
+          if (!user.access) {
+            throw new UnauthorizedException("User does not have access");
+          }
         }
+        userId = user?.id ?? 0; // 0 is a special id for non-user admin
       }
-
-      await this.cookiesService.setAuthCookies(
-        res,
-        orgId,
-        user?.id ?? 0, // 0 is a special id for non-user admin
-        isAdmin,
-      );
+      await this.cookiesService.setAuthCookies(res, orgId, userId, isAdmin);
 
       if (redirectUrl) {
         redirectUrl.searchParams.set("post_login", "true");
