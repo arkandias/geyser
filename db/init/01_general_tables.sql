@@ -22,6 +22,10 @@ COMMENT ON COLUMN public.organization.locale IS 'Default locale';
 COMMENT ON COLUMN public.organization.private_service IS 'When true, teachers can only view their own services';
 COMMENT ON COLUMN public.organization.active IS 'Status flag';
 
+-- Default organization (for single-tenant mode)
+INSERT INTO public.organization(key, label, sublabel, email, locale)
+VALUES ('default', '<LABEL>', '<SUBLABEL>', '<EMAIL>', 'fr');
+
 
 CREATE TABLE public.current_phase
 (

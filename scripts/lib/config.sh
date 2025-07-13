@@ -7,7 +7,6 @@ declare -r GEYSER_ENV_VARS=(
     "GEYSER_ENV"
     "GEYSER_DOMAIN"
     "GEYSER_TENANCY"
-    "GEYSER_ORGANIZATION_KEY"
     "GEYSER_AS_SERVICE"
 )
 
@@ -136,17 +135,6 @@ _validate_geyser_env_vars() {
     fi
     declare -grx GEYSER_TENANCY
 
-    # Organization key [single-tenant only]
-    if [[ "${GEYSER_TENANCY}" == "multi" && -n "${GEYSER_ORGANIZATION_KEY}" ]]; then
-        warn "GEYSER_ORGANIZATION_KEY should not be provided in multi-tenant. Unsetting"
-        unset GEYSER_ORGANIZATION_KEY
-    fi
-    if [[ "${GEYSER_TENANCY}" == "single" && -z "${GEYSER_ORGANIZATION_KEY}" ]]; then
-        error "GEYSER_ORGANIZATION_KEY must be provided in single-tenant mode"
-        exit 1
-    fi
-    declare -grx GEYSER_ORGANIZATION_KEY
-
     # Indicates if running as a systemd service (affects logging)
     if [[ -z "${GEYSER_AS_SERVICE}" ]]; then
         debug "GEYSER_AS_SERVICE is not set. Defaulting to 'false'"
@@ -191,16 +179,19 @@ _initialize_computed_env_vars() {
         API_ORIGINS="http://*.${GEYSER_DOMAIN}"
         KC_HOSTNAME="http://localhost:8081"
         KC_HOSTNAME_ADMIN="http://localhost:8081"
+        ORGANIZATION_KEY=""
     elif [[ "${GEYSER_TENANCY}" == "multi" ]]; then
         API_URL="https://api.${GEYSER_DOMAIN}"
         API_ORIGINS="https://*.${GEYSER_DOMAIN}"
         KC_HOSTNAME="https://auth.${GEYSER_DOMAIN}"
         KC_HOSTNAME_ADMIN="https://auth-admin.${GEYSER_DOMAIN}"
+        ORGANIZATION_KEY=""
     else
         API_URL="https://${GEYSER_DOMAIN}/api"
         API_ORIGINS="https://${GEYSER_DOMAIN}"
         KC_HOSTNAME="https://${GEYSER_DOMAIN}/auth"
         KC_HOSTNAME_ADMIN="https://${GEYSER_DOMAIN}/auth"
+        ORGANIZATION_KEY="default"
     fi
 
     # shellcheck disable=SC2034
@@ -211,6 +202,8 @@ _initialize_computed_env_vars() {
     declare -gr KC_HOSTNAME
     # shellcheck disable=SC2034
     declare -gr KC_HOSTNAME_ADMIN
+    # shellcheck disable=SC2034
+    declare -gr ORGANIZATION_KEY
 }
 
 _env_summary() {
@@ -220,7 +213,6 @@ _env_summary() {
     debug "GEYSER_ENV=${GEYSER_ENV}"
     debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
     debug "GEYSER_TENANCY=${GEYSER_TENANCY}"
-    debug "GEYSER_ORGANIZATION_KEY=${GEYSER_ORGANIZATION_KEY}"
     debug "GEYSER_LOG_LEVEL=${GEYSER_LOG_LEVEL}"
     debug "GEYSER_AS_SERVICE=${GEYSER_AS_SERVICE}"
     debug "======================================="
