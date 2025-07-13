@@ -328,8 +328,10 @@ export class AuthManager {
 
   get headers(): Record<string, string> {
     const headers: Record<string, string> = {};
+    if (adminSecret) {
+      headers["X-Admin-Secret"] = adminSecret;
+    }
     if (this.isAdmin) {
-      headers["X-Admin-Secret"] = adminSecret ?? "";
       headers["X-Org-Id"] = this.orgId.toString();
       headers["X-User-Id"] = this.userId.toString();
     }
