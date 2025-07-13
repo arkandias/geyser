@@ -6,7 +6,7 @@ import { buttonColor } from "@/utils";
 defineProps<{
   name: string;
   icon: string;
-  disable: boolean;
+  disable?: boolean;
   tooltip?: string;
 }>();
 

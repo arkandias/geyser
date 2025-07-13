@@ -38,8 +38,8 @@ const updateRole = async (value: RoleEnum) => {
 <template>
   <MenuBase
     id="user-button"
-    :label="t('header.user.label')"
     :icon="profile.isAdmin ? 'sym_s_shield_person' : 'sym_s_account_circle'"
+    :label="t('header.user.label')"
   >
     <QList id="user-menu">
       <template v-if="profile.isLoggedOut">

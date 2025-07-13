@@ -6,6 +6,8 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";
 
+defineProps<{ disable?: boolean }>();
+
 const { t } = useTypedI18n();
 const { years, activeYear, selectYear } = useYearsStore();
 
@@ -35,8 +37,9 @@ const update = async () => {
 <template>
   <MenuBase
     id="year-button"
-    :label="t('header.year.label')"
     icon="sym_s_calendar_month"
+    :label="t('header.year.label')"
+    :disable
   >
     <QList id="year-menu">
       <QItem class="flex-center">

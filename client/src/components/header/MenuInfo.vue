@@ -24,7 +24,7 @@ const icons: Record<InfoTextKey, string> = {
 </script>
 
 <template>
-  <MenuBase id="info-button" :label="t('header.info.label')" icon="sym_s_info">
+  <MenuBase id="info-button" icon="sym_s_info" :label="t('header.info.label')">
     <QList id="info-menu">
       <QItem class="flex-center text-no-wrap">
         <QItemLabel header>

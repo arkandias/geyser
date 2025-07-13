@@ -12,8 +12,8 @@ const { setLocale } = useLocale();
 <template>
   <MenuBase
     id="lang-button"
-    :label="t('header.lang.label')"
     icon="sym_s_language"
+    :label="t('header.lang.label')"
   >
     <QList id="lang-menu">
       <QItem class="flex-center text-no-wrap">
