@@ -37,9 +37,9 @@ export class AuthManager {
   private _role: RoleType | null = null;
 
   async init(): Promise<void> {
-    // Get organization key and id
+    // Get organization
     this.getOrganizationKey();
-    await this.getOrganizationId();
+    await this.getOrganization();
     if (!this._organization) {
       return;
     }
@@ -129,7 +129,7 @@ export class AuthManager {
     );
   }
 
-  async getOrganizationId(): Promise<void> {
+  async getOrganization(): Promise<void> {
     if (!this._organizationKey) {
       return;
     }
