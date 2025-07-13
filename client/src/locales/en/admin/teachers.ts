@@ -5,7 +5,6 @@ import type {
   AdminTeachersMessagesColName,
   AdminTeachersPositionsColName,
   AdminTeachersRolesColName,
-  AdminTeachersServiceModificationTypesColName,
   AdminTeachersServiceModificationsColName,
   AdminTeachersServicesColName,
   AdminTeachersTeachersColName,
@@ -235,8 +234,8 @@ If there are modifications, external courses, requests, or messages for these se
           label: "Teacher",
           tooltip: "",
         },
-        typeLabel: {
-          label: "Type",
+        label: {
+          label: "Label",
           tooltip: "",
         },
         hours: {
@@ -257,8 +256,6 @@ If there are modifications, external courses, requests, or messages for these se
             "You cannot modify the teacher without selecting a year",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} and year {year}",
-          typeNotFound:
-            'No service modification with the label "{typeLabel}" exists',
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },
@@ -278,47 +275,6 @@ If there are modifications, external courses, requests, or messages for these se
         confirm: {
           delete:
             "Are you sure you want to delete the selected service modification? | Are you sure you want to delete the {count} selected service modifications?",
-        },
-      },
-    },
-    serviceModificationTypes: {
-      label: "Service modification types",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<
-        AdminTeachersServiceModificationTypesColName,
-        AdminColNameOptions
-      >,
-      form: {
-        title:
-          "Creating a modification type | Editing a modification type | Editing {count} modification types",
-      },
-      data: {
-        success: {
-          insert:
-            "No modification type created | Modification type created | {count} modification types created",
-          update:
-            "No modification type updated | Modification type updated | {count} modification types updated",
-          delete:
-            "No modification type deleted | Modification type deleted | {count} modification types deleted",
-          import:
-            "0 modification types imported | 1 modification type imported | {count} modification types imported",
-          export:
-            "0 modification types exported | 1 modification type exported | {count} modification types exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected modification type?
-If this type is assigned to modifications, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected modification types?
-If these types are assigned to modifications, you will not be able to delete them.`,
         },
       },
     },

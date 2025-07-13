@@ -7126,42 +7126,6 @@ type Organization {
   ): RequestAggregate!
 
   """An array relationship"""
-  serviceModificationTypes(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): [ServiceModificationType!]!
-
-  """An aggregate relationship"""
-  serviceModificationTypesAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): ServiceModificationTypeAggregate!
-
-  """An array relationship"""
   serviceModifications(
     """distinct select on columns"""
     distinctOn: [ServiceModificationSelectColumn!]
@@ -7456,8 +7420,6 @@ input OrganizationBoolExp {
   programsAggregate: ProgramAggregateBoolExp
   requests: RequestBoolExp
   requestsAggregate: RequestAggregateBoolExp
-  serviceModificationTypes: ServiceModificationTypeBoolExp
-  serviceModificationTypesAggregate: ServiceModificationTypeAggregateBoolExp
   serviceModifications: ServiceModificationBoolExp
   serviceModificationsAggregate: ServiceModificationAggregateBoolExp
   services: ServiceBoolExp
@@ -7520,7 +7482,6 @@ input OrganizationInsertInput {
   privateService: Boolean
   programs: ProgramArrRelInsertInput
   requests: RequestArrRelInsertInput
-  serviceModificationTypes: ServiceModificationTypeArrRelInsertInput
   serviceModifications: ServiceModificationArrRelInsertInput
   services: ServiceArrRelInsertInput
 
@@ -7637,7 +7598,6 @@ input OrganizationOrderBy {
   privateService: OrderBy
   programsAggregate: ProgramAggregateOrderBy
   requestsAggregate: RequestAggregateOrderBy
-  serviceModificationTypesAggregate: ServiceModificationTypeAggregateOrderBy
   serviceModificationsAggregate: ServiceModificationAggregateOrderBy
   servicesAggregate: ServiceAggregateOrderBy
   sublabel: OrderBy
@@ -12472,6 +12432,7 @@ type ServiceModification {
 
   """Unique identifier"""
   id: Int!
+  label: String!
 
   """Organization reference"""
   oid: Int!
@@ -12484,12 +12445,6 @@ type ServiceModification {
 
   """Service reference"""
   serviceId: Int!
-
-  """An object relationship"""
-  type: ServiceModificationType!
-
-  """Modification type reference"""
-  typeId: Int!
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12566,9 +12521,6 @@ type ServiceModificationAvgFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -12586,9 +12538,6 @@ input ServiceModificationAvgOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """
@@ -12601,12 +12550,11 @@ input ServiceModificationBoolExp {
   createdAt: TimestamptzComparisonExp
   hours: FloatComparisonExp
   id: IntComparisonExp
+  label: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
   service: ServiceBoolExp
   serviceId: IntComparisonExp
-  type: ServiceModificationTypeBoolExp
-  typeId: IntComparisonExp
   updatedAt: TimestamptzComparisonExp
 }
 
@@ -12637,9 +12585,6 @@ input ServiceModificationIncInput {
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 }
 
 """
@@ -12651,6 +12596,7 @@ input ServiceModificationInsertInput {
 
   """Hour deduction amount"""
   hours: Float
+  label: String
 
   """Organization reference"""
   oid: Int
@@ -12659,10 +12605,6 @@ input ServiceModificationInsertInput {
 
   """Service reference"""
   serviceId: Int
-  type: ServiceModificationTypeObjRelInsertInput
-
-  """Modification type reference"""
-  typeId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12680,15 +12622,13 @@ type ServiceModificationMaxFields {
 
   """Unique identifier"""
   id: Int
+  label: String
 
   """Organization reference"""
   oid: Int
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12708,15 +12648,13 @@ input ServiceModificationMaxOrderBy {
 
   """Unique identifier"""
   id: OrderBy
+  label: OrderBy
 
   """Organization reference"""
   oid: OrderBy
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12734,15 +12672,13 @@ type ServiceModificationMinFields {
 
   """Unique identifier"""
   id: Int
+  label: String
 
   """Organization reference"""
   oid: Int
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12762,15 +12698,13 @@ input ServiceModificationMinOrderBy {
 
   """Unique identifier"""
   id: OrderBy
+  label: OrderBy
 
   """Organization reference"""
   oid: OrderBy
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12803,12 +12737,11 @@ input ServiceModificationOrderBy {
   createdAt: OrderBy
   hours: OrderBy
   id: OrderBy
+  label: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
   service: ServiceOrderBy
   serviceId: OrderBy
-  type: ServiceModificationTypeOrderBy
-  typeId: OrderBy
   updatedAt: OrderBy
 }
 
@@ -12835,13 +12768,13 @@ enum ServiceModificationSelectColumn {
   id
 
   """column name"""
+  label
+
+  """column name"""
   oid
 
   """column name"""
   serviceId
-
-  """column name"""
-  typeId
 
   """column name"""
   updatedAt
@@ -12856,15 +12789,13 @@ input ServiceModificationSetInput {
 
   """Hour deduction amount"""
   hours: Float
+  label: String
 
   """Organization reference"""
   oid: Int
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -12885,9 +12816,6 @@ type ServiceModificationStddevFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -12905,9 +12833,6 @@ input ServiceModificationStddevOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """aggregate stddevPop on columns"""
@@ -12923,9 +12848,6 @@ type ServiceModificationStddevPopFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -12943,9 +12865,6 @@ input ServiceModificationStddevPopOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """aggregate stddevSamp on columns"""
@@ -12961,9 +12880,6 @@ type ServiceModificationStddevSampFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -12981,9 +12897,6 @@ input ServiceModificationStddevSampOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """
@@ -13007,15 +12920,13 @@ input ServiceModificationStreamCursorValueInput {
 
   """Unique identifier"""
   id: Int
+  label: String
 
   """Organization reference"""
   oid: Int
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 
   """
   Timestamp when the record was last updated, automatically managed by trigger
@@ -13036,9 +12947,6 @@ type ServiceModificationSumFields {
 
   """Service reference"""
   serviceId: Int
-
-  """Modification type reference"""
-  typeId: Int
 }
 
 """
@@ -13056,614 +12964,6 @@ input ServiceModificationSumOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
-}
-
-"""Categories of service modifications"""
-type ServiceModificationType {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz!
-
-  """Optional description"""
-  description: String
-
-  """Unique identifier"""
-  id: Int!
-
-  """Modification type name (unique)"""
-  label: String!
-
-  """Organization reference"""
-  oid: Int!
-
-  """An object relationship"""
-  organization: Organization!
-
-  """An aggregate relationship"""
-  serviceModificationsAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationBoolExp
-  ): ServiceModificationAggregate!
-
-  """An array relationship"""
-  service_modifications(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationBoolExp
-  ): [ServiceModification!]!
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz!
-}
-
-"""
-aggregated selection of "service_modification_type"
-"""
-type ServiceModificationTypeAggregate {
-  aggregate: ServiceModificationTypeAggregateFields
-  nodes: [ServiceModificationType!]!
-}
-
-input ServiceModificationTypeAggregateBoolExp {
-  count: serviceModificationTypeAggregateBoolExpCount
-}
-
-"""
-aggregate fields of "service_modification_type"
-"""
-type ServiceModificationTypeAggregateFields {
-  avg: ServiceModificationTypeAvgFields
-  count(columns: [ServiceModificationTypeSelectColumn!], distinct: Boolean): Int!
-  max: ServiceModificationTypeMaxFields
-  min: ServiceModificationTypeMinFields
-  stddev: ServiceModificationTypeStddevFields
-  stddevPop: ServiceModificationTypeStddevPopFields
-  stddevSamp: ServiceModificationTypeStddevSampFields
-  sum: ServiceModificationTypeSumFields
-  varPop: ServiceModificationTypeVarPopFields
-  varSamp: ServiceModificationTypeVarSampFields
-  variance: ServiceModificationTypeVarianceFields
-}
-
-"""
-order by aggregate values of table "service_modification_type"
-"""
-input ServiceModificationTypeAggregateOrderBy {
-  avg: ServiceModificationTypeAvgOrderBy
-  count: OrderBy
-  max: ServiceModificationTypeMaxOrderBy
-  min: ServiceModificationTypeMinOrderBy
-  stddev: ServiceModificationTypeStddevOrderBy
-  stddevPop: ServiceModificationTypeStddevPopOrderBy
-  stddevSamp: ServiceModificationTypeStddevSampOrderBy
-  sum: ServiceModificationTypeSumOrderBy
-  varPop: ServiceModificationTypeVarPopOrderBy
-  varSamp: ServiceModificationTypeVarSampOrderBy
-  variance: ServiceModificationTypeVarianceOrderBy
-}
-
-"""
-input type for inserting array relation for remote table "service_modification_type"
-"""
-input ServiceModificationTypeArrRelInsertInput {
-  data: [ServiceModificationTypeInsertInput!]!
-
-  """upsert condition"""
-  onConflict: ServiceModificationTypeOnConflict
-}
-
-"""aggregate avg on columns"""
-type ServiceModificationTypeAvgFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by avg() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeAvgOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-Boolean expression to filter rows from the table "service_modification_type". All fields are combined with a logical 'AND'.
-"""
-input ServiceModificationTypeBoolExp {
-  _and: [ServiceModificationTypeBoolExp!]
-  _not: ServiceModificationTypeBoolExp
-  _or: [ServiceModificationTypeBoolExp!]
-  createdAt: TimestamptzComparisonExp
-  description: StringComparisonExp
-  id: IntComparisonExp
-  label: StringComparisonExp
-  oid: IntComparisonExp
-  organization: OrganizationBoolExp
-  service_modifications: ServiceModificationBoolExp
-  service_modificationsAggregate: ServiceModificationAggregateBoolExp
-  updatedAt: TimestamptzComparisonExp
-}
-
-"""
-unique or primary key constraints on table "service_modification_type"
-"""
-enum ServiceModificationTypeConstraint {
-  """
-  unique or primary key constraint on columns "id"
-  """
-  service_modification_type_id_key
-
-  """
-  unique or primary key constraint on columns "label", "oid"
-  """
-  service_modification_type_oid_label_key
-
-  """
-  unique or primary key constraint on columns "id", "oid"
-  """
-  service_modification_type_pkey
-}
-
-"""
-input type for incrementing numeric columns in table "service_modification_type"
-"""
-input ServiceModificationTypeIncInput {
-  """Organization reference"""
-  oid: Int
-}
-
-"""
-input type for inserting data into table "service_modification_type"
-"""
-input ServiceModificationTypeInsertInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Optional description"""
-  description: String
-
-  """Modification type name (unique)"""
-  label: String
-
-  """Organization reference"""
-  oid: Int
-  organization: OrganizationObjRelInsertInput
-  service_modifications: ServiceModificationArrRelInsertInput
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""aggregate max on columns"""
-type ServiceModificationTypeMaxFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Optional description"""
-  description: String
-
-  """Unique identifier"""
-  id: Int
-
-  """Modification type name (unique)"""
-  label: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""
-order by max() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeMaxOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Optional description"""
-  description: OrderBy
-
-  """Unique identifier"""
-  id: OrderBy
-
-  """Modification type name (unique)"""
-  label: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-}
-
-"""aggregate min on columns"""
-type ServiceModificationTypeMinFields {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Optional description"""
-  description: String
-
-  """Unique identifier"""
-  id: Int
-
-  """Modification type name (unique)"""
-  label: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""
-order by min() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeMinOrderBy {
-  """Timestamp when the record was created"""
-  createdAt: OrderBy
-
-  """Optional description"""
-  description: OrderBy
-
-  """Unique identifier"""
-  id: OrderBy
-
-  """Modification type name (unique)"""
-  label: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: OrderBy
-}
-
-"""
-response of any mutation on the table "service_modification_type"
-"""
-type ServiceModificationTypeMutationResponse {
-  """number of rows affected by the mutation"""
-  affectedRows: Int!
-
-  """data from the rows affected by the mutation"""
-  returning: [ServiceModificationType!]!
-}
-
-"""
-input type for inserting object relation for remote table "service_modification_type"
-"""
-input ServiceModificationTypeObjRelInsertInput {
-  data: ServiceModificationTypeInsertInput!
-
-  """upsert condition"""
-  onConflict: ServiceModificationTypeOnConflict
-}
-
-"""
-on_conflict condition type for table "service_modification_type"
-"""
-input ServiceModificationTypeOnConflict {
-  constraint: ServiceModificationTypeConstraint!
-  updateColumns: [ServiceModificationTypeUpdateColumn!]! = []
-  where: ServiceModificationTypeBoolExp
-}
-
-"""Ordering options when selecting data from "service_modification_type"."""
-input ServiceModificationTypeOrderBy {
-  createdAt: OrderBy
-  description: OrderBy
-  id: OrderBy
-  label: OrderBy
-  oid: OrderBy
-  organization: OrganizationOrderBy
-  service_modificationsAggregate: ServiceModificationAggregateOrderBy
-  updatedAt: OrderBy
-}
-
-"""primary key columns input for table: service_modification_type"""
-input ServiceModificationTypePkColumnsInput {
-  """Unique identifier"""
-  id: Int!
-
-  """Organization reference"""
-  oid: Int!
-}
-
-"""
-select columns of table "service_modification_type"
-"""
-enum ServiceModificationTypeSelectColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  description
-
-  """column name"""
-  id
-
-  """column name"""
-  label
-
-  """column name"""
-  oid
-
-  """column name"""
-  updatedAt
-}
-
-"""
-input type for updating data in table "service_modification_type"
-"""
-input ServiceModificationTypeSetInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Optional description"""
-  description: String
-
-  """Modification type name (unique)"""
-  label: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""aggregate stddev on columns"""
-type ServiceModificationTypeStddevFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddev() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeStddevOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate stddevPop on columns"""
-type ServiceModificationTypeStddevPopFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddevPop() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeStddevPopOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate stddevSamp on columns"""
-type ServiceModificationTypeStddevSampFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by stddevSamp() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeStddevSampOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-Streaming cursor of the table "service_modification_type"
-"""
-input ServiceModificationTypeStreamCursorInput {
-  """Stream column input with initial value"""
-  initialValue: ServiceModificationTypeStreamCursorValueInput!
-
-  """cursor ordering"""
-  ordering: CursorOrdering
-}
-
-"""Initial value of the column from where the streaming should start"""
-input ServiceModificationTypeStreamCursorValueInput {
-  """Timestamp when the record was created"""
-  createdAt: timestamptz
-
-  """Optional description"""
-  description: String
-
-  """Unique identifier"""
-  id: Int
-
-  """Modification type name (unique)"""
-  label: String
-
-  """Organization reference"""
-  oid: Int
-
-  """
-  Timestamp when the record was last updated, automatically managed by trigger
-  """
-  updatedAt: timestamptz
-}
-
-"""aggregate sum on columns"""
-type ServiceModificationTypeSumFields {
-  """Unique identifier"""
-  id: Int
-
-  """Organization reference"""
-  oid: Int
-}
-
-"""
-order by sum() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeSumOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""
-update columns of table "service_modification_type"
-"""
-enum ServiceModificationTypeUpdateColumn {
-  """column name"""
-  createdAt
-
-  """column name"""
-  description
-
-  """column name"""
-  label
-
-  """column name"""
-  oid
-
-  """column name"""
-  updatedAt
-}
-
-input ServiceModificationTypeUpdates {
-  """increments the numeric columns with given value of the filtered values"""
-  _inc: ServiceModificationTypeIncInput
-
-  """sets the columns of the filtered rows to the given values"""
-  _set: ServiceModificationTypeSetInput
-
-  """filter the rows which have to be updated"""
-  where: ServiceModificationTypeBoolExp!
-}
-
-"""aggregate varPop on columns"""
-type ServiceModificationTypeVarPopFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by varPop() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeVarPopOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate varSamp on columns"""
-type ServiceModificationTypeVarSampFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by varSamp() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeVarSampOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
-}
-
-"""aggregate variance on columns"""
-type ServiceModificationTypeVarianceFields {
-  """Unique identifier"""
-  id: Float
-
-  """Organization reference"""
-  oid: Float
-}
-
-"""
-order by variance() on columns of table "service_modification_type"
-"""
-input ServiceModificationTypeVarianceOrderBy {
-  """Unique identifier"""
-  id: OrderBy
-
-  """Organization reference"""
-  oid: OrderBy
 }
 
 """
@@ -13677,13 +12977,13 @@ enum ServiceModificationUpdateColumn {
   hours
 
   """column name"""
+  label
+
+  """column name"""
   oid
 
   """column name"""
   serviceId
-
-  """column name"""
-  typeId
 
   """column name"""
   updatedAt
@@ -13713,9 +13013,6 @@ type ServiceModificationVarPopFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -13733,9 +13030,6 @@ input ServiceModificationVarPopOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """aggregate varSamp on columns"""
@@ -13751,9 +13045,6 @@ type ServiceModificationVarSampFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -13771,9 +13062,6 @@ input ServiceModificationVarSampOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """aggregate variance on columns"""
@@ -13789,9 +13077,6 @@ type ServiceModificationVarianceFields {
 
   """Service reference"""
   serviceId: Float
-
-  """Modification type reference"""
-  typeId: Float
 }
 
 """
@@ -13809,9 +13094,6 @@ input ServiceModificationVarianceOrderBy {
 
   """Service reference"""
   serviceId: OrderBy
-
-  """Modification type reference"""
-  typeId: OrderBy
 }
 
 """
@@ -18665,25 +17947,6 @@ type mutation_root {
   ): ServiceModification
 
   """
-  delete data from the table: "service_modification_type"
-  """
-  deleteServiceModificationType(
-    """filter the rows which have to be deleted"""
-    where: ServiceModificationTypeBoolExp!
-  ): ServiceModificationTypeMutationResponse
-
-  """
-  delete single row from the table: "service_modification_type"
-  """
-  deleteServiceModificationTypeByPk(
-    """Unique identifier"""
-    id: Int!
-
-    """Organization reference"""
-    oid: Int!
-  ): ServiceModificationType
-
-  """
   delete data from the table: "teacher"
   """
   deleteTeacher(
@@ -19204,28 +18467,6 @@ type mutation_root {
     """upsert condition"""
     onConflict: ServiceModificationOnConflict
   ): ServiceModification
-
-  """
-  insert data into the table: "service_modification_type"
-  """
-  insertServiceModificationType(
-    """the rows to be inserted"""
-    objects: [ServiceModificationTypeInsertInput!]!
-
-    """upsert condition"""
-    onConflict: ServiceModificationTypeOnConflict
-  ): ServiceModificationTypeMutationResponse
-
-  """
-  insert a single row into the table: "service_modification_type"
-  """
-  insertServiceModificationTypeOne(
-    """the row to be inserted"""
-    object: ServiceModificationTypeInsertInput!
-
-    """upsert condition"""
-    onConflict: ServiceModificationTypeOnConflict
-  ): ServiceModificationType
 
   """
   insert a single row into the table: "service"
@@ -19963,40 +19204,6 @@ type mutation_root {
     """updates to execute, in order"""
     updates: [ServiceModificationUpdates!]!
   ): [ServiceModificationMutationResponse]
-
-  """
-  update data of the table: "service_modification_type"
-  """
-  updateServiceModificationType(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: ServiceModificationTypeIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: ServiceModificationTypeSetInput
-
-    """filter the rows which have to be updated"""
-    where: ServiceModificationTypeBoolExp!
-  ): ServiceModificationTypeMutationResponse
-
-  """
-  update single row of the table: "service_modification_type"
-  """
-  updateServiceModificationTypeByPk(
-    """increments the numeric columns with given value of the filtered values"""
-    _inc: ServiceModificationTypeIncInput
-
-    """sets the columns of the filtered rows to the given values"""
-    _set: ServiceModificationTypeSetInput
-    pkColumns: ServiceModificationTypePkColumnsInput!
-  ): ServiceModificationType
-
-  """
-  update multiples rows of table: "service_modification_type"
-  """
-  updateServiceModificationTypeMany(
-    """updates to execute, in order"""
-    updates: [ServiceModificationTypeUpdates!]!
-  ): [ServiceModificationTypeMutationResponse]
 
   """
   update data of the table: "teacher"
@@ -21131,57 +20338,6 @@ type query_root {
   ): ServiceModification
 
   """
-  fetch data from the table: "service_modification_type"
-  """
-  serviceModificationType(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): [ServiceModificationType!]!
-
-  """
-  fetch aggregated fields from the table: "service_modification_type"
-  """
-  serviceModificationTypeAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): ServiceModificationTypeAggregate!
-
-  """
-  fetch data from the table: "service_modification_type" using primary key columns
-  """
-  serviceModificationTypeByPk(
-    """Unique identifier"""
-    id: Int!
-
-    """Organization reference"""
-    oid: Int!
-  ): ServiceModificationType
-
-  """
   fetch data from the table: "teacher"
   """
   teacher(
@@ -21445,13 +20601,6 @@ input serviceModificationAggregateBoolExpCount {
   arguments: [ServiceModificationSelectColumn!]
   distinct: Boolean
   filter: ServiceModificationBoolExp
-  predicate: IntComparisonExp!
-}
-
-input serviceModificationTypeAggregateBoolExpCount {
-  arguments: [ServiceModificationTypeSelectColumn!]
-  distinct: Boolean
-  filter: ServiceModificationTypeBoolExp
   predicate: IntComparisonExp!
 }
 
@@ -22620,71 +21769,6 @@ type subscription_root {
     """filter the rows returned"""
     where: ServiceModificationBoolExp
   ): [ServiceModification!]!
-
-  """
-  fetch data from the table: "service_modification_type"
-  """
-  serviceModificationType(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): [ServiceModificationType!]!
-
-  """
-  fetch aggregated fields from the table: "service_modification_type"
-  """
-  serviceModificationTypeAggregate(
-    """distinct select on columns"""
-    distinctOn: [ServiceModificationTypeSelectColumn!]
-
-    """limit the number of rows returned"""
-    limit: Int
-
-    """skip the first n rows. Use only with order_by"""
-    offset: Int
-
-    """sort the rows by one or more columns"""
-    orderBy: [ServiceModificationTypeOrderBy!]
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): ServiceModificationTypeAggregate!
-
-  """
-  fetch data from the table: "service_modification_type" using primary key columns
-  """
-  serviceModificationTypeByPk(
-    """Unique identifier"""
-    id: Int!
-
-    """Organization reference"""
-    oid: Int!
-  ): ServiceModificationType
-
-  """
-  fetch data from the table in a streaming manner: "service_modification_type"
-  """
-  serviceModificationTypeStream(
-    """maximum number of rows returned in a single batch"""
-    batchSize: Int!
-
-    """cursor to stream the results returned by the query"""
-    cursor: [ServiceModificationTypeStreamCursorInput]!
-
-    """filter the rows returned"""
-    where: ServiceModificationTypeBoolExp
-  ): [ServiceModificationType!]!
 
   """
   fetch data from the table in a streaming manner: "service"

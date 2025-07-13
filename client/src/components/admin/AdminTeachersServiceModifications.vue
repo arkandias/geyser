@@ -8,7 +8,6 @@ import {
   type AdminServiceModificationFragment,
   AdminServiceModificationFragmentDoc,
   AdminServiceModificationsServiceFragmentDoc,
-  AdminServiceModificationsServiceModificationTypeFragmentDoc,
   AdminServiceModificationsTeacherFragmentDoc,
   DeleteServiceModificationsDocument,
   InsertServiceModificationsDocument,
@@ -34,26 +33,19 @@ type Row = AdminServiceModificationFragment;
 type FlatRow = NullableParsedRow<typeof rowDescriptor>;
 type InsertInput = ServiceModificationInsertInput;
 
-const {
-  serviceFragments,
-  serviceModificationFragments,
-  serviceModificationTypeFragments,
-  teacherFragments,
-} = defineProps<{
-  fetching: boolean;
-  serviceFragments: FragmentType<
-    typeof AdminServiceModificationsServiceFragmentDoc
-  >[];
-  serviceModificationFragments: FragmentType<
-    typeof AdminServiceModificationFragmentDoc
-  >[];
-  serviceModificationTypeFragments: FragmentType<
-    typeof AdminServiceModificationsServiceModificationTypeFragmentDoc
-  >[];
-  teacherFragments: FragmentType<
-    typeof AdminServiceModificationsTeacherFragmentDoc
-  >[];
-}>();
+const { serviceFragments, serviceModificationFragments, teacherFragments } =
+  defineProps<{
+    fetching: boolean;
+    serviceFragments: FragmentType<
+      typeof AdminServiceModificationsServiceFragmentDoc
+    >[];
+    serviceModificationFragments: FragmentType<
+      typeof AdminServiceModificationFragmentDoc
+    >[];
+    teacherFragments: FragmentType<
+      typeof AdminServiceModificationsTeacherFragmentDoc
+    >[];
+  }>();
 
 const { t, n } = useTypedI18n();
 const { organization } = useOrganizationStore();
@@ -72,10 +64,10 @@ const rowDescriptor = {
       teachers.value.find((t) => t.email === val)?.displayname,
     formComponent: "select",
   },
-  typeLabel: {
+  label: {
     type: "string",
-    field: (row) => row.type.label,
-    formComponent: "select",
+    field: (row) => row.label,
+    formComponent: "input",
   },
   hours: {
     type: "number",
@@ -97,15 +89,8 @@ graphql(`
         email
       }
     }
-    type {
-      label
-    }
-    hours
-  }
-
-  fragment AdminServiceModificationsServiceModificationType on ServiceModificationType {
-    id
     label
+    hours
   }
 
   fragment AdminServiceModificationsService on Service {
@@ -182,11 +167,6 @@ const serviceModifications = computed(() =>
     useFragment(AdminServiceModificationFragmentDoc, f),
   ),
 );
-const serviceModificationTypes = computed(() =>
-  serviceModificationTypeFragments.map((f) =>
-    useFragment(AdminServiceModificationsServiceModificationTypeFragmentDoc, f),
-  ),
-);
 const teachers = computed(() =>
   teacherFragments.map((f) =>
     useFragment(AdminServiceModificationsTeacherFragmentDoc, f),
@@ -209,7 +189,7 @@ const importConstraint = ServiceModificationConstraint.ServiceModificationPkey;
 const importUpdateColumns = [
   ServiceModificationUpdateColumn.Oid,
   ServiceModificationUpdateColumn.ServiceId,
-  ServiceModificationUpdateColumn.TypeId,
+  ServiceModificationUpdateColumn.Label,
   ServiceModificationUpdateColumn.Hours,
 ];
 
@@ -248,20 +228,8 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     }
   }
 
-  // typeId
-  if (flatRow.typeLabel !== undefined) {
-    const type = serviceModificationTypes.value.find(
-      (smt) => smt.label === flatRow.typeLabel,
-    );
-    if (type === undefined) {
-      throw new Error(
-        t(
-          "admin.teachers.serviceModifications.form.error.typeNotFound",
-          flatRow,
-        ),
-      );
-    }
-    object.typeId = type.id;
+  if (flatRow.label !== undefined) {
+    object.label = flatRow.label;
   }
 
   if (flatRow.hours !== undefined) {
@@ -284,7 +252,6 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       value: t.email,
       label: t.displayname ?? "",
     })),
-    typeLabel: serviceModificationTypes.value.map((smt) => smt.label),
   }),
 );
 

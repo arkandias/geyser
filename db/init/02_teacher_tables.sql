@@ -112,44 +112,24 @@ COMMENT ON COLUMN public.service.position_id IS 'Teacher''s position reference';
 COMMENT ON COLUMN public.service.hours IS 'Required teaching hours before modifications';
 
 
-CREATE TABLE public.service_modification_type
-(
-    oid         integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
-    id          integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
-    label       text    NOT NULL,
-    description text,
-    PRIMARY KEY (oid, id),
-    UNIQUE (oid, label)
-);
-CREATE INDEX idx_service_modification_type_oid ON public.service_modification_type (oid);
-
-COMMENT ON TABLE public.service_modification_type IS 'Categories of service modifications';
-COMMENT ON COLUMN public.service_modification_type.oid IS 'Organization reference';
-COMMENT ON COLUMN public.service_modification_type.id IS 'Unique identifier';
-COMMENT ON COLUMN public.service_modification_type.label IS 'Modification type name (unique)';
-COMMENT ON COLUMN public.service_modification_type.description IS 'Optional description';
-
-
 CREATE TABLE public.service_modification
 (
     oid        integer NOT NULL REFERENCES public.organization ON UPDATE CASCADE,
     id         integer NOT NULL UNIQUE GENERATED ALWAYS AS IDENTITY,
     service_id integer NOT NULL,
-    type_id    integer NOT NULL,
+    label      text    NOT NULL,
     hours      real    NOT NULL,
     PRIMARY KEY (oid, id),
-    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
-    FOREIGN KEY (oid, type_id) REFERENCES public.service_modification_type ON UPDATE CASCADE
+    FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE
 );
 CREATE INDEX idx_service_modification_oid ON public.service_modification (oid);
 CREATE INDEX idx_service_modification_oid_service_id ON public.service_modification (oid, service_id);
-CREATE INDEX idx_service_modification_oid_type_id ON public.service_modification (oid, type_id);
 
 COMMENT ON TABLE public.service_modification IS 'Individual modifications to base teaching service hours';
 COMMENT ON COLUMN public.service_modification.oid IS 'Organization reference';
 COMMENT ON COLUMN public.service_modification.id IS 'Unique identifier';
 COMMENT ON COLUMN public.service_modification.service_id IS 'Service reference';
-COMMENT ON COLUMN public.service_modification.type_id IS 'Modification type reference';
+COMMENT ON COLUMN public.service_modification.label IS 'Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)';
 COMMENT ON COLUMN public.service_modification.hours IS 'Hour deduction amount';
 
 
@@ -162,7 +142,7 @@ CREATE TABLE public.external_course
     hours      real    NOT NULL,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, service_id) REFERENCES public.service ON UPDATE CASCADE,
-    CONSTRAINT priority_seniority_non_negative_check CHECK (hours >= 0)
+    CONSTRAINT external_course_hours_non_negative_check CHECK (hours > 0)
 );
 CREATE INDEX idx_external_course_oid ON public.external_course (oid);
 CREATE INDEX idx_external_course_oid_service_id ON public.external_course (oid, service_id);

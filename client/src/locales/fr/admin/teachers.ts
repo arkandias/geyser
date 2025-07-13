@@ -5,7 +5,6 @@ import type {
   AdminTeachersMessagesColName,
   AdminTeachersPositionsColName,
   AdminTeachersRolesColName,
-  AdminTeachersServiceModificationTypesColName,
   AdminTeachersServiceModificationsColName,
   AdminTeachersServicesColName,
   AdminTeachersTeachersColName,
@@ -241,8 +240,8 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
           label: "Intervenant",
           tooltip: "",
         },
-        typeLabel: {
-          label: "Type",
+        label: {
+          label: "Libellé",
           tooltip: "",
         },
         hours: {
@@ -263,8 +262,6 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
             "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
-          typeNotFound:
-            "Il n'existe pas de modification de service avec le label « {type} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },
@@ -284,47 +281,6 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
         confirm: {
           delete:
             "Êtes-vous sûr de vouloir supprimer la modification de service sélectionnée ? | Êtes-vous sûr de vouloir supprimer les {count} modifications de service sélectionnées ?",
-        },
-      },
-    },
-    serviceModificationTypes: {
-      label: "Types de modification de service",
-      column: {
-        label: {
-          label: "Libellé",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<
-        AdminTeachersServiceModificationTypesColName,
-        AdminColNameOptions
-      >,
-      form: {
-        title:
-          "Création d'un type de modification | Édition d'un type de modification | Édition de {count} types de modification",
-      },
-      data: {
-        success: {
-          insert:
-            "Aucun type de modification créé | Type de modification créé | {count} types de modification créés",
-          update:
-            "Aucun type de modification mis à jour | Type de modification mis à jour | {count} types de modification mis à jour",
-          delete:
-            "Aucun type de modification supprimé | Type de modification supprimé | {count} types de modification supprimés",
-          import:
-            "0 type de modification importé | 1 type de modification importé | {count} types de modification importés",
-          export:
-            "0 type de modification exporté | 1 type de modification exporté | {count} types de modification exportés",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer le type de modification sélectionné ?
-Si ce type est attribué à des modifications, vous ne pourrez pas le supprimer. ` +
-            `| Êtes-vous sûr de vouloir supprimer les {count} types de modification sélectionnés ?
-Si ces types sont attribués à des modifications, vous ne pourrez pas les supprimer.`,
         },
       },
     },

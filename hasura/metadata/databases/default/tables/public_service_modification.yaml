@@ -10,11 +10,6 @@ object_relationships:
       foreign_key_constraint_on:
         - oid
         - service_id
-  - name: type
-    using:
-      foreign_key_constraint_on:
-        - oid
-        - type_id
 insert_permissions:
   - role: organizer
     permission:
@@ -24,7 +19,7 @@ insert_permissions:
       columns:
         - oid
         - service_id
-        - type_id
+        - label
         - hours
     comment: Full permissions within their organization
   - role: teacher
@@ -47,7 +42,7 @@ insert_permissions:
       columns:
         - oid
         - service_id
-        - type_id
+        - label
         - hours
     comment: During requests phase, can create service modifications for their own service for the current year
 select_permissions:
@@ -57,7 +52,7 @@ select_permissions:
         - oid
         - id
         - service_id
-        - type_id
+        - label
         - hours
       filter:
         _and:
@@ -74,7 +69,7 @@ select_permissions:
         - oid
         - id
         - service_id
-        - type_id
+        - label
         - hours
       filter:
         oid:
@@ -86,7 +81,7 @@ select_permissions:
         - oid
         - id
         - service_id
-        - type_id
+        - label
         - hours
       filter:
         _and:
@@ -109,7 +104,7 @@ update_permissions:
     permission:
       columns:
         - service_id
-        - type_id
+        - label
         - hours
       filter:
         oid:
@@ -119,7 +114,7 @@ update_permissions:
   - role: teacher
     permission:
       columns:
-        - type_id
+        - label
         - hours
       filter:
         _and:
@@ -137,7 +132,7 @@ update_permissions:
                 - teacher_id:
                     _eq: X-Hasura-User-Id
       check: null
-    comment: During requests phase, can update their own service modifications type and hours for the current year
+    comment: During requests phase, can update their own service modifications label and hours for the current year
 delete_permissions:
   - role: organizer
     permission:

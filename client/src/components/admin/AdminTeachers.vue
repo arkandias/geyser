@@ -11,7 +11,6 @@ import AdminTeachersExternalCourses from "@/components/admin/AdminTeachersExtern
 import AdminTeachersMessages from "@/components/admin/AdminTeachersMessages.vue";
 import AdminTeachersPositions from "@/components/admin/AdminTeachersPositions.vue";
 import AdminTeachersRoles from "@/components/admin/AdminTeachersRoles.vue";
-import AdminTeachersServiceModificationTypes from "@/components/admin/AdminTeachersServiceModificationTypes.vue";
 import AdminTeachersServiceModifications from "@/components/admin/AdminTeachersServiceModifications.vue";
 import AdminTeachersServices from "@/components/admin/AdminTeachersServices.vue";
 import AdminTeachersTeachers from "@/components/admin/AdminTeachersTeachers.vue";
@@ -70,17 +69,10 @@ graphql(`
         { service: { year: DESC } }
         { service: { teacher: { lastname: ASC } } }
         { service: { teacher: { firstname: ASC } } }
-        { type: { label: ASC } }
+        { id: ASC }
       ]
     ) {
       ...AdminServiceModification
-    }
-    serviceModificationTypes: serviceModificationType(
-      where: { oid: { _eq: $oid } }
-      orderBy: [{ label: ASC }]
-    ) {
-      ...AdminServiceModificationType
-      ...AdminServiceModificationsServiceModificationType
     }
     externalCourses: externalCourse(
       where: { oid: { _eq: $oid } }
@@ -88,7 +80,7 @@ graphql(`
         { service: { year: DESC } }
         { service: { teacher: { lastname: ASC } } }
         { service: { teacher: { firstname: ASC } } }
-        { label: ASC }
+        { id: ASC }
       ]
     ) {
       ...AdminExternalCourse
@@ -126,9 +118,6 @@ const roles = computed(() => data.value?.teacherRoles ?? []);
 const services = computed(() => data.value?.services ?? []);
 const serviceModifications = computed(
   () => data.value?.serviceModifications ?? [],
-);
-const serviceModificationTypes = computed(
-  () => data.value?.serviceModificationTypes ?? [],
 );
 const externalCourses = computed(() => data.value?.externalCourses ?? []);
 const messages = computed(() => data.value?.messages ?? []);
@@ -193,20 +182,7 @@ const messages = computed(() => data.value?.messages ?? []);
         :fetching
         :service-fragments="services"
         :service-modification-fragments="serviceModifications"
-        :service-modification-type-fragments="serviceModificationTypes"
         :teacher-fragments="teachers"
-      />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
-      icon="sym_s_format_list_bulleted"
-      :label="t('admin.teachers.serviceModificationTypes.label')"
-    >
-      <AdminTeachersServiceModificationTypes
-        :fetching
-        :service-modification-type-fragments="serviceModificationTypes"
       />
     </AdminSection>
 

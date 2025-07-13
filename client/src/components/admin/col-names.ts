@@ -41,18 +41,11 @@ export type AdminTeachersRolesColName =
 export const adminTeachersServiceModificationsColNames = [
   "year",
   "teacherEmail",
-  "typeLabel",
+  "label",
   "hours",
 ] as const;
 export type AdminTeachersServiceModificationsColName =
   (typeof adminTeachersServiceModificationsColNames)[number];
-
-export const adminTeachersServiceModificationTypesColNames = [
-  "label",
-  "description",
-] as const;
-export type AdminTeachersServiceModificationTypesColName =
-  (typeof adminTeachersServiceModificationTypesColNames)[number];
 
 export const adminTeachersExternalCoursesColNames = [
   "year",

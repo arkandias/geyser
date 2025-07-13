@@ -3,7 +3,7 @@ export default {
     fetching: "Loading service...",
     notFound: "Service not found",
     coordinations: {
-      title: "Responsibilities",
+      title: "Coordinations",
       type: {
         program: "Program",
         track: "Track",
@@ -44,7 +44,7 @@ export default {
       },
       modificationForm: {
         field: {
-          type: "Type",
+          label: "Label",
           hours: "Hours (@:unit.weightedHours)",
         },
         tooltip: {
@@ -57,8 +57,8 @@ export default {
         invalid: {
           message: "Invalid form",
           caption: {
-            type: "Select a service modification type",
-            hours: "Select a positive number of hours",
+            label: "Enter a label",
+            hours: "Enter a number of hours",
           },
         },
         success: {
@@ -86,7 +86,7 @@ export default {
           message: "Invalid form",
           caption: {
             label: "Enter a label",
-            hours: "Select a non-negative number of hours",
+            hours: "Enter a positive number of hours",
           },
         },
         success: {

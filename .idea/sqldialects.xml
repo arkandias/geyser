@@ -15,5 +15,6 @@
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751830826316_rename_app_setting_table/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751891886308_add_service_position/up.sql" dialect="PostgreSQL" />
     <file url="file://$PROJECT_DIR$/hasura/migrations/default/1751895337359_replace_dummy_function/up.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/hasura/migrations/default/1752363679038_remove_service_modification_types/up.sql" dialect="PostgreSQL" />
   </component>
 </project>

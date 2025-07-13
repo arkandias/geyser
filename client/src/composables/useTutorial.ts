@@ -188,22 +188,22 @@ Vous pouvez modifier cette information lors de la phase de vœux.`,
       popover: {
         title: "Vos modifications de services",
         description:
-          "Vous devez ajouter ici vos modifications de services (décharges, délégations, etc.) lors de la phase de vœux.",
+          "Vous devez ajouter ici vos modifications de services (décharges, délégations, congés, etc.) lors de la phase de vœux.",
       },
     },
     {
       element: "#service-details-external-courses",
       popover: {
-        title: "Vos enseignements externes",
+        title: "Vos enseignements extérieurs",
         description:
-          "Vous devez ajouter ici vos enseignements externes (c'est-à-dire tous les enseignements qui compteront dans votre service mais qui ne figurent pas dans Geyser) lors de la phase de vœux.",
+          "Vous devez ajouter ici vos enseignements extérieurs (c'est-à-dire tous les enseignements qui compteront dans votre service mais qui ne figurent pas dans Geyser) lors de la phase de vœux.",
       },
     },
     {
       element: "#service-details-total",
       popover: {
         title: "Le nombre d'heures total à attribuer",
-        description: `La différence entre votre service de base d'une part, et vos modifications de services et vos enseignements externes d'autre part.<br />
+        description: `La différence entre votre service de base d'une part et la somme de vos modifications de services et de vos enseignements extérieurs d'autre part.<br />
 Il s'agit du nombre d'heures équivalent TD que la commission des services doit vous attribuer avec des enseignements présents dans Geyser.<br />
 <b>Il est très important pour faciliter le travail de la commission que ce total soit correct.</b>`,
       },

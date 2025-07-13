@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { useMutation, useQuery } from "@urql/vue";
+import { useMutation } from "@urql/vue";
 import { computed, ref, watch } from "vue";
 
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
@@ -10,13 +10,11 @@ import { type FragmentType, graphql, useFragment } from "@/gql";
 import {
   DeleteExternalCourseDocument,
   DeleteModificationDocument,
-  GetModificationTypesDocument,
   InsertExternalCourseDocument,
   InsertModificationDocument,
   ServiceDetailsFragmentDoc,
   UpdateServiceHoursDocument,
 } from "@/gql/graphql.ts";
-import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import DetailsSection from "@/components/core/DetailsSection.vue";
 import NumInput from "@/components/core/NumInput.vue";
@@ -33,15 +31,13 @@ graphql(`
     year
     teacherId
     hours
-    modifications(orderBy: [{ type: { label: ASC } }, { hours: ASC }]) {
+    modifications(orderBy: [{ id: ASC }]) {
       oid
       id
-      modificationType: type {
-        label
-      }
+      label
       hours
     }
-    externalCourses(orderBy: [{ label: ASC }]) {
+    externalCourses(orderBy: [{ id: ASC }]) {
       oid
       id
       label
@@ -59,30 +55,14 @@ graphql(`
     }
   }
 
-  query GetModificationTypes($oid: Int!) {
-    modificationTypes: serviceModificationType(
-      where: { oid: { _eq: $oid } }
-      orderBy: { label: ASC }
-    ) {
-      id
-      label
-      description
-    }
-  }
-
   mutation InsertModification(
     $oid: Int!
     $serviceId: Int!
-    $modificationTypeId: Int!
+    $label: String!
     $hours: Float!
   ) {
     insertServiceModificationOne(
-      object: {
-        oid: $oid
-        serviceId: $serviceId
-        typeId: $modificationTypeId
-        hours: $hours
-      }
+      object: { oid: $oid, serviceId: $serviceId, label: $label, hours: $hours }
     ) {
       oid
       id
@@ -120,7 +100,6 @@ graphql(`
 
 const { t, n } = useTypedI18n();
 const { notify } = useNotify();
-const { organization } = useOrganizationStore();
 const perm = usePermissions();
 
 const service = computed(() =>
@@ -182,33 +161,22 @@ watch(service, resetBaseServiceForm, { immediate: true });
 
 // Modifications form
 const isModificationFormOpen = ref(false);
-const { data } = useQuery({
-  query: GetModificationTypesDocument,
-  variables: { oid: organization.id },
-  pause: () => !isModificationFormOpen.value,
-  context: {
-    additionalTypenames: ["All", "ServiceModificationType"],
-  },
-});
-const modificationTypesOptions = computed(
-  () => data.value?.modificationTypes ?? [],
-);
-const modificationTypeId = ref<number | null>(null);
+const modificationLabel = ref<string | null>(null);
 const modificationHours = ref<number | null>(null);
 const resetModificationForm = (): void => {
   isModificationFormOpen.value = false;
-  modificationTypeId.value = null;
+  modificationLabel.value = null;
   modificationHours.value = null;
 };
 const submitModificationForm = async (): Promise<void> => {
-  if (!modificationTypeId.value) {
+  if (!modificationLabel.value) {
     notify(NotifyType.Error, {
       message: t("service.details.modificationForm.invalid.message"),
-      caption: t("service.details.modificationForm.invalid.caption.type"),
+      caption: t("service.details.modificationForm.invalid.caption.label"),
     });
     return;
   }
-  if (modificationHours.value === null || modificationHours.value <= 0) {
+  if (modificationHours.value === null) {
     notify(NotifyType.Error, {
       message: t("service.details.modificationForm.invalid.message"),
       caption: t("service.details.modificationForm.invalid.caption.hours"),
@@ -218,7 +186,7 @@ const submitModificationForm = async (): Promise<void> => {
   const { data, error } = await insertModification.executeMutation({
     oid: service.value.oid,
     serviceId: service.value.id,
-    modificationTypeId: modificationTypeId.value,
+    label: modificationLabel.value,
     hours: modificationHours.value,
   });
   if (data?.insertServiceModificationOne && !error) {
@@ -270,7 +238,7 @@ const submitExternalCourseForm = async (): Promise<void> => {
     });
     return;
   }
-  if (externalCourseHours.value === null || externalCourseHours.value < 0) {
+  if (externalCourseHours.value === null || externalCourseHours.value <= 0) {
     notify(NotifyType.Error, {
       message: t("service.details.externalCourseForm.invalid.message"),
       caption: t("service.details.externalCourseForm.invalid.caption.hours"),
@@ -384,7 +352,7 @@ const formatWH = (hours: number) =>
                 {{ t("service.details.modificationForm.tooltip.delete") }}
               </QTooltip>
             </QBtn>
-            {{ m.modificationType.label }}
+            {{ m.label }}
           </td>
           <td>
             {{ formatWH(m.hours) }}
@@ -486,30 +454,12 @@ const formatWH = (hours: number) =>
           @submit="submitModificationForm"
           @reset="resetModificationForm"
         >
-          <QSelect
-            v-model="modificationTypeId"
-            :options="modificationTypesOptions"
-            :label="t('service.details.modificationForm.field.type')"
-            option-value="id"
-            emit-value
-            map-options
+          <QInput
+            v-model="modificationLabel"
+            :label="t('service.details.modificationForm.field.label')"
             square
             dense
-            options-dense
-          >
-            <template #option="scope">
-              <QItem v-bind="scope.itemProps">
-                <QItemSection>
-                  <QItemLabel>
-                    {{ scope.opt.label }}
-                  </QItemLabel>
-                  <QItemLabel v-if="scope.opt.description" caption>
-                    {{ scope.opt.description }}
-                  </QItemLabel>
-                </QItemSection>
-              </QItem>
-            </template>
-          </QSelect>
+          />
           <NumInput
             v-model="modificationHours"
             :label="t('service.details.modificationForm.field.hours')"
