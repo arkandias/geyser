@@ -136,6 +136,8 @@ const { startTour } = useTutorial();
 
       <QSeparator vertical inset />
 
+      <MenuYear v-if="!disable" />
+
       <QBtn
         v-if="!disable"
         id="refresh-button"
@@ -162,8 +164,6 @@ const { startTour } = useTutorial();
           {{ t("header.darkMode.label") }}
         </QTooltip>
       </QBtn>
-
-      <MenuYear v-if="!disable" />
 
       <MenuLang />
 

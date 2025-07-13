@@ -742,23 +742,6 @@ N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un inter
       },
     },
     {
-      element: "#refresh-button",
-      popover: {
-        title: "Bouton Rafraîchir les données",
-        description: `Lorsque vous effectuez une action (par exemple une demande), les données affichées se mettent à jour automatiquement.<br />
-Mais vous ne verrez pas les modifications effectuées entre temps par un autre utilisateur.<br />
-Ce bouton permet de mettre à jour toutes les données affichées.`,
-      },
-    },
-    {
-      element: "#dark-mode-button",
-      popover: {
-        title: "Bouton Mode sombre",
-        description:
-          "Ce bouton permet d'activer ou de désactiver le mode sombre.",
-      },
-    },
-    {
       element: "#year-button",
       popover: {
         title: "Bouton Année active",
@@ -786,6 +769,23 @@ Lorsque vous sélectionnez une année passée, un bandeau vous avertit que l'ann
           document.getElementById("year-button")?.click();
           driverObj.value?.movePrevious();
         },
+      },
+    },
+    {
+      element: "#refresh-button",
+      popover: {
+        title: "Bouton Rafraîchir les données",
+        description: `Lorsque vous effectuez une action (par exemple une demande), les données affichées se mettent à jour automatiquement.<br />
+Mais vous ne verrez pas les modifications effectuées entre temps par un autre utilisateur.<br />
+Ce bouton permet de mettre à jour toutes les données affichées.`,
+      },
+    },
+    {
+      element: "#dark-mode-button",
+      popover: {
+        title: "Bouton Mode sombre",
+        description:
+          "Ce bouton permet d'activer ou de désactiver le mode sombre.",
       },
     },
     {
