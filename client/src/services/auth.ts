@@ -1,5 +1,6 @@
 import {
   type AccessTokenPayload,
+  type OrganizationData,
   type RoleType,
   accessTokenPayloadSchema,
   organizationDataSchema,
@@ -31,14 +32,15 @@ export class AuthManager {
   private _postLogout = false;
   private _authError: string | null = null;
   private _organizationKey: string | null = null;
-  private _organizationId: number | null = null;
+  private _organization: OrganizationData | null = null;
   private _payload: AccessTokenPayload | null = null;
   private _role: RoleType | null = null;
 
   async init(): Promise<void> {
-    // Get organization id
+    // Get organization key and id
+    this.getOrganizationKey();
     await this.getOrganizationId();
-    if (!this._organizationId) {
+    if (!this._organization) {
       return;
     }
 
@@ -61,7 +63,7 @@ export class AuthManager {
     // Bypass authentication (dev only)
     if (bypassAuth) {
       this._payload = {
-        orgId: this._organizationId,
+        orgId: this._organization.id,
         userId: 0,
         isAdmin: true,
         allowedRoles: ["organizer", "commissioner", "teacher"],
@@ -102,7 +104,7 @@ export class AuthManager {
     await this.login();
   }
 
-  async getOrganizationId(): Promise<void> {
+  getOrganizationKey(): void {
     // Set organization key from environment if provided
     if (organizationKey) {
       this._organizationKey = organizationKey;
@@ -114,19 +116,27 @@ export class AuthManager {
 
     // If not provided, use current location hostname
     const domainLabels = window.location.hostname.split(".");
-    if (domainLabels.length < 3 || !domainLabels[0]) {
-      console.error("[AuthManager] Could not determine organization key");
+    if (domainLabels.length >= 3 && domainLabels[0]) {
+      this._organizationKey = domainLabels[0];
+      console.debug(
+        `[AuthManager] Organization key from subdomain: ${this._organizationKey}`,
+      );
       return;
     }
-    this._organizationKey = domainLabels[0];
-    console.debug(
-      `[AuthManager] Organization key from subdomain: ${this._organizationKey}`,
-    );
 
+    console.error(
+      "[AuthManager] Could not determine organization key. Set VITE_ORGANIZATION_KEY or use a subdomain",
+    );
+  }
+
+  async getOrganizationId(): Promise<void> {
+    if (!this._organizationKey) {
+      return;
+    }
     try {
       const response = await api.get(`/organization/${this._organizationKey}`);
-      this._organizationId = organizationDataSchema.parse(response.data).id;
-      console.debug(`[AuthManager] Organization id: ${this._organizationId}`);
+      this._organization = organizationDataSchema.parse(response.data);
+      console.debug(`[AuthManager] Organization id: ${this._organization.id}`);
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error("[AuthManager] Invalid organization data");
@@ -163,7 +173,7 @@ export class AuthManager {
       url: "/auth/login",
       params: {
         redirect_url: redirectUrl,
-        org_id: this._organizationId,
+        org_id: this._organization?.id,
       },
     });
 
@@ -188,7 +198,7 @@ export class AuthManager {
       url: "/auth/logout",
       params: {
         redirect_url: redirectUrl,
-        org_id: this._organizationId,
+        org_id: this._organization?.id,
       },
     });
 
@@ -275,7 +285,7 @@ export class AuthManager {
   }
 
   get organizationFound(): boolean {
-    return !!this._organizationId;
+    return !!this._organization;
   }
 
   get hasAccess(): boolean {
