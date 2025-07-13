@@ -151,7 +151,7 @@ watch(
 
 // Access check and alert message
 const alertMessage = computed(() => {
-  if (!authManager.organizationFound) {
+  if (!authManager.organization) {
     return t("home.alert.organizationNotFound");
   }
   if (authManager.postLogout) {

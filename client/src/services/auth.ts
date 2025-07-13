@@ -283,8 +283,12 @@ export class AuthManager {
     return this._authError;
   }
 
-  get organizationFound(): boolean {
-    return !!this._organization;
+  get organizationKey(): string | null {
+    return this._organizationKey;
+  }
+
+  get organization(): OrganizationData | null {
+    return this._organization;
   }
 
   get hasAccess(): boolean {
@@ -317,6 +321,10 @@ export class AuthManager {
     if (role && !this.allowedRoles.includes(role)) {
       console.warn("[AuthManager] Role not allowed");
     }
+  }
+
+  setAdminRole(): void {
+    this._role = "admin";
   }
 
   get headers(): Record<string, string> {
