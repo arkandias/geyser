@@ -43,9 +43,9 @@ CMD ["pnpm", "start:prod"]
 FROM nginx:1.27 AS frontend
 COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
 
-ARG GEYSER_TENANCY
-RUN test -n "${GEYSER_TENANCY}" || (echo "ERROR: GEYSER_TENANCY build argument is required" && exit 1)
-RUN bash -c '[[ "${GEYSER_TENANCY}" =~ ^(multi|single)$ ]] || (echo "ERROR: GEYSER_TENANCY must be \"multi\" or \"single\", got: \"${GEYSER_TENANCY}\"" && exit 1)'
+ARG TENANCY_MODE
+RUN test -n "${TENANCY_MODE}" || (echo "ERROR: TENANCY_MODE build argument is required" && exit 1)
+RUN bash -c '[[ "${TENANCY_MODE}" =~ ^(multi|single)$ ]] || (echo "ERROR: TENANCY_MODE must be \"multi\" or \"single\", got: \"${TENANCY_MODE}\"" && exit 1)'
 
-COPY nginx/templates/${GEYSER_TENANCY}-tenant.conf.template /etc/nginx/templates/default.conf.template
+COPY nginx/templates/${TENANCY_MODE}-tenant.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
