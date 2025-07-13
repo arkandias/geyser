@@ -48,7 +48,7 @@
         {
           "match": {
             "type": "value",
-            "value": "{{ if eq (getenv `GEYSER_MODE`) `production` }}tag{{ else }}push{{ end }}",
+            "value": "{{ if eq (getenv `GEYSER_ENV`) `production` }}tag{{ else }}push{{ end }}",
             "parameter": {
               "source": "payload",
               "name": "workflow_run.event"

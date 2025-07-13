@@ -58,9 +58,9 @@ Options:
   --log-level LEVEL     Set log level [silent|debug|info|warn|error]
   --silent              Set log level to silent
   --debug               Set log level to debug
-  --mode MODE           Set deployment mode [development|production]
-  --dev                 Set mode to development
-  --prod                Set mode to production
+  --env ENV             Set deployment environment [development|production]
+  --dev                 Set environment to development
+  --prod                Set environment to production
   --domain DOMAIN       Set domain name for deployment (e.g., geyser.example.com)
   --origins ORIGINS     Set allowed origins for CORS policy and post login/logout redirection (comma-separated, wildcard allowed)
   --as-service          Run as a systemd service (affects logging)
@@ -139,17 +139,17 @@ main() {
             declare -g GEYSER_LOG_LEVEL="debug"
             shift
             ;;
-        --mode)
-            declare -g GEYSER_MODE="$2"
+        --env)
+            declare -g GEYSER_ENV="$2"
             shift 2
             ;;
         --dev)
-            declare -g GEYSER_MODE="development"
+            declare -g GEYSER_ENV="development"
             shift
             ;;
         --prod)
             # shellcheck disable=SC2034
-            declare -g GEYSER_MODE="production"
+            declare -g GEYSER_ENV="production"
             shift
             ;;
         --domain)

@@ -7,7 +7,7 @@ _compose() {
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
-    if [[ "${GEYSER_MODE}" == "development" ]]; then
+    if [[ "${GEYSER_ENV}" == "development" ]]; then
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
     fi
 
@@ -56,8 +56,8 @@ _webhook() {
         exit 1
     fi
 
-    if [[ "${GEYSER_MODE}" == "development" ]]; then
-        error "Geyser webhook is not available in development mode"
+    if [[ "${GEYSER_ENV}" == "development" ]]; then
+        error "Geyser webhook is not available in development environment"
         exit 1
     fi
 

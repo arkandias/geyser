@@ -53,9 +53,9 @@ _geyser() {
         '--log-level[Set log level]:level:(silent debug info warn error)' \
         '--silent[Set log level to silent]' \
         '--debug[Set log level to debug]' \
-        '--mode[Set deployment mode]:mode:(development production)' \
-        '--dev[Set mode to development]' \
-        '--prod[Set mode to production]' \
+        '--env[Set deployment env]:env:(development production)' \
+        '--dev[Set env to development]' \
+        '--prod[Set env to production]' \
         '--domain[Set domain name for deployment]:domain' \
         '--origins[Set allowed origins (comma-separated, wildcard allowed)]:origins' \
         '--as-service[Run as a systemd service]' \

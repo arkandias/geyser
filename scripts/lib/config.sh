@@ -4,7 +4,7 @@
 
 declare -r GEYSER_ENV_VARS=(
     "GEYSER_LOG_LEVEL"
-    "GEYSER_MODE"
+    "GEYSER_ENV"
     "GEYSER_DOMAIN"
     "GEYSER_TENANCY"
     "GEYSER_ORGANIZATION_KEY"
@@ -109,15 +109,15 @@ _validate_geyser_env_vars() {
     fi
     declare -grx GEYSER_LOG_LEVEL
 
-    # Application deployment context [development/production]
-    if [[ -z "${GEYSER_MODE}" ]]; then
-        warn "GEYSER_MODE is not set. Defaulting to 'production'"
-        GEYSER_MODE="production"
-    elif [[ ! "${GEYSER_MODE}" =~ ^(development|production)$ ]]; then
-        warn "GEYSER_MODE must be 'development' or 'production'; got '${GEYSER_MODE}'. Defaulting to 'production'"
-        GEYSER_MODE="production"
+    # Application deployment environment [development/production]
+    if [[ -z "${GEYSER_ENV}" ]]; then
+        warn "GEYSER_ENV is not set. Defaulting to 'production'"
+        GEYSER_ENV="production"
+    elif [[ ! "${GEYSER_ENV}" =~ ^(development|production)$ ]]; then
+        warn "GEYSER_ENV must be 'development' or 'production'; got '${GEYSER_ENV}'. Defaulting to 'production'"
+        GEYSER_ENV="production"
     fi
-    declare -grx GEYSER_MODE
+    declare -grx GEYSER_ENV
 
     # Domain at which Geyser will be accessible
     if [[ -z "${GEYSER_DOMAIN}" ]]; then
@@ -186,7 +186,7 @@ _validate_optional_env_vars() {
 }
 
 _initialize_computed_env_vars() {
-    if [[ "${GEYSER_MODE}" == "development" ]]; then
+    if [[ "${GEYSER_ENV}" == "development" ]]; then
         API_URL="http://api.${GEYSER_DOMAIN}"
         API_ORIGINS="http://*.${GEYSER_DOMAIN}"
         KC_HOSTNAME="http://localhost:8081"
@@ -217,7 +217,7 @@ _env_summary() {
     debug "============ Configuration ============"
     debug "GEYSER_VERSION=${GEYSER_VERSION}"
     debug "GEYSER_HOME=${GEYSER_HOME}"
-    debug "GEYSER_MODE=${GEYSER_MODE}"
+    debug "GEYSER_ENV=${GEYSER_ENV}"
     debug "GEYSER_DOMAIN=${GEYSER_DOMAIN}"
     debug "GEYSER_TENANCY=${GEYSER_TENANCY}"
     debug "GEYSER_ORGANIZATION_KEY=${GEYSER_ORGANIZATION_KEY}"
