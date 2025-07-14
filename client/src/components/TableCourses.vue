@@ -489,20 +489,19 @@ const filterMethod = (
   rows: readonly CourseRow[],
   terms: typeof filterObj.value,
 ): readonly CourseRow[] =>
-  rows.filter((row) =>
-    terms.serviceId
-      ? row.requests.some((r) => r.serviceId === terms.serviceId)
-      : (terms.programs.length === 0 ||
-          terms.programs.some((p) => p === row.program.id)) &&
-        (terms.terms.length === 0 ||
-          terms.terms.some((t) => t === row.term.label)) &&
-        (terms.types.length === 0 ||
-          terms.types.some((t) => t === row.type.label)) &&
-        terms.searchColumns.some((col) =>
-          normalizeForSearch(String(getField(row, col.field))).includes(
-            terms.search,
-          ),
+  rows.filter(
+    (row) =>
+      (terms.programs.length === 0 ||
+        terms.programs.some((p) => p === row.program.id)) &&
+      (terms.terms.length === 0 ||
+        terms.terms.some((t) => t === row.term.label)) &&
+      (terms.types.length === 0 ||
+        terms.types.some((t) => t === row.type.label)) &&
+      terms.searchColumns.some((col) =>
+        normalizeForSearch(String(getField(row, col.field))).includes(
+          terms.search,
         ),
+      ),
   );
 
 // Row styling
@@ -559,7 +558,6 @@ const downloadTeacherAssignments = async () => {
       </QPageContainer>
     </QLayout>
   </QDialog>
-
   <QTable
     :columns="orderedColumns"
     :visible-columns
