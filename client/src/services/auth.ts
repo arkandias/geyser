@@ -5,7 +5,7 @@ import {
   organizationDataSchema,
 } from "@geyser/shared";
 import axios from "axios";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import {
   API_REQUEST_TIMEOUT,

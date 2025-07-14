@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const envSchema = z.looseObject({
   API_NODE_ENV: z.enum(["development", "production"]).default("development"),

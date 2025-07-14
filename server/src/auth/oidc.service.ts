@@ -7,7 +7,7 @@ import {
 } from "@nestjs/common";
 import axios from "axios";
 import jose from "jose";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { ConfigService } from "../config/config.service";
 import { OidcEndpoints, oidcEndpointsSchema } from "./oidc-endpoints.schema";

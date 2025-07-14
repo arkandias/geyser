@@ -7,7 +7,7 @@ import {
   applyDecorators,
 } from "@nestjs/common";
 import { Request } from "express";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { getHeader } from "../../common/utils";
 import { ConfigService } from "../../config/config.service";

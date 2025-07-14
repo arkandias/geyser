@@ -1,4 +1,4 @@
-import { z } from "zod/v4";
+import { z } from "zod";
 
 import { baseTokenPayloadSchema } from "./base-token-payload.schema.ts";
 

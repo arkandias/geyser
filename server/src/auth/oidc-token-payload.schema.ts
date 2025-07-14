@@ -1,5 +1,5 @@
 import { baseTokenPayloadSchema } from "@geyser/shared";
-import { z } from "zod/v4";
+import { z } from "zod";
 
 export const oidcTokenPayloadSchema = baseTokenPayloadSchema.partial().and(
   z.looseObject({
