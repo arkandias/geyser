@@ -314,6 +314,7 @@ const deleteDataHandle = async () => {
     });
   }
 
+  isFormOpen.value = false;
   selectedRows.value = [];
 };
 
