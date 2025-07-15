@@ -30,7 +30,7 @@ handle_deploy() {
     done
 
     # Pull latest version
-    git pull
+    git -C "${GEYSER_HOME}" pull
 
     # Deploy application
     _hasura deploy
