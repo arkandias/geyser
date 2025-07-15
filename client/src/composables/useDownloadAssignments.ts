@@ -55,6 +55,7 @@ graphql(`
         type {
           label
         }
+        hours
       }
       service {
         teacher {
@@ -62,6 +63,7 @@ graphql(`
           email
         }
       }
+      hours
     }
   }
 `);
@@ -100,6 +102,9 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.term")]: a.course.term.label,
       [t("downloadAssignments.course")]: a.course.name,
       [t("downloadAssignments.type")]: a.course.type.label,
+      [t("downloadAssignments.groups")]:
+        Math.round((a.hours / a.course.hours) * 100) / 100,
+      [t("downloadAssignments.hours")]: Math.round(a.hours * 100) / 100,
       [t("downloadAssignments.teacher")]: a.service.teacher.displayname,
       [t("downloadAssignments.email")]: a.service.teacher.email,
     }));

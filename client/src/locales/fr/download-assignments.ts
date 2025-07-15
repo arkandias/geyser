@@ -5,6 +5,8 @@ export default {
     course: "Enseignement",
     term: "Période",
     type: "Type",
+    groups: "Groupes",
+    hours: "Heures",
     teacher: "Intervenant",
     email: "Email",
     error: {

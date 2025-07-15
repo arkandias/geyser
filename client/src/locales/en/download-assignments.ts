@@ -5,6 +5,8 @@ export default {
     course: "Course",
     term: "Term",
     type: "Type",
+    groups: "Groups",
+    hours: "Hours",
     teacher: "Teacher",
     email: "Email",
     error: {
