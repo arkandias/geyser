@@ -171,27 +171,31 @@ const courses = computed<CourseRow[]>(() =>
   }),
 );
 const teacherCourses = computed<CourseRow[]>(() =>
-  courses.value.map((row) => {
-    const teacherRequests = row.requests.filter(
-      (r) => r.serviceId === selectedService.value,
-    );
-    const weight = weightedHours.value ? row.type.coefficient : 1;
-    return {
-      ...row,
-      totalAssignment:
-        (teacherRequests.find((r) => r.type === RequestTypeEnum.Assignment)
-          ?.hours ?? 0) * weight,
-      totalPrimary:
-        (teacherRequests.find((r) => r.type === RequestTypeEnum.Primary)
-          ?.hours ?? 0) * weight,
-      totalSecondary:
-        (teacherRequests.find((r) => r.type === RequestTypeEnum.Secondary)
-          ?.hours ?? 0) * weight,
-      diffAssignment: null,
-      diffPrimary: null,
-      diffPrimaryPriority: null,
-    };
-  }),
+  courses.value
+    .filter((row) =>
+      row.requests.some((r) => r.serviceId === selectedService.value),
+    )
+    .map((row) => {
+      const teacherRequests = row.requests.filter(
+        (r) => r.serviceId === selectedService.value,
+      );
+      const weight = weightedHours.value ? row.type.coefficient : 1;
+      return {
+        ...row,
+        totalAssignment:
+          (teacherRequests.find((r) => r.type === RequestTypeEnum.Assignment)
+            ?.hours ?? 0) * weight,
+        totalPrimary:
+          (teacherRequests.find((r) => r.type === RequestTypeEnum.Primary)
+            ?.hours ?? 0) * weight,
+        totalSecondary:
+          (teacherRequests.find((r) => r.type === RequestTypeEnum.Secondary)
+            ?.hours ?? 0) * weight,
+        diffAssignment: null,
+        diffPrimary: null,
+        diffPrimaryPriority: null,
+      };
+    }),
 );
 
 // Row selection
