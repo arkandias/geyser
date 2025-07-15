@@ -214,32 +214,6 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     badge: true,
   },
   {
-    name: "totalPrimary",
-    label: t("courses.table.services.column.totalPrimary.label", {
-      unit: t("unit.weightedHours"),
-    }),
-    tooltip: t("courses.table.services.column.totalPrimary.tooltip"),
-    field: "totalPrimary",
-    format: (val: number) => n(val, "decimalFixed"),
-    sortable: true,
-    visible: true,
-    searchable: false,
-    badge: true,
-  },
-  {
-    name: "totalSecondary",
-    label: t("courses.table.services.column.totalSecondary.label", {
-      unit: t("unit.weightedHours"),
-    }),
-    tooltip: t("courses.table.services.column.totalSecondary.tooltip"),
-    field: "totalSecondary",
-    format: (val: number) => n(val, "decimalFixed"),
-    sortable: true,
-    visible: true,
-    searchable: false,
-    badge: true,
-  },
-  {
     name: "diffAssignment",
     label: t("courses.table.services.column.diffAssignment.label", {
       unit: t("unit.weightedHours"),
@@ -253,6 +227,19 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     badge: true,
   },
   {
+    name: "totalPrimary",
+    label: t("courses.table.services.column.totalPrimary.label", {
+      unit: t("unit.weightedHours"),
+    }),
+    tooltip: t("courses.table.services.column.totalPrimary.tooltip"),
+    field: "totalPrimary",
+    format: (val: number) => n(val, "decimalFixed"),
+    sortable: true,
+    visible: true,
+    searchable: false,
+    badge: true,
+  },
+  {
     name: "diffPrimary",
     label: t("courses.table.services.column.diffPrimary.label", {
       unit: t("unit.weightedHours"),
@@ -262,6 +249,19 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     format: (val: number) => n(val, "decimalFixed"),
     sortable: true,
     visible: false,
+    searchable: false,
+    badge: true,
+  },
+  {
+    name: "totalSecondary",
+    label: t("courses.table.services.column.totalSecondary.label", {
+      unit: t("unit.weightedHours"),
+    }),
+    tooltip: t("courses.table.services.column.totalSecondary.tooltip"),
+    field: "totalSecondary",
+    format: (val: number) => n(val, "decimalFixed"),
+    sortable: true,
+    visible: true,
     searchable: false,
     badge: true,
   },
