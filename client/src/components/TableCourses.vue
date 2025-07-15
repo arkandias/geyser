@@ -397,13 +397,13 @@ const orderedColumns = computed<Column<CourseRow>[]>(() =>
 const move = (name: string, direction: number) => {
   const index = columnsOrder.value.findIndex((x) => x === name);
   const newIndex = index + direction;
-  if (!columnsOrder.value[index] || !columnsOrder.value[newIndex]) {
+  if (newIndex < 0 || newIndex >= columnsOrder.value.length) {
     return;
   }
-  [columnsOrder.value[index], columnsOrder.value[newIndex]] = [
-    columnsOrder.value[newIndex],
-    columnsOrder.value[index],
-  ];
+
+  const newArray = [...columnsOrder.value];
+  newArray.splice(newIndex, 0, ...newArray.splice(index, 1));
+  columnsOrder.value = newArray;
 };
 const up = (name: string) => {
   move(name, -1);
