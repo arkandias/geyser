@@ -967,14 +967,8 @@ type Course {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
-  hoursEffective: Int
-
-  """Effective teaching hours per group times effective number of groups"""
-  hoursEffectiveTotal: Int
+  hoursEffective: Float
+  hoursEffectiveTotal: Float
 
   """Unique identifier"""
   id: Int!
@@ -1183,13 +1177,7 @@ type CourseAvgFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -1235,13 +1223,7 @@ input CourseAvgOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -1287,8 +1269,8 @@ input CourseBoolExp {
   groupsEffective: IntComparisonExp
   hours: FloatComparisonExp
   hoursAdjusted: FloatComparisonExp
-  hoursEffective: IntComparisonExp
-  hoursEffectiveTotal: IntComparisonExp
+  hoursEffective: FloatComparisonExp
+  hoursEffectiveTotal: FloatComparisonExp
   id: IntComparisonExp
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
@@ -1478,14 +1460,8 @@ type CourseMaxFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
-  hoursEffective: Int
-
-  """Effective teaching hours per group times effective number of groups"""
-  hoursEffectiveTotal: Int
+  hoursEffective: Float
+  hoursEffectiveTotal: Float
 
   """Unique identifier"""
   id: Int
@@ -1553,13 +1529,7 @@ input CourseMaxOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -1626,14 +1596,8 @@ type CourseMinFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
-  hoursEffective: Int
-
-  """Effective teaching hours per group times effective number of groups"""
-  hoursEffectiveTotal: Int
+  hoursEffective: Float
+  hoursEffectiveTotal: Float
 
   """Unique identifier"""
   id: Int
@@ -1701,13 +1665,7 @@ input CourseMinOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2000,13 +1958,7 @@ type CourseStddevFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2052,13 +2004,7 @@ input CourseStddevOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2102,13 +2048,7 @@ type CourseStddevPopFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2154,13 +2094,7 @@ input CourseStddevPopOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2204,13 +2138,7 @@ type CourseStddevSampFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2256,13 +2184,7 @@ input CourseStddevSampOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2325,14 +2247,8 @@ input CourseStreamCursorValueInput {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
-  hoursEffective: Int
-
-  """Effective teaching hours per group times effective number of groups"""
-  hoursEffectiveTotal: Int
+  hoursEffective: Float
+  hoursEffectiveTotal: Float
 
   """Unique identifier"""
   id: Int
@@ -2393,14 +2309,8 @@ type CourseSumFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
-  hoursEffective: Int
-
-  """Effective teaching hours per group times effective number of groups"""
-  hoursEffectiveTotal: Int
+  hoursEffective: Float
+  hoursEffectiveTotal: Float
 
   """Unique identifier"""
   id: Int
@@ -2445,13 +2355,7 @@ input CourseSumOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3259,13 +3163,7 @@ type CourseVarPopFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3311,13 +3209,7 @@ input CourseVarPopOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3361,13 +3253,7 @@ type CourseVarSampFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3413,13 +3299,7 @@ input CourseVarSampOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3463,13 +3343,7 @@ type CourseVarianceFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3515,13 +3389,7 @@ input CourseVarianceOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""

@@ -128,8 +128,8 @@ CREATE TABLE public.course
     groups_effective      integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups)) STORED,
     hours                 real    NOT NULL,
     hours_adjusted        real,
-    hours_effective       integer GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
-    hours_effective_total integer GENERATED ALWAYS AS (coalesce(groups_adjusted, groups) * coalesce(hours_adjusted, hours)) STORED,
+    hours_effective       real GENERATED ALWAYS AS (coalesce(hours_adjusted, hours)) STORED,
+    hours_effective_total real GENERATED ALWAYS AS (coalesce(groups_adjusted, groups) * coalesce(hours_adjusted, hours)) STORED,
     description           text,
     priority_rule         integer, -- 0=: Infinity; NULL: No rule
     visible               boolean NOT NULL DEFAULT TRUE,
