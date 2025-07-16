@@ -55,7 +55,7 @@ graphql(`
         type {
           label
         }
-        hours
+        hoursPerGroup: hoursEffective
       }
       service {
         teacher {
@@ -103,7 +103,8 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.course")]: a.course.name,
       [t("downloadAssignments.type")]: a.course.type.label,
       [t("downloadAssignments.groups")]:
-        Math.round((a.hours / a.course.hours) * 100) / 100,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        Math.round((a.hours / a.course.hoursPerGroup!) * 100) / 100,
       [t("downloadAssignments.hours")]: Math.round(a.hours * 100) / 100,
       [t("downloadAssignments.teacher")]: a.service.teacher.displayname,
       [t("downloadAssignments.email")]: a.service.teacher.email,
