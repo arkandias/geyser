@@ -60,7 +60,9 @@ const getServiceDetails = useQuery({
   },
 });
 const fetching = computed(() => getServiceDetails.fetching.value);
-const service = computed(() => getServiceDetails.data.value?.service ?? null);
+const service = computed(() =>
+  serviceId.value ? (getServiceDetails.data.value?.service ?? null) : null,
+);
 </script>
 
 <template>
