@@ -10,7 +10,7 @@ export default {
       label: "Home",
     },
     service: {
-      label: "My Service",
+      label: "My Info",
     },
     courses: {
       label: "Courses",

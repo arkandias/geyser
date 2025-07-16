@@ -1,7 +1,7 @@
 export default {
   service: {
     fetching: "Loading service...",
-    notFound: "Service not found",
+    notFound: "No service for the active year",
     coordinations: {
       title: "Coordinations",
       type: {

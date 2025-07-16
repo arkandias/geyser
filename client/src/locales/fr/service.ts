@@ -1,7 +1,7 @@
 export default {
   service: {
     fetching: "Chargement du service…",
-    notFound: "Service non trouvé",
+    notFound: "Pas de service pour l'année active",
     coordinations: {
       title: "Responsabilités",
       type: {
