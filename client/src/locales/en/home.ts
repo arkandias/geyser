@@ -12,7 +12,7 @@ export default {
 <ol>
   <li>
     On the <i class="q-icon text-primary material-symbols-sharp">badge</i>
-    My Service page, enter your base service, then add any service modifications
+    My Info page, enter your base service, then add any service modifications
     (release, delegation, leave, etc.) and your external teaching assignments
     (i.e., all teaching that will count toward your service but is not listed in
     Geyser).

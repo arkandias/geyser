@@ -12,7 +12,7 @@ export default {
 <ol>
   <li>
     Sur la page <i class="q-icon text-primary material-symbols-sharp">badge</i>
-    Mon service, entrez votre service de base, puis ajoutez vos modifications de
+    Mes informations, entrez votre service de base, puis ajoutez vos modifications de
     service éventuelles (décharge, délégation, congé, etc.) et vos enseignements
     extérieurs (c'est-à-dire tous les enseignements qui compteront dans votre
     service mais qui ne figurent pas dans Geyser).
