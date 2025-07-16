@@ -138,6 +138,8 @@ services:
     networks:
       - private-db
       - public
+    volumes:
+      - ./server/keys:/app/keys
 
   frontend:
     build:
