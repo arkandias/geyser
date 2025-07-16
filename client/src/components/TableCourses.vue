@@ -570,7 +570,7 @@ const downloadTeacherAssignments = async () => {
     :loading="fetching"
     :pagination="{ rowsPerPage: 100 }"
     :rows-per-page-options="[0, 10, 20, 50, 100]"
-    :filter="filterObj"
+    :filter="teacher ? null : filterObj"
     :filter-method
     :table-row-class-fn
     :loading-label="t('courses.table.courses.loading')"
