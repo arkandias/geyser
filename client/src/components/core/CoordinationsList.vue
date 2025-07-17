@@ -26,14 +26,16 @@ const coordinations = computed(() =>
 </script>
 
 <template>
-  {{ title }}
-  <template v-for="(c, ind) in coordinations" :key="c.id">
-    <a :href="'mailto:' + c.teacher.email">{{ c.teacher.displayname }}</a
-    >{{
-      (c.comment ? ` (${c.comment})` : "") +
-      (ind < coordinations.length - 1 ? ", " : ".")
-    }}
-  </template>
+  <div>
+    {{ title }}
+    <template v-for="(c, ind) in coordinations" :key="c.id">
+      <a :href="'mailto:' + c.teacher.email">{{ c.teacher.displayname }}</a
+      >{{
+        (c.comment ? ` (${c.comment})` : "") +
+        (ind < coordinations.length - 1 ? ", " : ".")
+      }}
+    </template>
+  </div>
 </template>
 
 <style scoped lang="scss"></style>
