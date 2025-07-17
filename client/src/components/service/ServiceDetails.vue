@@ -31,13 +31,13 @@ graphql(`
     year
     teacherId
     hours
-    modifications(orderBy: [{ id: ASC }]) {
+    modifications(orderBy: [{ label: ASC }]) {
       oid
       id
       label
       hours
     }
-    externalCourses(orderBy: [{ id: ASC }]) {
+    externalCourses(orderBy: [{ label: ASC }]) {
       oid
       id
       label
