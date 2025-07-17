@@ -129,9 +129,9 @@ const deleteRequest = useMutation(DeleteRequestDocument);
 
 const hours = ref<number | null>(null);
 watch(
-  () => data.value.hoursPerGroup,
+  data,
   (value) => {
-    hours.value = value ?? null;
+    hours.value = value.hoursPerGroup ?? null;
   },
   { immediate: true },
 );
