@@ -1,6 +1,5 @@
+import { baseTokenPayloadSchema } from "@geyser/shared/dist/schemas/base-token-payload.schema.ts";
 import { z } from "zod";
-
-import { baseTokenPayloadSchema } from "./base-token-payload.schema.ts";
 
 export const refreshTokenPayloadSchema = baseTokenPayloadSchema.and(
   z.looseObject({

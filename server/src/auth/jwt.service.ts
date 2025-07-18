@@ -6,16 +6,16 @@ import {
   type OmitWithIndex,
   accessTokenPayloadSchema,
 } from "@geyser/shared";
-import {
-  RefreshTokenPayload,
-  refreshTokenPayloadSchema,
-} from "@geyser/shared/dist/schemas/refresh-token-payload.schema";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose from "jose";
 
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RoleService } from "../role/role.service";
+import {
+  RefreshTokenPayload,
+  refreshTokenPayloadSchema,
+} from "./refresh-token-payload.schema";
 
 @Injectable()
 export class JwtService {
