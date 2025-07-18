@@ -7,6 +7,7 @@ export default {
     type: "Type",
     teacher: "Teacher",
     email: "Email",
+    position: "Fonction",
     groupsAssigned: "Groups assigned",
     hoursAssigned: "Hours assigned",
     hoursWeightedAssigned: "Weighted hours assigned",

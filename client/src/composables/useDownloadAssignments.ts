@@ -61,6 +61,9 @@ graphql(`
         teacher {
           displayname
           email
+          position {
+            label
+          }
         }
       }
       hours
@@ -105,6 +108,7 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.type")]: a.course.type.label,
       [t("downloadAssignments.teacher")]: a.service.teacher.displayname,
       [t("downloadAssignments.email")]: a.service.teacher.email,
+      [t("downloadAssignments.position")]: a.service.teacher.position?.label,
       [t("downloadAssignments.groupsAssigned")]:
         Math.round((a.hours / (a.course.hoursPerGroup ?? 0)) * 100) / 100,
       [t("downloadAssignments.hoursAssigned")]: Math.round(a.hours * 100) / 100,

@@ -7,6 +7,7 @@ export default {
     type: "Type",
     teacher: "Intervenant",
     email: "Email",
+    position: "Position",
     groupsAssigned: "Groupes attribués",
     hoursAssigned: "Heures attribuées",
     hoursWeightedAssigned: "Heures éq. TD attribuées",
