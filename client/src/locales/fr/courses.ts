@@ -164,7 +164,7 @@ export default {
         defaultTextWithEdition: `[Cliquez sur l'icône <i class="q-icon text-primary material-symbols-sharp">edit</i> pour ajouter une description.]`,
       },
       defaultText:
-        "Lorsqu'un cours est sélectionné, des informations supplémentaires sont affichées ici.",
+        "Lorsqu'un enseignement est sélectionné, des informations supplémentaires sont affichées ici.",
     },
     details: {
       requests: {

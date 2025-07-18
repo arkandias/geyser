@@ -87,7 +87,7 @@ Par ailleurs, certaines règles de priorités peuvent être mises en place pour 
         title: "Phases",
         description: `Le fonctionnement se déroule en trois phases.
 <ul>
-<li><b>Phase de vœux :</b> les intervenants peuvent consulter les cours disponibles et faire des demandes (principales ou secondaires, ces dernières servant au cas où certaines demandes principales ne peuvent être satisfaites).</li>
+<li><b>Phase de vœux :</b> les intervenants peuvent consulter les enseignements disponibles et faire des demandes (principales ou secondaires, ces dernières servant au cas où certaines demandes principales ne peuvent être satisfaites).</li>
 <li><b>Phase de commission :</b> les membres de la commission des services se réunissent pour attribuer les enseignements aux intervenants.</li>
 <li><b>Phase de consultation :</b> les intervenants peuvent consulter leurs attributions.</li>
 </ul>`,
@@ -147,7 +147,7 @@ Par ailleurs, certaines règles de priorités peuvent être mises en place pour 
       popover: {
         title: "Page de service",
         description: `Cette page regroupe différentes informations sur vous et votre service pour l'année active.<br />
-Elle contient surtout des informations synthétiques (le détail de vos demandes et attributions sera visible sur la page des cours).`,
+Elle contient surtout des informations synthétiques (le détail de vos demandes et attributions sera visible sur la page des enseignements).`,
         popoverClass: "custom-popover large-popover",
       },
     },

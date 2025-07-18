@@ -52,8 +52,8 @@ export default {
       },
       confirm: {
         delete: `Êtes-vous sûr de vouloir supprimer l'année {year} ?
-Si des cours ou des services sont associés à cette année, vous ne pourrez pas \
-la supprimer.`,
+Si des enseignements ou des services sont associés à cette année, vous ne
+pourrez pas la supprimer.`,
       },
       error: {
         setCurrent: "Échec de la mise à jour de l'année en cours",
@@ -72,7 +72,8 @@ la supprimer.`,
           "0 service créé | 1 service créé | {count} services créés",
         copyServices:
           "0 service copié | 1 service copié | {count} services copiés",
-        copyCourses: "0 cours copié | 1 cours copié | {count} cours copiés",
+        copyCourses:
+          "0 enseignement copié | 1 enseignement copié | {count} enseignements copiés",
         computePriorities:
           "0 priorité calculée | 1 priorité calculée | {count} priorités calculées",
       },

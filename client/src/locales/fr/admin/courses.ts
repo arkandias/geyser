@@ -97,9 +97,9 @@ Si ces diplômes contiennent des mentions, vous ne pourrez pas les supprimer.`,
         confirm: {
           delete:
             `Êtes-vous sûr de vouloir supprimer la mention sélectionnée ?
-S'il existe des parcours, des cours ou des responsabilités pour cette mention, vous ne pourrez pas la supprimer. ` +
+S'il existe des parcours, des enseignements ou des responsabilités pour cette mention, vous ne pourrez pas la supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} mentions sélectionnées ?
-S'il existe des parcours, des cours ou des responsabilités pour ces mentions, vous ne pourrez pas les supprimer.`,
+S'il existe des parcours, des enseignements ou des responsabilités pour ces mentions, vous ne pourrez pas les supprimer.`,
         },
       },
     },
@@ -157,9 +157,9 @@ S'il existe des parcours, des cours ou des responsabilités pour ces mentions, v
         confirm: {
           delete:
             `Êtes-vous sûr de vouloir supprimer le parcours sélectionné ?
-S'il existe des cours ou des responsabilités pour ce parcours, vous ne pourrez pas le supprimer. ` +
+S'il existe des enseignements ou des responsabilités pour ce parcours, vous ne pourrez pas le supprimer. ` +
             `Êtes-vous sûr de vouloir supprimer les {count} parcours sélectionnés ?
-S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez pas les supprimer.`,
+S'il existe des enseignements ou des responsabilités pour ces parcours, vous ne pourrez pas les supprimer.`,
         },
       },
     },
