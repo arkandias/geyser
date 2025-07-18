@@ -164,7 +164,7 @@ S'il existe des cours ou des responsabilités pour ces parcours, vous ne pourrez
       },
     },
     terms: {
-      label: "Période",
+      label: "Périodes",
       column: {
         label: {
           label: "Label",
