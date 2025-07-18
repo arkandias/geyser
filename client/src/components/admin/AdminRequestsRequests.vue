@@ -444,9 +444,10 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
       )
       .map((c) => c.type.label)
       .filter(unique),
-    type: Object.values(RequestTypeEnum).map((type) =>
-      t(`requestType.${toLowerCase(type)}`),
-    ),
+    type: Object.values(RequestTypeEnum).map((type) => ({
+      value: type,
+      label: t(`requestType.${toLowerCase(type)}`),
+    })),
   }),
 );
 
