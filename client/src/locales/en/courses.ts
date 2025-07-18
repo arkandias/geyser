@@ -54,9 +54,11 @@ export default {
           },
         },
         filters: {
+          position: "Position",
           search: "Search…",
         },
         options: {
+          filters: "Filters",
           stickyHeader: "Sticky header",
           columns: "Columns",
           resetColumns: "Reset",

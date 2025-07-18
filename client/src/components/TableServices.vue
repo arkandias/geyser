@@ -13,7 +13,13 @@ import {
   ServiceRowFragmentDoc,
 } from "@/gql/graphql.ts";
 import type { Column } from "@/types/column.ts";
-import { getField, localeCompare, normalizeForSearch } from "@/utils";
+import {
+  compare,
+  getField,
+  localeCompare,
+  normalizeForSearch,
+  uniqueValue,
+} from "@/utils";
 
 const { serviceRowFragments } = defineProps<{
   serviceRowFragments: FragmentType<typeof ServiceRowFragmentDoc>[];
@@ -30,6 +36,7 @@ graphql(`
       visible
     }
     position {
+      id
       label
       labelShort
     }
@@ -174,7 +181,7 @@ const columns = computed<Column<ServiceRow>[]>(() => [
     field: (row) => row.position?.labelShort ?? row.position?.label,
     sortable: true,
     sort: localeCompare,
-    visible: false,
+    visible: true,
     searchable: false,
   },
   {
@@ -336,9 +343,29 @@ const resetColumns = () => {
   visibleColumns.value = defaultVisibleColumns;
 };
 
-// Search filter
+// Filters
+const filtersActive = ref(false);
+
+// Positions
+const positions = ref<number[]>([]);
+const positionOptions = computed(() =>
+  services.value
+    .map((s) => s.position)
+    .filter((p) => p != null)
+    .map((p) => ({
+      value: p.id,
+      label: p.labelShort ?? p.label,
+    }))
+    .filter(uniqueValue("value"))
+    .sort(compare("label")),
+);
+
+// Search
 const search = ref<string | null>(null);
+
+// Filter attributes
 const filterObj = computed(() => ({
+  positions: filtersActive.value ? positions.value : [],
   search: normalizeForSearch(search.value ?? ""),
   searchColumns: columns.value.filter((col) => col.searchable),
 }));
@@ -346,12 +373,15 @@ const filterMethod = (
   rows: readonly ServiceRow[],
   terms: typeof filterObj.value,
 ): readonly ServiceRow[] =>
-  rows.filter((row) =>
-    terms.searchColumns.some((col) =>
-      normalizeForSearch(String(getField(row, col.field))).includes(
-        terms.search,
+  rows.filter(
+    (row) =>
+      (terms.positions.length === 0 ||
+        terms.positions.some((p) => p === row.position?.id)) &&
+      terms.searchColumns.some((col) =>
+        normalizeForSearch(String(getField(row, col.field))).includes(
+          terms.search,
+        ),
       ),
-    ),
   );
 
 // Row styling
@@ -382,7 +412,21 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
     @row-click="selectRow"
   >
     <template #top-right>
-      <div id="table-services-top" class="row q-gutter-md">
+      <div id="table-services-top" class="row q-gutter-x-md">
+        <QSelect
+          v-if="filtersActive"
+          v-model="positions"
+          :options="positionOptions"
+          :label="t('courses.table.services.filters.position')"
+          emit-value
+          map-options
+          multiple
+          use-chips
+          square
+          dense
+          options-dense
+          class="no-wrap"
+        />
         <QInput
           v-model="search"
           :placeholder="t('courses.table.services.filters.search')"
@@ -391,6 +435,11 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
           square
           dense
         />
+        <QToggle v-model="filtersActive" icon="sym_s_filter_alt" dense>
+          <QTooltip>
+            {{ t("courses.table.services.options.filters") }}
+          </QTooltip>
+        </QToggle>
         <QToggle v-model="stickyHeader" icon="sym_s_scrollable_header" dense>
           <QTooltip>
             {{ t("courses.table.services.options.stickyHeader") }}
@@ -493,6 +542,9 @@ const tableRowClassFn = (row: ServiceRowFragment) =>
 </template>
 
 <style scoped lang="scss">
+.q-select {
+  min-width: 120px;
+}
 .q-input {
   width: 120px;
 }
