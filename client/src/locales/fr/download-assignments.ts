@@ -5,10 +5,11 @@ export default {
     course: "Enseignement",
     term: "Période",
     type: "Type",
-    groups: "Groupes",
-    hours: "Heures",
     teacher: "Intervenant",
     email: "Email",
+    groupsAssigned: "Groupes attribués",
+    hoursAssigned: "Heures attribuées",
+    hoursWeightedAssigned: "Heures éq. TD attribuées",
     error: {
       requestFailed: "La requête a échoué",
       downloadFailed: "Le téléchargement a échoué",

@@ -5,10 +5,11 @@ export default {
     course: "Course",
     term: "Term",
     type: "Type",
-    groups: "Groups",
-    hours: "Hours",
     teacher: "Teacher",
     email: "Email",
+    groupsAssigned: "Groups assigned",
+    hoursAssigned: "Hours assigned",
+    hoursWeightedAssigned: "Weighted hours assigned",
     error: {
       requestFailed: "Request failed",
       downloadFailed: "Download failed",
