@@ -21,7 +21,6 @@ _compose() {
         "HASURA_GRAPHQL_ADMIN_SECRET"
         "API_ADMIN_SECRET"
         "OIDC_CLIENT_SECRET"
-        "ORGANIZATION_KEY"
         "NGINX_AUTH_ADMIN_ALLOW"
     )
 

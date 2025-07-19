@@ -15,7 +15,7 @@ import {
   adminSecret,
   apiUrl,
   bypassAuth,
-  organizationKey,
+  multiTenant,
 } from "@/config/environment.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { isRole } from "@/utils";
@@ -108,26 +108,27 @@ export class AuthManager {
 
   getOrganizationKey(): void {
     // Set organization key from environment if provided
-    if (organizationKey) {
-      this._organizationKey = organizationKey;
-      console.debug(
-        `[AuthManager] Organization key from environment: ${this._organizationKey}`,
-      );
+    if (!multiTenant) {
+      this._organizationKey = "default";
+      console.debug(`[AuthManager] Single-tenant mode`);
+      console.debug(`[AuthManager] Organization key 'default'`);
       return;
     }
+
+    console.debug(`[AuthManager] Multi-tenant mode`);
 
     // If not provided, use current location hostname
     const domainLabels = window.location.hostname.split(".");
     if (domainLabels.length >= 3 && domainLabels[0]) {
       this._organizationKey = domainLabels[0];
       console.debug(
-        `[AuthManager] Organization key from subdomain: ${this._organizationKey}`,
+        `[AuthManager] Organization key '${this._organizationKey}'`,
       );
       return;
     }
 
     console.error(
-      "[AuthManager] Could not determine organization key. Set VITE_ORGANIZATION_KEY or use a subdomain",
+      "[AuthManager] Could not determine organization key from subdomain",
     );
   }
 

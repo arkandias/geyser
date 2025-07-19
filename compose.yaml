@@ -146,11 +146,10 @@ services:
       context: .
       target: frontend
       args:
+        BUILD_VERSION: "${GEYSER_VERSION}"
+        API_URL: "${API_URL}"
+        GRAPHQL_URL: "${API_URL}/graphql"
         TENANCY_MODE: "${GEYSER_TENANCY}"
-        VITE_BUILD_VERSION: "${GEYSER_VERSION}"
-        VITE_API_URL: "${API_URL}"
-        VITE_GRAPHQL_URL: "${API_URL}/graphql"
-        VITE_ORGANIZATION_KEY: "${ORGANIZATION_KEY:-}"
     restart: always
     depends_on:
       keycloak:

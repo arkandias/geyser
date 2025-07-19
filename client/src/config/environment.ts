@@ -12,12 +12,14 @@ if (!graphqlUrl && import.meta.env.MODE !== "test") {
   throw new Error("Missing required environment variable VITE_GRAPHQL_URL");
 }
 
-export const organizationKey = import.meta.env.VITE_ORGANIZATION_KEY ?? null;
+export const multiTenant = import.meta.env.VITE_MULTI_TENANT === "true";
 
 export const bypassAuth =
   import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === "true";
 
-export const adminSecret = import.meta.env.VITE_ADMIN_SECRET;
+export const adminSecret = import.meta.env.DEV
+  ? (import.meta.env.VITE_ADMIN_SECRET ?? null)
+  : null;
 if (bypassAuth && !adminSecret) {
   throw new Error(
     "Missing admin secret to bypass authentication. Set VITE_ADMIN_SECRET environment variable",
