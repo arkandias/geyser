@@ -2,6 +2,7 @@
 import { useMutation } from "@urql/vue";
 import { ref } from "vue";
 
+import { useDownloadAssignments } from "@/composables/useDownloadAssignments.ts";
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { TOOLTIP_DELAY } from "@/config/constants.ts";
@@ -23,6 +24,7 @@ import NumInput from "@/components/core/NumInput.vue";
 
 const { t } = useTypedI18n();
 const { notify } = useNotify();
+const { downloadAssignments } = useDownloadAssignments();
 const { organization } = useOrganizationStore();
 const { years, currentYear } = useYearsStore();
 
@@ -318,6 +320,21 @@ const computePrioritiesHandle = async () => {
   }
 };
 
+const downloadAssignmentsHandle = async () => {
+  if (selectedYear.value === null) {
+    return;
+  }
+
+  await downloadAssignments(
+    {
+      oid: organization.id,
+      year: selectedYear.value,
+      where: {},
+    },
+    `${selectedYear.value} all`,
+  );
+};
+
 const create = () => {
   selectedYear.value = null;
   yearValue.value = null;
@@ -386,6 +403,14 @@ const edit = (value: number) => {
                 </QItemSection>
                 <QItemSection>
                   {{ t("admin.general.years.button.computePriorities") }}
+                </QItemSection>
+              </QItem>
+              <QItem clickable @click="downloadAssignmentsHandle()">
+                <QItemSection side>
+                  <QIcon name="sym_s_download" color="primary" />
+                </QItemSection>
+                <QItemSection>
+                  {{ t("admin.general.years.button.downloadAssignments") }}
                 </QItemSection>
               </QItem>
             </QList>

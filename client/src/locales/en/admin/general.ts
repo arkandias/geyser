@@ -44,6 +44,7 @@ export default {
         copyServices: "Copy services from previous year",
         copyCourses: "Copy courses from previous year",
         computePriorities: "Compute priorities",
+        downloadAssignments: "Download assignments",
       },
       tooltip: {
         manage: "Manage year",

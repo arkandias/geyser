@@ -24,8 +24,8 @@ graphql(`
       orderBy: [
         { course: { program: { degree: { name: ASC } } } }
         { course: { program: { name: ASC } } }
-        { course: { track: { name: ASC } } }
         { course: { term: { label: ASC } } }
+        { course: { track: { name: ASC } } }
         { course: { name: ASC } }
         { course: { type: { label: ASC } } }
         { service: { teacher: { lastname: ASC } } }

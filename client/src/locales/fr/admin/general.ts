@@ -44,6 +44,7 @@ export default {
         copyServices: "Copier les services de l'année précédente",
         copyCourses: "Copier les enseignements de l'année précédente",
         computePriorities: "Calculer les priorités",
+        downloadAssignments: "Télécharger les attributions",
       },
       tooltip: {
         manage: "Administrer l'année",
