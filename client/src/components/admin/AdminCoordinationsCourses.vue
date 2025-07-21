@@ -408,14 +408,22 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
       value: t.email,
       label: t.displayname ?? "",
     })),
-    degreeName: courses.value.map((c) => c.program.degree.name).filter(unique),
+    degreeName: courses.value
+      .filter((c) => c.year === formValues.value["year"])
+      .map((c) => c.program.degree.name)
+      .filter(unique),
     programName: courses.value
-      .filter((c) => c.program.degree.name === formValues.value["degreeName"])
+      .filter(
+        (c) =>
+          c.year === formValues.value["year"] &&
+          c.program.degree.name === formValues.value["degreeName"],
+      )
       .map((c) => c.program.name)
       .filter(unique),
     trackName: courses.value
       .filter(
         (c) =>
+          c.year === formValues.value["year"] &&
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           c.track?.name,
@@ -425,6 +433,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
     termLabel: courses.value
       .filter(
         (c) =>
+          c.year === formValues.value["year"] &&
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null),
@@ -434,6 +443,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
     courseName: courses.value
       .filter(
         (c) =>
+          c.year === formValues.value["year"] &&
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
@@ -444,6 +454,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
     courseTypeLabel: courses.value
       .filter(
         (c) =>
+          c.year === formValues.value["year"] &&
           c.program.degree.name === formValues.value["degreeName"] &&
           c.program.name === formValues.value["programName"] &&
           (c.track?.name ?? null) === (formValues.value["trackName"] ?? null) &&
