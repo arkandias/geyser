@@ -133,6 +133,7 @@ CREATE TABLE public.course
     description           text,
     priority_rule         integer, -- 0=: Infinity; NULL: No rule
     visible               boolean NOT NULL DEFAULT TRUE,
+    external_reference    text,
     PRIMARY KEY (oid, id),
     FOREIGN KEY (oid, year) REFERENCES public.year ON UPDATE CASCADE,
     FOREIGN KEY (oid, program_id) REFERENCES public.program ON UPDATE CASCADE,
@@ -174,7 +175,7 @@ COMMENT ON COLUMN public.course.hours_effective_total IS 'Effective teaching hou
 COMMENT ON COLUMN public.course.description IS 'Optional description';
 COMMENT ON COLUMN public.course.priority_rule IS 'Priority duration in years (1=none, 0=permanent, NULL=disabled)';
 COMMENT ON COLUMN public.course.visible IS 'Controls visibility to teachers';
-
+COMMENT ON COLUMN public.course.external_reference IS 'External reference (optional)';
 
 CREATE TABLE public.coordination
 (

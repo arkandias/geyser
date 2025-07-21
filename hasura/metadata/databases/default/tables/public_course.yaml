@@ -83,6 +83,7 @@ insert_permissions:
         - description
         - priority_rule
         - visible
+        - external_reference
 select_permissions:
   - role: commissioner
     permission:
@@ -107,6 +108,7 @@ select_permissions:
         - description
         - priority_rule
         - visible
+        - external_reference
       filter:
         _and:
           - oid:
@@ -139,6 +141,7 @@ select_permissions:
         - description
         - priority_rule
         - visible
+        - external_reference
       filter:
         oid:
           _eq: X-Hasura-Org-Id
@@ -166,6 +169,7 @@ select_permissions:
         - description
         - priority_rule
         - visible
+        - external_reference
       filter:
         _and:
           - oid:
@@ -232,6 +236,7 @@ update_permissions:
         - description
         - priority_rule
         - visible
+        - external_reference
       filter:
         oid:
           _eq: X-Hasura-Org-Id
