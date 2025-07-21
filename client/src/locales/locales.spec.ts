@@ -147,7 +147,6 @@ const findKeysInFiles = async (): Promise<string[]> => {
   });
   deleteTemplateStringKey("requestType.${toLowerCase(val)}");
   deleteTemplateStringKey("requestType.${toLowerCase(value)}");
-  deleteTemplateStringKey("requestType.${toLowerCase(type)}");
 
   CUSTOM_TEXTS.forEach(({ key, defaultKey }) => {
     standardKeys.add(`customTextLabel.${key}`);
