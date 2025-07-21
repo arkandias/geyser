@@ -1,3 +1,26 @@
+<script lang="ts">
+export const adminCoursesCoursesColNames = [
+  "year",
+  "degreeName",
+  "programName",
+  "trackName",
+  "termLabel",
+  "name",
+  "nameShort",
+  "typeLabel",
+  "hours",
+  "hoursAdjusted",
+  "groups",
+  "groupsAdjusted",
+  "description",
+  "priorityRule",
+  "visible",
+] as const;
+
+export type AdminCoursesCoursesColName =
+  (typeof adminCoursesCoursesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -23,17 +46,17 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
+import { unique } from "@/utils";
 
-import type { AdminCoursesCoursesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = CourseInsertInput;
 
 const {
@@ -57,7 +80,7 @@ const { t, n } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
-const rowDescriptor = {
+const adminColumns = {
   year: {
     type: "number",
     formComponent: "select",
@@ -85,12 +108,12 @@ const rowDescriptor = {
   },
   name: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   typeLabel: {
     type: "string",
@@ -100,48 +123,40 @@ const rowDescriptor = {
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   hoursAdjusted: {
     type: "number",
     nullable: true,
     format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   groups: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   groupsAdjusted: {
     type: "number",
     nullable: true,
     format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   description: {
     type: "string",
     nullable: true,
     format: (val: string | null) => (val ? "✓" : "✗"),
-    formComponent: "input",
-    inputType: "textarea",
+    formComponent: "inputTextarea",
   },
   priorityRule: {
     type: "number",
     nullable: true,
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   visible: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesCoursesColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesCoursesColName, Row>;
 
 graphql(`
   fragment AdminCourse on Course {
@@ -175,22 +190,25 @@ graphql(`
 
   fragment AdminCoursesDegree on Degree {
     name
-    programs {
-      id
-      name
-      tracks {
-        id
-        name
-      }
-    }
   }
 
   fragment AdminCoursesProgram on Program {
+    id
     name
+    degree {
+      name
+    }
   }
 
   fragment AdminCoursesTrack on Track {
+    id
     name
+    program {
+      name
+      degree {
+        name
+      }
+    }
   }
 
   fragment AdminCoursesTerm on Term {
@@ -243,9 +261,6 @@ graphql(`
   }
 `);
 
-const courses = computed(() =>
-  courseFragments.map((f) => useFragment(AdminCourseFragmentDoc, f)),
-);
 const degrees = computed(() =>
   degreeFragments.map((f) => useFragment(AdminCoursesDegreeFragmentDoc, f)),
 );
@@ -257,6 +272,9 @@ const tracks = computed(() =>
 );
 const terms = computed(() =>
   termFragments.map((f) => useFragment(AdminCoursesTermFragmentDoc, f)),
+);
+const courses = computed(() =>
+  courseFragments.map((f) => useFragment(AdminCourseFragmentDoc, f)),
 );
 const types = computed(() =>
   typeFragments.map((f) => useFragment(AdminCoursesTypeFragmentDoc, f)),
@@ -296,59 +314,51 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   // programId
-  if (
-    flatRow.degreeName !== undefined ||
-    flatRow.programName !== undefined ||
-    flatRow.trackName !== undefined
-  ) {
-    if (flatRow.degreeName !== undefined && flatRow.programName === undefined) {
+  if (flatRow.degreeName !== undefined || flatRow.programName !== undefined) {
+    if (flatRow.degreeName === undefined || flatRow.programName === undefined) {
       throw new Error(
-        t("admin.courses.courses.form.error.updateDegreeWithoutProgram"),
+        t("admin.courses.courses.form.error.updateProgramMissingFields"),
       );
     }
-    if (flatRow.programName !== undefined && flatRow.degreeName === undefined) {
-      throw new Error(
-        t("admin.courses.courses.form.error.updateProgramWithoutDegree"),
-      );
-    }
-    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
-    if (degree === undefined) {
-      throw new Error(
-        t("admin.courses.courses.form.error.degreeNotFound", flatRow),
-      );
-    }
-    const program = degree.programs.find((p) => p.name === flatRow.programName);
+    const program = programs.value.find(
+      (p) =>
+        p.degree.name === flatRow.degreeName && p.name === flatRow.programName,
+    );
     if (program === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.programNotFound", flatRow),
       );
     }
     object.programId = program.id;
+  }
 
-    // trackId
-    if (flatRow.trackName !== undefined) {
-      if (flatRow.degreeName === undefined) {
-        throw new Error(
-          t("admin.courses.courses.form.error.updateTrackWithoutDegree"),
-        );
-      }
-      if (flatRow.programName === undefined) {
-        throw new Error(
-          t("admin.courses.courses.form.error.updateTrackWithoutProgram"),
-        );
-      }
-      if (flatRow.trackName === null) {
-        object.trackId = null;
-      } else {
-        const track = program.tracks.find((t) => t.name === flatRow.trackName);
-        if (track === undefined) {
-          throw new Error(
-            t("admin.courses.courses.form.error.trackNotFound", flatRow),
-          );
-        }
-        object.trackId = track.id;
-      }
+  // trackId
+  if (
+    flatRow.degreeName !== undefined ||
+    flatRow.programName !== undefined ||
+    flatRow.trackName !== undefined
+  ) {
+    if (
+      flatRow.degreeName === undefined ||
+      flatRow.programName === undefined ||
+      flatRow.trackName === undefined
+    ) {
+      throw new Error(
+        t("admin.courses.courses.form.error.updateTrackMissingFields"),
+      );
     }
+    const track = tracks.value.find(
+      (t) =>
+        t.program.degree.name === flatRow.degreeName &&
+        t.program.name === flatRow.programName &&
+        t.name === flatRow.trackName,
+    );
+    if (track === undefined) {
+      throw new Error(
+        t("admin.courses.courses.form.error.trackNotFound", flatRow),
+      );
+    }
+    object.trackId = track.id;
   }
 
   // termId
@@ -435,31 +445,35 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     year: years.value.map((y) => y.value),
-    degreeName: degrees.value.map((d) => d.name),
-    programName:
-      degrees.value
-        .find((d) => d.name === formValues.value["degreeName"])
-        ?.programs.map((p) => p.name) ?? [],
-    trackName:
-      degrees.value
-        .find((d) => d.name === formValues.value["degreeName"])
-        ?.programs.find((p) => p.name === formValues.value["programName"])
-        ?.tracks.map((t) => t.name) ?? [],
+    degreeName: programs.value.map((p) => p.degree.name).filter(unique),
+    programName: programs.value
+      .filter((p) => p.degree.name === formValues.value["degreeName"])
+      .map((p) => p.name)
+      .filter(unique),
+    trackName: tracks.value
+      .filter(
+        (t) =>
+          t.program.degree.name === formValues.value["degreeName"] &&
+          t.program.name === formValues.value["programName"],
+      )
+      .map((t) => t.name)
+      .filter(unique),
     termLabel: terms.value.map((t) => t.label),
     typeLabel: types.value.map((t) => t.label),
   }),
 );
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed<
-  SelectOptions<string, Row, typeof rowDescriptor>
->(() => ({
-  programName: programs.value.map((p) => p.name),
-  trackName: tracks.value.map((t) => t.name),
-}));
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
+    degreeName: degrees.value.map((d) => d.name),
+    programName: programs.value.map((p) => p.name).filter(unique),
+    trackName: tracks.value.map((t) => t.name).filter(unique),
+  }),
+);
 </script>
 
 <template>
@@ -468,7 +482,7 @@ const filterOptions = computed<
     v-model:filter-values="filterValues"
     section="courses"
     name="courses"
-    :row-descriptor
+    :admin-columns
     :rows="courses"
     :fetching
     :validate-flat-row

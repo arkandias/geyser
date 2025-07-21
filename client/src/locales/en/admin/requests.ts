@@ -1,10 +1,8 @@
 import { RequestTypeEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminRequestsPrioritiesColName,
-  AdminRequestsRequestsColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminRequestsPrioritiesColName } from "@/components/admin/AdminRequestsPriorities.vue";
+import type { AdminRequestsRequestsColName } from "@/components/admin/AdminRequestsRequests.vue";
 
 export default {
   requests: {
@@ -57,12 +55,12 @@ export default {
         title:
           "Creating a request | Editing a request | Editing {count} requests",
         error: {
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
+          updateServiceMissingFields:
+            "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
+            "To update the course, you must select a year, a degree, a program, a track (possibly empty), a course, a term, and a course type",
           courseNotFound:
             'No course of type "{typeLabel}" in the term "{termLabel}" with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for the year {year} exists',
           invalidType: `The request type must be ${RequestTypeEnum.Assignment}, ${RequestTypeEnum.Primary} or ${RequestTypeEnum.Secondary}`,
@@ -140,12 +138,12 @@ export default {
         title:
           "Creating a priority | Editing a priority | Editing {count} priorities",
         error: {
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
+          updateServiceMissingFields:
+            "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} for year {year}",
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
+            "To update the course, you must select a year, a degree, a program, a track (possibly empty), a course, a term, and a course type",
           courseNotFound:
             'No course of type "{typeLabel}" in the term "{termLabel}" with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for the year {year} exists',
         },

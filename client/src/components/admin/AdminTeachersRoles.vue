@@ -1,3 +1,14 @@
+<script lang="ts">
+export const adminTeachersRolesColNames = [
+  "teacherEmail",
+  "role",
+  "comment",
+] as const;
+
+export type AdminTeachersRolesColName =
+  (typeof adminTeachersRolesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -19,18 +30,17 @@ import {
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 import { toLowerCase } from "@/utils";
 
-import type { AdminTeachersRolesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRoleFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = TeacherRoleInsertInput;
 
 const { roleFragments, teacherFragments } = defineProps<{
@@ -42,7 +52,7 @@ const { roleFragments, teacherFragments } = defineProps<{
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   teacherEmail: {
     type: "string",
     field: (row) => row.teacher.email,
@@ -58,9 +68,9 @@ const rowDescriptor = {
   comment: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
-} as const satisfies RowDescriptorExtra<AdminTeachersRolesColName, Row>;
+} as const satisfies AdminColumns<AdminTeachersRolesColName, Row>;
 
 graphql(`
   fragment AdminRole on TeacherRole {
@@ -176,7 +186,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     teacherEmail: teachers.value.map((t) => ({
       value: t.email,
@@ -200,7 +210,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="teachers"
     name="roles"
-    :row-descriptor
+    :admin-columns
     :rows="roles"
     :fetching
     :validate-flat-row

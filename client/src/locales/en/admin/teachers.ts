@@ -1,10 +1,8 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminTeachersPositionsColName,
-  AdminTeachersRolesColName,
-  AdminTeachersTeachersColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminTeachersPositionsColName } from "@/components/admin/AdminTeachersPositions.vue";
+import type { AdminTeachersRolesColName } from "@/components/admin/AdminTeachersRoles.vue";
+import type { AdminTeachersTeachersColName } from "@/components/admin/AdminTeachersTeachers.vue";
 
 export default {
   teachers: {

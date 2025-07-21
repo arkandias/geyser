@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { computed } from "vue";
-
 import { useCurrentPhaseStore } from "@/stores/useCurrentPhaseStore.ts";
 import { useCustomTextsStore } from "@/stores/useCustomTextsStore.ts";
 import { capitalize, toLowerCase } from "@/utils";
@@ -12,16 +10,12 @@ defineProps<{ alert?: string }>();
 const { currentPhase } = useCurrentPhaseStore();
 const { getCustomText } = useCustomTextsStore();
 
-const title = computed(() => getCustomText.value("homeTitle"));
-const subtitle = computed(() =>
-  getCustomText.value(
-    `homeSubtitle${capitalize(toLowerCase(currentPhase.value))}`,
-  ),
+const title = getCustomText("homeTitle");
+const subtitle = getCustomText(
+  `homeSubtitle${capitalize(toLowerCase(currentPhase.value))}`,
 );
-const message = computed(() =>
-  getCustomText.value(
-    `homeMessage${capitalize(toLowerCase(currentPhase.value))}`,
-  ),
+const message = getCustomText(
+  `homeMessage${capitalize(toLowerCase(currentPhase.value))}`,
 );
 </script>
 

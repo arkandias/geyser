@@ -1,13 +1,11 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminCoursesCourseTypesColName,
-  AdminCoursesCoursesColName,
-  AdminCoursesDegreesColName,
-  AdminCoursesProgramsColName,
-  AdminCoursesTermsColName,
-  AdminCoursesTracksColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminCoursesCourseTypesColName } from "@/components/admin/AdminCoursesCourseTypes.vue";
+import type { AdminCoursesCoursesColName } from "@/components/admin/AdminCoursesCourses.vue";
+import type { AdminCoursesDegreesColName } from "@/components/admin/AdminCoursesDegrees.vue";
+import type { AdminCoursesProgramsColName } from "@/components/admin/AdminCoursesPrograms.vue";
+import type { AdminCoursesTermsColName } from "@/components/admin/AdminCoursesTerms.vue";
+import type { AdminCoursesTracksColName } from "@/components/admin/AdminCoursesTracks.vue";
 
 export default {
   courses: {
@@ -129,11 +127,8 @@ If there are tracks, courses, or coordinations for these programs, you will not 
       form: {
         title: "Creating a track | Editing a track | Editing {count} tracks",
         error: {
-          updateDegreeWithoutProgram:
-            "You cannot modify the degree without selecting a program",
-          updateProgramWithoutDegree:
-            "You cannot modify the program without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degreeName}" exists',
+          updateProgramMissingFields:
+            "To update the program, you must select a degree and a program",
           programNotFound:
             'No program in the degree "{degreeName}" with the name "{programName}" exists',
         },
@@ -256,15 +251,10 @@ If these terms contain courses, you will not be able to delete them.`,
       form: {
         title: "Creating a course | Editing a course | Editing {count} courses",
         error: {
-          updateDegreeWithoutProgram:
-            "You cannot modify the degree without selecting a program",
-          updateProgramWithoutDegree:
-            "You cannot modify the program without selecting a degree",
-          updateTrackWithoutProgram:
-            "You cannot modify the track without selecting a program",
-          updateTrackWithoutDegree:
-            "You cannot modify the track without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degreeName}" exists',
+          updateProgramMissingFields:
+            "To update the program, you must select a degree and a program",
+          updateTrackMissingFields:
+            "To update the track, you must select a degree, a program, and a track",
           programNotFound:
             'No program in the degree "{degreeName}" with the name "{programName}" exists',
           trackNotFound:

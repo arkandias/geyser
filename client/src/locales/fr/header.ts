@@ -1,4 +1,4 @@
-import type { InfoTextKey } from "@/config/info-text-keys.ts";
+import type { InfoTextKey } from "@/components/header/MenuInfo.vue";
 
 export default {
   header: {

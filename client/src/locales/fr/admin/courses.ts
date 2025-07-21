@@ -1,13 +1,11 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminCoursesCourseTypesColName,
-  AdminCoursesCoursesColName,
-  AdminCoursesDegreesColName,
-  AdminCoursesProgramsColName,
-  AdminCoursesTermsColName,
-  AdminCoursesTracksColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminCoursesCourseTypesColName } from "@/components/admin/AdminCoursesCourseTypes.vue";
+import type { AdminCoursesCoursesColName } from "@/components/admin/AdminCoursesCourses.vue";
+import type { AdminCoursesDegreesColName } from "@/components/admin/AdminCoursesDegrees.vue";
+import type { AdminCoursesProgramsColName } from "@/components/admin/AdminCoursesPrograms.vue";
+import type { AdminCoursesTermsColName } from "@/components/admin/AdminCoursesTerms.vue";
+import type { AdminCoursesTracksColName } from "@/components/admin/AdminCoursesTracks.vue";
 
 export default {
   courses: {
@@ -131,12 +129,8 @@ S'il existe des parcours, des enseignements ou des responsabilités pour ces men
         title:
           "Création d'un parcours | Édition d'un parcours | Édition de {count} parcours",
         error: {
-          updateDegreeWithoutProgram:
-            "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
-          updateProgramWithoutDegree:
-            "Vous ne pouvez pas modifier la mention sans sélectionner un diplôme",
-          degreeNotFound:
-            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
+          updateProgramMissingFields:
+            "Pour mettre à jour la mention, vous devez sélectionner un diplôme et une mention",
           programNotFound:
             "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
         },
@@ -269,16 +263,10 @@ Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprime
         title:
           "Création d'un enseignement | Édition d'un enseignement | Édition de {count} enseignements",
         error: {
-          updateDegreeWithoutProgram:
-            "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
-          updateProgramWithoutDegree:
-            "Vous ne pouvez pas modifier la mention sans sélectionner un diplôme",
-          updateTrackWithoutProgram:
-            "Vous ne pouvez pas modifier le parcours sans sélectionner une mention",
-          updateTrackWithoutDegree:
-            "Vous ne pouvez pas modifier le parcours sans sélectionner un diplôme",
-          degreeNotFound:
-            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
+          updateProgramMissingFields:
+            "Pour mettre à jour la mention, vous devez sélectionner un diplôme et une mention",
+          updateTrackMissingFields:
+            "Pour mettre à jour le parcours, vous devez sélectionner un diplôme, une mention et un parcours",
           programNotFound:
             "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
           trackNotFound:

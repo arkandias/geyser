@@ -4,9 +4,8 @@ import { describe, expect, it } from "vitest";
 
 import en from "./en";
 import fr from "./fr";
-import { CUSTOM_TEXT_KEYS } from "@/config/custom-text-keys.ts";
-import { INFO_TEXT_KEYS } from "@/config/info-text-keys.ts";
-import { PRIMITIVE_TYPES } from "@/config/primitive-types.ts";
+import { PRIMITIVE_TYPE_NAMES } from "@/config/constants.ts";
+import { CUSTOM_TEXTS } from "@/config/custom-texts.ts";
 import {
   LocaleEnum,
   PhaseEnum,
@@ -14,28 +13,27 @@ import {
   RoleEnum,
 } from "@/gql/graphql.ts";
 import type { SimpleObject } from "@/types/data.ts";
-import { camelToDot, toLowerCase } from "@/utils";
+import { toLowerCase } from "@/utils";
 
-import {
-  adminCoordinationsCoursesColNames,
-  adminCoordinationsProgramsColNames,
-  adminCoordinationsTracksColNames,
-  adminCoursesCourseTypesColNames,
-  adminCoursesCoursesColNames,
-  adminCoursesDegreesColNames,
-  adminCoursesProgramsColNames,
-  adminCoursesTermsColNames,
-  adminCoursesTracksColNames,
-  adminRequestsPrioritiesColNames,
-  adminRequestsRequestsColNames,
-  adminServicesExternalCoursesColNames,
-  adminServicesMessagesColNames,
-  adminServicesServiceModificationsColNames,
-  adminServicesServicesColNames,
-  adminTeachersPositionsColNames,
-  adminTeachersRolesColNames,
-  adminTeachersTeachersColNames,
-} from "@/components/admin/col-names.ts";
+import { adminCoordinationsCoursesColNames } from "@/components/admin/AdminCoordinationsCourses.vue";
+import { adminCoordinationsProgramsColNames } from "@/components/admin/AdminCoordinationsPrograms.vue";
+import { adminCoordinationsTracksColNames } from "@/components/admin/AdminCoordinationsTracks.vue";
+import { adminCoursesCourseTypesColNames } from "@/components/admin/AdminCoursesCourseTypes.vue";
+import { adminCoursesCoursesColNames } from "@/components/admin/AdminCoursesCourses.vue";
+import { adminCoursesDegreesColNames } from "@/components/admin/AdminCoursesDegrees.vue";
+import { adminCoursesProgramsColNames } from "@/components/admin/AdminCoursesPrograms.vue";
+import { adminCoursesTermsColNames } from "@/components/admin/AdminCoursesTerms.vue";
+import { adminCoursesTracksColNames } from "@/components/admin/AdminCoursesTracks.vue";
+import { adminRequestsPrioritiesColNames } from "@/components/admin/AdminRequestsPriorities.vue";
+import { adminRequestsRequestsColNames } from "@/components/admin/AdminRequestsRequests.vue";
+import { adminServicesExternalCoursesColNames } from "@/components/admin/AdminServicesExternalCourses.vue";
+import { adminServicesMessagesColNames } from "@/components/admin/AdminServicesMessages.vue";
+import { adminServicesServiceModificationsColNames } from "@/components/admin/AdminServicesServiceModifications.vue";
+import { adminServicesServicesColNames } from "@/components/admin/AdminServicesServices.vue";
+import { adminTeachersPositionsColNames } from "@/components/admin/AdminTeachersPositions.vue";
+import { adminTeachersRolesColNames } from "@/components/admin/AdminTeachersRoles.vue";
+import { adminTeachersTeachersColNames } from "@/components/admin/AdminTeachersTeachers.vue";
+import { INFO_TEXT_KEYS } from "@/components/header/MenuInfo.vue";
 
 const locales = {
   [LocaleEnum.Fr]: fr,
@@ -76,7 +74,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
   const regexNonString = /[^a-zA-Z]t\([\s\n]*([^\s\n"'`][^)]*)\)/g;
 
   const standardKeys = new Set<string>();
-  const templateStringsKeys = new Set<string>();
+  const templateStringKeys = new Set<string>();
   const nonStringKeys = new Set<string>();
   const failedDeletes = new Set<string>();
 
@@ -105,7 +103,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
     regexTemplateStrings.lastIndex = 0;
     while ((match = regexTemplateStrings.exec(content)) !== null) {
       if (match[1]) {
-        templateStringsKeys.add(match[1]);
+        templateStringKeys.add(match[1]);
       }
     }
 
@@ -120,8 +118,13 @@ const findKeysInFiles = async (): Promise<string[]> => {
 
   // Manually add template string keys
 
-  const deleteTemplateStringsKey = (key: string) => {
-    if (!templateStringsKeys.delete(key)) {
+  const deleteTemplateStringKey = (key: string) => {
+    if (!templateStringKeys.delete(key)) {
+      failedDeletes.add(key);
+    }
+  };
+  const deleteNonStringKey = (key: string) => {
+    if (!nonStringKeys.delete(key)) {
       failedDeletes.add(key);
     }
   };
@@ -131,40 +134,42 @@ const findKeysInFiles = async (): Promise<string[]> => {
     standardKeys.add(`home.subtitle.${toLowerCase(phase)}`);
     standardKeys.add(`home.message.${toLowerCase(phase)}`);
   });
-  deleteTemplateStringsKey("phase.${toLowerCase(phase)}");
+  deleteTemplateStringKey("phase.${toLowerCase(phase)}");
 
   Object.values(RoleEnum).forEach((role) => {
     standardKeys.add(`role.${toLowerCase(role)}`);
   });
-  deleteTemplateStringsKey("role.${toLowerCase(val)}");
-  deleteTemplateStringsKey("role.${toLowerCase(role)}");
+  deleteTemplateStringKey("role.${toLowerCase(val)}");
+  deleteTemplateStringKey("role.${toLowerCase(role)}");
 
   Object.values(RequestTypeEnum).forEach((type) => {
     standardKeys.add(`requestType.${toLowerCase(type)}`);
   });
-  deleteTemplateStringsKey("requestType.${toLowerCase(val)}");
-  deleteTemplateStringsKey("requestType.${toLowerCase(value)}");
-  deleteTemplateStringsKey("requestType.${toLowerCase(type)}");
+  deleteTemplateStringKey("requestType.${toLowerCase(val)}");
+  deleteTemplateStringKey("requestType.${toLowerCase(value)}");
+  deleteTemplateStringKey("requestType.${toLowerCase(type)}");
 
-  CUSTOM_TEXT_KEYS.forEach((key) => {
+  CUSTOM_TEXTS.forEach(({ key, defaultKey }) => {
     standardKeys.add(`customTextLabel.${key}`);
-    standardKeys.add(camelToDot(key));
+    standardKeys.add(defaultKey);
   });
-  deleteTemplateStringsKey("customTextLabel.${key}");
-  deleteTemplateStringsKey("${camelToDot(key)}");
+  deleteTemplateStringKey("customTextLabel.${key}");
+  deleteNonStringKey("text.defaultKey");
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
   INFO_TEXT_KEYS.forEach((key) => {
     standardKeys.add(`header.info.${key}.label`);
     standardKeys.add(`header.info.${key}.message`);
   });
-  deleteTemplateStringsKey("header.info.${key}.label");
-  deleteTemplateStringsKey("header.info.${key}.message");
+  deleteTemplateStringKey("header.info.${key}.label");
+  deleteTemplateStringKey("header.info.${key}.message");
 
-  PRIMITIVE_TYPES.forEach((type) => {
-    standardKeys.add(`primitiveTypeName.${type}`);
+  PRIMITIVE_TYPE_NAMES.forEach((typeName) => {
+    standardKeys.add(`primitiveTypeName.${typeName}`);
   });
-  deleteTemplateStringsKey("primitiveTypeName.${val}");
+  deleteTemplateStringKey("primitiveTypeName.${val}");
 
+  /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
     teachers: {
       teachers: adminTeachersTeachersColNames,
@@ -195,6 +200,7 @@ const findKeysInFiles = async (): Promise<string[]> => {
       courses: adminCoordinationsCoursesColNames,
     },
   };
+  /* eslint-enable @typescript-eslint/no-unsafe-assignment */
 
   Object.entries(adminColNames).forEach(([section, names]) => {
     Object.entries(names).forEach(([name, colNames]) => {
@@ -212,20 +218,20 @@ const findKeysInFiles = async (): Promise<string[]> => {
       standardKeys.add(`${keyPrefix}.data.confirm.delete`);
     });
   });
-  deleteTemplateStringsKey("${keyPrefix}.column.${key}.label");
-  deleteTemplateStringsKey("${keyPrefix}.column.${key}.tooltip");
-  deleteTemplateStringsKey("${keyPrefix}.column.${name}.label");
-  deleteTemplateStringsKey("${keyPrefix}.column.${name}.tooltip");
-  deleteTemplateStringsKey("${keyPrefix}.form.title");
-  deleteTemplateStringsKey("${keyPrefix}.data.success.insert");
-  deleteTemplateStringsKey("${keyPrefix}.data.success.update");
-  deleteTemplateStringsKey("${keyPrefix}.data.success.delete");
-  deleteTemplateStringsKey("${keyPrefix}.data.success.import");
-  deleteTemplateStringsKey("${keyPrefix}.data.success.export");
-  deleteTemplateStringsKey("${keyPrefix}.data.confirm.delete");
+  deleteTemplateStringKey("${keyPrefix}.column.${key}.label");
+  deleteTemplateStringKey("${keyPrefix}.column.${key}.tooltip");
+  deleteTemplateStringKey("${keyPrefix}.column.${name}.label");
+  deleteTemplateStringKey("${keyPrefix}.column.${name}.tooltip");
+  deleteTemplateStringKey("${keyPrefix}.form.title");
+  deleteTemplateStringKey("${keyPrefix}.data.success.insert");
+  deleteTemplateStringKey("${keyPrefix}.data.success.update");
+  deleteTemplateStringKey("${keyPrefix}.data.success.delete");
+  deleteTemplateStringKey("${keyPrefix}.data.success.import");
+  deleteTemplateStringKey("${keyPrefix}.data.success.export");
+  deleteTemplateStringKey("${keyPrefix}.data.confirm.delete");
 
   expect(
-    Array.from(templateStringsKeys),
+    Array.from(templateStringKeys),
     "Found unexpected template string keys",
   ).toEqual([]);
 

@@ -1,9 +1,18 @@
-import type {
-  PrimitiveType,
-  PrimitiveTypeMap,
-} from "@/config/primitive-types.ts";
+import type { PRIMITIVE_TYPE_NAMES } from "@/config/constants.ts";
+import type { Column } from "@/types/column.ts";
 
-export type Scalar = string | number | boolean | null | undefined;
+export type PrimitiveType = string | number | boolean;
+export type PrimitiveTypeName = (typeof PRIMITIVE_TYPE_NAMES)[number];
+export type PrimitiveTypeMap<T extends PrimitiveTypeName> = T extends "string"
+  ? string
+  : T extends "number"
+    ? number
+    : T extends "boolean"
+      ? boolean
+      : never;
+
+export type Scalar = PrimitiveType | null | undefined;
+export type FlatObject<T extends Scalar = Scalar> = Record<string, T>;
 export type SimpleObject<T extends Scalar = Scalar> = {
   [key: string]: T | SimpleObject<T>;
 };
@@ -17,59 +26,51 @@ export type OptionWithSearch<T = Scalar> = Option<T> & {
   search: string;
 };
 
-export type FieldDescriptor = {
-  type: PrimitiveType;
+export type FieldMetadata = {
+  type: PrimitiveTypeName;
   nullable?: boolean;
   info?: string;
 };
 
-export type RowDescriptor<K extends string = string> = Record<
-  K,
-  FieldDescriptor
->;
+export type RowMetadata<K extends string = string> = Record<K, FieldMetadata>;
 
-export type ParsedField<T extends FieldDescriptor> = T["nullable"] extends true
+export type ParsedField<T extends FieldMetadata> = T["nullable"] extends true
   ? PrimitiveTypeMap<T["type"]> | null
   : PrimitiveTypeMap<T["type"]>;
 
-export type ParsedRow<T extends RowDescriptor> = {
+export type ParsedRow<T extends RowMetadata> = {
   -readonly [K in keyof T]: ParsedField<T[K]>;
 };
 
-export type NullableParsedRow<T extends RowDescriptor> = {
+export type NullableParsedRow<T extends RowMetadata> = {
   -readonly [K in keyof T]?: ParsedField<T[K]> | null;
 };
 
-export type FieldDescriptorExtra<R extends SimpleObject> = FieldDescriptor & {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  field?: string | ((row: R) => any);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  format?: (val: any, row: R) => any;
-} & (
-    | {
-        formComponent: "select" | "toggle";
-      }
-    | {
-        formComponent: "input";
-        inputType?: "text" | "textarea" | "number";
-      }
-  );
+export type AdminColumn<R> = Partial<Column<R>> &
+  FieldMetadata & {
+    formComponent?:
+      | "inputText"
+      | "inputTextarea"
+      | "inputNumber"
+      | "select"
+      | "toggle";
+  };
 
-export type RowDescriptorExtra<
+export type AdminColumns<
   K extends string = string,
-  R extends SimpleObject = SimpleObject,
-> = Record<K, FieldDescriptorExtra<R>>;
+  R extends object = object,
+> = Record<K, AdminColumn<R>>;
 
 export type SelectKeys<
   K extends string,
-  R extends SimpleObject,
-  T extends RowDescriptorExtra<K, R>,
+  R extends object,
+  T extends AdminColumns<K, R>,
 > = {
   [K in keyof T]: T[K]["formComponent"] extends "select" ? K : never;
 }[keyof T];
 
 export type SelectOptions<
   K extends string,
-  R extends SimpleObject,
-  T extends RowDescriptorExtra<K, R>,
+  R extends object,
+  T extends AdminColumns<K, R>,
 > = Partial<Record<SelectKeys<K, R, T>, Scalar[] | Option[]>>;

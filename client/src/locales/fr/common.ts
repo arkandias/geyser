@@ -1,5 +1,5 @@
-import type { CustomTextKey } from "@/config/custom-text-keys.ts";
-import type { PrimitiveType } from "@/config/primitive-types.ts";
+import type { CustomTextKey } from "@/config/custom-texts.ts";
+import type { PrimitiveTypeName } from "@/types/data.ts";
 
 export default {
   adminName: "Administrateur",
@@ -38,7 +38,7 @@ export default {
     string: "texte",
     number: "nombre",
     boolean: "booléen",
-  } satisfies Record<PrimitiveType, string>,
+  } satisfies Record<PrimitiveTypeName, string>,
   unit: {
     hours: "h",
     weightedHours: "htd",

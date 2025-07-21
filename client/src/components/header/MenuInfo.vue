@@ -1,8 +1,13 @@
+<script lang="ts">
+export const INFO_TEXT_KEYS = ["contact", "legalNotice", "license"] as const;
+
+export type InfoTextKey = (typeof INFO_TEXT_KEYS)[number];
+</script>
+
 <script setup lang="ts">
 import { ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import { INFO_TEXT_KEYS, type InfoTextKey } from "@/config/info-text-keys.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
 import MenuBase from "@/components/header/MenuBase.vue";

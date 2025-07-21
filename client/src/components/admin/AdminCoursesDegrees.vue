@@ -1,3 +1,14 @@
+<script lang="ts">
+export const adminCoursesDegreesColNames = [
+  "name",
+  "nameShort",
+  "visible",
+] as const;
+
+export type AdminCoursesDegreesColName =
+  (typeof adminCoursesDegreesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -15,17 +26,12 @@ import {
   UpsertDegreesDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type {
-  NullableParsedRow,
-  RowDescriptorExtra,
-  Scalar,
-} from "@/types/data.ts";
+import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
 
-import type { AdminCoursesDegreesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminDegreeFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = DegreeInsertInput;
 
 const { degreeFragments } = defineProps<{
@@ -35,22 +41,20 @@ const { degreeFragments } = defineProps<{
 
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   name: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   visible: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesDegreesColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesDegreesColName, Row>;
 
 graphql(`
   fragment AdminDegree on Degree {
@@ -146,7 +150,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="courses"
     name="degrees"
-    :row-descriptor
+    :admin-columns
     :rows="degrees"
     :fetching
     :validate-flat-row

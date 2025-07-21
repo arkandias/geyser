@@ -3,8 +3,8 @@
   lang="ts"
   generic="
     Id extends Scalar,
-    Row extends SimpleObject & Record<'id', Id>,
-    T extends RowDescriptorExtra<string, Row>,
+    Row extends Record<'id', Id>,
+    T extends AdminColumns<string, Row>,
     InsertInput extends { oid?: number | null | undefined },
     Constraint extends string,
     UpdateColumn extends string
@@ -17,21 +17,21 @@ import { type Ref, computed, ref, toValue, watch } from "vue";
 import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { TOOLTIP_DELAY } from "@/config/constants.ts";
-import type { PrimitiveType } from "@/config/primitive-types.ts";
 import type { Column } from "@/types/column.ts";
 import type {
-  FieldDescriptor,
+  AdminColumns,
+  FieldMetadata,
   NullableParsedRow,
   Option,
-  RowDescriptorExtra,
+  PrimitiveType,
   Scalar,
   SelectOptions,
-  SimpleObject,
 } from "@/types/data.ts";
 import {
   downloadCSV,
   getField,
   importCSV,
+  inputType,
   localeCompare,
   normalizeForSearch,
 } from "@/utils";
@@ -59,7 +59,7 @@ const filterValues = defineModel<Record<string, Scalar[]>>("filterValues", {
 const {
   section,
   name,
-  rowDescriptor,
+  adminColumns,
   rows,
   fetching,
   validateFlatRow,
@@ -74,7 +74,7 @@ const {
 } = defineProps<{
   section: string;
   name: string;
-  rowDescriptor: T;
+  adminColumns: T;
   rows: Row[];
   fetching: boolean;
   validateFlatRow: (flatRow: FlatRow) => InsertInput;
@@ -113,21 +113,26 @@ const keyPrefix = `admin.${section}.${name}`;
 
 // ===== Data Table =====
 const columns = computed<Column<Row>[]>(() =>
-  Object.entries(rowDescriptor).map(([key, descriptor]) => ({
+  Object.entries(adminColumns).map(([key, metadata]) => ({
+    ...metadata,
     name: key,
     label: t(`${keyPrefix}.column.${key}.label`),
     tooltip: t(`${keyPrefix}.column.${key}.tooltip`),
+    field: metadata.field ?? key,
+    format:
+      metadata.format ??
+      (metadata.type === "boolean"
+        ? (val: boolean) => (val ? "✓" : "✗")
+        : undefined),
     align:
-      descriptor.type === "string"
+      metadata.type === "string"
         ? "left"
-        : descriptor.type === "number"
+        : metadata.type === "number"
           ? "right"
           : "center",
-    field: descriptor.field ?? key,
-    format: descriptor.format,
     sortable: true,
-    sort: descriptor.type === "string" ? localeCompare : undefined,
-    searchable: descriptor.type === "string",
+    sort: metadata.type === "string" ? localeCompare : undefined,
+    searchable: metadata.type === "string",
   })),
 );
 
@@ -153,9 +158,9 @@ watch(isFormOpen, (value) => {
 
 const initForm = (rows: Row[]) =>
   Object.fromEntries(
-    Object.entries(rowDescriptor).map(([key, descriptor]) => [
+    Object.entries(adminColumns).map(([key, metadata]) => [
       key,
-      getField(rows[0], descriptor.field ?? key),
+      getField(rows[0], metadata.field ?? key),
     ]),
   ) as Record<string, Scalar>;
 
@@ -172,7 +177,7 @@ const openForm = (rows?: Row[]) => {
 const validateForm = (fields?: (keyof T)[]): FlatRow => {
   const flatRow: FlatRow = {};
 
-  Object.entries(rowDescriptor).forEach(([key, fieldDescriptor]) => {
+  Object.entries(adminColumns).forEach(([key, fieldDescriptor]) => {
     if (fields && !fields.includes(key)) {
       return;
     }
@@ -331,12 +336,12 @@ type Filter = {
 
 const showFilters = ref(false);
 const filters: Ref<Filter[]> = ref(
-  Object.entries(rowDescriptor)
-    .filter(([_, descriptor]) => !descriptor.formComponent.startsWith("input"))
-    .map(([key, descriptor]) => ({
+  Object.entries(adminColumns)
+    .filter(([_, metadata]) => !metadata.formComponent?.startsWith("input"))
+    .map(([key, metadata]) => ({
       name: key,
       options: computed(() =>
-        descriptor.formComponent === "select"
+        metadata.formComponent === "select"
           ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             (filterOptions[key as keyof typeof filterOptions] ??
             formOptions[key as keyof typeof formOptions] ??
@@ -411,7 +416,7 @@ watch(isImportDialogOpen, (value) => {
   }
 });
 
-const importColumns: Column<[string, FieldDescriptor]>[] = [
+const importColumns: Column<[string, FieldMetadata]>[] = [
   {
     name: "key",
     label: t("admin.data.import.table.column.key"),
@@ -465,7 +470,7 @@ const importRowsHandle = async () => {
 
     let flatRows: FlatRow[];
     try {
-      flatRows = importCSV(text, rowDescriptor);
+      flatRows = importCSV(text, adminColumns);
     } catch (error) {
       throw new Error(
         t("admin.data.error.parsingError", {
@@ -518,10 +523,17 @@ const importRowsHandle = async () => {
 // ===== Data Export =====
 const exportDataHandle = () => {
   try {
+    const exportRows = selectedRows.value.length ? selectedRows.value : rows;
     downloadCSV(
       `${name}_${Date.now()}`,
-      selectedRows.value.length ? selectedRows.value : rows,
-      Object.keys(rowDescriptor),
+      exportRows.map((row) =>
+        Object.fromEntries(
+          Object.entries(adminColumns).map(([key, metadata]) => [
+            key,
+            getField(row, metadata.field ?? key),
+          ]),
+        ),
+      ),
     );
     notify(NotifyType.Success, {
       message: t(
@@ -669,18 +681,18 @@ const exportDataHandle = () => {
           class="q-gutter-md"
           @submit="selection ? updateDataHandle() : insertDataHandle()"
         >
-          <div v-for="key in Object.keys(rowDescriptor)" :key>
+          <div v-for="key in Object.keys(adminColumns)" :key>
             <AdminInput
-              v-if="rowDescriptor[key]?.formComponent == 'input'"
+              v-if="adminColumns[key]?.formComponent?.startsWith('input')"
               v-model="formValues[key] as string | number | null | undefined"
               v-model:selected-fields="selectedFields"
               :key-prefix
               :name="key"
-              :type="rowDescriptor[key].inputType"
+              :type="inputType(adminColumns[key].formComponent)"
               :multiple-selection
             />
             <AdminSelect
-              v-if="rowDescriptor[key]?.formComponent === 'select'"
+              v-if="adminColumns[key]?.formComponent === 'select'"
               v-model="formValues[key]"
               v-model:selected-fields="selectedFields"
               :options="formOptions[key as keyof typeof formOptions]"
@@ -689,7 +701,7 @@ const exportDataHandle = () => {
               :multiple-selection
             />
             <AdminToggle
-              v-if="rowDescriptor[key]?.formComponent === 'toggle'"
+              v-if="adminColumns[key]?.formComponent === 'toggle'"
               v-model="formValues[key]"
               v-model:selected-fields="selectedFields"
               :key-prefix
@@ -735,7 +747,7 @@ const exportDataHandle = () => {
       <QCardSection>
         <QTable
           :columns="importColumns"
-          :rows="Object.entries(rowDescriptor)"
+          :rows="Object.entries(adminColumns)"
           :pagination="{ rowsPerPage: 0 }"
           hide-bottom
           bordered

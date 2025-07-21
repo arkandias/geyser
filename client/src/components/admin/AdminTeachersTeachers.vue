@@ -1,3 +1,20 @@
+<script lang="ts">
+export const adminTeachersTeachersColNames = [
+  "email",
+  "firstname",
+  "lastname",
+  "alias",
+  "positionLabel",
+  "baseServiceHours",
+  "visible",
+  "active",
+  "access",
+] as const;
+
+export type AdminTeachersTeachersColName =
+  (typeof adminTeachersTeachersColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -18,17 +35,16 @@ import {
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminTeachersTeachersColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminTeacherFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = TeacherInsertInput;
 
 const { teacherFragments, positionFragments } = defineProps<{
@@ -40,23 +56,23 @@ const { teacherFragments, positionFragments } = defineProps<{
 const { t, n } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   email: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   firstname: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   lastname: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   alias: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   positionLabel: {
     type: "string",
@@ -69,25 +85,18 @@ const rowDescriptor = {
     nullable: true,
     format: (val: number | null) =>
       val === null ? "" : n(val, "decimalFixed"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   visible: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
   active: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
   access: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<AdminTeachersTeachersColName, Row>;
+} as const satisfies AdminColumns<AdminTeachersTeachersColName, Row>;
 
 graphql(`
   fragment AdminTeacher on Teacher {
@@ -236,7 +245,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     positionLabel: positions.value.map((p) => p.label),
   }),
@@ -251,7 +260,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="teachers"
     name="teachers"
-    :row-descriptor
+    :admin-columns
     :rows="teachers"
     :fetching
     :validate-flat-row

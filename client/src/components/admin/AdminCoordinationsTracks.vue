@@ -1,3 +1,16 @@
+<script lang="ts">
+export const adminCoordinationsTracksColNames = [
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "comment",
+] as const;
+
+export type AdminCoordinationsTracksColNames =
+  (typeof adminCoordinationsTracksColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -21,17 +34,17 @@ import {
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
+import { unique } from "@/utils";
 
-import type { AdminCoordinationsTracksColNames } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCoordinationTrackFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = CoordinationInsertInput;
 
 const {
@@ -62,7 +75,7 @@ const {
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   teacherEmail: {
     type: "string",
     field: (row) => row.teacher.email,
@@ -88,9 +101,9 @@ const rowDescriptor = {
   comment: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
-} as const satisfies RowDescriptorExtra<AdminCoordinationsTracksColNames, Row>;
+} as const satisfies AdminColumns<AdminCoordinationsTracksColNames, Row>;
 
 graphql(`
   fragment AdminCoordinationTrack on Coordination {
@@ -118,13 +131,6 @@ graphql(`
 
   fragment AdminCoordinationsTracksDegree on Degree {
     name
-    programs {
-      name
-      tracks {
-        id
-        name
-      }
-    }
   }
 
   fragment AdminCoordinationsTracksProgram on Program {
@@ -132,7 +138,14 @@ graphql(`
   }
 
   fragment AdminCoordinationsTracksTrack on Track {
+    id
     name
+    program {
+      name
+      degree {
+        name
+      }
+    }
   }
 
   mutation InsertCoordinationsTracks($objects: [CoordinationInsertInput!]!) {
@@ -252,40 +265,21 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
     flatRow.programName !== undefined ||
     flatRow.trackName !== undefined
   ) {
-    if (flatRow.degreeName === undefined) {
+    if (
+      flatRow.degreeName === undefined ||
+      flatRow.programName === undefined ||
+      flatRow.trackName === undefined
+    ) {
       throw new Error(
-        t(
-          "admin.coordinations.tracks.form.error.updateProgramOrTrackWithoutDegree",
-        ),
+        t("admin.coordinations.tracks.form.error.updateTrackMissingFields"),
       );
     }
-    if (flatRow.programName === undefined) {
-      throw new Error(
-        t(
-          "admin.coordinations.tracks.form.error.updateDegreeOrTrackWithoutProgram",
-        ),
-      );
-    }
-    if (flatRow.trackName === undefined) {
-      throw new Error(
-        t(
-          "admin.coordinations.tracks.form.error.updateDegreeOrProgramWithoutTrack",
-        ),
-      );
-    }
-    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
-    if (degree === undefined) {
-      throw new Error(
-        t("admin.coordinations.tracks.form.error.degreeNotFound", flatRow),
-      );
-    }
-    const program = degree.programs.find((p) => p.name === flatRow.programName);
-    if (program === undefined) {
-      throw new Error(
-        t("admin.coordinations.tracks.form.error.programNotFound", flatRow),
-      );
-    }
-    const track = program.tracks.find((t) => t.name === flatRow.trackName);
+    const track = tracks.value.find(
+      (t) =>
+        t.program.degree.name === flatRow.degreeName &&
+        t.program.name === flatRow.programName &&
+        t.name === flatRow.trackName,
+    );
     if (track === undefined) {
       throw new Error(
         t("admin.coordinations.tracks.form.error.trackNotFound", flatRow),
@@ -302,32 +296,36 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     teacherEmail: teachers.value.map((t) => ({
       value: t.email,
       label: t.displayname ?? "",
     })),
-    degreeName: degrees.value.map((d) => d.name),
-    programName:
-      degrees.value
-        .find((d) => d.name === formValues.value["degreeName"])
-        ?.programs.map((p) => p.name) ?? [],
-    trackName:
-      degrees.value
-        .find((d) => d.name === formValues.value["degreeName"])
-        ?.programs.find((p) => p.name === formValues.value["programName"])
-        ?.tracks.map((t) => t.name) ?? [],
+    degreeName: tracks.value.map((t) => t.program.degree.name).filter(unique),
+    programName: tracks.value
+      .filter((t) => t.program.degree.name === formValues.value["degreeName"])
+      .map((t) => t.program.name)
+      .filter(unique),
+    trackName: tracks.value
+      .filter(
+        (t) =>
+          t.program.degree.name === formValues.value["degreeName"] &&
+          t.program.name === formValues.value["programName"],
+      )
+      .map((t) => t.name)
+      .filter(unique),
   }),
 );
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed<
-  SelectOptions<string, Row, typeof rowDescriptor>
->(() => ({
-  programName: programs.value.map((p) => p.name),
-  trackName: tracks.value.map((t) => t.name),
-}));
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
+    degreeName: degrees.value.map((d) => d.name),
+    programName: programs.value.map((p) => p.name).filter(unique),
+    trackName: tracks.value.map((t) => t.name).filter(unique),
+  }),
+);
 </script>
 
 <template>
@@ -336,7 +334,7 @@ const filterOptions = computed<
     v-model:filter-values="filterValues"
     section="coordinations"
     name="tracks"
-    :row-descriptor
+    :admin-columns
     :rows="coordinations"
     :fetching
     :validate-flat-row

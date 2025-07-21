@@ -1,3 +1,20 @@
+<script lang="ts">
+export const adminCoordinationsCoursesColNames = [
+  "year",
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "termLabel",
+  "courseName",
+  "courseTypeLabel",
+  "comment",
+] as const;
+
+export type AdminCoordinationsCoursesColNames =
+  (typeof adminCoordinationsCoursesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -8,9 +25,11 @@ import {
   type AdminCoordinationCourseFragment,
   AdminCoordinationCourseFragmentDoc,
   AdminCoordinationsCoursesCourseFragmentDoc,
+  AdminCoordinationsCoursesCourseTypeFragmentDoc,
   AdminCoordinationsCoursesDegreeFragmentDoc,
   AdminCoordinationsCoursesProgramFragmentDoc,
   AdminCoordinationsCoursesTeacherFragmentDoc,
+  AdminCoordinationsCoursesTermFragmentDoc,
   AdminCoordinationsCoursesTrackFragmentDoc,
   CoordinationConstraint,
   type CoordinationInsertInput,
@@ -23,18 +42,17 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 import { unique } from "@/utils";
 
-import type { AdminCoordinationsCoursesColNames } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCoordinationCourseFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = CoordinationInsertInput;
 
 const {
@@ -43,7 +61,9 @@ const {
   degreeFragments,
   programFragments,
   trackFragments,
+  termFragments,
   courseFragments,
+  courseTypeFragments,
 } = defineProps<{
   fetching: boolean;
   coordinationFragments: FragmentType<
@@ -61,8 +81,14 @@ const {
   trackFragments: FragmentType<
     typeof AdminCoordinationsCoursesTrackFragmentDoc
   >[];
+  termFragments: FragmentType<
+    typeof AdminCoordinationsCoursesTermFragmentDoc
+  >[];
   courseFragments: FragmentType<
     typeof AdminCoordinationsCoursesCourseFragmentDoc
+  >[];
+  courseTypeFragments: FragmentType<
+    typeof AdminCoordinationsCoursesCourseTypeFragmentDoc
   >[];
 }>();
 
@@ -70,7 +96,7 @@ const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
-const rowDescriptor = {
+const adminColumns = {
   year: {
     type: "number",
     field: (row) => row.course?.year,
@@ -116,9 +142,9 @@ const rowDescriptor = {
   comment: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
-} as const satisfies RowDescriptorExtra<AdminCoordinationsCoursesColNames, Row>;
+} as const satisfies AdminColumns<AdminCoordinationsCoursesColNames, Row>;
 
 graphql(`
   fragment AdminCoordinationCourse on Coordination {
@@ -166,6 +192,10 @@ graphql(`
     name
   }
 
+  fragment AdminCoordinationsCoursesTerm on Term {
+    label
+  }
+
   fragment AdminCoordinationsCoursesCourse on Course {
     id
     year
@@ -191,6 +221,10 @@ graphql(`
     type {
       label
     }
+  }
+
+  fragment AdminCoordinationsCoursesCourseType on CourseType {
+    label
   }
 
   mutation InsertCoordinationsCourses($objects: [CoordinationInsertInput!]!) {
@@ -264,9 +298,19 @@ const tracks = computed(() =>
     useFragment(AdminCoordinationsCoursesTrackFragmentDoc, f),
   ),
 );
+const terms = computed(() =>
+  termFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesTermFragmentDoc, f),
+  ),
+);
 const courses = computed(() =>
   courseFragments.map((f) =>
     useFragment(AdminCoordinationsCoursesCourseFragmentDoc, f),
+  ),
+);
+const courseTypes = computed(() =>
+  courseTypeFragments.map((f) =>
+    useFragment(AdminCoordinationsCoursesCourseTypeFragmentDoc, f),
   ),
 );
 const insertCoordinationsCourses = useMutation(
@@ -331,7 +375,6 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
         t("admin.coordinations.courses.form.error.updateCourseMissingFields"),
       );
     }
-
     const course = courses.value.find(
       (c) =>
         c.year === flatRow.year &&
@@ -342,13 +385,11 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
         c.name === flatRow.courseName &&
         c.type.label === flatRow.courseTypeLabel,
     );
-
     if (course === undefined) {
       throw new Error(
         t("admin.coordinations.courses.form.error.courseNotFound", flatRow),
       );
     }
-
     object.courseId = course.id;
   }
 
@@ -360,7 +401,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     year: years.value.map((y) => y.value),
     teacherEmail: teachers.value.map((t) => ({
@@ -415,14 +456,16 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
 );
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed<
-  SelectOptions<string, Row, typeof rowDescriptor>
->(() => ({
-  degreeName: degrees.value.map((d) => d.name),
-  programName: programs.value.map((p) => p.name),
-  trackName: tracks.value.map((t) => t.name),
-  courseName: courses.value.map((c) => c.name),
-}));
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
+    degreeName: degrees.value.map((d) => d.name),
+    programName: programs.value.map((p) => p.name).filter(unique),
+    trackName: tracks.value.map((t) => t.name).filter(unique),
+    termLabel: terms.value.map((t) => t.label),
+    courseName: courses.value.map((c) => c.name).filter(unique),
+    courseTypeLabel: courseTypes.value.map((ct) => ct.label),
+  }),
+);
 </script>
 
 <template>
@@ -431,7 +474,7 @@ const filterOptions = computed<
     v-model:filter-values="filterValues"
     section="coordinations"
     name="courses"
-    :row-descriptor
+    :admin-columns
     :rows="coordinations"
     :fetching
     :validate-flat-row

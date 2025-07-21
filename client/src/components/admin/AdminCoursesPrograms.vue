@@ -1,3 +1,15 @@
+<script lang="ts">
+export const adminCoursesProgramsColNames = [
+  "degreeName",
+  "name",
+  "nameShort",
+  "visible",
+] as const;
+
+export type AdminCoursesProgramsColName =
+  (typeof adminCoursesProgramsColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -18,17 +30,16 @@ import {
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminCoursesProgramsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminProgramFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = ProgramInsertInput;
 
 const { degreeFragments, programFragments } = defineProps<{
@@ -40,7 +51,7 @@ const { degreeFragments, programFragments } = defineProps<{
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   degreeName: {
     type: "string",
     field: (row) => row.degree.name,
@@ -48,19 +59,17 @@ const rowDescriptor = {
   },
   name: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   visible: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesProgramsColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesProgramsColName, Row>;
 
 graphql(`
   fragment AdminProgram on Program {
@@ -118,11 +127,11 @@ graphql(`
   }
 `);
 
-const programs = computed(() =>
-  programFragments.map((f) => useFragment(AdminProgramFragmentDoc, f)),
-);
 const degrees = computed(() =>
   degreeFragments.map((f) => useFragment(AdminProgramsDegreeFragmentDoc, f)),
+);
+const programs = computed(() =>
+  programFragments.map((f) => useFragment(AdminProgramFragmentDoc, f)),
 );
 const insertPrograms = useMutation(InsertProgramsDocument);
 const upsertPrograms = useMutation(UpsertProgramsDocument);
@@ -170,7 +179,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     degreeName: degrees.value.map((d) => d.name),
   }),
@@ -185,7 +194,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="courses"
     name="programs"
-    :row-descriptor
+    :admin-columns
     :rows="programs"
     :fetching
     :validate-flat-row

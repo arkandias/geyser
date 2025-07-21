@@ -9,10 +9,10 @@ import {
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import {
-  CUSTOM_TEXT_KEYS,
+  CUSTOM_TEXTS,
   type CustomTextKey,
   isCustomTextKey,
-} from "@/config/custom-text-keys.ts";
+} from "@/config/custom-texts.ts";
 import { graphql } from "@/gql";
 import {
   DeleteCustomTextDocument,
@@ -28,7 +28,7 @@ const { organization } = useOrganizationStore();
 const { customTextsData } = useCustomTextsStore();
 
 const editStates = ref(
-  Object.fromEntries(CUSTOM_TEXT_KEYS.map((key) => [key, false])) as Record<
+  Object.fromEntries(CUSTOM_TEXTS.map(({ key }) => [key, false])) as Record<
     CustomTextKey,
     boolean
   >,
@@ -56,16 +56,20 @@ graphql(`
 const updateCustomText = useMutation(UpdateCustomTextDocument);
 const deleteCustomText = useMutation(DeleteCustomTextDocument);
 
-const updateCustomTextHandle = (oid: number, key: string, value: string) =>
+const updateCustomTextHandle = (key: string, value: string) =>
   value
-    ? updateCustomText.executeMutation({ oid, key, value }).then((result) => ({
-        success: !!result.data?.insertCustomTextOne,
-        error: result.error,
-      }))
-    : deleteCustomText.executeMutation({ oid, key }).then((result) => ({
-        success: !!result.data?.deleteCustomTextByPk,
-        error: result.error,
-      }));
+    ? updateCustomText
+        .executeMutation({ oid: organization.id, key, value })
+        .then((result) => ({
+          success: !!result.data?.insertCustomTextOne,
+          error: result.error,
+        }))
+    : deleteCustomText
+        .executeMutation({ oid: organization.id, key })
+        .then((result) => ({
+          success: !!result.data?.deleteCustomTextByPk,
+          error: result.error,
+        }));
 
 // For deletion, use EditableText's exposed method
 type EditableTextInstance = {
@@ -73,7 +77,7 @@ type EditableTextInstance = {
 };
 
 const editableTextRefs = Object.fromEntries(
-  CUSTOM_TEXT_KEYS.map((key) => [
+  CUSTOM_TEXTS.map(({ key }) => [
     key,
     shallowRef<EditableTextInstance | null>(null),
   ]),
@@ -105,7 +109,7 @@ const callOnDelete = async (key: CustomTextKey) => {
 <template>
   <QList bordered separator dense>
     <QExpansionItem
-      v-for="{ key, text, isDefault, markdown } in customTextsData"
+      v-for="{ key, value, defaultValue, markdown } in customTextsData"
       :key
       :label="t(`customTextLabel.${key}`)"
       dense
@@ -116,10 +120,9 @@ const callOnDelete = async (key: CustomTextKey) => {
           <EditableText
             :ref="(el) => setRef(key, el)"
             v-model="editStates[key]"
-            :text
-            :set-text="
-              (value) => updateCustomTextHandle(organization.id, key, value)
-            "
+            :text="value"
+            :set-text="(value) => updateCustomTextHandle(key, value)"
+            :default-text="defaultValue"
             :markdown
           />
         </QCardSection>
@@ -137,7 +140,7 @@ const callOnDelete = async (key: CustomTextKey) => {
             :label="t('admin.general.customTexts.button.delete')"
             icon="sym_s_delete"
             color="primary"
-            :disable="isDefault"
+            :disable="!value"
             no-caps
             outline
             dense

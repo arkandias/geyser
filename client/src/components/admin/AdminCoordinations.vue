@@ -62,6 +62,9 @@ graphql(`
       ...AdminCoordinationsTracksTrack
       ...AdminCoordinationsCoursesTrack
     }
+    terms: term(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
+      ...AdminCoordinationsCoursesTerm
+    }
     courses: course(
       where: { oid: { _eq: $oid } }
       orderBy: [
@@ -76,6 +79,12 @@ graphql(`
     ) {
       ...AdminCoordinationsCoursesCourse
     }
+    courseTypes: courseType(
+      where: { oid: { _eq: $oid } }
+      orderBy: { label: ASC }
+    ) {
+      ...AdminCoordinationsCoursesCourseType
+    }
   }
 `);
 
@@ -87,9 +96,11 @@ const { data, fetching } = useQuery({
       "All",
       "Coordination",
       "Course",
+      "CourseType",
       "Degree",
       "Program",
       "Teacher",
+      "Term",
       "Track",
     ],
   },
@@ -99,7 +110,9 @@ const teachers = computed(() => data.value?.teachers ?? []);
 const degrees = computed(() => data.value?.degrees ?? []);
 const programs = computed(() => data.value?.programs ?? []);
 const tracks = computed(() => data.value?.tracks ?? []);
+const terms = computed(() => data.value?.terms ?? []);
 const courses = computed(() => data.value?.courses ?? []);
+const courseTypes = computed(() => data.value?.courseTypes ?? []);
 </script>
 
 <template>
@@ -144,7 +157,9 @@ const courses = computed(() => data.value?.courses ?? []);
         :degree-fragments="degrees"
         :program-fragments="programs"
         :track-fragments="tracks"
+        :term-fragments="terms"
         :course-fragments="courses"
+        :course-type-fragments="courseTypes"
       />
     </AdminSection>
   </QList>

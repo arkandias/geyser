@@ -1,11 +1,9 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminServicesExternalCoursesColName,
-  AdminServicesMessagesColName,
-  AdminServicesServiceModificationsColName,
-  AdminServicesServicesColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminServicesExternalCoursesColName } from "@/components/admin/AdminServicesExternalCourses.vue";
+import type { AdminServicesMessagesColName } from "@/components/admin/AdminServicesMessages.vue";
+import type { AdminServicesServiceModificationsColName } from "@/components/admin/AdminServicesServiceModifications.vue";
+import type { AdminServicesServicesColName } from "@/components/admin/AdminServicesServices.vue";
 
 export default {
   services: {
@@ -88,10 +86,8 @@ If there are modifications, external courses, requests, or messages for these se
         title:
           "Creating a service modification | Editing a service modification | Editing {count} service modification",
         error: {
-          updateYearWithoutTeacher:
-            "You cannot modify the year without selecting a teacher",
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
+          updateServiceMissingFields:
+            "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} and year {year}",
           hoursNegative: "Enter a positive or zero number of hours",
@@ -143,10 +139,8 @@ If there are modifications, external courses, requests, or messages for these se
         title:
           "Creating an external course | Editing an external course | Editing {count} external course",
         error: {
-          updateYearWithoutTeacher:
-            "You cannot modify the year without selecting a teacher",
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
+          updateServiceMissingFields:
+            "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} and year {year}",
           hoursNegative: "Enter a positive or zero number of hours",
@@ -191,10 +185,8 @@ If there are modifications, external courses, requests, or messages for these se
         title:
           "Creating a message | Editing a message | Editing {count} messages",
         error: {
-          updateYearWithoutTeacher:
-            "You cannot modify the year without selecting a teacher",
-          updateTeacherWithoutYear:
-            "You cannot modify the teacher without selecting a year",
+          updateServiceMissingFields:
+            "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} and year {year}",
           noContent: "Enter a content",

@@ -1,3 +1,14 @@
+<script lang="ts">
+export const adminCoursesCourseTypesColNames = [
+  "label",
+  "coefficient",
+  "description",
+] as const;
+
+export type AdminCoursesCourseTypesColName =
+  (typeof adminCoursesCourseTypesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -16,17 +27,12 @@ import {
   UpsertCourseTypesDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type {
-  NullableParsedRow,
-  RowDescriptorExtra,
-  Scalar,
-} from "@/types/data.ts";
+import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
 
-import type { AdminCoursesCourseTypesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseTypeFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = CourseTypeInsertInput;
 
 const { courseTypeFragments } = defineProps<{
@@ -37,23 +43,22 @@ const { courseTypeFragments } = defineProps<{
 const { n } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   label: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   coefficient: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
   description: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesCourseTypesColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesCourseTypesColName, Row>;
 
 graphql(`
   fragment AdminCourseType on CourseType {
@@ -149,7 +154,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="courses"
     name="courseTypes"
-    :row-descriptor
+    :admin-columns
     :rows="courseTypes"
     :fetching
     :validate-flat-row

@@ -1,10 +1,8 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminCoordinationsCoursesColNames,
-  AdminCoordinationsProgramsColNames,
-  AdminCoordinationsTracksColNames,
-} from "@/components/admin/col-names.ts";
+import type { AdminCoordinationsCoursesColNames } from "@/components/admin/AdminCoordinationsCourses.vue";
+import type { AdminCoordinationsProgramsColNames } from "@/components/admin/AdminCoordinationsPrograms.vue";
+import type { AdminCoordinationsTracksColNames } from "@/components/admin/AdminCoordinationsTracks.vue";
 
 export default {
   coordinations: {
@@ -37,11 +35,8 @@ export default {
           "Creating a coordination | Editing a coordination | Editing {count} coordinations",
         error: {
           teacherNotFound: 'No teacher with email "{teacherEmail}"',
-          updateDegreeWithoutProgram:
-            "You cannot modify the degree without selecting a program",
-          updateProgramWithoutDegree:
-            "You cannot modify the program without selecting a degree",
-          degreeNotFound: 'No degree with the name "{degreeName}" exists',
+          updateProgramMissingFields:
+            "To update the program, you must select a degree and a program",
           programNotFound:
             'No program in the degree "{degreeName}" with the name "{programName}" exists',
         },
@@ -94,15 +89,8 @@ export default {
           "Creating a coordination | Editing a coordination | Editing {count} coordinations",
         error: {
           teacherNotFound: 'No teacher with email "{teacherEmail}"',
-          updateProgramOrTrackWithoutDegree:
-            "You cannot modify the program or track without selecting a degree",
-          updateDegreeOrTrackWithoutProgram:
-            "You cannot modify the degree or track without selecting a program",
-          updateDegreeOrProgramWithoutTrack:
-            "You cannot modify the degree or program without selecting a track",
-          degreeNotFound: 'No degree with the name "{degreeName}" exists',
-          programNotFound:
-            'No program in the degree "{degreeName}" with the name "{programName}" exists',
+          updateTrackMissingFields:
+            "To update the track, you must select a degree, a program, and a track",
           trackNotFound:
             'No track in the program "{programName}" of the degree "{degreeName}" with the name "{trackName}" exists',
         },
@@ -175,7 +163,7 @@ export default {
         error: {
           teacherNotFound: 'No teacher with email "{teacherEmail}"',
           updateCourseMissingFields:
-            "To update the course, you must select a year, degree, program, track (possibly empty), course, term, and course type",
+            "To update the course, you must select a year, a degree, a program, a track (possibly empty), a course, a term, and a course type",
           courseNotFound:
             'No {typeLabel} in term {termLabel} with the name "{courseName}" in the track "{trackName}" of the program "{programName}" of the degree "{degreeName}" for year {year} exists',
         },

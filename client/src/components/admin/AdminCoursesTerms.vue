@@ -1,3 +1,10 @@
+<script lang="ts">
+export const adminCoursesTermsColNames = ["label", "description"] as const;
+
+export type AdminCoursesTermsColName =
+  (typeof adminCoursesTermsColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -15,17 +22,12 @@ import {
   UpsertTermsDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type {
-  NullableParsedRow,
-  RowDescriptorExtra,
-  Scalar,
-} from "@/types/data.ts";
+import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
 
-import type { AdminCoursesTermsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminTermFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = TermInsertInput;
 
 const { termFragments } = defineProps<{
@@ -35,17 +37,17 @@ const { termFragments } = defineProps<{
 
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   label: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   description: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesTermsColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesTermsColName, Row>;
 
 graphql(`
   fragment AdminTerm on Term {
@@ -135,7 +137,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="courses"
     name="terms"
-    :row-descriptor
+    :admin-columns
     :rows="terms"
     :fetching
     :validate-flat-row

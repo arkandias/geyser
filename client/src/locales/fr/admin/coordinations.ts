@@ -1,10 +1,8 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminCoordinationsCoursesColNames,
-  AdminCoordinationsProgramsColNames,
-  AdminCoordinationsTracksColNames,
-} from "@/components/admin/col-names.ts";
+import type { AdminCoordinationsCoursesColNames } from "@/components/admin/AdminCoordinationsCourses.vue";
+import type { AdminCoordinationsProgramsColNames } from "@/components/admin/AdminCoordinationsPrograms.vue";
+import type { AdminCoordinationsTracksColNames } from "@/components/admin/AdminCoordinationsTracks.vue";
 
 export default {
   coordinations: {
@@ -38,12 +36,8 @@ export default {
         error: {
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
-          updateDegreeWithoutProgram:
-            "Vous ne pouvez pas modifier le diplôme sans sélectionner une mention",
-          updateProgramWithoutDegree:
-            "Vous ne pouvez pas modifier la mention sans sélectionner un diplôme",
-          degreeNotFound:
-            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
+          updateProgramMissingFields:
+            "Pour mettre à jour la mention, vous devez sélectionner un diplôme et une mention",
           programNotFound:
             "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
         },
@@ -97,16 +91,8 @@ export default {
         error: {
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
-          updateProgramOrTrackWithoutDegree:
-            "Vous ne pouvez pas modifier la mention ou le parcours sans sélectionner un diplôme",
-          updateDegreeOrTrackWithoutProgram:
-            "Vous ne pouvez pas modifier le diplôme ou le parcours sans sélectionner une mention",
-          updateDegreeOrProgramWithoutTrack:
-            "Vous ne pouvez pas modifier le diplôme ou la mention sans sélectionner un parcours",
-          degreeNotFound:
-            "Il n'existe pas de diplôme avec le nom « {degreeName} »",
-          programNotFound:
-            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
+          updateTrackMissingFields:
+            "Pour mettre à jour le parcours, vous devez sélectionner un diplôme, une mention et un parcours",
           trackNotFound:
             "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degreeName} » avec le nom « {track} »",
         },

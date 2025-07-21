@@ -2,29 +2,29 @@ import { errorMessage } from "@geyser/shared";
 import Papa from "papaparse";
 
 import type {
-  FieldDescriptor,
+  FieldMetadata,
   ParsedField,
   ParsedRow,
-  RowDescriptor,
+  RowMetadata,
 } from "@/types/data.ts";
 
 /**
  * Parses a string value into a strongly-typed field (string, number, or
- * boolean) based on the field descriptor. Handles nullable fields and trims
+ * boolean) based on the field metadata. Handles nullable fields and trims
  * whitespace. Throws if value cannot be parsed into the specified type.
  */
-export const parseField = <T extends FieldDescriptor>(
+export const parseField = <T extends FieldMetadata>(
   str: string,
-  fieldDescriptor: T,
+  fieldMetadata: T,
 ): ParsedField<T> => {
   const trimmed = str.trim();
   if (!trimmed) {
-    if (fieldDescriptor.nullable) {
+    if (fieldMetadata.nullable) {
       return null as ParsedField<T>;
     }
     throw new Error(`Non-nullable field is empty`);
   }
-  switch (fieldDescriptor.type) {
+  switch (fieldMetadata.type) {
     case "string":
       return trimmed as ParsedField<T>;
     case "number": {
@@ -49,18 +49,18 @@ export const parseField = <T extends FieldDescriptor>(
 
 /**
  * Returns a parser function for PapaParse to transform CSV fields according to
- * their descriptors. Throws detailed error messages when parsing fails,
+ * their metadata. Throws detailed error messages when parsing fails,
  * including the field name in the error.
  */
 const transform =
-  (rowDescriptor: RowDescriptor): Papa.ParseConfig["transform"] =>
+  (rowMetadata: RowMetadata): Papa.ParseConfig["transform"] =>
   (value: string, field: string | number) => {
-    const descriptor = rowDescriptor[field];
-    if (!descriptor) {
+    const fieldMetadata = rowMetadata[field];
+    if (!fieldMetadata) {
       throw new Error(`Unexpected field: ${field}`);
     }
     try {
-      return parseField(value, descriptor);
+      return parseField(value, fieldMetadata);
     } catch (error) {
       const message = errorMessage(error);
       throw new Error(`Error while parsing field '${field}': ${message}`);
@@ -68,17 +68,17 @@ const transform =
   };
 
 /**
- * Parses a CSV text using a row descriptor and returns an array of typed rows.
+ * Parses a CSV text using row metadata and returns an array of typed rows.
  */
-export const importCSV = <T extends RowDescriptor>(
+export const importCSV = <T extends RowMetadata>(
   text: string,
-  rowDescriptor: T,
+  rowMetadata: T,
 ): ParsedRow<T>[] => {
   const parseResult = Papa.parse<ParsedRow<T>>(text, {
     delimiter: ",",
     header: true,
     skipEmptyLines: true,
-    transform: transform(rowDescriptor),
+    transform: transform(rowMetadata),
   });
 
   if (parseResult.errors.length) {
@@ -86,7 +86,7 @@ export const importCSV = <T extends RowDescriptor>(
     throw new Error(`Parse error:\n  ${errorMessages}`);
   }
 
-  const missingHeaders = Object.keys(rowDescriptor).filter(
+  const missingHeaders = Object.keys(rowMetadata).filter(
     (key) => !parseResult.meta.fields?.includes(key),
   );
   if (missingHeaders.length) {

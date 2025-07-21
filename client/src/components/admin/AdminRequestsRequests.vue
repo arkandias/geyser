@@ -1,3 +1,21 @@
+<script lang="ts">
+export const adminRequestsRequestsColNames = [
+  "year",
+  "teacherEmail",
+  "degreeName",
+  "programName",
+  "trackName",
+  "termLabel",
+  "courseName",
+  "courseTypeLabel",
+  "type",
+  "hours",
+] as const;
+
+export type AdminRequestsRequestsColName =
+  (typeof adminRequestsRequestsColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -27,18 +45,17 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 import { isRequestType, toLowerCase, unique } from "@/utils";
 
-import type { AdminRequestsRequestsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRequestFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = RequestInsertInput;
 
 const {
@@ -70,7 +87,7 @@ const { t, n } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
-const rowDescriptor = {
+const adminColumns = {
   year: {
     type: "number",
     formComponent: "select",
@@ -122,10 +139,9 @@ const rowDescriptor = {
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
-} as const satisfies RowDescriptorExtra<AdminRequestsRequestsColName, Row>;
+} as const satisfies AdminColumns<AdminRequestsRequestsColName, Row>;
 
 graphql(`
   fragment AdminRequest on Request {
@@ -312,10 +328,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   // serviceId
-  if (flatRow.teacherEmail !== undefined) {
-    if (flatRow.year === undefined) {
+  if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
+    if (flatRow.year === undefined || flatRow.teacherEmail === undefined) {
       throw new Error(
-        t("admin.requests.requests.form.error.updateTeacherWithoutYear"),
+        t("admin.requests.requests.form.error.updateServiceMissingFields"),
       );
     }
     const service = services.value.find(
@@ -332,6 +348,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   // courseId
   if (
+    flatRow.year !== undefined ||
     flatRow.degreeName !== undefined ||
     flatRow.programName !== undefined ||
     flatRow.trackName !== undefined ||
@@ -391,7 +408,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     year: years.value.map((y) => y.value),
     teacherEmail: services.value
@@ -452,20 +469,20 @@ const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
 );
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed<
-  SelectOptions<string, Row, typeof rowDescriptor>
->(() => ({
-  teacherEmail: teachers.value.map((t) => ({
-    value: t.email,
-    label: t.displayname ?? "",
-  })),
-  degreeName: degrees.value.map((d) => d.name),
-  programName: programs.value.map((p) => p.name),
-  trackName: tracks.value.map((t) => t.name),
-  termLabel: terms.value.map((t) => t.label),
-  courseName: courses.value.map((c) => c.name),
-  courseTypeLabel: courseTypes.value.map((ct) => ct.label),
-}));
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
+    teacherEmail: teachers.value.map((t) => ({
+      value: t.email,
+      label: t.displayname ?? "",
+    })),
+    degreeName: degrees.value.map((d) => d.name),
+    programName: programs.value.map((p) => p.name).filter(unique),
+    trackName: tracks.value.map((t) => t.name).filter(unique),
+    termLabel: terms.value.map((t) => t.label),
+    courseName: courses.value.map((c) => c.name).filter(unique),
+    courseTypeLabel: courseTypes.value.map((ct) => ct.label),
+  }),
+);
 </script>
 
 <template>
@@ -474,7 +491,7 @@ const filterOptions = computed<
     v-model:filter-values="filterValues"
     section="requests"
     name="requests"
-    :row-descriptor
+    :admin-columns
     :rows="requests"
     :fetching
     :validate-flat-row

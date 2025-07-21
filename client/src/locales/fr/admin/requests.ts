@@ -1,10 +1,8 @@
 import { RequestTypeEnum } from "@/gql/graphql.ts";
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminRequestsPrioritiesColName,
-  AdminRequestsRequestsColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminRequestsPrioritiesColName } from "@/components/admin/AdminRequestsPriorities.vue";
+import type { AdminRequestsRequestsColName } from "@/components/admin/AdminRequestsRequests.vue";
 
 export default {
   requests: {
@@ -57,8 +55,8 @@ export default {
         title:
           "Création d'une demande | Édition d'une demande | Édition de {count} demandes",
         error: {
-          updateTeacherWithoutYear:
-            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
+          updateServiceMissingFields:
+            "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} pour l'année {year}",
           updateCourseMissingFields:
@@ -140,8 +138,8 @@ export default {
         title:
           "Création d'une priorité | Édition d'une priorité | Édition de {count} priorités",
         error: {
-          updateTeacherWithoutYear:
-            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année'",
+          updateServiceMissingFields:
+            "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} pour l'année {year}",
           updateCourseMissingFields:

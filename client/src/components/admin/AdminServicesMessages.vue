@@ -1,3 +1,14 @@
+<script lang="ts">
+export const adminServicesMessagesColNames = [
+  "year",
+  "teacherEmail",
+  "content",
+] as const;
+
+export type AdminServicesMessagesColName =
+  (typeof adminServicesMessagesColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -20,17 +31,16 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminServicesMessagesColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminMessageFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = MessageInsertInput;
 
 const { messageFragments, serviceFragments, teacherFragments } = defineProps<{
@@ -44,7 +54,7 @@ const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
-const rowDescriptor = {
+const adminColumns = {
   year: {
     type: "number",
     field: (row) => row.service.year,
@@ -59,10 +69,9 @@ const rowDescriptor = {
   },
   content: {
     type: "string",
-    formComponent: "input",
-    inputType: "textarea",
+    formComponent: "inputTextarea",
   },
-} as const satisfies RowDescriptorExtra<AdminServicesMessagesColName, Row>;
+} as const satisfies AdminColumns<AdminServicesMessagesColName, Row>;
 
 graphql(`
   fragment AdminMessage on Message {
@@ -81,6 +90,7 @@ graphql(`
     year
     teacher {
       email
+      displayname
     }
   }
 
@@ -157,14 +167,9 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   // serviceId
   if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
-    if (flatRow.teacherEmail === undefined) {
+    if (flatRow.year === undefined || flatRow.teacherEmail === undefined) {
       throw new Error(
-        t("admin.services.messages.form.error.updateYearWithoutTeacher"),
-      );
-    }
-    if (flatRow.year === undefined) {
-      throw new Error(
-        t("admin.services.messages.form.error.updateTeacherWithoutYear"),
+        t("admin.services.messages.form.error.updateServiceMissingFields"),
       );
     }
     object.serviceId = services.value.find(
@@ -189,17 +194,27 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     year: years.value.map((y) => y.value),
+    teacherEmail: services.value
+      .filter((s) => s.year === formValues.value["year"])
+      .map((s) => ({
+        value: s.teacher.email,
+        label: s.teacher.displayname ?? "",
+      })),
+  }),
+);
+
+const filterValues = ref<Record<string, Scalar[]>>({});
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
     teacherEmail: teachers.value.map((t) => ({
       value: t.email,
       label: t.displayname ?? "",
     })),
   }),
 );
-
-const filterValues = ref<Record<string, Scalar[]>>({});
 </script>
 
 <template>
@@ -208,11 +223,12 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="services"
     name="messages"
-    :row-descriptor
+    :admin-columns
     :rows="messages"
     :fetching
     :validate-flat-row
     :form-options
+    :filter-options
     :insert-data="insertMessages"
     :upsert-data="upsertMessages"
     :update-data="updateMessages"

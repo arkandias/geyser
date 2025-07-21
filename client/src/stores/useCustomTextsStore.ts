@@ -1,45 +1,39 @@
 import { computed, ref } from "vue";
 
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
-import {
-  CUSTOM_TEXT_KEYS,
-  CUSTOM_TEXT_MARKDOWN_KEYS,
-  type CustomTextKey,
-} from "@/config/custom-text-keys.ts";
-import { camelToDot } from "@/utils";
+import { CUSTOM_TEXTS, type CustomTextKey } from "@/config/custom-texts.ts";
 
 const customTexts = ref(
-  Object.fromEntries(CUSTOM_TEXT_KEYS.map((key) => [key, null])) as Record<
-    CustomTextKey,
-    string | null
-  >,
+  CUSTOM_TEXTS.map(({ key }) => ({
+    key,
+    value: "",
+  })),
 );
 
 export const useCustomTextsStore = () => {
   const { t } = useTypedI18n();
 
   const customTextsData = computed(() =>
-    CUSTOM_TEXT_KEYS.map((key) => ({
-      key,
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
-      text: customTexts.value[key] ?? t(`${camelToDot(key)}`),
-      isDefault: customTexts.value[key] === null,
-      markdown: CUSTOM_TEXT_MARKDOWN_KEYS.includes(key),
+    CUSTOM_TEXTS.map((text) => ({
+      key: text.key,
+      value: customTexts.value.find(({ key }) => key === text.key)?.value ?? "",
+      defaultValue: t(text.defaultKey),
+      markdown: text.markdown,
     })),
   );
 
-  const getCustomText = computed(
-    () => (key: CustomTextKey) =>
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-template-expression
-      customTexts.value[key] ?? t(`${camelToDot(key)}`),
-  );
+  const getCustomText = (key: CustomTextKey) =>
+    computed(() => {
+      const text = customTextsData.value.find((text) => text.key === key);
+      return text ? text.value || text.defaultValue : "";
+    });
 
   const setCustomTexts = (
     newCustomTexts: { key: string; value?: string | null }[],
   ) => {
-    CUSTOM_TEXT_KEYS.forEach((key) => {
-      customTexts.value[key] =
-        newCustomTexts.find((text) => text.key === key)?.value ?? null;
+    customTexts.value.forEach((text) => {
+      text.value =
+        newCustomTexts.find((newText) => newText.key === text.key)?.value ?? "";
     });
   };
 

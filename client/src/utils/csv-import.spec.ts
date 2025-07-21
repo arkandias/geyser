@@ -73,13 +73,13 @@ John Doe,30,true
 Jane Smith,25,false
 Bob Johnson,,true`;
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number", nullable: true },
       isActive: { type: "boolean" },
     } as const;
 
-    const result = importCSV(csv, descriptors);
+    const result = importCSV(csv, metadata);
     expect(result).toEqual([
       { name: "John Doe", age: 30, isActive: true },
       { name: "Jane Smith", age: 25, isActive: false },
@@ -91,12 +91,12 @@ Bob Johnson,,true`;
     const csv = `name,age
 John Doe,`;
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow(
+    expect(() => importCSV(csv, metadata)).toThrow(
       "Error while parsing field 'age': Non-nullable field is empty",
     );
   });
@@ -105,13 +105,13 @@ John Doe,`;
     const csv = `name,age,isActive
 John Doe,thirty,true`;
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
       isActive: { type: "boolean" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow(
+    expect(() => importCSV(csv, metadata)).toThrow(
       "Error while parsing field 'age': Not a number",
     );
   });
@@ -120,48 +120,48 @@ John Doe,thirty,true`;
     const csv = `name,age,unknownField
 John Doe,30,value`;
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow(
+    expect(() => importCSV(csv, metadata)).toThrow(
       "Unexpected field: unknownField",
     );
   });
 
   it("should handle CSV with only headers", () => {
     const csv = "name,age,isActive";
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
       isActive: { type: "boolean" },
     } as const;
 
-    const result = importCSV(csv, descriptors);
+    const result = importCSV(csv, metadata);
     expect(result).toEqual([]);
   });
 
   it("should throw error for malformed CSV input", () => {
     const csv = "name\nJohn,extra,column"; // more columns than headers
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow();
+    expect(() => importCSV(csv, metadata)).toThrow();
   });
 
   it("should preserve header order in output", () => {
     const csv = `age,name,isActive
 30,John Doe,true`;
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
       isActive: { type: "boolean" },
     } as const;
 
-    const result = importCSV(csv, descriptors);
+    const result = importCSV(csv, metadata);
     const keys = Object.keys(result[0] ?? {});
     expect(keys).toEqual(["age", "name", "isActive"]);
   });
@@ -169,12 +169,12 @@ John Doe,30,value`;
   it("should throw when required headers are missing", () => {
     const csv = "name\nJohn Doe"; // missing age header
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow(
+    expect(() => importCSV(csv, metadata)).toThrow(
       "Missing required headers: age",
     );
   });
@@ -182,13 +182,13 @@ John Doe,30,value`;
   it("should throw when multiple required headers are missing", () => {
     const csv = "name\nJohn Doe"; // missing age and isActive headers
 
-    const descriptors = {
+    const metadata = {
       name: { type: "string" },
       age: { type: "number" },
       isActive: { type: "boolean" },
     } as const;
 
-    expect(() => importCSV(csv, descriptors)).toThrow(
+    expect(() => importCSV(csv, metadata)).toThrow(
       "Missing required headers: age, isActive",
     );
   });

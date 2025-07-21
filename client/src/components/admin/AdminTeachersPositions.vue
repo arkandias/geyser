@@ -1,3 +1,15 @@
+<script lang="ts">
+export const adminTeachersPositionsColNames = [
+  "label",
+  "labelShort",
+  "description",
+  "baseServiceHours",
+] as const;
+
+export type AdminTeachersPositionsColName =
+  (typeof adminTeachersPositionsColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -16,17 +28,12 @@ import {
   UpsertPositionsDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type {
-  NullableParsedRow,
-  RowDescriptorExtra,
-  Scalar,
-} from "@/types/data.ts";
+import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
 
-import type { AdminTeachersPositionsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminPositionFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = PositionInsertInput;
 
 const { positionFragments } = defineProps<{
@@ -37,28 +44,27 @@ const { positionFragments } = defineProps<{
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   label: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   labelShort: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   description: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   baseServiceHours: {
     type: "number",
     nullable: true,
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
-} as const satisfies RowDescriptorExtra<AdminTeachersPositionsColName, Row>;
+} as const satisfies AdminColumns<AdminTeachersPositionsColName, Row>;
 
 graphql(`
   fragment AdminPosition on Position {
@@ -164,7 +170,7 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="teachers"
     name="positions"
-    :row-descriptor
+    :admin-columns
     :rows="positions"
     :fetching
     :validate-flat-row

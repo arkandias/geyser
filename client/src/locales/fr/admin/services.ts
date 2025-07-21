@@ -1,11 +1,9 @@
 import type { AdminColNameOptions } from "@/locales/types.ts";
 
-import type {
-  AdminServicesExternalCoursesColName,
-  AdminServicesMessagesColName,
-  AdminServicesServiceModificationsColName,
-  AdminServicesServicesColName,
-} from "@/components/admin/col-names.ts";
+import type { AdminServicesExternalCoursesColName } from "@/components/admin/AdminServicesExternalCourses.vue";
+import type { AdminServicesMessagesColName } from "@/components/admin/AdminServicesMessages.vue";
+import type { AdminServicesServiceModificationsColName } from "@/components/admin/AdminServicesServiceModifications.vue";
+import type { AdminServicesServicesColName } from "@/components/admin/AdminServicesServices.vue";
 
 export default {
   services: {
@@ -89,10 +87,8 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
         title:
           "Création d'une modification de service | Édition d'une modification de service | Édition de {count} modifications de service",
         error: {
-          updateYearWithoutTeacher:
-            "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
-          updateTeacherWithoutYear:
-            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
+          updateServiceMissingFields:
+            "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
@@ -144,10 +140,8 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
         title:
           "Création d'un enseignement extérieur | Édition d'un enseignement extérieur | Édition de {count} enseignements extérieurs",
         error: {
-          updateYearWithoutTeacher:
-            "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
-          updateTeacherWithoutYear:
-            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
+          updateServiceMissingFields:
+            "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
@@ -192,10 +186,8 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
         title:
           "Création d'un message | Édition d'un message | Édition de {count} messages",
         error: {
-          updateYearWithoutTeacher:
-            "Vous ne pouvez pas modifier l'année sans sélectionner un intervenant",
-          updateTeacherWithoutYear:
-            "Vous ne pouvez pas modifier l'intervenant sans sélectionner une année",
+          updateServiceMissingFields:
+            "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
           noContent: "Entrez un contenu",

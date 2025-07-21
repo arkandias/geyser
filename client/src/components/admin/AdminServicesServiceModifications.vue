@@ -1,3 +1,15 @@
+<script lang="ts">
+export const adminServicesServiceModificationsColNames = [
+  "year",
+  "teacherEmail",
+  "label",
+  "hours",
+] as const;
+
+export type AdminServicesServiceModificationsColName =
+  (typeof adminServicesServiceModificationsColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -20,17 +32,16 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
 
-import type { AdminServicesServiceModificationsColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminServiceModificationFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = ServiceModificationInsertInput;
 
 const { serviceFragments, serviceModificationFragments, teacherFragments } =
@@ -51,7 +62,7 @@ const { t, n } = useTypedI18n();
 const { organization } = useOrganizationStore();
 const { years } = useYearsStore();
 
-const rowDescriptor = {
+const adminColumns = {
   year: {
     type: "number",
     field: (row) => row.service.year,
@@ -67,15 +78,14 @@ const rowDescriptor = {
   label: {
     type: "string",
     field: (row) => row.label,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimalFixed"),
-    formComponent: "input",
-    inputType: "number",
+    formComponent: "inputNumber",
   },
-} as const satisfies RowDescriptorExtra<
+} as const satisfies AdminColumns<
   AdminServicesServiceModificationsColName,
   Row
 >;
@@ -98,6 +108,7 @@ graphql(`
     year
     teacher {
       email
+      displayname
     }
   }
 
@@ -200,17 +211,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   // serviceId
   if (flatRow.year !== undefined || flatRow.teacherEmail !== undefined) {
-    if (flatRow.teacherEmail === undefined) {
+    if (flatRow.year === undefined || flatRow.teacherEmail === undefined) {
       throw new Error(
         t(
-          "admin.services.serviceModifications.form.error.updateYearWithoutTeacher",
-        ),
-      );
-    }
-    if (flatRow.year === undefined) {
-      throw new Error(
-        t(
-          "admin.services.serviceModifications.form.error.updateTeacherWithoutYear",
+          "admin.services.serviceModifications.form.error.updateServiceMissingFields",
         ),
       );
     }
@@ -245,17 +249,27 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     year: years.value.map((y) => y.value),
+    teacherEmail: services.value
+      .filter((s) => s.year === formValues.value["year"])
+      .map((s) => ({
+        value: s.teacher.email,
+        label: s.teacher.displayname ?? "",
+      })),
+  }),
+);
+
+const filterValues = ref<Record<string, Scalar[]>>({});
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
     teacherEmail: teachers.value.map((t) => ({
       value: t.email,
       label: t.displayname ?? "",
     })),
   }),
 );
-
-const filterValues = ref<Record<string, Scalar[]>>({});
 </script>
 
 <template>
@@ -264,11 +278,12 @@ const filterValues = ref<Record<string, Scalar[]>>({});
     v-model:filter-values="filterValues"
     section="services"
     name="serviceModifications"
-    :row-descriptor
+    :admin-columns
     :rows="serviceModifications"
     :fetching
     :validate-flat-row
     :form-options
+    :filter-options
     :insert-data="insertServiceModifications"
     :upsert-data="upsertServiceModifications"
     :update-data="updateServiceModifications"

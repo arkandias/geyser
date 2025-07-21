@@ -1,3 +1,16 @@
+<script lang="ts">
+export const adminCoursesTracksColNames = [
+  "degreeName",
+  "programName",
+  "name",
+  "nameShort",
+  "visible",
+] as const;
+
+export type AdminCoursesTracksColName =
+  (typeof adminCoursesTracksColNames)[number];
+</script>
+
 <script setup lang="ts">
 import { useMutation } from "@urql/vue";
 import { computed, ref } from "vue";
@@ -19,17 +32,17 @@ import {
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
+  AdminColumns,
   NullableParsedRow,
-  RowDescriptorExtra,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
+import { unique } from "@/utils";
 
-import type { AdminCoursesTracksColName } from "@/components/admin/col-names.ts";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminTrackFragment;
-type FlatRow = NullableParsedRow<typeof rowDescriptor>;
+type FlatRow = NullableParsedRow<typeof adminColumns>;
 type InsertInput = TrackInsertInput;
 
 const { degreeFragments, programFragments, trackFragments } = defineProps<{
@@ -42,7 +55,7 @@ const { degreeFragments, programFragments, trackFragments } = defineProps<{
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
 
-const rowDescriptor = {
+const adminColumns = {
   degreeName: {
     type: "string",
     field: (row) => row.program.degree.name,
@@ -55,19 +68,17 @@ const rowDescriptor = {
   },
   name: {
     type: "string",
-    formComponent: "input",
+    formComponent: "inputText",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "input",
+    formComponent: "inputText",
   },
   visible: {
     type: "boolean",
-    format: (val: boolean) => (val ? "✓" : "✗"),
-    formComponent: "toggle",
   },
-} as const satisfies RowDescriptorExtra<AdminCoursesTracksColName, Row>;
+} as const satisfies AdminColumns<AdminCoursesTracksColName, Row>;
 
 graphql(`
   fragment AdminTrack on Track {
@@ -85,14 +96,14 @@ graphql(`
 
   fragment AdminTracksDegree on Degree {
     name
-    programs {
-      id
-      name
-    }
   }
 
   fragment AdminTracksProgram on Program {
+    id
     name
+    degree {
+      name
+    }
   }
 
   mutation InsertTracks($objects: [TrackInsertInput!]!) {
@@ -135,14 +146,14 @@ graphql(`
   }
 `);
 
-const tracks = computed(() =>
-  trackFragments.map((f) => useFragment(AdminTrackFragmentDoc, f)),
-);
 const degrees = computed(() =>
   degreeFragments.map((f) => useFragment(AdminTracksDegreeFragmentDoc, f)),
 );
 const programs = computed(() =>
   programFragments.map((f) => useFragment(AdminTracksProgramFragmentDoc, f)),
+);
+const tracks = computed(() =>
+  trackFragments.map((f) => useFragment(AdminTrackFragmentDoc, f)),
 );
 const insertTracks = useMutation(InsertTracksDocument);
 const upsertTracks = useMutation(UpsertTracksDocument);
@@ -165,23 +176,15 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   // programId
   if (flatRow.degreeName !== undefined || flatRow.programName !== undefined) {
-    if (flatRow.programName === undefined) {
+    if (flatRow.degreeName === undefined || flatRow.programName === undefined) {
       throw new Error(
-        t("admin.courses.tracks.form.error.updateDegreeWithoutProgram"),
+        t("admin.courses.tracks.form.error.updateProgramMissingFields"),
       );
     }
-    if (flatRow.degreeName === undefined) {
-      throw new Error(
-        t("admin.courses.tracks.form.error.updateProgramWithoutDegree"),
-      );
-    }
-    const degree = degrees.value.find((d) => d.name === flatRow.degreeName);
-    if (degree === undefined) {
-      throw new Error(
-        t("admin.courses.tracks.form.error.degreeNotFound", flatRow),
-      );
-    }
-    const program = degree.programs.find((p) => p.name === flatRow.programName);
+    const program = programs.value.find(
+      (p) =>
+        p.degree.name === flatRow.degreeName && p.name === flatRow.programName,
+    );
     if (program === undefined) {
       throw new Error(
         t("admin.courses.tracks.form.error.programNotFound", flatRow),
@@ -206,22 +209,23 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 };
 
 const formValues = ref<Record<string, Scalar>>({});
-const formOptions = computed<SelectOptions<string, Row, typeof rowDescriptor>>(
+const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
-    degreeName: degrees.value.map((d) => d.name),
-    programName:
-      degrees.value
-        .find((d) => d.name === formValues.value["degreeName"])
-        ?.programs.map((p) => p.name) ?? [],
+    degreeName: programs.value.map((p) => p.degree.name).filter(unique),
+    programName: programs.value
+      .filter((p) => p.degree.name === formValues.value["degreeName"])
+      .map((p) => p.name)
+      .filter(unique),
   }),
 );
 
 const filterValues = ref<Record<string, Scalar[]>>({});
-const filterOptions = computed<
-  SelectOptions<string, Row, typeof rowDescriptor>
->(() => ({
-  programName: programs.value.map((p) => p.name),
-}));
+const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
+  () => ({
+    degreeName: degrees.value.map((d) => d.name),
+    programName: programs.value.map((p) => p.name).filter(unique),
+  }),
+);
 </script>
 
 <template>
@@ -230,7 +234,7 @@ const filterOptions = computed<
     v-model:filter-values="filterValues"
     section="courses"
     name="tracks"
-    :row-descriptor
+    :admin-columns
     :rows="tracks"
     :fetching
     :validate-flat-row

@@ -20,3 +20,12 @@ export const getField = <R extends object>(
     : typeof field === "function"
       ? field(row)
       : row[field as keyof R];
+
+export const inputType = (formComponent: string) =>
+  formComponent === "inputText"
+    ? "text"
+    : formComponent === "inputTextarea"
+      ? "textarea"
+      : formComponent === "inputNumber"
+        ? "number"
+        : undefined;
