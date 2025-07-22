@@ -300,6 +300,10 @@ Si ces types sont attribués à des enseignements, vous ne pourrez pas les suppr
           label: "Visible",
           tooltip: "",
         },
+        externalReference: {
+          label: "Référence externe",
+          tooltip: "",
+        },
       } satisfies Record<AdminCoursesCoursesColName, AdminColNameOptions>,
       form: {
         title:

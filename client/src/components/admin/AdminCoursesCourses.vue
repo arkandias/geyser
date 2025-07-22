@@ -15,6 +15,7 @@ export const adminCoursesCoursesColNames = [
   "description",
   "priorityRule",
   "visible",
+  "externalReference",
 ] as const;
 
 export type AdminCoursesCoursesColName =
@@ -156,6 +157,11 @@ const adminColumns = {
   visible: {
     type: "boolean",
   },
+  externalReference: {
+    type: "string",
+    nullable: true,
+    formComponent: "inputText",
+  },
 } as const satisfies AdminColumns<AdminCoursesCoursesColName, Row>;
 
 graphql(`
@@ -186,6 +192,7 @@ graphql(`
     description
     priorityRule
     visible
+    externalReference
   }
 
   fragment AdminCoursesDegree on Degree {
@@ -434,6 +441,10 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
 
   if (flatRow.visible !== undefined) {
     object.visible = flatRow.visible;
+  }
+
+  if (flatRow.externalReference !== undefined) {
+    object.externalReference = flatRow.externalReference;
   }
 
   return object;

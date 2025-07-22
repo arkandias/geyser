@@ -289,6 +289,10 @@ If these types are assigned to courses, you will not be able to delete them.`,
           label: "Visible",
           tooltip: "",
         },
+        externalReference: {
+          label: "External reference",
+          tooltip: "",
+        },
       } satisfies Record<AdminCoursesCoursesColName, AdminColNameOptions>,
       form: {
         title: "Creating a course | Editing a course | Editing {count} courses",
