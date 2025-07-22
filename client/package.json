@@ -32,7 +32,7 @@
     "zod": "^4.0.5"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^1.48.2",
+    "@dotenvx/dotenvx": "^1.48.3",
     "@graphql-codegen/cli": "^5.0.7",
     "@graphql-codegen/client-preset": "^4.8.3",
     "@graphql-codegen/schema-ast": "^4.1.0",
