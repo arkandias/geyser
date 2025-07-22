@@ -3,7 +3,7 @@ import type { InfoTextKey } from "@/components/header/MenuInfo.vue";
 export default {
   header: {
     warning: {
-      noActiveYear: "Pas d'année sélectionnée",
+      noActiveYear: "Pas d'année active",
       archive: "Vous consultez une archive ({year})",
     },
     home: {
