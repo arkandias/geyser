@@ -449,7 +449,7 @@ const importRowsHandle = async () => {
   if (!selectedFile.value) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.importFailed"),
-      caption: t("admin.data.error.emptyFile"),
+      caption: t("admin.data.error.noFile"),
     });
     return;
   }

@@ -20,7 +20,7 @@ export default {
       importFailed: "Import failed",
       exportFailed: "Export failed",
       noReturnData: "No response",
-      emptyFile: "Empty file",
+      noFile: "Select a file",
       unreadableFile: "Unreadable file: {reason}",
       parsingError: "Error while extracting data: {reason}",
       invalidRow: "Invalid row {index}: {reason}",
