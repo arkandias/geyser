@@ -209,7 +209,6 @@ const deleteCoordinationsPrograms = useMutation(
 const importConstraint =
   CoordinationConstraint.CoordinationOidTeacherIdCourseIdTrackIdProgramIdKey;
 const importUpdateColumns = [
-  CoordinationUpdateColumn.Oid,
   CoordinationUpdateColumn.TeacherId,
   CoordinationUpdateColumn.ProgramId,
   CoordinationUpdateColumn.Comment,

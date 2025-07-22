@@ -114,7 +114,6 @@ const deleteDegrees = useMutation(DeleteDegreesDocument);
 
 const importConstraint = DegreeConstraint.DegreeOidNameKey;
 const importUpdateColumns = [
-  DegreeUpdateColumn.Oid,
   DegreeUpdateColumn.Name,
   DegreeUpdateColumn.NameShort,
   DegreeUpdateColumn.Visible,

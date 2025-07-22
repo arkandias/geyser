@@ -198,7 +198,6 @@ const deleteServiceModifications = useMutation(
 
 const importConstraint = ServiceModificationConstraint.ServiceModificationPkey;
 const importUpdateColumns = [
-  ServiceModificationUpdateColumn.Oid,
   ServiceModificationUpdateColumn.ServiceId,
   ServiceModificationUpdateColumn.Label,
   ServiceModificationUpdateColumn.Hours,

@@ -106,7 +106,6 @@ const deleteTerms = useMutation(DeleteTermsDocument);
 
 const importConstraint = TermConstraint.TermOidLabelKey;
 const importUpdateColumns = [
-  TermUpdateColumn.Oid,
   TermUpdateColumn.Label,
   TermUpdateColumn.Description,
 ];

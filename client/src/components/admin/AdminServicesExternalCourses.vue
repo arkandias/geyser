@@ -185,7 +185,6 @@ const deleteExternalCourses = useMutation(DeleteExternalCoursesDocument);
 
 const importConstraint = ExternalCourseConstraint.ExternalCoursePkey;
 const importUpdateColumns = [
-  ExternalCourseUpdateColumn.Oid,
   ExternalCourseUpdateColumn.ServiceId,
   ExternalCourseUpdateColumn.Label,
   ExternalCourseUpdateColumn.Hours,

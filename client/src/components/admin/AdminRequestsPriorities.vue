@@ -319,7 +319,6 @@ const deletePriorities = useMutation(DeletePrioritiesDocument);
 
 const importConstraint = PriorityConstraint.PriorityOidServiceIdCourseIdKey;
 const importUpdateColumns = [
-  PriorityUpdateColumn.Oid,
   PriorityUpdateColumn.ServiceId,
   PriorityUpdateColumn.CourseId,
   PriorityUpdateColumn.Seniority,

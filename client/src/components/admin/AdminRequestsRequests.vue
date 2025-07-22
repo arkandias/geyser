@@ -311,7 +311,6 @@ const deleteRequests = useMutation(DeleteRequestsDocument);
 
 const importConstraint = RequestConstraint.RequestOidServiceIdCourseIdTypeKey;
 const importUpdateColumns = [
-  RequestUpdateColumn.Oid,
   RequestUpdateColumn.ServiceId,
   RequestUpdateColumn.CourseId,
   RequestUpdateColumn.Type,

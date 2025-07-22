@@ -287,7 +287,6 @@ const deleteCourses = useMutation(DeleteCoursesDocument);
 const importConstraint =
   CourseConstraint.CourseOidYearProgramIdTrackIdTermIdNameTypeIdKey;
 const importUpdateColumns = [
-  CourseUpdateColumn.Oid,
   CourseUpdateColumn.Year,
   CourseUpdateColumn.ProgramId,
   CourseUpdateColumn.TrackId,

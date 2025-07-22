@@ -140,7 +140,6 @@ const deletePrograms = useMutation(DeleteProgramsDocument);
 
 const importConstraint = ProgramConstraint.ProgramOidDegreeIdNameKey;
 const importUpdateColumns = [
-  ProgramUpdateColumn.Oid,
   ProgramUpdateColumn.DegreeId,
   ProgramUpdateColumn.Name,
   ProgramUpdateColumn.NameShort,

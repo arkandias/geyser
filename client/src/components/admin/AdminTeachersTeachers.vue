@@ -174,7 +174,6 @@ const deleteTeachers = useMutation(DeleteTeachersDocument);
 
 const importConstraint = TeacherConstraint.TeacherPkey;
 const importUpdateColumns = [
-  TeacherUpdateColumn.Oid,
   TeacherUpdateColumn.Email,
   TeacherUpdateColumn.Firstname,
   TeacherUpdateColumn.Lastname,

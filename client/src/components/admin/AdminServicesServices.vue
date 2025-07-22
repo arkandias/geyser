@@ -168,7 +168,6 @@ const deleteServices = useMutation(DeleteServicesDocument);
 
 const importConstraint = ServiceConstraint.ServiceOidYearTeacherIdKey;
 const importUpdateColumns = [
-  ServiceUpdateColumn.Oid,
   ServiceUpdateColumn.Year,
   ServiceUpdateColumn.TeacherId,
   ServiceUpdateColumn.Hours,

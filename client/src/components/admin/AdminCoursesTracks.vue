@@ -162,7 +162,6 @@ const deleteTracks = useMutation(DeleteTracksDocument);
 
 const importConstraint = TrackConstraint.TrackOidProgramIdNameKey;
 const importUpdateColumns = [
-  TrackUpdateColumn.Oid,
   TrackUpdateColumn.ProgramId,
   TrackUpdateColumn.Name,
   TrackUpdateColumn.NameShort,

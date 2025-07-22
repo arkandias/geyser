@@ -125,7 +125,6 @@ const deletePositions = useMutation(DeletePositionsDocument);
 
 const importConstraint = PositionConstraint.PositionOidLabelKey;
 const importUpdateColumns = [
-  PositionUpdateColumn.Oid,
   PositionUpdateColumn.Label,
   PositionUpdateColumn.Description,
   PositionUpdateColumn.BaseServiceHours,

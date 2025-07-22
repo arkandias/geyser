@@ -155,7 +155,6 @@ const deleteMessages = useMutation(DeleteMessagesDocument);
 
 const importConstraint = MessageConstraint.MessagePkey;
 const importUpdateColumns = [
-  MessageUpdateColumn.Oid,
   MessageUpdateColumn.ServiceId,
   MessageUpdateColumn.Content,
 ];

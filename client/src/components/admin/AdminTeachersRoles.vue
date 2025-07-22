@@ -144,7 +144,6 @@ const deleteServices = useMutation(DeleteRolesDocument);
 
 const importConstraint = TeacherRoleConstraint.TeacherRoleOidTeacherIdRoleKey;
 const importUpdateColumns = [
-  TeacherRoleUpdateColumn.Oid,
   TeacherRoleUpdateColumn.TeacherId,
   TeacherRoleUpdateColumn.Role,
   TeacherRoleUpdateColumn.Comment,
