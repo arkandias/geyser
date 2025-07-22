@@ -163,7 +163,8 @@ BEGIN
 
     RETURN QUERY
         INSERT INTO public.course (oid, year, program_id, track_id, term_id, name, name_short, type_id, groups,
-                                   groups_adjusted, hours, hours_adjusted, description, priority_rule, visible)
+                                   groups_adjusted, hours, hours_adjusted, description, priority_rule, visible,
+                                   external_reference)
             SELECT org_id,
                    p_year,
                    c.program_id,
@@ -178,7 +179,8 @@ BEGIN
                    c.hours_adjusted,
                    c.description,
                    c.priority_rule,
-                   c.visible
+                   c.visible,
+                   c.external_reference
             FROM public.course c
             WHERE c.oid = org_id
               AND c.year = p_year - 1
