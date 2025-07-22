@@ -121,6 +121,7 @@ const adminColumns = {
   },
   trackName: {
     type: "string",
+    nullable: true,
     field: (row) => row.course?.track?.name,
     formComponent: "select",
   },
