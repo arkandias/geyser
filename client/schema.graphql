@@ -950,9 +950,11 @@ type Course {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int!
@@ -968,13 +970,7 @@ type Course {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -988,6 +984,7 @@ type Course {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int!
@@ -1183,13 +1180,7 @@ type CourseAvgFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -1235,13 +1226,7 @@ input CourseAvgOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -1280,7 +1265,9 @@ input CourseBoolExp {
   coordinationsAggregate: CoordinationAggregateBoolExp
   createdAt: TimestamptzComparisonExp
   description: StringComparisonExp
+  ensIdImport: StringComparisonExp
   externalReference: StringComparisonExp
+  formationIdImport: StringComparisonExp
   groups: IntComparisonExp
   groupsAdjusted: IntComparisonExp
   groupsEffective: IntComparisonExp
@@ -1292,6 +1279,7 @@ input CourseBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
   priorities: PriorityBoolExp
@@ -1317,6 +1305,11 @@ input CourseBoolExp {
 unique or primary key constraints on table "course"
 """
 enum CourseConstraint {
+  """
+  unique or primary key constraint on columns "ens_id_import"
+  """
+  course_ens_id_import_key
+
   """
   unique or primary key constraint on columns "id"
   """
@@ -1387,9 +1380,11 @@ input CourseInsertInput {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int
@@ -1408,6 +1403,7 @@ input CourseInsertInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -1454,9 +1450,11 @@ type CourseMaxFields {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int
@@ -1472,13 +1470,7 @@ type CourseMaxFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -1492,6 +1484,7 @@ type CourseMaxFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -1529,9 +1522,11 @@ input CourseMaxOrderBy {
 
   """Optional description"""
   description: OrderBy
+  ensIdImport: OrderBy
 
   """External reference (optional)"""
   externalReference: OrderBy
+  formationIdImport: OrderBy
 
   """Base number of groups"""
   groups: OrderBy
@@ -1547,13 +1542,7 @@ input CourseMaxOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -1567,6 +1556,7 @@ input CourseMaxOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -1602,9 +1592,11 @@ type CourseMinFields {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int
@@ -1620,13 +1612,7 @@ type CourseMinFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -1640,6 +1626,7 @@ type CourseMinFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -1677,9 +1664,11 @@ input CourseMinOrderBy {
 
   """Optional description"""
   description: OrderBy
+  ensIdImport: OrderBy
 
   """External reference (optional)"""
   externalReference: OrderBy
+  formationIdImport: OrderBy
 
   """Base number of groups"""
   groups: OrderBy
@@ -1695,13 +1684,7 @@ input CourseMinOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -1715,6 +1698,7 @@ input CourseMinOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -1778,7 +1762,9 @@ input CourseOrderBy {
   coordinationsAggregate: CoordinationAggregateOrderBy
   createdAt: OrderBy
   description: OrderBy
+  ensIdImport: OrderBy
   externalReference: OrderBy
+  formationIdImport: OrderBy
   groups: OrderBy
   groupsAdjusted: OrderBy
   groupsEffective: OrderBy
@@ -1790,6 +1776,7 @@ input CourseOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
   prioritiesAggregate: PriorityAggregateOrderBy
@@ -1829,7 +1816,13 @@ enum CourseSelectColumn {
   description
 
   """column name"""
+  ensIdImport
+
+  """column name"""
   externalReference
+
+  """column name"""
+  formationIdImport
 
   """column name"""
   groups
@@ -1863,6 +1856,9 @@ enum CourseSelectColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid
@@ -1917,9 +1913,11 @@ input CourseSetInput {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int
@@ -1938,6 +1936,7 @@ input CourseSetInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -1985,13 +1984,7 @@ type CourseStddevFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2037,13 +2030,7 @@ input CourseStddevOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2087,13 +2074,7 @@ type CourseStddevPopFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2139,13 +2120,7 @@ input CourseStddevPopOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2189,13 +2164,7 @@ type CourseStddevSampFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2241,13 +2210,7 @@ input CourseStddevSampOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -2293,9 +2256,11 @@ input CourseStreamCursorValueInput {
 
   """Optional description"""
   description: String
+  ensIdImport: String
 
   """External reference (optional)"""
   externalReference: String
+  formationIdImport: String
 
   """Base number of groups"""
   groups: Int
@@ -2311,13 +2276,7 @@ input CourseStreamCursorValueInput {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2331,6 +2290,7 @@ input CourseStreamCursorValueInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -2378,13 +2338,7 @@ type CourseSumFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -2430,13 +2384,7 @@ input CourseSumOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3163,7 +3111,13 @@ enum CourseUpdateColumn {
   description
 
   """column name"""
+  ensIdImport
+
+  """column name"""
   externalReference
+
+  """column name"""
+  formationIdImport
 
   """column name"""
   groups
@@ -3182,6 +3136,9 @@ enum CourseUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid
@@ -3238,13 +3195,7 @@ type CourseVarPopFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3290,13 +3241,7 @@ input CourseVarPopOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3340,13 +3285,7 @@ type CourseVarSampFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3392,13 +3331,7 @@ input CourseVarSampOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -3442,13 +3375,7 @@ type CourseVarianceFields {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: Float
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: Float
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: Float
 
   """Unique identifier"""
@@ -3494,13 +3421,7 @@ input CourseVarianceOrderBy {
 
   """Modified number of teaching hours per group, if different from base"""
   hoursAdjusted: OrderBy
-
-  """
-  Actual number of teaching hours per group, defaulting to base if no adjustment
-  """
   hoursEffective: OrderBy
-
-  """Effective teaching hours per group times effective number of groups"""
   hoursEffectiveTotal: OrderBy
 
   """Unique identifier"""
@@ -5121,7 +5042,7 @@ type ExternalCourse {
   """Unique identifier"""
   id: Int!
 
-  """Course label"""
+  """Course name"""
   label: String!
 
   """Organization reference"""
@@ -5287,7 +5208,7 @@ input ExternalCourseInsertInput {
   """Number of weighted hours"""
   hours: Float
 
-  """Course label"""
+  """Course name"""
   label: String
 
   """Organization reference"""
@@ -5315,7 +5236,7 @@ type ExternalCourseMaxFields {
   """Unique identifier"""
   id: Int
 
-  """Course label"""
+  """Course name"""
   label: String
 
   """Organization reference"""
@@ -5343,7 +5264,7 @@ input ExternalCourseMaxOrderBy {
   """Unique identifier"""
   id: OrderBy
 
-  """Course label"""
+  """Course name"""
   label: OrderBy
 
   """Organization reference"""
@@ -5369,7 +5290,7 @@ type ExternalCourseMinFields {
   """Unique identifier"""
   id: Int
 
-  """Course label"""
+  """Course name"""
   label: String
 
   """Organization reference"""
@@ -5397,7 +5318,7 @@ input ExternalCourseMinOrderBy {
   """Unique identifier"""
   id: OrderBy
 
-  """Course label"""
+  """Course name"""
   label: OrderBy
 
   """Organization reference"""
@@ -5490,7 +5411,7 @@ input ExternalCourseSetInput {
   """Number of weighted hours"""
   hours: Float
 
-  """Course label"""
+  """Course name"""
   label: String
 
   """Organization reference"""
@@ -5623,7 +5544,7 @@ input ExternalCourseStreamCursorValueInput {
   """Unique identifier"""
   id: Int
 
-  """Course label"""
+  """Course name"""
   label: String
 
   """Organization reference"""
@@ -6653,7 +6574,6 @@ enum OrderBy {
 
 """Organization information"""
 type Organization {
-  """Status flag"""
   active: Boolean!
 
   """An array relationship"""
@@ -6874,8 +6794,6 @@ type Organization {
     """filter the rows returned"""
     where: DegreeBoolExp
   ): DegreeAggregate!
-
-  """Contact email address"""
   email: String!
 
   """An array relationship"""
@@ -6922,8 +6840,6 @@ type Organization {
 
   """Label for display purposes"""
   label: String!
-
-  """Default locale"""
   locale: LocaleEnum!
 
   """An array relationship"""
@@ -7439,7 +7355,6 @@ enum OrganizationConstraint {
 input type for inserting data into table "organization"
 """
 input OrganizationInsertInput {
-  """Status flag"""
   active: Boolean
   coordinations: CoordinationArrRelInsertInput
   courseTypes: CourseTypeArrRelInsertInput
@@ -7450,8 +7365,6 @@ input OrganizationInsertInput {
   currentPhase: CurrentPhaseArrRelInsertInput
   customTexts: CustomTextArrRelInsertInput
   degrees: DegreeArrRelInsertInput
-
-  """Contact email address"""
   email: String
   externalCourses: ExternalCourseArrRelInsertInput
 
@@ -7460,8 +7373,6 @@ input OrganizationInsertInput {
 
   """Label for display purposes"""
   label: String
-
-  """Default locale"""
   locale: LocaleEnum
   messages: MessageArrRelInsertInput
   positions: PositionArrRelInsertInput
@@ -7491,8 +7402,6 @@ input OrganizationInsertInput {
 type OrganizationMaxFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Contact email address"""
   email: String
 
   """Unique identifier"""
@@ -7517,8 +7426,6 @@ type OrganizationMaxFields {
 type OrganizationMinFields {
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Contact email address"""
   email: String
 
   """Unique identifier"""
@@ -7646,13 +7553,10 @@ enum OrganizationSelectColumn {
 input type for updating data in table "organization"
 """
 input OrganizationSetInput {
-  """Status flag"""
   active: Boolean
 
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Contact email address"""
   email: String
 
   """Human-readable identifier (unique)"""
@@ -7660,8 +7564,6 @@ input OrganizationSetInput {
 
   """Label for display purposes"""
   label: String
-
-  """Default locale"""
   locale: LocaleEnum
 
   """When true, teachers can only view their own services"""
@@ -7707,13 +7609,10 @@ input OrganizationStreamCursorInput {
 
 """Initial value of the column from where the streaming should start"""
 input OrganizationStreamCursorValueInput {
-  """Status flag"""
   active: Boolean
 
   """Timestamp when the record was created"""
   createdAt: timestamptz
-
-  """Contact email address"""
   email: String
 
   """Unique identifier"""
@@ -7724,8 +7623,6 @@ input OrganizationStreamCursorValueInput {
 
   """Label for display purposes"""
   label: String
-
-  """Default locale"""
   locale: LocaleEnum
 
   """When true, teachers can only view their own services"""
@@ -9775,6 +9672,7 @@ type Program {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int!
@@ -9929,6 +9827,7 @@ input ProgramBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
   tracks: TrackBoolExp
@@ -9987,6 +9886,7 @@ input ProgramInsertInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -10021,6 +9921,7 @@ type ProgramMaxFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -10052,6 +9953,7 @@ input ProgramMaxOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -10081,6 +9983,7 @@ type ProgramMinFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -10112,6 +10015,7 @@ input ProgramMinOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -10163,6 +10067,7 @@ input ProgramOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
   tracksAggregate: TrackAggregateOrderBy
@@ -10200,6 +10105,9 @@ enum ProgramSelectColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid
@@ -10242,6 +10150,7 @@ input ProgramSetInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -10363,6 +10272,7 @@ input ProgramStreamCursorValueInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -10417,6 +10327,9 @@ enum ProgramUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid
@@ -11700,13 +11613,15 @@ enum RoleConstraint {
 }
 
 enum RoleEnum {
-  """Committee member with extra permissions during assignment phase"""
+  """Committee member with extra capabilities during assignment phase"""
   COMMISSIONER
 
-  """Administrator with full permissions within an organization"""
+  """
+  Administrator with full capabilities including configuration and user management
+  """
   ORGANIZER
 
-  """Standard user with basic permissions"""
+  """Standard user with basic capabilities"""
   TEACHER
 }
 
@@ -12417,10 +12332,6 @@ type ServiceModification {
 
   """Unique identifier"""
   id: Int!
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String!
 
   """Organization reference"""
@@ -12585,10 +12496,6 @@ input ServiceModificationInsertInput {
 
   """Hour deduction amount"""
   hours: Float
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String
 
   """Organization reference"""
@@ -12615,10 +12522,6 @@ type ServiceModificationMaxFields {
 
   """Unique identifier"""
   id: Int
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String
 
   """Organization reference"""
@@ -12645,10 +12548,6 @@ input ServiceModificationMaxOrderBy {
 
   """Unique identifier"""
   id: OrderBy
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: OrderBy
 
   """Organization reference"""
@@ -12673,10 +12572,6 @@ type ServiceModificationMinFields {
 
   """Unique identifier"""
   id: Int
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String
 
   """Organization reference"""
@@ -12703,10 +12598,6 @@ input ServiceModificationMinOrderBy {
 
   """Unique identifier"""
   id: OrderBy
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: OrderBy
 
   """Organization reference"""
@@ -12798,10 +12689,6 @@ input ServiceModificationSetInput {
 
   """Hour deduction amount"""
   hours: Float
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String
 
   """Organization reference"""
@@ -12933,10 +12820,6 @@ input ServiceModificationStreamCursorValueInput {
 
   """Unique identifier"""
   id: Int
-
-  """
-  Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.)
-  """
   label: String
 
   """Organization reference"""
@@ -15882,6 +15765,7 @@ type Track {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int!
@@ -16004,6 +15888,7 @@ input TrackBoolExp {
   name: StringComparisonExp
   nameDisplay: StringComparisonExp
   nameShort: StringComparisonExp
+  nomImport: StringComparisonExp
   oid: IntComparisonExp
   organization: OrganizationBoolExp
   program: ProgramBoolExp
@@ -16065,6 +15950,7 @@ input TrackInsertInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -16101,6 +15987,7 @@ type TrackMaxFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -16134,6 +16021,7 @@ input TrackMaxOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -16165,6 +16053,7 @@ type TrackMinFields {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -16198,6 +16087,7 @@ input TrackMinOrderBy {
 
   """Abbreviated name"""
   nameShort: OrderBy
+  nomImport: OrderBy
 
   """Organization reference"""
   oid: OrderBy
@@ -16250,6 +16140,7 @@ input TrackOrderBy {
   name: OrderBy
   nameDisplay: OrderBy
   nameShort: OrderBy
+  nomImport: OrderBy
   oid: OrderBy
   organization: OrganizationOrderBy
   program: ProgramOrderBy
@@ -16285,6 +16176,9 @@ enum TrackSelectColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid
@@ -16329,6 +16223,7 @@ input TrackSetInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -16452,6 +16347,7 @@ input TrackStreamCursorValueInput {
 
   """Abbreviated name"""
   nameShort: String
+  nomImport: String
 
   """Organization reference"""
   oid: Int
@@ -16506,6 +16402,9 @@ enum TrackUpdateColumn {
 
   """column name"""
   nameShort
+
+  """column name"""
+  nomImport
 
   """column name"""
   oid

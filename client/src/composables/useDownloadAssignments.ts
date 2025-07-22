@@ -34,6 +34,7 @@ graphql(`
     ) {
       course {
         name: nameDisplay
+        externalReference
         program {
           name: nameDisplay
           degree {
@@ -114,6 +115,8 @@ export const useDownloadAssignments = () => {
       [t("downloadAssignments.hoursAssigned")]: Math.round(a.hours * 100) / 100,
       [t("downloadAssignments.hoursWeightedAssigned")]:
         Math.round((a.hoursWeighted ?? 0) * 100) / 100,
+      [t("downloadAssignments.courseExternalReference")]:
+        a.course.externalReference,
     }));
 
     try {

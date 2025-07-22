@@ -11,6 +11,7 @@ export default {
     groupsAssigned: "Groups assigned",
     hoursAssigned: "Hours assigned",
     hoursWeightedAssigned: "Weighted hours assigned",
+    courseExternalReference: "Course external reference",
     error: {
       requestFailed: "Request failed",
       downloadFailed: "Download failed",

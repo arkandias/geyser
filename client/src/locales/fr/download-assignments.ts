@@ -11,6 +11,7 @@ export default {
     groupsAssigned: "Groupes attribués",
     hoursAssigned: "Heures attribuées",
     hoursWeightedAssigned: "Heures éq. TD attribuées",
+    courseExternalReference: "Référence externe du cours",
     error: {
       requestFailed: "La requête a échoué",
       downloadFailed: "Le téléchargement a échoué",
