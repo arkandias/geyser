@@ -18,6 +18,7 @@ services:
   backend: !reset []
 
   frontend:
+    build: !reset null
     image: nginx:1.27
     restart: unless-stopped
     depends_on:
