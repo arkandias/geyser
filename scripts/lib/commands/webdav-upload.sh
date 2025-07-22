@@ -92,7 +92,7 @@ _webdav_upload_file() {
         return 1
     fi
 
-    local remote_url="${WEBDAV_URL}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR}/${remote_filename}"
+    local remote_url="${WEBDAV_URL%/}/remote.php/dav/files/${WEBDAV_USER}/${WEBDAV_DIR%/}/${remote_filename}"
 
     info "Uploading file ${local_file} to ${remote_url}..."
     local response_code
