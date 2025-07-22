@@ -29,15 +29,18 @@ handle_deploy() {
         esac
     done
 
-    # Pull latest version
+    info "Pulling latest version from repository..."
     git -C "${GEYSER_HOME}" pull
 
-    # Deploy application
-    _hasura deploy
+    info "Updating Docker images..."
     _compose pull
     _compose build --pull --no-cache
+
+    info "Starting services with updated images..."
     _compose up -d
 
-    # Cleanup
+    info "Cleaning up..."
     docker system prune -f
+
+    success "Deployment completed successfully. Geyser is up and running"
 }
