@@ -24,7 +24,7 @@ ARG GRAPHQL_URL
 ARG TENANCY_MODE
 ARG ORGANIZATION_KEY
 
-RUN test -n "${API_URL}" || (echo "ERROR: API_URL build argument is required" && exit 1) 
+RUN test -n "${API_URL}" || (echo "ERROR: API_URL build argument is required" && exit 1)
 RUN test -n "${GRAPHQL_URL}" || (echo "ERROR: GRAPHQL_URL build argument is required" && exit 1)
 RUN test -n "${TENANCY_MODE}" || (echo "ERROR: TENANCY_MODE build argument is required" && exit 1)
 RUN bash -c '[[ "${TENANCY_MODE}" =~ ^(multi|single)$ ]] || (echo "ERROR: TENANCY_MODE must be \"multi\" or \"single\", got: \"${TENANCY_MODE}\"" && exit 1)'
