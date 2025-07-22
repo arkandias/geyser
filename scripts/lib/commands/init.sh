@@ -66,9 +66,11 @@ handle_init() {
         echo
     done
     _compose run --rm \
+        -e KC_BOOTSTRAP_ADMIN_USERNAME="${username}" \
+        -e KC_BOOTSTRAP_ADMIN_PASSWORD="${password}" \
         keycloak bootstrap-admin user \
-        --username "${username}" \
-        --password "${password}" \
+        --username:env KC_BOOTSTRAP_ADMIN_USERNAME \
+        --password:env KC_BOOTSTRAP_ADMIN_PASSWORD \
         --optimized
 
     info "Creating Geyser realm..."
@@ -88,7 +90,8 @@ handle_init() {
     wait_until_healthy hasura
     info "Waiting a few more seconds..."
     sleep 3
-    _hasura deploy
+    _hasura migrate apply --all-databases --skip-execution
+    _hasura metadata apply
 
     info "Starting all services..."
     _compose up -d

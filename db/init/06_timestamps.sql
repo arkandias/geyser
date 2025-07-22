@@ -38,7 +38,7 @@ BEGIN
         SELECT tablename
         FROM pg_tables
         WHERE schemaname = 'public'
-          AND tablename NOT IN ('phase', 'request_type', 'role')
+          AND tablename NOT IN ('locale', 'phase', 'request_type', 'role')
         LOOP
             PERFORM public.add_timestamp_columns(table_name);
         END LOOP;
