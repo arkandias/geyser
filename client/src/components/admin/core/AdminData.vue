@@ -114,26 +114,26 @@ const keyPrefix = `admin.${section}.${name}`;
 
 // ===== Data Table =====
 const columns = computed<Column<Row>[]>(() =>
-  Object.entries(adminColumns).map(([key, metadata]) => ({
-    ...metadata,
+  Object.entries(adminColumns).map(([key, col]) => ({
+    ...col,
     name: key,
     label: t(`${keyPrefix}.column.${key}.label`),
     tooltip: t(`${keyPrefix}.column.${key}.tooltip`),
-    field: metadata.field ?? key,
+    field: col.field ?? key,
     format:
-      metadata.format ??
-      (metadata.type === "boolean"
+      col.format ??
+      (col.type === "boolean"
         ? (val: boolean) => (val ? "✓" : "✗")
         : undefined),
     align:
-      metadata.type === "string"
+      col.type === "string"
         ? "left"
-        : metadata.type === "number"
+        : col.type === "number"
           ? "right"
           : "center",
     sortable: true,
-    sort: metadata.type === "string" ? localeCompare : undefined,
-    searchable: metadata.type === "string",
+    sort: col.type === "string" ? localeCompare : undefined,
+    searchable: col.type === "string",
   })),
 );
 
@@ -159,9 +159,9 @@ watch(isFormOpen, (value) => {
 
 const initForm = (rows: Row[]) =>
   Object.fromEntries(
-    Object.entries(adminColumns).map(([key, metadata]) => [
+    Object.entries(adminColumns).map(([key, col]) => [
       key,
-      getField(rows[0], metadata.field ?? key),
+      getField(rows[0], col.field ?? key),
     ]),
   ) as Record<string, Scalar>;
 
@@ -178,7 +178,7 @@ const openForm = (rows?: Row[]) => {
 const validateForm = (fields?: (keyof T)[]): FlatRow => {
   const flatRow: FlatRow = {};
 
-  Object.entries(adminColumns).forEach(([key, fieldDescriptor]) => {
+  Object.entries(adminColumns).forEach(([key, col]) => {
     if (fields && !fields.includes(key)) {
       return;
     }
@@ -186,7 +186,7 @@ const validateForm = (fields?: (keyof T)[]): FlatRow => {
     let value = formValues.value[key] ?? null;
 
     if (value === null) {
-      if (!fieldDescriptor.nullable) {
+      if (!col.nullable) {
         throw new Error(
           t("admin.data.error.emptyField", {
             field: t(`${keyPrefix}.column.${key}.label`),
@@ -194,7 +194,7 @@ const validateForm = (fields?: (keyof T)[]): FlatRow => {
         );
       }
     } else {
-      switch (fieldDescriptor.type) {
+      switch (col.type) {
         case "string":
           value = String(value).trim() || null;
           break;
@@ -338,11 +338,11 @@ type Filter = {
 const showFilters = ref(false);
 const filters: Ref<Filter[]> = ref(
   Object.entries(adminColumns)
-    .filter(([_, metadata]) => !metadata.formComponent?.startsWith("input"))
-    .map(([key, metadata]) => ({
+    .filter(([_, col]) => !col.formComponent?.startsWith("input"))
+    .map(([key, col]) => ({
       name: key,
       options: computed(() =>
-        metadata.formComponent === "select"
+        col.formComponent === "select"
           ? // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
             (filterOptions[key as keyof typeof filterOptions] ??
             formOptions[key as keyof typeof formOptions] ??
@@ -428,21 +428,21 @@ const importColumns: Column<[string, FieldMetadata]>[] = [
     name: "type",
     label: t("admin.data.import.table.column.type"),
     align: "left",
-    field: ([_, fieldDescriptor]) => fieldDescriptor.type,
+    field: ([_, fieldMetadata]) => fieldMetadata.type,
     format: (val: PrimitiveType) => t(`primitiveTypeName.${val}`),
   },
   {
     name: "nonNullable",
     label: t("admin.data.import.table.column.nonNullable"),
     align: "center",
-    field: ([_, fieldDescriptor]) => !fieldDescriptor.nullable,
+    field: ([_, fieldMetadata]) => !fieldMetadata.nullable,
     format: (val: boolean) => (val ? "✓" : "✗"),
   },
   {
     name: "info",
     label: t("admin.data.import.table.column.info"),
     align: "left",
-    field: ([_, fieldDescriptor]) => fieldDescriptor.info,
+    field: ([_, fieldMetadata]) => fieldMetadata.info,
   },
 ];
 
@@ -532,9 +532,9 @@ const exportDataHandle = () => {
     downloadCSV(
       exportRows.map((row) =>
         Object.fromEntries(
-          Object.entries(adminColumns).map(([key, metadata]) => [
+          Object.entries(adminColumns).map(([key, col]) => [
             key,
-            getField(row, metadata.field ?? key),
+            getField(row, col.field ?? key),
           ]),
         ),
       ),
