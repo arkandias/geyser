@@ -332,32 +332,28 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   // trackId
-  if (
-    flatRow.degreeName !== undefined ||
-    flatRow.programName !== undefined ||
-    flatRow.trackName !== undefined
-  ) {
-    if (
-      flatRow.degreeName === undefined ||
-      flatRow.programName === undefined ||
-      flatRow.trackName === undefined
-    ) {
+  if (flatRow.trackName !== undefined) {
+    if (flatRow.degreeName === undefined || flatRow.programName === undefined) {
       throw new Error(
         t("admin.courses.courses.form.error.updateTrackMissingFields"),
       );
     }
-    const track = tracks.value.find(
-      (t) =>
-        t.program.degree.name === flatRow.degreeName &&
-        t.program.name === flatRow.programName &&
-        t.name === flatRow.trackName,
-    );
-    if (track === undefined) {
-      throw new Error(
-        t("admin.courses.courses.form.error.trackNotFound", flatRow),
+    if (flatRow.trackName !== null) {
+      const track = tracks.value.find(
+        (t) =>
+          t.program.degree.name === flatRow.degreeName &&
+          t.program.name === flatRow.programName &&
+          t.name === flatRow.trackName,
       );
+      if (track === undefined) {
+        throw new Error(
+          t("admin.courses.courses.form.error.trackNotFound", flatRow),
+        );
+      }
+      object.trackId = track.id;
+    } else {
+      object.trackId = null;
     }
-    object.trackId = track.id;
   }
 
   // termId
