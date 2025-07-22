@@ -111,7 +111,7 @@ export class AuthManager {
     if (!multiTenant) {
       this._organizationKey = "default";
       console.debug(`[AuthManager] Single-tenant mode`);
-      console.debug(`[AuthManager] Organization key 'default'`);
+      console.debug(`[AuthManager] Organization key: 'default'`);
       return;
     }
 
