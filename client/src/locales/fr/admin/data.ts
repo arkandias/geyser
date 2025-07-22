@@ -35,9 +35,10 @@ Pour être valide, le fichier CSV doit impérativement respecter les règles sui
   <li>Les noms des colonnes doivent être écrits exactement comme indiqué dans le tableau (en minuscules).</li>
   <li>Les valeurs doivent être séparées par des virgules.</li>
   <li>Les textes contenant des virgules doivent être entre guillemets doubles.</li>
-  <li>Si un texte contient lui-même des guillemets doubles, ceux-ci doivent être doublés (ex&nbsp;: "Il a dit&nbsp;: ""Bonjour""")</li>
+  <li>Si un texte contient lui-même des guillemets doubles, ceux-ci doivent être doublés (ex&nbsp;: "Il a dit&nbsp;: ""Bonjour""").</li>
   <li>Les nombres doivent utiliser le point comme séparateur décimal et ne pas contenir d'espaces (ex&nbsp;: 1234.56).</li>
-  <li>Les valeurs booléennes doivent être écrites "true" ou "false" (en minuscules)</li>
+  <li>Les valeurs booléennes doivent être écrites "true" ou "false" (en minuscules).</li>
+  <li>Si le fichier fait plus de 1 Mo, il doit être découpé en plusieurs fichiers plus petits, chacun importé séparément.</li>
 </ul>`,
       table: {
         column: {

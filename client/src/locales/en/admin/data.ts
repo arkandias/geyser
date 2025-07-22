@@ -35,9 +35,10 @@ To be valid, the CSV file must follow these rules:
   <li>Column names must be written exactly as shown in the table (in lowercase).</li>
   <li>Values must be separated by commas.</li>
   <li>Texts containing commas must be enclosed in double quotes.</li>
-  <li>If a text contains double quotes, they must be doubled (e.g.: "He said: ""Hello""")</li>
+  <li>If a text contains double quotes, they must be doubled (e.g.: "He said: ""Hello""").</li>
   <li>Numbers must use a period as the decimal separator and must not contain spaces (e.g.: 1234.56).</li>
-  <li>Boolean values must be written as "true" or "false" (in lowercase)</li>
+  <li>Boolean values must be written as "true" or "false" (in lowercase).</li>
+  <li>If the file is larger than 1MB, it must be split into multiple smaller files, each imported separately.</li>
 </ul>`,
       table: {
         column: {

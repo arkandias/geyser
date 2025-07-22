@@ -2,6 +2,7 @@ import { Logger } from "@nestjs/common";
 import { NestFactory } from "@nestjs/core";
 import compression from "compression";
 import cookieParser from "cookie-parser";
+import express from "express";
 
 import { AppModule } from "./app.module";
 import { LoggingInterceptor } from "./common/logging.interceptor";
@@ -16,6 +17,8 @@ async function bootstrap() {
     origin: configService.api.allowedOrigins,
     credentials: true,
   });
+
+  app.use(express.json({ limit: "1mb" }));
 
   app.use(cookieParser());
   if (configService.nodeEnv === "development") {
