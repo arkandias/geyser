@@ -132,7 +132,7 @@ S'il existe des parcours, des enseignements ou des responsabilités pour ces men
           updateProgramMissingFields:
             "Pour mettre à jour la mention, vous devez sélectionner un diplôme et une mention",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {programName} »",
         },
       },
       data: {
@@ -268,12 +268,13 @@ Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprime
           updateTrackMissingFields:
             "Pour mettre à jour le parcours, vous devez sélectionner un diplôme, une mention et un parcours",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {programName} »",
           trackNotFound:
-            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degreeName} » avec le nom « {track} »",
-          termNotFound: "Il n'existe pas de période avec le label « {term} »",
+            "Il n'existe pas de parcours dans la mention « {programName} » du diplôme « {degreeName} » avec le nom « {trackName} »",
+          termNotFound:
+            "Il n'existe pas de période avec le label « {termLabel} »",
           typeNotFound:
-            "Il n'existe pas de type d'enseignement avec le label « {type} »",
+            "Il n'existe pas de type d'enseignement avec le label « {typeLabel} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
           hoursAdjustedNegative:
             "Entrez un nombre d'heures corrigé positif ou nul",

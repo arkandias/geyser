@@ -39,7 +39,7 @@ export default {
           updateProgramMissingFields:
             "Pour mettre à jour la mention, vous devez sélectionner un diplôme et une mention",
           programNotFound:
-            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {program} »",
+            "Il n'existe pas de mention du diplôme « {degreeName} » avec le nom « {programName} »",
         },
       },
       data: {
@@ -94,7 +94,7 @@ export default {
           updateTrackMissingFields:
             "Pour mettre à jour le parcours, vous devez sélectionner un diplôme, une mention et un parcours",
           trackNotFound:
-            "Il n'existe pas de parcours dans la mention « {program} » du diplôme « {degreeName} » avec le nom « {track} »",
+            "Il n'existe pas de parcours dans la mention « {programName} » du diplôme « {degreeName} » avec le nom « {trackName} »",
         },
       },
       data: {
@@ -168,7 +168,7 @@ export default {
           updateCourseMissingFields:
             "Pour mettre à jour l'enseignement, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {typeLabel} » durant la période « {termLabel} » avec le nom « {courseName} » dans le parcours « {trackName} » de la mention « {programName} » du diplôme « {degreeName} » pour l'année {year}",
         },
       },
       data: {

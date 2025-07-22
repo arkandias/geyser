@@ -52,7 +52,7 @@ export default {
           "Création d'un intervenant | Édition d'un intervenant | Édition de {count} intervenants",
         error: {
           positionNotFound:
-            "Il n'existe pas de fonction avec le label « {position} »",
+            "Il n'existe pas de fonction avec le label « {positionLabel} »",
           baseServiceHoursNegative:
             "Entrez un nombre d'heures de service de base positif ou nul",
         },

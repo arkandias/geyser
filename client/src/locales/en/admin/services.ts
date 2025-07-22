@@ -33,7 +33,8 @@ export default {
           "Creating a service | Editing a service | Editing {count} services",
         error: {
           teacherNotFound: 'No teacher with email "{teacherEmail}"',
-          positionNotFound: 'No position exists with the label "{position}"',
+          positionNotFound:
+            'No position exists with the label "{positionLabel}"',
           hoursNegative: "Enter a positive or zero number of hours",
         },
       },

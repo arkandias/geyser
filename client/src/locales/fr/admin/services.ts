@@ -35,7 +35,7 @@ export default {
           teacherNotFound:
             "Il n'existe pas d'intervenant avec l'email « {teacherEmail} »",
           positionNotFound:
-            "Il n'existe pas de fonction avec le label « {position} »",
+            "Il n'existe pas de fonction avec le label « {positionLabel} »",
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
       },

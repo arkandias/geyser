@@ -62,7 +62,7 @@ export default {
           updateCourseMissingFields:
             "Pour mettre à jour l'enseignement, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {typeLabel} » durant la période « {termLabel} » avec le nom « {courseName} » dans le parcours « {trackName} » de la mention « {programName} » du diplôme « {degreeName} » pour l'année {year}",
           invalidType: `Le type de la requête doit être ${RequestTypeEnum.Assignment}, ${RequestTypeEnum.Primary} ou ${RequestTypeEnum.Secondary}`,
           hoursNegative: "Entrez un nombre d'heures positif ou nul",
         },
@@ -145,7 +145,7 @@ export default {
           updateCourseMissingFields:
             "Pour mettre à jour l'enseignement, vous devez sélectionner une année, un diplôme, une mention, un parcours (éventuellement vide), un enseignement, un semestre et un type d'enseignement",
           courseNotFound:
-            "Il n'existe pas d'enseignement de type « {type} » durant la période « {term} » avec le nom « {courseName} » dans le parcours « {track} » de la mention « {program} » du diplôme « {degreeName} » pour l'année {year}",
+            "Il n'existe pas d'enseignement de type « {typeLabel} » durant la période « {termLabel} » avec le nom « {courseName} » dans le parcours « {trackName} » de la mention « {programName} » du diplôme « {degreeName} » pour l'année {year}",
         },
       },
       data: {

@@ -51,7 +51,8 @@ export default {
         title:
           "Creating a teacher | Editing a teacher | Editing {count} teachers",
         error: {
-          positionNotFound: 'No position exists with the label "{position}"',
+          positionNotFound:
+            'No position exists with the label "{positionLabel}"',
           baseServiceHoursNegative:
             "Enter a positive or zero number of base service hours",
         },
