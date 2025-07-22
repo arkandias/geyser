@@ -88,6 +88,7 @@ const { data, fetching } = useQuery({
     additionalTypenames: [
       "All",
       "ExternalCourse",
+      "Message",
       "Position",
       "Service",
       "ServiceModification",

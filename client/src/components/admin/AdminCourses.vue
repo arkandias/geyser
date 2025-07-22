@@ -80,6 +80,7 @@ const { data, fetching } = useQuery({
       "CourseType",
       "Degree",
       "Program",
+      "Term",
       "Track",
     ],
   },
