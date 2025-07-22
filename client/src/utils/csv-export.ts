@@ -6,7 +6,7 @@ import { toSlug } from "@/utils";
 const exportCSV = (objects: FlatObject[]) =>
   Papa.unparse(objects, { newline: "\n" });
 
-export const downloadCSV = (filename: string, objects: FlatObject[]): void => {
+export const downloadCSV = (objects: FlatObject[], filename: string): void => {
   const csv = exportCSV(objects);
 
   const BOM = "\uFEFF"; // Byte Order Mark

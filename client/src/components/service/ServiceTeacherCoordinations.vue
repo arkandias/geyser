@@ -92,10 +92,7 @@ const coordinations = computed(() =>
 const formatProgram = (program: {
   name?: string | null;
   degree: { name?: string | null };
-}) =>
-  !program.degree.name || !program.name
-    ? ""
-    : program.degree.name + " " + program.name;
+}) => `${program.degree.name} ${program.name}`;
 
 type Coordination = ArrayElement<TeacherCoordinationsFragment["coordinations"]>;
 
@@ -135,19 +132,19 @@ const downloadProgramAssignments = async (coordination: Coordination) => {
     where = {
       course: { programId: { _eq: coordination.program.id } },
     };
-    filename = `${activeYear.value} ${formatProgram(coordination.program)}`;
+    filename = `${activeYear.value}_${formatProgram(coordination.program)}`;
   } else if (coordination.track) {
     where = {
       course: { trackId: { _eq: coordination.track.id } },
     };
-    filename = `${activeYear.value} ${formatProgram(coordination.track.program)} ${coordination.track.name}`;
+    filename = `${activeYear.value}_${formatProgram(coordination.track.program)}_${coordination.track.name}`;
   } else if (coordination.course) {
     where = {
       course: { id: { _eq: coordination.course.id } },
     };
     filename =
-      `${activeYear.value} ${formatProgram(coordination.course.program)} ` +
-      (coordination.course.track ? ` ${coordination.course.track.name})` : "") +
+      `${activeYear.value}_${formatProgram(coordination.course.program)}_` +
+      (coordination.course.track ? `${coordination.course.track.name}_` : "") +
       `${coordination.course.name}`;
   } else {
     console.error("Invalid coordination:", coordination);

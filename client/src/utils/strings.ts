@@ -21,3 +21,6 @@ export const toUpperCase = <T extends string>(str: T): Uppercase<T> =>
 
 export const capitalize = <T extends string>(str: T): Capitalize<T> =>
   (str.charAt(0).toUpperCase() + str.slice(1)) as Capitalize<T>;
+
+export const camelToSnake = (str: string) =>
+  str.replace(/([A-Z])/g, "_$1").toLowerCase();

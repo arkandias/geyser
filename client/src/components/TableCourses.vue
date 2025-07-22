@@ -549,7 +549,7 @@ const downloadTeacherAssignments = async () => {
       year: activeYear.value,
       where: { serviceId: { _eq: selectedService.value } },
     },
-    `${activeYear.value} ${teacher.value.displayname}`,
+    `${activeYear.value}_${teacher.value.displayname}`,
   );
 };
 </script>

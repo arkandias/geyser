@@ -28,6 +28,7 @@ import type {
   SelectOptions,
 } from "@/types/data.ts";
 import {
+  camelToSnake,
   downloadCSV,
   getField,
   importCSV,
@@ -525,7 +526,6 @@ const exportDataHandle = () => {
   try {
     const exportRows = selectedRows.value.length ? selectedRows.value : rows;
     downloadCSV(
-      `${name}_${Date.now()}`,
       exportRows.map((row) =>
         Object.fromEntries(
           Object.entries(adminColumns).map(([key, metadata]) => [
@@ -534,6 +534,7 @@ const exportDataHandle = () => {
           ]),
         ),
       ),
+      `${camelToSnake(section + "_" + name)}_${Date.now()}`,
     );
     notify(NotifyType.Success, {
       message: t(

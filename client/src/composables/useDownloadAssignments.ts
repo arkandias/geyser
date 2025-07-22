@@ -117,7 +117,7 @@ export const useDownloadAssignments = () => {
     }));
 
     try {
-      downloadCSV(filename, formattedAssignments);
+      downloadCSV(formattedAssignments, filename);
     } catch (error) {
       notify(NotifyType.Error, {
         message: t("downloadAssignments.error.downloadFailed"),

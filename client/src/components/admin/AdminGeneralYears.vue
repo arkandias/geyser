@@ -331,7 +331,7 @@ const downloadAssignmentsHandle = async () => {
       year: selectedYear.value,
       where: {},
     },
-    `${selectedYear.value} all`,
+    `${selectedYear.value}_all`,
   );
 };
 
