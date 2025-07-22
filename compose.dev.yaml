@@ -17,21 +17,4 @@ services:
 
   backend: !reset []
 
-  frontend:
-    build: !reset null
-    image: nginx:1.27
-    restart: unless-stopped
-    depends_on:
-      backend: !reset []
-    environment:
-      NGINX_DOMAIN: "${GEYSER_DOMAIN}"
-      NGINX_PROXY_API_URL: "http://host.docker.internal:3000"
-      NGINX_PROXY_DEV_SERVER_URL: "http://host.docker.internal:5173"
-    extra_hosts:
-      - "host.docker.internal:host-gateway"
-    ports: !override
-      - "80:80"
-    volumes: !override
-      - ./nginx/templates/dev.conf.template:/etc/nginx/templates/default.conf.template:ro
-      - ./nginx/includes:/etc/nginx/includes:ro
-      - ./client/dist:/usr/share/nginx/html
+  frontend: !reset []

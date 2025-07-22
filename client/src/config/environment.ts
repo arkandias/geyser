@@ -6,17 +6,16 @@ export const apiUrl = import.meta.env.VITE_API_URL ?? "";
 if (!apiUrl && import.meta.env.MODE !== "test") {
   throw new Error("Missing required environment variable VITE_API_URL");
 }
-
 export const graphqlUrl = import.meta.env.VITE_GRAPHQL_URL ?? "";
 if (!graphqlUrl && import.meta.env.MODE !== "test") {
   throw new Error("Missing required environment variable VITE_GRAPHQL_URL");
 }
 
 export const multiTenant = import.meta.env.VITE_MULTI_TENANT === "true";
+export const organizationKey = import.meta.env.VITE_ORGANIZATION_KEY ?? null;
 
 export const bypassAuth =
   import.meta.env.DEV && import.meta.env.VITE_BYPASS_AUTH === "true";
-
 export const adminSecret = import.meta.env.DEV
   ? (import.meta.env.VITE_ADMIN_SECRET ?? null)
   : null;

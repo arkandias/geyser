@@ -175,8 +175,8 @@ _validate_optional_env_vars() {
 
 _initialize_computed_env_vars() {
     if [[ "${GEYSER_ENV}" == "development" ]]; then
-        API_URL="http://api.${GEYSER_DOMAIN}"
-        API_ORIGINS="http://*.${GEYSER_DOMAIN}"
+        API_URL="http://localhost:3000"
+        API_ORIGINS="*"
         KC_HOSTNAME="http://localhost:8081"
         KC_HOSTNAME_ADMIN="http://localhost:8081"
     elif [[ "${GEYSER_TENANCY}" == "multi" ]]; then

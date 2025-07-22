@@ -22,6 +22,7 @@ ARG BUILD_VERSION
 ARG API_URL
 ARG GRAPHQL_URL
 ARG TENANCY_MODE
+ARG ORGANIZATION_KEY
 
 RUN test -n "${API_URL}" || (echo "ERROR: API_URL build argument is required" && exit 1) 
 RUN test -n "${GRAPHQL_URL}" || (echo "ERROR: GRAPHQL_URL build argument is required" && exit 1)
@@ -32,6 +33,7 @@ RUN VITE_BUILD_VERSION="${BUILD_VERSION}" \
     VITE_API_URL="${API_URL}" \
     VITE_GRAPHQL_URL="${GRAPHQL_URL}" \
     VITE_MULTI_TENANT=$([ "${TENANCY_MODE}" = "multi" ] && echo "true" || echo "false") \
+    VITE_ORGANIZATION_KEY="${ORGANIZATION_KEY}" \
     pnpm --filter=client run build
 
 FROM base AS backend

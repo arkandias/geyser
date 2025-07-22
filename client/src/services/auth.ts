@@ -16,6 +16,7 @@ import {
   apiUrl,
   bypassAuth,
   multiTenant,
+  organizationKey,
 } from "@/config/environment.ts";
 import { RoleEnum } from "@/gql/graphql.ts";
 import { isRole } from "@/utils";
@@ -107,28 +108,31 @@ export class AuthManager {
   }
 
   getOrganizationKey(): void {
-    // Set organization key from environment if provided
-    if (!multiTenant) {
-      this._organizationKey = "default";
-      console.debug(`[AuthManager] Single-tenant mode`);
-      console.debug(`[AuthManager] Organization key: 'default'`);
-      return;
-    }
-
-    console.debug(`[AuthManager] Multi-tenant mode`);
-
-    // If not provided, use current location hostname
-    const domainLabels = window.location.hostname.split(".");
-    if (domainLabels.length >= 3 && domainLabels[0]) {
-      this._organizationKey = domainLabels[0];
+    // Get organization key from environment if provided
+    if (organizationKey) {
+      this._organizationKey = organizationKey;
       console.debug(
-        `[AuthManager] Organization key '${this._organizationKey}'`,
+        `[AuthManager] Organization key (from environment): '${this._organizationKey}'`,
       );
       return;
     }
 
-    console.error(
-      "[AuthManager] Could not determine organization key from subdomain",
+    // Multi-tenant mode: Get organization key from current location if possible
+    if (multiTenant) {
+      const domainLabels = window.location.hostname.split(".");
+      if (domainLabels.length >= 3 && domainLabels[0]) {
+        this._organizationKey = domainLabels[0];
+        console.debug(
+          `[AuthManager] Organization key (from subdomain): '${this._organizationKey}'`,
+        );
+        return;
+      }
+    }
+
+    // Fallback to default organization key
+    this._organizationKey = "default";
+    console.debug(
+      `[AuthManager] Organization key (default value): '${this._organizationKey}'`,
     );
   }
 
