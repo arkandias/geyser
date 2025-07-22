@@ -7,6 +7,56 @@ import type { AdminTeachersTeachersColName } from "@/components/admin/AdminTeach
 export default {
   teachers: {
     title: "Teachers",
+    positions: {
+      label: "Positions",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        labelShort: {
+          label: "Label short",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+        baseServiceHours: {
+          label: "Base service (@:unit.weightedHours)",
+          tooltip: "Base service (@:unit.weightedHours)",
+        },
+      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Creating a position | Editing a position | Editing {count} positions",
+        error: {
+          baseServiceHoursNegative:
+            "Enter a positive or zero number of base service hours",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "No position created | Position created | {count} positions created",
+          update:
+            "No position updated | Position updated | {count} positions updated",
+          delete:
+            "No position deleted | Position deleted | {count} positions deleted",
+          import:
+            "0 positions imported | 1 position imported | {count} positions imported",
+          export:
+            "0 positions exported | 1 position exported | {count} positions exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected position?
+If this position is assigned to teachers, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected positions?
+If these positions are assigned to teachers, you will not be able to delete them.`,
+        },
+      },
+    },
     teachers: {
       label: "Teachers",
       column: {
@@ -76,56 +126,6 @@ export default {
 If there are services, responsibilities, or roles for this teacher, you will not be able to delete them. ` +
             `| Are you sure you want to delete the {count} selected teachers?
 If there are services, responsibilities, or roles for these teachers, you will not be able to delete them.`,
-        },
-      },
-    },
-    positions: {
-      label: "Positions",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        labelShort: {
-          label: "Label short",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-        baseServiceHours: {
-          label: "Base service (@:unit.weightedHours)",
-          tooltip: "Base service (@:unit.weightedHours)",
-        },
-      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Creating a position | Editing a position | Editing {count} positions",
-        error: {
-          baseServiceHoursNegative:
-            "Enter a positive or zero number of base service hours",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "No position created | Position created | {count} positions created",
-          update:
-            "No position updated | Position updated | {count} positions updated",
-          delete:
-            "No position deleted | Position deleted | {count} positions deleted",
-          import:
-            "0 positions imported | 1 position imported | {count} positions imported",
-          export:
-            "0 positions exported | 1 position exported | {count} positions exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected position?
-If this position is assigned to teachers, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected positions?
-If these positions are assigned to teachers, you will not be able to delete them.`,
         },
       },
     },

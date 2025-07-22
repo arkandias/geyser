@@ -195,6 +195,48 @@ Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprime
         },
       },
     },
+    courseTypes: {
+      label: "Types d'enseignement",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        coefficient: {
+          label: "Coefficient",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Création d'un type d'enseignement | Édition d'un type d'enseignement | Édition de {count} types d'enseignement",
+      },
+      data: {
+        success: {
+          insert:
+            "Aucun type d'enseignement créé | Type d'enseignement créé | {count} types d'enseignement créés",
+          update:
+            "Aucun type d'enseignement mis à jour | Type d'enseignement mis à jour | {count} types d'enseignement mis à jour",
+          delete:
+            "Aucun type d'enseignement supprimé | Type d'enseignement supprimé | {count} types d'enseignement supprimés",
+          import:
+            "0 type d'enseignement importé | 1 type d'enseignement importé | {count} types d'enseignement importés",
+          export:
+            "0 type d'enseignement exporté | 1 type d'enseignement exporté | {count} types d'enseignement exportés",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer le type d'enseignement sélectionné ?
+Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer. ` +
+            `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
+Si ces types sont attribués à des enseignements, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
     courses: {
       label: "Enseignements",
       column: {
@@ -304,48 +346,6 @@ Si ces périodes contiennent des enseignements, vous ne pourrez pas les supprime
 S'il existe des demandes ou des responsabilités pour cet enseignement, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} enseignements sélectionnés ?
 S'il existe des demandes ou des responsabilités pour ces enseignements, vous ne pourrez pas les supprimer.`,
-        },
-      },
-    },
-    courseTypes: {
-      label: "Types d'enseignement",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        coefficient: {
-          label: "Coefficient",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Création d'un type d'enseignement | Édition d'un type d'enseignement | Édition de {count} types d'enseignement",
-      },
-      data: {
-        success: {
-          insert:
-            "Aucun type d'enseignement créé | Type d'enseignement créé | {count} types d'enseignement créés",
-          update:
-            "Aucun type d'enseignement mis à jour | Type d'enseignement mis à jour | {count} types d'enseignement mis à jour",
-          delete:
-            "Aucun type d'enseignement supprimé | Type d'enseignement supprimé | {count} types d'enseignement supprimés",
-          import:
-            "0 type d'enseignement importé | 1 type d'enseignement importé | {count} types d'enseignement importés",
-          export:
-            "0 type d'enseignement exporté | 1 type d'enseignement exporté | {count} types d'enseignement exportés",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer le type d'enseignement sélectionné ?
-Si ce type est attribué à des enseignements, vous ne pourrez pas le supprimer. ` +
-            `Êtes-vous sûr de vouloir supprimer les {count} types d'enseignement sélectionnés ?
-Si ces types sont attribués à des enseignements, vous ne pourrez pas les supprimer.`,
         },
       },
     },

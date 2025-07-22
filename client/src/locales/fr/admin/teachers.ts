@@ -7,6 +7,56 @@ import type { AdminTeachersTeachersColName } from "@/components/admin/AdminTeach
 export default {
   teachers: {
     title: "Intervenants",
+    positions: {
+      label: "Fonctions",
+      column: {
+        label: {
+          label: "Libellé",
+          tooltip: "",
+        },
+        labelShort: {
+          label: "Libellé court",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+        baseServiceHours: {
+          label: "S. base (@:unit.weightedHours)",
+          tooltip: "Service de base (@:unit.weightedHours)",
+        },
+      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Création d'une fonction | Édition d'une fonction | Édition de {count} fonctions",
+        error: {
+          baseServiceHoursNegative:
+            "Entrez un nombre d'heures de service de base positif ou nul",
+        },
+      },
+      data: {
+        success: {
+          insert:
+            "Aucune fonction créée | Fonction créée | {count} fonctions créées",
+          update:
+            "Aucune fonction mise à jour | Fonction mise à jour | {count} fonctions mises à jour",
+          delete:
+            "Aucune fonction supprimée | Fonction supprimée | {count} fonctions supprimées",
+          import:
+            "0 fonction importée | 1 fonction importée | {count} fonctions importées",
+          export:
+            "0 fonction exportée | 1 fonction exportée | {count} fonctions exportées",
+        },
+        confirm: {
+          delete:
+            `Êtes-vous sûr de vouloir supprimer la fonction sélectionnée ?
+Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer. ` +
+            `| Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
+Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les supprimer.`,
+        },
+      },
+    },
     teachers: {
       label: "Intervenants",
       column: {
@@ -76,56 +126,6 @@ export default {
 S'il existe des services, des responsabilités ou des rôles pour cet intervenant, vous ne pourrez pas le supprimer. ` +
             `| Êtes-vous sûr de vouloir supprimer les {count} intervenants sélectionnés ?
 S'il existe des services, des responsabilités ou des rôles pour ces intervenants, vous ne pourrez pas les supprimer.`,
-        },
-      },
-    },
-    positions: {
-      label: "Fonctions",
-      column: {
-        label: {
-          label: "Libellé",
-          tooltip: "",
-        },
-        labelShort: {
-          label: "Libellé court",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-        baseServiceHours: {
-          label: "S. base (@:unit.weightedHours)",
-          tooltip: "Service de base (@:unit.weightedHours)",
-        },
-      } satisfies Record<AdminTeachersPositionsColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Création d'une fonction | Édition d'une fonction | Édition de {count} fonctions",
-        error: {
-          baseServiceHoursNegative:
-            "Entrez un nombre d'heures de service de base positif ou nul",
-        },
-      },
-      data: {
-        success: {
-          insert:
-            "Aucune fonction créée | Fonction créée | {count} fonctions créées",
-          update:
-            "Aucune fonction mise à jour | Fonction mise à jour | {count} fonctions mises à jour",
-          delete:
-            "Aucune fonction supprimée | Fonction supprimée | {count} fonctions supprimées",
-          import:
-            "0 fonction importée | 1 fonction importée | {count} fonctions importées",
-          export:
-            "0 fonction exportée | 1 fonction exportée | {count} fonctions exportées",
-        },
-        confirm: {
-          delete:
-            `Êtes-vous sûr de vouloir supprimer la fonction sélectionnée ?
-Si cette fonction est attribuée à des intervenants, vous ne pourrez pas la supprimer. ` +
-            `| Êtes-vous sûr de vouloir supprimer les {count} fonctions sélectionnées ?
-Si ces fonctions sont attribuées à des intervenants, vous ne pourrez pas les supprimer.`,
         },
       },
     },

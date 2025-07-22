@@ -184,6 +184,48 @@ If these terms contain courses, you will not be able to delete them.`,
         },
       },
     },
+    courseTypes: {
+      label: "Course types",
+      column: {
+        label: {
+          label: "Label",
+          tooltip: "",
+        },
+        coefficient: {
+          label: "Coefficient",
+          tooltip: "",
+        },
+        description: {
+          label: "Description",
+          tooltip: "",
+        },
+      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
+      form: {
+        title:
+          "Creating a course type | Editing a course type | Editing {count} course types",
+      },
+      data: {
+        success: {
+          insert:
+            "No course type created | Course type created | {count} course types created",
+          update:
+            "No course type updated | Course type updated | {count} course types updated",
+          delete:
+            "No course type deleted | Course type deleted | {count} course types deleted",
+          import:
+            "0 course types imported | 1 course type imported | {count} course types imported",
+          export:
+            "0 course types exported | 1 course type exported | {count} course types exported",
+        },
+        confirm: {
+          delete:
+            `Are you sure you want to delete the selected course type?
+If this type is assigned to courses, you will not be able to delete it. ` +
+            `| Are you sure you want to delete the {count} selected course types?
+If these types are assigned to courses, you will not be able to delete them.`,
+        },
+      },
+    },
     courses: {
       label: "Courses",
       column: {
@@ -289,48 +331,6 @@ If these terms contain courses, you will not be able to delete them.`,
 If there are requests or coordinations for this course, you will not be able to delete it. ` +
             `| Are you sure you want to delete the {count} selected courses?
 If there are requests or coordinations for these courses, you will not be able to delete them.`,
-        },
-      },
-    },
-    courseTypes: {
-      label: "Course types",
-      column: {
-        label: {
-          label: "Label",
-          tooltip: "",
-        },
-        coefficient: {
-          label: "Coefficient",
-          tooltip: "",
-        },
-        description: {
-          label: "Description",
-          tooltip: "",
-        },
-      } satisfies Record<AdminCoursesCourseTypesColName, AdminColNameOptions>,
-      form: {
-        title:
-          "Creating a course type | Editing a course type | Editing {count} course types",
-      },
-      data: {
-        success: {
-          insert:
-            "No course type created | Course type created | {count} course types created",
-          update:
-            "No course type updated | Course type updated | {count} course types updated",
-          delete:
-            "No course type deleted | Course type deleted | {count} course types deleted",
-          import:
-            "0 course types imported | 1 course type imported | {count} course types imported",
-          export:
-            "0 course types exported | 1 course type exported | {count} course types exported",
-        },
-        confirm: {
-          delete:
-            `Are you sure you want to delete the selected course type?
-If this type is assigned to courses, you will not be able to delete it. ` +
-            `| Are you sure you want to delete the {count} selected course types?
-If these types are assigned to courses, you will not be able to delete them.`,
         },
       },
     },

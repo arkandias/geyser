@@ -49,6 +49,10 @@ graphql(`
       ...AdminTerm
       ...AdminCoursesTerm
     }
+    types: courseType(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
+      ...AdminCourseType
+      ...AdminCoursesType
+    }
     courses: course(
       where: { oid: { _eq: $oid } }
       orderBy: [
@@ -62,10 +66,6 @@ graphql(`
       ]
     ) {
       ...AdminCourse
-    }
-    types: courseType(where: { oid: { _eq: $oid } }, orderBy: { label: ASC }) {
-      ...AdminCourseType
-      ...AdminCoursesType
     }
   }
 `);
@@ -88,8 +88,8 @@ const degrees = computed(() => data.value?.degrees ?? []);
 const programs = computed(() => data.value?.programs ?? []);
 const tracks = computed(() => data.value?.tracks ?? []);
 const terms = computed(() => data.value?.terms ?? []);
-const courses = computed(() => data.value?.courses ?? []);
 const types = computed(() => data.value?.types ?? []);
+const courses = computed(() => data.value?.courses ?? []);
 </script>
 
 <template>
@@ -137,6 +137,15 @@ const types = computed(() => data.value?.types ?? []);
     <QSeparator />
 
     <AdminSection
+      icon="sym_s_format_list_bulleted"
+      :label="t('admin.courses.courseTypes.label')"
+    >
+      <AdminCoursesCourseTypes :fetching :course-type-fragments="types" />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection
       icon="sym_s_menu_book"
       :label="t('admin.courses.courses.label')"
     >
@@ -149,15 +158,6 @@ const types = computed(() => data.value?.types ?? []);
         :course-fragments="courses"
         :type-fragments="types"
       />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
-      icon="sym_s_format_list_bulleted"
-      :label="t('admin.courses.courseTypes.label')"
-    >
-      <AdminCoursesCourseTypes :fetching :course-type-fragments="types" />
     </AdminSection>
   </QList>
 </template>

@@ -17,19 +17,19 @@ const { organization } = useOrganizationStore();
 
 graphql(`
   query GetAdminTeachers($oid: Int!) {
-    teachers: teacher(
-      where: { oid: { _eq: $oid } }
-      orderBy: [{ lastname: ASC }, { firstname: ASC }]
-    ) {
-      ...AdminTeacher
-      ...AdminRolesTeacher
-    }
     positions: position(
       where: { oid: { _eq: $oid } }
       orderBy: [{ label: ASC }]
     ) {
       ...AdminPosition
       ...AdminTeachersPosition
+    }
+    teachers: teacher(
+      where: { oid: { _eq: $oid } }
+      orderBy: [{ lastname: ASC }, { firstname: ASC }]
+    ) {
+      ...AdminTeacher
+      ...AdminRolesTeacher
     }
     teacherRoles: teacherRole(
       where: { oid: { _eq: $oid } }
@@ -51,13 +51,22 @@ const { data, fetching } = useQuery({
     additionalTypenames: ["All", "Position", "Teacher", "TeacherRole"],
   },
 });
-const teachers = computed(() => data.value?.teachers ?? []);
 const positions = computed(() => data.value?.positions ?? []);
+const teachers = computed(() => data.value?.teachers ?? []);
 const roles = computed(() => data.value?.teacherRoles ?? []);
 </script>
 
 <template>
   <QList bordered>
+    <AdminSection
+      icon="sym_s_work"
+      :label="t('admin.teachers.positions.label')"
+    >
+      <AdminTeachersPositions :fetching :position-fragments="positions" />
+    </AdminSection>
+
+    <QSeparator />
+
     <AdminSection
       icon="sym_s_groups"
       :label="t('admin.teachers.teachers.label')"
@@ -67,15 +76,6 @@ const roles = computed(() => data.value?.teacherRoles ?? []);
         :teacher-fragments="teachers"
         :position-fragments="positions"
       />
-    </AdminSection>
-
-    <QSeparator />
-
-    <AdminSection
-      icon="sym_s_work"
-      :label="t('admin.teachers.positions.label')"
-    >
-      <AdminTeachersPositions :fetching :position-fragments="positions" />
     </AdminSection>
 
     <QSeparator />

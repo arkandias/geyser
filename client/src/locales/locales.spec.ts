@@ -171,8 +171,8 @@ const findKeysInFiles = async (): Promise<string[]> => {
   /* eslint-disable @typescript-eslint/no-unsafe-assignment */
   const adminColNames: Record<string, Record<string, readonly string[]>> = {
     teachers: {
-      teachers: adminTeachersTeachersColNames,
       positions: adminTeachersPositionsColNames,
+      teachers: adminTeachersTeachersColNames,
       roles: adminTeachersRolesColNames,
     },
     services: {
@@ -186,8 +186,8 @@ const findKeysInFiles = async (): Promise<string[]> => {
       programs: adminCoursesProgramsColNames,
       tracks: adminCoursesTracksColNames,
       terms: adminCoursesTermsColNames,
-      courses: adminCoursesCoursesColNames,
       courseTypes: adminCoursesCourseTypesColNames,
+      courses: adminCoursesCoursesColNames,
     },
     requests: {
       requests: adminRequestsRequestsColNames,
