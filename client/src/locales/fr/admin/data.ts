@@ -22,6 +22,7 @@ export default {
       noReturnData: "Pas de réponse",
       noFile: "Sélectionnez un fichier",
       unreadableFile: "Fichier illisible: {reason}",
+      emptyFile: "Fichier vide",
       parsingError: "Erreur durant l'extraction des données: {reason}",
       invalidRow: "Ligne {index} invalide: {reason}",
     },

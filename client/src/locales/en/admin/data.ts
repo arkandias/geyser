@@ -22,6 +22,7 @@ export default {
       noReturnData: "No response",
       noFile: "Select a file",
       unreadableFile: "Unreadable file: {reason}",
+      emptyFile: "Empty file",
       parsingError: "Error while extracting data: {reason}",
       invalidRow: "Invalid row {index}: {reason}",
     },

@@ -469,6 +469,10 @@ const importRowsHandle = async () => {
       );
     }
 
+    if (!text) {
+      throw new Error(t("admin.data.error.emptyFile"));
+    }
+
     let flatRows: FlatRow[];
     try {
       flatRows = importCSV(text, adminColumns);
