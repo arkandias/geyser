@@ -1,15 +1,14 @@
 <script setup lang="ts">
 import { bgColor } from "@/utils";
 
+import BadgeOrganization from "@/components/header/BadgeOrganization.vue";
 import BtnDarkMode from "@/components/header/BtnDarkMode.vue";
 import BtnRefreshData from "@/components/header/BtnRefreshData.vue";
 import BtnTutorial from "@/components/header/BtnTutorial.vue";
 import MenuInfo from "@/components/header/MenuInfo.vue";
 import MenuLang from "@/components/header/MenuLang.vue";
 import MenuUser from "@/components/header/MenuUser.vue";
-import MenuYear from "@/components/header/MenuYear.vue";
-import NavBar from "@/components/header/NavBar.vue";
-import OrganizationBadge from "@/components/header/OrganizationBadge.vue";
+import ToolbarNav from "@/components/header/ToolbarNav.vue";
 import ToolbarTitle from "@/components/header/ToolbarTitle.vue";
 
 defineProps<{ disable?: boolean; warning?: string }>();
@@ -19,11 +18,10 @@ defineProps<{ disable?: boolean; warning?: string }>();
   <QHeader>
     <QToolbar id="main-toolbar" :class="bgColor">
       <ToolbarTitle />
-      <OrganizationBadge />
+      <BadgeOrganization />
       <QSpace />
-      <NavBar :disable />
+      <ToolbarNav :disable />
       <QSeparator vertical inset />
-      <MenuYear :disable />
       <BtnRefreshData />
       <BtnDarkMode />
       <MenuLang />

@@ -47,7 +47,6 @@ const perm = usePermissions();
 
   <ToolbarCourses
     v-if="!disable && router.currentRoute.value.name === 'courses'"
-    id="toolbar-courses"
   />
 
   <template v-if="perm.toAdmin">

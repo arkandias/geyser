@@ -43,10 +43,11 @@ const setActiveRole = (role: RoleEnum) => {
 };
 
 export const useProfileStore = () => {
-  const { activeYear } = useYearsStore();
+  const { currentYear } = useYearsStore();
 
   const currentServiceId = computed(
-    () => profile.services.find((s) => s.year === activeYear.value)?.id ?? null,
+    () =>
+      profile.services.find((s) => s.year === currentYear.value)?.id ?? null,
   );
 
   const hasService = computed(() => currentServiceId.value !== null);
