@@ -461,8 +461,7 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
           c.term.label === formValues.value["termLabel"] &&
           c.name === formValues.value["courseName"],
       )
-      .map((c) => c.type.label)
-      .filter(unique),
+      .map((c) => c.type.label),
   }),
 );
 
@@ -470,10 +469,19 @@ const filterValues = ref<Record<string, Scalar[]>>({});
 const filterOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
   () => ({
     degreeName: degrees.value.map((d) => d.name),
-    programName: programs.value.map((p) => p.name).filter(unique),
-    trackName: tracks.value.map((t) => t.name).filter(unique),
+    programName: programs.value
+      .map((p) => p.name)
+      .filter(unique)
+      .sort(),
+    trackName: tracks.value
+      .map((t) => t.name)
+      .filter(unique)
+      .sort(),
     termLabel: terms.value.map((t) => t.label),
-    courseName: courses.value.map((c) => c.name).filter(unique),
+    courseName: courses.value
+      .map((c) => c.name)
+      .filter(unique)
+      .sort(),
     courseTypeLabel: courseTypes.value.map((ct) => ct.label),
   }),
 );
