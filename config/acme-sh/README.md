@@ -22,8 +22,8 @@ acme.sh --issue -d "${GEYSER_DOMAIN}" -d "*.${GEYSER_DOMAIN}" --dns dns_ovh --se
 
 ```shell
 acme.sh --install-cert -d "${GEYSER_DOMAIN}" \
---fullchain-file "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
---key-file "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
+--fullchain-file "${GEYSER_HOME}/nginx/certs/fullchain.crt" \
+--key-file "${GEYSER_HOME}/nginx/certs/private.key" \
 --reloadcmd "${GEYSER_HOME}/scripts/geyser compose exec frontend nginx -s reload"
 ```
 
