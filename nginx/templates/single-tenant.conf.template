@@ -34,16 +34,6 @@ server {
         proxy_set_header X-Forwarded-Prefix /auth;
     }
 
-    location /auth-admin/ {
-        allow ${NGINX_AUTH_ADMIN_ALLOW};
-        deny all;
-
-        rewrite ^/auth-admin/(.*)$ /$1 break;
-        proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
-        include /etc/nginx/includes/proxy-common.conf;
-        proxy_set_header X-Forwarded-Prefix /auth-admin;
-    }
-
     location /api/ {
         rewrite ^/api/(.*)$ /$1 break;
         proxy_pass ${NGINX_PROXY_API_URL};
