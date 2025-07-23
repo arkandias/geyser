@@ -17,7 +17,7 @@ COPY ./shared/package.json ./shared/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
-COPY ./tsconfig.base.json ./tsconfig.json ./
+COPY ./tsconfig.base.json ./
 COPY ./client/ ./client/
 COPY ./server/ ./server/
 COPY ./shared/ ./shared/
