@@ -6,7 +6,6 @@ import BtnDarkMode from "@/components/header/BtnDarkMode.vue";
 import BtnRefreshData from "@/components/header/BtnRefreshData.vue";
 import BtnTutorial from "@/components/header/BtnTutorial.vue";
 import MenuInfo from "@/components/header/MenuInfo.vue";
-import MenuLang from "@/components/header/MenuLang.vue";
 import MenuUser from "@/components/header/MenuUser.vue";
 import ToolbarNav from "@/components/header/ToolbarNav.vue";
 import ToolbarTitle from "@/components/header/ToolbarTitle.vue";
@@ -24,7 +23,6 @@ defineProps<{ disable?: boolean; warning?: string }>();
       <QSeparator vertical inset />
       <BtnRefreshData />
       <BtnDarkMode />
-      <MenuLang />
       <BtnTutorial v-if="!disable" />
       <MenuInfo />
       <MenuUser />
