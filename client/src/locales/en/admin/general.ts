@@ -1,6 +1,6 @@
 export default {
   general: {
-    title: "General Settings",
+    title: "General",
     organization: {
       label: "Organization",
       parameter: {
@@ -21,15 +21,6 @@ export default {
       },
       success: {
         update: "Parameters updated",
-      },
-    },
-    phase: {
-      label: "Current phase",
-      error: {
-        setCurrent: "Failed to update current phase",
-      },
-      success: {
-        setCurrent: "Current phase updated",
       },
     },
     years: {
@@ -78,8 +69,17 @@ If courses or services are associated with this year, you will not be able to de
           "0 priorities computed | 1 priority computed | {count} priorities computed",
       },
     },
+    phase: {
+      label: "Current phase",
+      error: {
+        setCurrent: "Failed to update current phase",
+      },
+      success: {
+        setCurrent: "Current phase updated",
+      },
+    },
     customTexts: {
-      label: "Interface customization",
+      label: "Custom texts",
       button: {
         edit: "Edit",
         delete: "Delete",

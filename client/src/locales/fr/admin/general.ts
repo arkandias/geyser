@@ -1,6 +1,6 @@
 export default {
   general: {
-    title: "Paramètres généraux",
+    title: "Général",
     organization: {
       label: "Organisation",
       parameter: {
@@ -21,15 +21,6 @@ export default {
       },
       success: {
         update: "Paramètres mis à jour",
-      },
-    },
-    phase: {
-      label: "Phase en cours",
-      error: {
-        setCurrent: "Échec de la mise à jour de la phase en cours",
-      },
-      success: {
-        setCurrent: "Phase en cours mise à jour",
       },
     },
     years: {
@@ -79,8 +70,17 @@ pourrez pas la supprimer.`,
           "0 priorité calculée | 1 priorité calculée | {count} priorités calculées",
       },
     },
+    phase: {
+      label: "Phase en cours",
+      error: {
+        setCurrent: "Échec de la mise à jour de la phase en cours",
+      },
+      success: {
+        setCurrent: "Phase en cours mise à jour",
+      },
+    },
     customTexts: {
-      label: "Personnalisation de l'interface",
+      label: "Textes personnalisés",
       button: {
         edit: "Éditer",
         delete: "Supprimer",

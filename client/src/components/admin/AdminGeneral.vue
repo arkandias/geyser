@@ -21,17 +21,17 @@ const { t } = useTypedI18n();
 
     <QSeparator />
 
-    <AdminSection icon="sym_s_schedule" :label="t('admin.general.phase.label')">
-      <AdminGeneralCurrentPhase />
-    </AdminSection>
-
-    <QSeparator />
-
     <AdminSection
       icon="sym_s_calendar_month"
       :label="t('admin.general.years.label')"
     >
       <AdminGeneralYears />
+    </AdminSection>
+
+    <QSeparator />
+
+    <AdminSection icon="sym_s_schedule" :label="t('admin.general.phase.label')">
+      <AdminGeneralCurrentPhase />
     </AdminSection>
 
     <QSeparator />

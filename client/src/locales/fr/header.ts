@@ -18,7 +18,7 @@ export default {
       myRequests: "Mes demandes",
     },
     admin: {
-      label: "Paramètres",
+      label: "Administration",
     },
     refreshData: {
       label: "Rafraîchir les données",
