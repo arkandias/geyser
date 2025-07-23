@@ -146,6 +146,7 @@ export default {
         loading: "Chargement des enseignements…",
         noData: "Aucun enseignement trouvé",
         noResults: "Aucun enseignement ne correspond aux filtres",
+        notApplicable: "–",
       },
     },
     expansion: {

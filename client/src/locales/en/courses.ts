@@ -145,6 +145,7 @@ export default {
         loading: "Loading courses…",
         noData: "No courses found",
         noResults: "No courses match the filters",
+        notApplicable: "N/A",
       },
     },
     expansion: {

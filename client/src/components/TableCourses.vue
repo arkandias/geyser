@@ -315,7 +315,9 @@ const columns = computed<Column<CourseRow>[]>(() => [
     tooltip: t("courses.table.courses.column.diffAssignment.tooltip"),
     field: "diffAssignment",
     format: (val: number | null) =>
-      val === null ? "–" : n(val, "decimalFixed"),
+      val === null
+        ? t("courses.table.courses.notApplicable")
+        : n(val, "decimalFixed"),
     sortable: true,
     visible: false,
     searchable: false,
@@ -342,7 +344,9 @@ const columns = computed<Column<CourseRow>[]>(() => [
     tooltip: t("courses.table.courses.column.diffPrimary.tooltip"),
     field: "diffPrimary",
     format: (val: number | null) =>
-      val === null ? "–" : n(val, "decimalFixed"),
+      val === null
+        ? t("courses.table.courses.notApplicable")
+        : n(val, "decimalFixed"),
     sortable: true,
     visible: false,
     searchable: false,
@@ -356,7 +360,9 @@ const columns = computed<Column<CourseRow>[]>(() => [
     tooltip: t("courses.table.courses.column.diffPrimaryPriority.tooltip"),
     field: "diffPrimaryPriority",
     format: (val: number | null) =>
-      val === null ? "–" : n(val, "decimalFixed"),
+      val === null
+        ? t("courses.table.courses.notApplicable")
+        : n(val, "decimalFixed"),
     sortable: true,
     visible: false,
     searchable: false,
