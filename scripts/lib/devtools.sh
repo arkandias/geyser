@@ -63,7 +63,7 @@ _webhook() {
 
     webhook -port 9000 -secure \
         -template "${GEYSER_HOME}/config/hooks.json" \
-        -cert "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/fullchain.crt" \
-        -key "${GEYSER_HOME}/nginx/certs/${GEYSER_DOMAIN}/private.key" \
+        -cert "${GEYSER_HOME}/nginx/certs/fullchain.crt" \
+        -key "${GEYSER_HOME}/nginx/certs/private.key" \
         "$@"
 }

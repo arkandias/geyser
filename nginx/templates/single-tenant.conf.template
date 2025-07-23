@@ -24,8 +24,8 @@ server {
     listen 443 ssl;
     server_name ${NGINX_DOMAIN};
 
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/private.key;
 
     location /auth/ {
         rewrite ^/auth/(.*)$ /$1 break;

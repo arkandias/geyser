@@ -25,8 +25,8 @@ server {
     listen 443 ssl;
     server_name auth.${NGINX_DOMAIN};
 
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/private.key;
 
     location ~ ^/(realms|resources)/ {
         proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
@@ -39,8 +39,8 @@ server {
     listen 443 ssl;
     server_name auth-admin.${NGINX_DOMAIN};
 
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/private.key;
 
     allow ${NGINX_AUTH_ADMIN_ALLOW};
     deny all;
@@ -56,8 +56,8 @@ server {
     listen 443 ssl;
     server_name api.${NGINX_DOMAIN};
 
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/private.key;
 
     location / {
         proxy_pass ${NGINX_PROXY_API_URL};
@@ -72,8 +72,8 @@ server {
     listen 443 ssl;
     server_name *.${NGINX_DOMAIN};
 
-    ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
+    ssl_certificate /etc/nginx/certs/fullchain.crt;
+    ssl_certificate_key /etc/nginx/certs/private.key;
 
     location / {
         root /usr/share/nginx/html;
