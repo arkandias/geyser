@@ -1,8 +1,5 @@
-.idea/
-.git/
-dist/
-node_modules/
-
-**/.gitignore
+**/dist/
+**/node_modules/
 **/.DS_Store
-**/*.md
+
+/server/keys/

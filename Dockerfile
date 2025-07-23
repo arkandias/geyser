@@ -1,14 +1,27 @@
 FROM node:22-slim AS base
+
 ENV PNPM_HOME="/pnpm"
 ENV PATH="$PNPM_HOME:$PATH"
+
 RUN corepack enable
 RUN corepack prepare pnpm@10 --activate
 
 FROM base AS build-shared
-COPY . /app
+
 WORKDIR /app
 
+COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
+COPY ./client/package.json ./client/
+COPY ./server/package.json ./server/  
+COPY ./shared/package.json ./shared/
+
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
+
+COPY ./tsconfig.base.json ./tsconfig.json ./
+COPY ./client/ ./client/
+COPY ./server/ ./server/
+COPY ./shared/ ./shared/
+
 RUN pnpm --filter=shared run build
 
 FROM build-shared AS build-backend
@@ -37,8 +50,10 @@ RUN VITE_BUILD_VERSION="${BUILD_VERSION}" \
     pnpm --filter=client run build
 
 FROM base AS backend
-COPY --from=build-backend /prod/server /app
+
 WORKDIR /app
+
+COPY --from=build-backend /prod/server ./
 
 # Add curl for health check
 RUN apt-get update && \
@@ -48,15 +63,22 @@ RUN apt-get update && \
 
 ENV API_NODE_ENV=production
 ENV API_PORT=3000
+
 EXPOSE 3000
+
 CMD ["pnpm", "start:prod"]
 
 FROM nginx:1.27 AS frontend
+
 COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
 
 ARG TENANCY_MODE
+
 RUN test -n "${TENANCY_MODE}" || (echo "ERROR: TENANCY_MODE build argument is required" && exit 1)
 RUN bash -c '[[ "${TENANCY_MODE}" =~ ^(multi|single)$ ]] || (echo "ERROR: TENANCY_MODE must be \"multi\" or \"single\", got: \"${TENANCY_MODE}\"" && exit 1)'
 
 COPY nginx/templates/${TENANCY_MODE}-tenant.conf.template /etc/nginx/templates/default.conf.template
 COPY ./nginx/includes/ /etc/nginx/includes/
+
+EXPOSE 80
+EXPOSE 443
