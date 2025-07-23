@@ -188,7 +188,7 @@ _initialize_computed_env_vars() {
         API_URL="https://${GEYSER_DOMAIN}/api"
         API_ORIGINS="https://${GEYSER_DOMAIN}"
         KC_HOSTNAME="https://${GEYSER_DOMAIN}/auth"
-        KC_HOSTNAME_ADMIN="https://${GEYSER_DOMAIN}/auth-admin"
+        KC_HOSTNAME_ADMIN="https://${GEYSER_DOMAIN}/auth"
     fi
 
     # shellcheck disable=SC2034
