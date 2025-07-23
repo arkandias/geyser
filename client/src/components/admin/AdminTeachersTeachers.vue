@@ -89,12 +89,15 @@ const adminColumns = {
   },
   visible: {
     type: "boolean",
+    formComponent: "toggle",
   },
   active: {
     type: "boolean",
+    formComponent: "toggle",
   },
   access: {
     type: "boolean",
+    formComponent: "toggle",
   },
 } as const satisfies AdminColumns<AdminTeachersTeachersColName, Row>;
 

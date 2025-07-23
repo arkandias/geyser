@@ -347,11 +347,12 @@ const filters: Ref<Filter[]> = ref(
             (filterOptions[key as keyof typeof filterOptions] ??
             formOptions[key as keyof typeof formOptions] ??
             [])
-          : [
-              // formComponent === 'toggle'
-              { value: true, label: t("yes") },
-              { value: false, label: t("no") },
-            ],
+          : col.formComponent === "toggle"
+            ? [
+                { value: true, label: t("yes") },
+                { value: false, label: t("no") },
+              ]
+            : [],
       ),
     })),
 );

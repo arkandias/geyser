@@ -138,9 +138,11 @@ const adminColumns = {
   isPriority: {
     type: "boolean",
     nullable: true,
+    formComponent: "toggle",
   },
   computed: {
     type: "boolean",
+    formComponent: "toggle",
   },
 } as const satisfies AdminColumns<AdminRequestsPrioritiesColName, Row>;
 

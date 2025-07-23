@@ -156,6 +156,7 @@ const adminColumns = {
   },
   visible: {
     type: "boolean",
+    formComponent: "toggle",
   },
   externalReference: {
     type: "string",

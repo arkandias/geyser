@@ -77,6 +77,7 @@ const adminColumns = {
   },
   visible: {
     type: "boolean",
+    formComponent: "toggle",
   },
 } as const satisfies AdminColumns<AdminCoursesTracksColName, Row>;
 
