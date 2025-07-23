@@ -48,12 +48,8 @@ export type NullableParsedRow<T extends RowMetadata> = {
 
 export type AdminColumn<R> = Partial<Column<R>> &
   FieldMetadata & {
-    formComponent?:
-      | "inputText"
-      | "inputTextarea"
-      | "inputNumber"
-      | "select"
-      | "toggle";
+    formComponent: "select" | "toggle" | "input";
+    inputType?: "text" | "textarea" | "number";
   };
 
 export type AdminColumns<

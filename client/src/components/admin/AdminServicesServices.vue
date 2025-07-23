@@ -77,7 +77,8 @@ const adminColumns = {
     type: "number",
     nullable: true,
     format: (val: number) => n(val, "decimalFixed"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies AdminColumns<AdminServicesServicesColName, Row>;
 

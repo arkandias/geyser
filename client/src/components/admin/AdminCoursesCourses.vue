@@ -109,12 +109,14 @@ const adminColumns = {
   },
   name: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   typeLabel: {
     type: "string",
@@ -124,35 +126,41 @@ const adminColumns = {
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   hoursAdjusted: {
     type: "number",
     nullable: true,
     format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   groups: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   groupsAdjusted: {
     type: "number",
     nullable: true,
     format: (val: number | null) => (val === null ? "" : n(val, "decimal")),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   description: {
     type: "string",
     nullable: true,
     format: (val: string | null) => (val ? "✓" : "✗"),
-    formComponent: "inputTextarea",
+    formComponent: "input",
+    inputType: "textarea",
   },
   priorityRule: {
     type: "number",
     nullable: true,
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   visible: {
     type: "boolean",
@@ -161,7 +169,8 @@ const adminColumns = {
   externalReference: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
 } as const satisfies AdminColumns<AdminCoursesCoursesColName, Row>;
 

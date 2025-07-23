@@ -69,7 +69,8 @@ const adminColumns = {
   },
   content: {
     type: "string",
-    formComponent: "inputTextarea",
+    formComponent: "input",
+    inputType: "textarea",
   },
 } as const satisfies AdminColumns<AdminServicesMessagesColName, Row>;
 

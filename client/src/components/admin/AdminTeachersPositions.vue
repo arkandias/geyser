@@ -47,22 +47,26 @@ const { organization } = useOrganizationStore();
 const adminColumns = {
   label: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   labelShort: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   description: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   baseServiceHours: {
     type: "number",
     nullable: true,
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies AdminColumns<AdminTeachersPositionsColName, Row>;
 

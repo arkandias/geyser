@@ -46,17 +46,20 @@ const { organization } = useOrganizationStore();
 const adminColumns = {
   label: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   coefficient: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   description: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
 } as const satisfies AdminColumns<AdminCoursesCourseTypesColName, Row>;
 

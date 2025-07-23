@@ -139,7 +139,8 @@ const adminColumns = {
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies AdminColumns<AdminRequestsRequestsColName, Row>;
 

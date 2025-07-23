@@ -133,7 +133,8 @@ const adminColumns = {
   seniority: {
     type: "number",
     format: (val: number) => n(val, "decimal"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   isPriority: {
     type: "boolean",

@@ -143,7 +143,8 @@ const adminColumns = {
   comment: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
 } as const satisfies AdminColumns<AdminCoordinationsCoursesColNames, Row>;
 

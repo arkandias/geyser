@@ -59,20 +59,24 @@ const { organization } = useOrganizationStore();
 const adminColumns = {
   email: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   firstname: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   lastname: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   alias: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   positionLabel: {
     type: "string",
@@ -85,7 +89,8 @@ const adminColumns = {
     nullable: true,
     format: (val: number | null) =>
       val === null ? "" : n(val, "decimalFixed"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
   visible: {
     type: "boolean",

@@ -78,12 +78,14 @@ const adminColumns = {
   label: {
     type: "string",
     field: (row) => row.label,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   hours: {
     type: "number",
     format: (val: number) => n(val, "decimalFixed"),
-    formComponent: "inputNumber",
+    formComponent: "input",
+    inputType: "number",
   },
 } as const satisfies AdminColumns<
   AdminServicesServiceModificationsColName,

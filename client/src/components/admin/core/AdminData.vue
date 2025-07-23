@@ -32,7 +32,6 @@ import {
   downloadCSV,
   getField,
   importCSV,
-  inputType,
   localeCompare,
   normalizeForSearch,
 } from "@/utils";
@@ -338,7 +337,7 @@ type Filter = {
 const showFilters = ref(false);
 const filters: Ref<Filter[]> = ref(
   Object.entries(adminColumns)
-    .filter(([_, col]) => !col.formComponent?.startsWith("input"))
+    .filter(([_, col]) => col.formComponent !== "input")
     .map(([key, col]) => ({
       name: key,
       options: computed(() =>
@@ -689,12 +688,12 @@ const exportDataHandle = () => {
         >
           <div v-for="key in Object.keys(adminColumns)" :key>
             <AdminInput
-              v-if="adminColumns[key]?.formComponent?.startsWith('input')"
+              v-if="adminColumns[key]?.formComponent === 'input'"
               v-model="formValues[key] as string | number | null | undefined"
               v-model:selected-fields="selectedFields"
               :key-prefix
               :name="key"
-              :type="inputType(adminColumns[key].formComponent)"
+              :type="adminColumns[key].inputType"
               :multiple-selection
             />
             <AdminSelect

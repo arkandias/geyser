@@ -59,12 +59,14 @@ const adminColumns = {
   },
   name: {
     type: "string",
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   nameShort: {
     type: "string",
     nullable: true,
-    formComponent: "inputText",
+    formComponent: "input",
+    inputType: "text",
   },
   visible: {
     type: "boolean",
