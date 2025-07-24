@@ -12,7 +12,7 @@ WORKDIR /app
 
 COPY ./package.json ./pnpm-lock.yaml ./pnpm-workspace.yaml ./
 COPY ./client/package.json ./client/
-COPY ./server/package.json ./server/  
+COPY ./server/package.json ./server/
 COPY ./shared/package.json ./shared/
 
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
