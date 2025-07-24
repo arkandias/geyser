@@ -208,53 +208,56 @@ Services are organized into three Docker networks:
 - `private-db`: Isolates the main database and Hasura from external access
 - `private-kc-db`: Isolates the Keycloak database for security
 
-## Custom packages
+## Custom Packages
 
 ### Web Client
 
-The Web Client is a single page application written with [Vue 3](https://vuejs.org/) and [Quasar](https://quasar.dev/),
-and bundled with [Vite](https://vite.dev/). It is located in the `client/` directory.
+The Web Client is a single-page application built with [Vue 3](https://vuejs.org/) and [Quasar Framework](https://quasar.dev/),
+bundled using [Vite](https://vite.dev/).
+The source code is located in the `client/` directory.
 
-It is configurable with the following environment variables (these must be set in `client/.env` in development mode,
-or during build in production).
+Configuration is managed through environment variables that must be defined in `client/.env` during development or set
+during the build process in production:
 
-| Environment variable    | Default value | Explanation                                                                                                                                      |
-| ----------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `VITE_API_URL`          | **Required**  | The URL of the API endpoint                                                                                                                      |
-| `VITE_GRAPHQL_URL`      | **Required**  | The URL of the API GraphQL endpoint (typically `${VITE_API_URL}/graphql`)                                                                        |
-| `VITE_MULTI_TENANT`     | `false`       | Flag for multi-tenant mode (`true`/`false`), see [here](#multi-tenant-mode)                                                                      |
-| `VITE_ORGANIZATION_KEY` | `<null>`      | The organization key (if `<null>`, the organization key is `default` in single-tenant mode, and determined using subdomain in multi-tenant mode) |
-| `VITE_BYPASS_AUTH`      | `false`       | Flag to bypass Keycloak authentication (development only)                                                                                        |
-| `VITE_ADMIN_SECRET`     | `<null>`      | The API admin secret (development only, required if `VITE_BYPASS_AUTH=true`)                                                                     |
+| Environment Variable    | Default Value | Description                                                                                                                  |
+| ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
+| `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
+| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode (`true`/`false`), see [Multi-Tenant Mode](#multi-tenant-mode)                                      |
+| `VITE_ORGANIZATION_KEY` | `<null>`      | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
+| `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
+| `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
 
 ### API Server
 
-The API Server is a [NestJS](https://nestjs.com/) server. It is located in the `server/` directory.
+The API Server is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
+The source code is located in the `server/` directory.
 
-It is configurable with the following environment variables (these must be set in `client/.env` in development mode,
-or during build in production).
+Configuration is managed through environment variables that must be defined in `server/.env` during development or set
+in the deployment environment for production:
 
-| Environment variable               | Default value    | Explanation                                                                                 |
-| ---------------------------------- | ---------------- | ------------------------------------------------------------------------------------------- |
-| `API_PORT`                         | `3000`           | The port at which the server will be listening                                              |
-| `API_URL`                          | **Required**     | The URL of the API endpoint                                                                 |
-| `API_ORIGINS`                      | **Required**     | A list of comma-separated regex of allowed origins for CORS policies                        |
-| `API_ADMIN_SECRET`                 | **Required**     | The admin secret to bypass JWT authentication                                               |
-| `API_DATABASE_URL`                 | **Required**     | A PostgreSQL database connection URL                                                        |
-| `API_GRAPHQL_URL`                  | **Required**     | The URL of the GraphQL engine                                                               |
-| `API_GRAPHQL_ADMIN_SECRET`         | **Required**     | The admin secret for the GraphQL engine                                                     |
-| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)    | The timeout delay (in ms) for GraphQL requests                                              |
-| `API_OIDC_DISCOVERY_URL`           | **Required**     | The URL at which the OpenID server used for authenticating the users publishes its metadata |
-| `API_OIDC_CLIENT_ID`               | **Required**     | The name of the OpenID client used for authentication                                       |
-| `API_OIDC_CLIENT_SECRET`           | **Required**     | The secret of the OpenID client                                                             |
-| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)    | The delay (in ms) before login state expiration                                             |
-| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | The maximum age (in ms) of the access tokens issued by the server                           |
-| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | The maximum age (in ms) of the refresh tokens issued by the server                          |
+| Environment Variable               | Default Value    | Description                                                                       |
+| ---------------------------------- | ---------------- | --------------------------------------------------------------------------------- |
+| `API_PORT`                         | `3000`           | Port number for the HTTP server                                                   |
+| `API_URL`                          | **Required**     | Public URL where the API is accessible                                            |
+| `API_ORIGINS`                      | **Required**     | Comma-separated list of allowed origins for CORS policy (supports regex patterns) |
+| `API_ADMIN_SECRET`                 | **Required**     | Admin secret for bypassing JWT authentication                                     |
+| `API_DATABASE_URL`                 | **Required**     | PostgreSQL database connection string                                             |
+| `API_GRAPHQL_URL`                  | **Required**     | GraphQL Engine endpoint URL                                                       |
+| `API_GRAPHQL_ADMIN_SECRET`         | **Required**     | Admin secret for GraphQL Engine access                                            |
+| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)    | Request timeout for GraphQL operations (milliseconds)                             |
+| `API_OIDC_DISCOVERY_URL`           | **Required**     | OpenID Connect discovery endpoint URL for the identity provider                   |
+| `API_OIDC_CLIENT_ID`               | **Required**     | OAuth2/OIDC client identifier for authentication                                  |
+| `API_OIDC_CLIENT_SECRET`           | **Required**     | OAuth2/OIDC client secret                                                         |
+| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)    | Login state expiration time (milliseconds)                                        |
+| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | Maximum lifetime for JWT access tokens (milliseconds)                             |
+| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | Maximum lifetime for JWT refresh tokens (milliseconds)                            |
 
-### Shared package
+### Shared Package
 
-The Shared Package contains various pieces of code that are used by both the client and the server. It is located in the
-`shared/` directory.
+The Shared Package contains common code, types, and utilities shared between the client and server applications.
+This package promotes code reuse and ensures consistency across the frontend and backend components.
+The source code is located in the `shared/` directory.
 
 ## Configuration
 
@@ -274,7 +277,7 @@ N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API 
 
 #### List of Environment Variables
 
-| Environment variable          | Default value | Explanation                                                                                                           |
+| Environment variable          | Default value | Description                                                                                                           |
 | ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
 | `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [here](#development-environment)                             |
 | `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                      |
