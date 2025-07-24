@@ -6,6 +6,8 @@ Geyser is a web application that streamlines the course assignment process in ed
 complete workflow from initial teacher requests through commission decisions to final assignments. Built with
 PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient "Course Assignment Flow".
 
+## Table of contents
+
 ## Quick Start
 
 This guide will get you a working instance instance of Geyser in minutes.
@@ -88,9 +90,9 @@ curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/s
 
 ### Creating a first user in Keycloak
 
-The account you created during initialization is a temporary account for the so-called master realm. This realm is
-intended to administrate the other realms only. Thus, Geyser uses a different realm to authenticate users, namely the
-geyser realm. We will now create a first user in this realm, with privileges to administrate the app. In a web browser,
+The Keycloak account you created during initialization is a temporary account for the realm `master`. This realm is
+intended to administrate the other realms only. Thus, Geyser uses a different realm to authenticate users: the realm
+`geyser`. We will now create a first user in this realm, with privileges to administrate the app. In a web browser,
 go to: `https://<server-hostname>/auth`
 
 1. Connect to Keycloak admin console using the temporary admin account.
@@ -101,22 +103,22 @@ go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/02_manage_realms.png)
 
-3. Now, "Geyser" must be displayed on the left of the "Current realm" badge. Click on the "Users" button in the left
+3. Now, "Geyser" must be displayed next to the "Current realm" badge. Click on the "Users" button in the left
    menu, and then on the "Create new user" button.
 
    ![Keycloak master realm login page](docs/images/keycloak/03_users.png)
 
-4. Fill in the user information. You must provide an email (the first name and last name are optional). "Email verified"
-   must be "On" (at the top of the form). Then, click on the "Join Groups" button (at the bottom of the form).
+4. Fill in the "Create user" form. You must provide an email and "Email verified" must be "On" (at the top of the form).
+   The other fields are optional. Then, click on the "Join Groups" button (at the bottom of the form).
 
    ![Keycloak master realm login page](docs/images/keycloak/04_create_user.png)
 
-5. In the dialog "Select the groups to join", check the box of the "AppAdmin" group and click on the "Join" button. This
-   will give your user the admin privileges in Geyser.
+5. In the "Select the groups to join" dialog box, check the box of the "AppAdmin" group and click on the "Join" button.
+   This will give the user admin privileges in Geyser.
 
    ![Keycloak master realm login page](docs/images/keycloak/05_join_groups.png)
 
-6. Now that the user is created, you will be redirected to the user details tab. Click on the tab "Credentials", and
+6. Now that the user is created, you will be redirected to the user "Details" tab. Click on the "Credentials" tab, and
    then on the "Set password" button.
 
    ![Keycloak master realm login page](docs/images/keycloak/06_user_credentials.png)
@@ -125,31 +127,32 @@ go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/07_set_password.png)
 
-8. Go to: `https://<server-hostname>` and log into Geyser with the user email and password.
+8. Go to: `https://<server-hostname>` and log into Geyser with your newly created user email and password.
 
    ![Keycloak master realm login page](docs/images/keycloak/08_login_geyser.png)
 
-9. You can now refer to [the app documentation]() to configure Geyser.
+9. You can now refer to the [app documentation]() to configure Geyser.
 
 #### Advanced Keycloak configuration
 
-For an advanced configuration of Keycloak, you can refer to [Keycloak's documentation](https://www.keycloak.org/documentation).
+For an advanced configuration of Keycloak, you can refer to [Keycloak documentation](https://www.keycloak.org/documentation).
 
-We simply point some useful login options which might be useful.
+We simply point some useful login options.
 
 1. If you want to allow users to create an account in Keycloak and to recover their password, you can enable this option
-   on the "Login" tab of the "Realm settings" page (see the button in the left menu).
+   on the "Login" tab of the "Realm settings" page.
 
    ![Keycloak master realm login page](docs/images/keycloak/09_login_options.png)
 
-   For these options to work, you need to configure an email address first in the "Email" tab.
+   For these options to work, Keycloak must be configured to send emails. You can do this in the "Email" tab. Note that
+   the current admin user must have an email address to configure Keycloak's email. You can add one on the "Users" page.
 
    ![Keycloak master realm login page](docs/images/keycloak/10_email_a.png)
 
    ![Keycloak master realm login page](docs/images/keycloak/11_email_b.png)
 
 2. You may use an external identity provider, for example if your institution or your company provides one. This can be
-   configured on the "Identity providers" page (see the button in the left menu).
+   configured on the "Identity providers" page.
 
    ![Keycloak master realm login page](docs/images/keycloak/12_identity_providers.png)
 
@@ -186,7 +189,7 @@ reached from outside the Docker environment.
 
 User authentication is handled by a dedicated Keycloak instance with its own PostgreSQL database:
 
-- **Keycloak (keycloak)**: OpenID Connect provider for user authentication, accessible via the frontend at `/auth`
+- **Keycloak (keycloak)**: OpenID Connect provider for user authentication, accessible via the frontend proxy at `/auth`
 - **Keycloak Database (kc-db)**: Dedicated PostgreSQL instance storing user credentials and identity data
 
 The authentication flow works as follows:
@@ -219,22 +222,24 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 #### Available Variables
 
-| Environment variable          | Default value | Explanation                                                                               |
-| ----------------------------- | ------------- | ----------------------------------------------------------------------------------------- |
-| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`)                                       |
-| `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) where Geyser is served (e.g., `geyser.example.com`) |
-| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`)                                                           |
-| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                |
-| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`)                       |
-| `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                            |
-| `DB_PASSWORD`                 | **Required**  | Password for the main database privileged role                                            |
-| `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret (bypass token authentication)                                         |
-| `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                            |
-| `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                    |
+| Environment variable          | Default value | Explanation                                                                                                           |
+| ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [here](#deployment-environment)                              |
+| `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                      |
+| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [here](#tenancy-mode)                                                            |
+| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                                            |
+| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`), see [here](#running-geyser-as-a-systemd-service) |
+| `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                                                        |
+| `DB_PASSWORD`                 | **Required**  | Password for the main database privileged role                                                                        |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret (bypass token authentication)                                                                     |
+| `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
+| `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
 
-## Main database schema
+### Deployment environment
 
-<img src="db_er_diagram.svg" alt="ER Diagram Thumbnail" width="1200"/>
+### Tenancy mode
+
+### Running Geyser as a systemd service
 
 ## Administration
 
@@ -322,6 +327,8 @@ Example crontab entries:
 # Daily at 3:00 AM other months
 0 3 * 1-5,8-12 * /path/to/scripts/backup.sh
 ```
+
+### CI/CD
 
 ## Contributing
 
