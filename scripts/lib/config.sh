@@ -120,8 +120,8 @@ _validate_geyser_env_vars() {
 
     # Domain at which Geyser will be accessible
     if [[ -z "${GEYSER_DOMAIN}" ]]; then
-        warn "GEYSER_DOMAIN is not set. Defaulting to 'geyser.localhost'"
-        GEYSER_DOMAIN="geyser.localhost"
+        warn "GEYSER_DOMAIN is not set. Defaulting to 'localhost'"
+        GEYSER_DOMAIN="localhost"
     fi
     declare -grx GEYSER_DOMAIN
 
