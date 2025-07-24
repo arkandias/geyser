@@ -2,15 +2,41 @@
 
 <img src="logo.svg" alt="Geyser logo" width="500">
 
-Geyser is a web application that streamlines the course assignment process in educational institutions. It manages the
-complete workflow from initial teacher requests through commission decisions to final assignments. Built with
-PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient "Course Assignment Flow".
+Geyser is a web application that streamlines the course assignment process in educational institutions.
+It manages the complete workflow from initial teacher requests through commission decisions to final assignments.
+Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient "Course Assignment Flow".
 
 ## Table of contents
 
+- [Quick Start](#quick-start)
+  - [System Requirements and Dependencies](#system-requirements-and-dependencies)
+  - [Installation](#installation)
+  - [Initialization](#initialization)
+  - [Creating a first user in Keycloak](#creating-a-first-user-in-keycloak)
+- [Architecture Overview](#architecture-overview)
+  - [Frontend](#frontend)
+  - [Backend](#backend)
+  - [Authentication](#authentication)
+  - [Network Architecture](#network-architecture)
+- [Custom Packages](#custom-packages)
+  - [Package `client`](#package-client)
+  - [Package `server`](#package-server)
+  - [Package `shared`](#package-shared)
+- [Configuration](#configuration)
+  - [Environment Variables](#environment-variables)
+  - [Development Environment](#development-environment)
+  - [Multi-tenant mode](#multi-tenant-mode)
+  - [Running Geyser as a systemd service](#running-geyser-as-a-systemd-service)
+- [Administration](#administration)
+  - [Administration Script](#administration-script)
+  - [Automatic Backups](#automatic-backups)
+  - [CI/CD](#cicd)
+- [Contributing](#contributing)
+- [License](#license)
+
 ## Quick Start
 
-This guide will get you a working instance instance of Geyser in minutes.
+This guide will get you a working instance of Geyser in minutes.
 
 ### System Requirements and Dependencies
 
@@ -237,7 +263,7 @@ during the build process in production:
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
 | `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
 | `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
-| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode (`true`/`false`), see [Multi-Tenant Mode](#multi-tenant-mode)                                      |
+| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode (`true`/`false`), see [Multi-tenant Mode](#multi-tenant-mode)                                      |
 | `VITE_ORGANIZATION_KEY` | `<null>`      | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
 | `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
@@ -245,7 +271,6 @@ during the build process in production:
 ### Package `server`
 
 The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
-The source code is located in the `server/` directory.
 
 Configuration is managed through environment variables that must be defined in `server/.env` during development or set
 in the deployment environment for production:
@@ -347,7 +372,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-Vite will use the environment file `client/.env` to set the environment variables described in [this section](#package-client).
+Vite will use the environment file `client/.env` to set the environment variables described in [Package client](#package-client).
 
 #### API Server Development
 
@@ -371,7 +396,7 @@ pnpm run start:dev
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
-N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#package-server).
+N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [Package server](#package-server).
 
 ### Multi-tenant mode
 
@@ -442,8 +467,8 @@ geyser install-completion
 
 ### Automatic Backups
 
-The script `scripts/backup.sh` is provided to automatically create a backup of Geyser and upload it to a WebDAV server
-(e.g., Nextcloud). It can be scheduled via crontab for regular backups.
+The script `scripts/backup.sh` is provided to automatically create a backup of Geyser and upload it to a WebDAV server (e.g., Nextcloud).
+It can be scheduled via crontab for regular backups.
 
 Configuration:
 
