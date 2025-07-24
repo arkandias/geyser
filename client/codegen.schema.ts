@@ -1,7 +1,7 @@
 import dotenvx from "@dotenvx/dotenvx";
 import type { CodegenConfig } from "@graphql-codegen/cli";
 
-dotenvx.config({ path: ".env.development" });
+dotenvx.config({ path: ".env" });
 
 const apiAdminSecret = process.env["VITE_ADMIN_SECRET"];
 if (!apiAdminSecret) {
