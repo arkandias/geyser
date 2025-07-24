@@ -4,7 +4,8 @@
 
 Geyser is a web application that streamlines the course assignment process in educational institutions.
 It manages the complete workflow from initial teacher requests through commission decisions to final assignments.
-Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient "Course Assignment Flow".
+Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient
+"Course Assignment Flow".
 
 ## Table of contents
 
@@ -164,7 +165,8 @@ In a web browser, go to: `https://<server-hostname>/auth`
 
 #### Advanced Keycloak configuration
 
-For an advanced configuration of Keycloak, you can refer to [Keycloak documentation](https://www.keycloak.org/documentation).
+For an advanced configuration of Keycloak, you can refer to
+[Keycloak documentation](https://www.keycloak.org/documentation).
 
 We simply point some useful login options.
 
@@ -197,8 +199,8 @@ Geyser consists of multiple services, each running in a Docker container organiz
 
 ### Frontend
 
-The frontend consists of an Nginx Server (`frontend`) that serves as the main entry point and reverse proxy for external
-access:
+The frontend consists of an Nginx Server (`frontend`) that serves as the main entry point and reverse proxy for all
+external access:
 
 - `https://<server-hostname>` serves the web client application
 - `https://<server-hostname>/api` proxies requests to the backend NestJS server
@@ -215,8 +217,8 @@ The backend tier consists of three interconnected services:
 - PostgreSQL Database (`db`): Stores all application data
 
 The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API.
-Both the database and Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS server
--- they cannot be reached through the frontend proxy.
+Both the database and Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS
+server (they cannot be reached through the frontend proxy).
 
 ### Authentication
 
@@ -253,8 +255,8 @@ These packages are built into two Docker images using a multi-stage build proces
 
 ### Package `client`
 
-The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and [Quasar Framework](https://quasar.dev/),
-bundled using [Vite](https://vite.dev/).
+The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
+[Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
 
 Configuration is managed through environment variables that must be defined in `client/.env` during development or set
 during the build process in production:
@@ -324,8 +326,8 @@ N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API 
 | `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
 | `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
 
-These environment variables are used by the administration script (see [Administration Script](#administration-script) below) to
-compute many other variables.
+These environment variables are used by the administration script (see [Administration Script](#administration-script)
+below) to compute many other variables.
 Finally, all these environment variables are passed to the various services using the Compose file (`compose.yaml`).
 
 ### Development Environment
@@ -345,7 +347,8 @@ The containerized services remain accessible on the following ports:
 
 #### Web Client Development
 
-Since the frontend container is disabled in development mode, you must serve the web client using Vite's development tools.
+Since the frontend container is disabled in development mode, you must serve the web client using Vite's development
+tools.
 
 Navigate to the client directory:
 
@@ -372,7 +375,8 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-Vite will use the environment file `client/.env` to set the environment variables described in [Package client](#package-client).
+Vite will use the environment file `client/.env` to set the environment variables described in
+[Package client](#package-client).
 
 #### API Server Development
 
@@ -396,7 +400,8 @@ pnpm run start:dev
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
-N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [Package server](#package-server).
+N.B. NestJS will use the environment file `server/.env` to set the environment variables described in
+[Package server](#package-server).
 
 ### Multi-tenant mode
 
@@ -467,7 +472,8 @@ geyser install-completion
 
 ### Automatic Backups
 
-The script `scripts/backup.sh` is provided to automatically create a backup of Geyser and upload it to a WebDAV server (e.g., Nextcloud).
+The script `scripts/backup.sh` is provided to automatically create a backup of Geyser and upload it to a WebDAV server
+(e.g., Nextcloud).
 It can be scheduled via crontab for regular backups.
 
 Configuration:
