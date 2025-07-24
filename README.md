@@ -191,7 +191,7 @@ We simply point some useful login options.
 
 **_Note: Users with a Keycloak account will not automatically have access to Geyser.
 Keycloak is only used to authenticate users with their email address.
-Access is configured from within the app._**
+Access is configured within the app._**
 
 ## Architecture Overview
 
@@ -218,7 +218,7 @@ The backend tier consists of three interconnected services:
 
 The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API.
 Both the database and Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS
-server (they cannot be reached through the frontend proxy).
+server; they cannot be reached through the frontend proxy.
 
 ### Authentication
 
