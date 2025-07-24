@@ -163,9 +163,10 @@ authenticate users with their email address. Access is configured from within th
 
 Geyser consists of multiple services, each running in a Docker container organized into three logical tiers:
 
-### Frontend (`frontend`)
+### Frontend
 
-The frontend is an Nginx server that serves as the main entry point and reverse proxy for all external access:
+The frontend consists of an Nginx Server (`frontend`) that serves as the main entry point and reverse proxy for external
+access:
 
 - `https://<server-hostname>` serves the web client application
 - `https://<server-hostname>/api` proxies requests to the backend NestJS server
@@ -173,24 +174,24 @@ The frontend is an Nginx server that serves as the main entry point and reverse 
 
 The frontend also handles TLS termination and serves static assets for the web application.
 
-### Backend (`backend`, `hasura`, `db`)
+### Backend
 
 The backend tier consists of three interconnected services:
 
-- **NestJS Server (`backend`)**: The main API server accessible via the frontend proxy at `/api`
-- **Hasura GraphQL Engine (`hasura`)**: Provides GraphQL interface to the database
-- **PostgreSQL Database (`db`)**: Stores all application data
+- NestJS Server (`backend`): The main API server accessible via the frontend proxy at `/api`
+- Hasura GraphQL Engine (`hasura`): Provides GraphQL interface to the database
+- PostgreSQL Database (`db`): Stores all application data
 
 The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API. Both the database and
 Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS server -- they cannot be
 reached through the frontend proxy.
 
-### Authentication (`keycloak`, `kc-db`)
+### Authentication
 
 User authentication is handled by a dedicated Keycloak instance with its own PostgreSQL database:
 
-- **Keycloak (`keycloak`)**: OpenID Connect provider for user authentication, accessible via the frontend proxy at `/auth`
-- **Keycloak Database (`kc-db`)**: Dedicated PostgreSQL instance storing user credentials and identity data
+- Keycloak (`keycloak`): OpenID Connect provider for user authentication, accessible via the frontend proxy at `/auth`
+- Keycloak Database (`kc-db`): Dedicated PostgreSQL instance storing user credentials and identity data
 
 The authentication flow works as follows:
 
@@ -207,11 +208,59 @@ Services are organized into three Docker networks:
 - `private-db`: Isolates the main database and Hasura from external access
 - `private-kc-db`: Isolates the Keycloak database for security
 
+## Custom packages
+
+### Web Client
+
+The Web Client is a single page application written with [Vue 3](https://vuejs.org/) and [Quasar](https://quasar.dev/),
+and bundled with [Vite](https://vite.dev/). It is located in the `client/` directory.
+
+It is configurable with the following environment variables (these must be set in `client/.env` in development mode,
+or during build in production).
+
+| Environment variable    | Default value | Explanation                                                                                                                                      |
+| ----------------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `VITE_API_URL`          | **Required**  | The URL of the API endpoint                                                                                                                      |
+| `VITE_GRAPHQL_URL`      | **Required**  | The URL of the API GraphQL endpoint (typically `${VITE_API_URL}/graphql`)                                                                        |
+| `VITE_MULTI_TENANT`     | `false`       | Flag for multi-tenant mode (`true`/`false`), see [here](#multi-tenant-mode)                                                                      |
+| `VITE_ORGANIZATION_KEY` | `<null>`      | The organization key (if `<null>`, the organization key is `default` in single-tenant mode, and determined using subdomain in multi-tenant mode) |
+| `VITE_BYPASS_AUTH`      | `false`       | Flag to bypass Keycloak authentication (development only)                                                                                        |
+| `VITE_ADMIN_SECRET`     | `<null>`      | The API admin secret (development only, required if `VITE_BYPASS_AUTH=true`)                                                                     |
+
+### API Server
+
+The API Server is a [NestJS](https://nestjs.com/) server. It is located in the `server/` directory.
+
+It is configurable with the following environment variables (these must be set in `client/.env` in development mode,
+or during build in production).
+
+| Environment variable               | Default value    | Explanation                                                                                 |
+| ---------------------------------- | ---------------- | ------------------------------------------------------------------------------------------- |
+| `API_PORT`                         | `3000`           | The port at which the server will be listening                                              |
+| `API_URL`                          | **Required**     | The URL of the API endpoint                                                                 |
+| `API_ORIGINS`                      | **Required**     | A list of comma-separated regex of allowed origins for CORS policies                        |
+| `API_ADMIN_SECRET`                 | **Required**     | The admin secret to bypass JWT authentication                                               |
+| `API_DATABASE_URL`                 | **Required**     | A PostgreSQL database connection URL                                                        |
+| `API_GRAPHQL_URL`                  | **Required**     | The URL of the GraphQL engine                                                               |
+| `API_GRAPHQL_ADMIN_SECRET`         | **Required**     | The admin secret for the GraphQL engine                                                     |
+| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)    | The timeout delay (in ms) for GraphQL requests                                              |
+| `API_OIDC_DISCOVERY_URL`           | **Required**     | The URL at which the OpenID server used for authenticating the users publishes its metadata |
+| `API_OIDC_CLIENT_ID`               | **Required**     | The name of the OpenID client used for authentication                                       |
+| `API_OIDC_CLIENT_SECRET`           | **Required**     | The secret of the OpenID client                                                             |
+| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)    | The delay (in ms) before login state expiration                                             |
+| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | The maximum age (in ms) of the access tokens issued by the server                           |
+| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | The maximum age (in ms) of the refresh tokens issued by the server                          |
+
+### Shared package
+
+The Shared Package contains various pieces of code that are used by both the client and the server. It is located in the
+`shared/` directory.
+
 ## Configuration
 
 ### Environment Variables
 
-#### Configuration Files
+#### Environment Files
 
 Geyser uses two environment files:
 
@@ -220,7 +269,10 @@ Geyser uses two environment files:
 
 Variables in `.env.local` take precedence over those in `.env`.
 
-#### Available Variables
+N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
+`.env` files (see [the section](#development-environment) below).
+
+#### List of Environment Variables
 
 | Environment variable          | Default value | Explanation                                                                                                           |
 | ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -235,17 +287,24 @@ Variables in `.env.local` take precedence over those in `.env`.
 | `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
 | `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
 
+These environment variables are used by the administration script (see [this section](#administration-script) below) to
+compute many other variables.
+Finally, all these environment variables are passed to the various services using the Compose file (`compose.yaml`).
+
 ### Development Environment
 
 To run Geyser in development mode, set `GEYSER_ENV=development`.
+This will change the values of the environment variables computed by the administration script and the Compose file will
+be merged with a second one (`compose.dev.yaml`).
+
 In this configuration, the Nginx reverse proxy (frontend) and NestJS API server (backend) run outside of Docker
 containers to facilitate development workflows.
 The containerized services remain accessible on the following ports:
 
-- **Hasura GraphQL Engine**: `http://localhost:8080`
-- **PostgreSQL Database**: `http://localhost:5432`
-- **Keycloak Authentication**: `http://localhost:8081`
-- **Keycloak Database**: `http://localhost:5433`
+- Hasura GraphQL Engine: `http://localhost:8080`
+- PostgreSQL Database: `http://localhost:5432`
+- Keycloak Authentication: `http://localhost:8081`
+- Keycloak Database: `http://localhost:5433`
 
 #### Web Client Development
 
@@ -259,14 +318,14 @@ cd ~/.geyser/<version>/client
 
 Choose one of the following development servers:
 
-1. **Vite Development Server** with Hot Module Replacement at `http://localhost:5173`:
+1. Vite Development Server with Hot Module Replacement at `http://localhost:5173`:
 
    ```shell
    # Launch development server with HMR
    pnpm run dev
    ```
 
-2. **Vite Preview Server** for production builds at `http://localhost:4173`:
+2. Vite Preview Server for production builds at `http://localhost:4173`:
 
    ```shell
    # Build the application for production
@@ -276,7 +335,9 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-#### API Development
+Vite will use the environment file `client/.env` to set the environment variables described in [this section](#web-client).
+
+#### API Server Development
 
 Since the backend container is disabled in development mode, you must run the NestJS application server locally.
 
@@ -297,6 +358,8 @@ pnpm run start:dev
 ```
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
+
+N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#api-server).
 
 ### Multi-tenant mode
 
@@ -350,14 +413,14 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 - `--silent`: Set log level to silent
 - `--debug`: Set log level to debug
 - `--env ENV`: Set deployment environment [development|production]
-- `--dev`: Set environment to development
-- `--prod`: Set environment to production
+- `--dev`: Set deployment environment to development
+- `--prod`: Set deployment environment to production
 - `--domain DOMAIN`: Set domain name for deployment (e.g., geyser.example.com)
 - `--as-service`: Run as a systemd service (affects logging)
 
 Run `geyser COMMAND --help` for more information on a command.
 
-### Shell Completion
+#### Shell Completion
 
 For zsh users, shell completion can be installed with:
 
