@@ -218,7 +218,7 @@ The backend tier consists of three interconnected services:
 
 The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API.
 Both the database and Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS
-server; they cannot be reached through the frontend proxy.
+server &ndash; they cannot be reached through the frontend proxy.
 
 ### Authentication
 
