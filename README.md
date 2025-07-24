@@ -90,10 +90,11 @@ curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/s
 
 ### Creating a first user in Keycloak
 
-The Keycloak account you created during initialization is a temporary account for the realm `master`. This realm is
-intended to administrate the other realms only. Thus, Geyser uses a different realm to authenticate users: the realm
-`geyser`. We will now create a first user in this realm, with privileges to administrate the app. In a web browser,
-go to: `https://<server-hostname>/auth`
+The Keycloak account you created during initialization is a temporary account for the realm `master`.
+This realm is intended to administrate the other realms only.
+Thus, Geyser uses a different realm to authenticate users: the realm `geyser`.
+We will now create a first user in this realm, with privileges to administrate the app.
+In a web browser, go to: `https://<server-hostname>/auth`
 
 1. Connect to Keycloak admin console using the temporary admin account.
 
@@ -103,13 +104,15 @@ go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/02_manage_realms.png)
 
-3. Now, "Geyser" must be displayed next to the "Current realm" badge. Click on the "Users" button in the left
-   menu, and then on the "Create new user" button.
+3. Now, "Geyser" must be displayed next to the "Current realm" badge.
+   Click on the "Users" button in the left menu, and then on the "Create new user" button.
 
    ![Keycloak master realm login page](docs/images/keycloak/03_users.png)
 
-4. Fill in the "Create user" form. You must provide an email and "Email verified" must be "On" (at the top of the form).
-   The other fields are optional. Then, click on the "Join Groups" button (at the bottom of the form).
+4. Fill in the "Create user" form.
+   You must provide an email and "Email verified" must be "On" (at the top of the form).
+   The other fields are optional.
+   Then, click on the "Join Groups" button (at the bottom of the form).
 
    ![Keycloak master realm login page](docs/images/keycloak/04_create_user.png)
 
@@ -118,8 +121,8 @@ go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/05_join_groups.png)
 
-6. Now that the user is created, you will be redirected to the user "Details" tab. Click on the "Credentials" tab, and
-   then on the "Set password" button.
+6. Now that the user is created, you will be redirected to the user "Details" tab.
+   Click on the "Credentials" tab, and then on the "Set password" button.
 
    ![Keycloak master realm login page](docs/images/keycloak/06_user_credentials.png)
 
@@ -144,20 +147,23 @@ We simply point some useful login options.
 
    ![Keycloak master realm login page](docs/images/keycloak/09_login_options.png)
 
-   For these options to work, Keycloak must be configured to send emails. You can do this in the "Email" tab. Note that
-   the current admin user must have an email address to configure Keycloak's email. You can add one on the "Users" page.
+   For these options to work, Keycloak must be configured to send emails.
+   You can do this in the "Email" tab.
+   Note that the current admin user must have an email address to configure Keycloak's email.
+   You can add one on the "Users" page.
 
    ![Keycloak master realm login page](docs/images/keycloak/10_email_a.png)
 
    ![Keycloak master realm login page](docs/images/keycloak/11_email_b.png)
 
-2. You may use an external identity provider, for example if your institution or your company provides one. This can be
-   configured on the "Identity providers" page.
+2. You may use an external identity provider, for example if your institution or your company provides one.
+   This can be configured on the "Identity providers" page.
 
    ![Keycloak master realm login page](docs/images/keycloak/12_identity_providers.png)
 
-**_N.B. Users with a Keycloak account will not automatically have access to Geyser. Keycloak is only used to
-authenticate users with their email address. Access is configured from within the app._**
+**_N.B. Users with a Keycloak account will not automatically have access to Geyser.
+Keycloak is only used to authenticate users with their email address.
+Access is configured from within the app._**
 
 ## Architecture Overview
 
@@ -182,9 +188,9 @@ The backend tier consists of three interconnected services:
 - Hasura GraphQL Engine (`hasura`): Provides GraphQL interface to the database
 - PostgreSQL Database (`db`): Stores all application data
 
-The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API. Both the database and
-Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS server -- they cannot be
-reached through the frontend proxy.
+The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API.
+Both the database and Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS server
+-- they cannot be reached through the frontend proxy.
 
 ### Authentication
 
@@ -211,18 +217,18 @@ Services are organized into three Docker networks:
 ## Custom Packages
 
 While Geyser leverages standard Docker images for most services (PostgreSQL, Hasura, Keycloak, Nginx),
-the application's core functionality is implemented through three custom-developed packages.
+the application's core functionality is implemented through three custom-developed packages:
+`client`, `server`, and `shared`.
 
 These packages are built into two Docker images using a multi-stage build process:
 
-- the `backend` image containing the NestJS API server
 - the `frontend` image with the web client served by Nginx
+- the `backend` image containing the NestJS API server
 
-### The `client` Package
+### Package `client`
 
 The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and [Quasar Framework](https://quasar.dev/),
 bundled using [Vite](https://vite.dev/).
-The source code is located in the `client/` directory.
 
 Configuration is managed through environment variables that must be defined in `client/.env` during development or set
 during the build process in production:
@@ -236,7 +242,7 @@ during the build process in production:
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
 | `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
 
-### The `server` Package
+### Package `server`
 
 The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
 The source code is located in the `server/` directory.
@@ -261,11 +267,10 @@ in the deployment environment for production:
 | `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | Maximum lifetime for JWT access tokens (milliseconds)                             |
 | `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | Maximum lifetime for JWT refresh tokens (milliseconds)                            |
 
-### The `shared` Package
+### Package `shared`
 
 The `shared` package contains common code, types, and utilities shared between the client and server applications.
 This package promotes code reuse and ensures consistency across the frontend and backend components.
-The source code is located in the `shared/` directory.
 
 ## Configuration
 
@@ -342,7 +347,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-Vite will use the environment file `client/.env` to set the environment variables described in [this section](#the-client-package).
+Vite will use the environment file `client/.env` to set the environment variables described in [this section](#package-client).
 
 #### API Server Development
 
@@ -366,7 +371,7 @@ pnpm run start:dev
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
-N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#the-server-package).
+N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#package-server).
 
 ### Multi-tenant mode
 
