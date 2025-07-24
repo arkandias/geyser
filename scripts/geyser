@@ -59,8 +59,8 @@ Options:
   --silent              Set log level to silent
   --debug               Set log level to debug
   --env ENV             Set deployment environment [development|production]
-  --dev                 Set environment to development
-  --prod                Set environment to production
+  --dev                 Set deployment environment to development
+  --prod                Set deployment environment to production
   --domain DOMAIN       Set domain name for deployment (e.g., geyser.example.com)
   --as-service          Run as a systemd service (affects logging)
 
