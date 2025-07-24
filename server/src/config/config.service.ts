@@ -69,7 +69,7 @@ export class ConfigService {
       adminSecret: this.configService.getOrThrow<string>(
         "API_GRAPHQL_ADMIN_SECRET",
       ),
-      timeout: this.configService.getOrThrow<number>("API_GRAPHQL_TIMEOUT"),
+      timeout: this.configService.getOrThrow<number>("API_GRAPHQL_TIMEOUT_MS"),
     };
 
     this.oidc = {

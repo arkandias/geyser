@@ -12,7 +12,7 @@ export const envSchema = z.looseObject({
 
   API_GRAPHQL_URL: z.url(),
   API_GRAPHQL_ADMIN_SECRET: z.string(),
-  API_GRAPHQL_TIMEOUT: z.number().default(30 * 1000), // 30s
+  API_GRAPHQL_TIMEOUT_MS: z.number().default(30 * 1000), // 30s
 
   API_OIDC_DISCOVERY_URL: z.string(),
   API_OIDC_CLIENT_ID: z.string(),
