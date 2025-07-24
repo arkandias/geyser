@@ -210,9 +210,19 @@ Services are organized into three Docker networks:
 
 ## Custom Packages
 
-### Web Client
+## Custom Packages
 
-The Web Client is a single-page application built with [Vue 3](https://vuejs.org/) and [Quasar Framework](https://quasar.dev/),
+While Geyser leverages standard Docker images for most services (PostgreSQL, Hasura, Keycloak, Nginx),
+the application's core functionality is implemented through three custom-developed packages.
+
+These packages are built into two Docker images using a multi-stage build process:
+
+- the `backend` image containing the NestJS API server
+- the `frontend` image with the web client served by Nginx
+
+### The `client` Package
+
+The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and [Quasar Framework](https://quasar.dev/),
 bundled using [Vite](https://vite.dev/).
 The source code is located in the `client/` directory.
 
@@ -228,9 +238,9 @@ during the build process in production:
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
 | `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
 
-### API Server
+### The `server` Package
 
-The API Server is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
+The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
 The source code is located in the `server/` directory.
 
 Configuration is managed through environment variables that must be defined in `server/.env` during development or set
@@ -253,9 +263,9 @@ in the deployment environment for production:
 | `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | Maximum lifetime for JWT access tokens (milliseconds)                             |
 | `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | Maximum lifetime for JWT refresh tokens (milliseconds)                            |
 
-### Shared Package
+### The `shared` Package
 
-The Shared Package contains common code, types, and utilities shared between the client and server applications.
+The `shared` package contains common code, types, and utilities shared between the client and server applications.
 This package promotes code reuse and ensures consistency across the frontend and backend components.
 The source code is located in the `shared/` directory.
 
@@ -273,7 +283,7 @@ Geyser uses two environment files:
 Variables in `.env.local` take precedence over those in `.env`.
 
 N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
-`.env` files (see [the section](#development-environment) below).
+`.env` files (see [Development Environment](#development-environment) below).
 
 #### List of Environment Variables
 
@@ -290,7 +300,7 @@ N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API 
 | `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
 | `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
 
-These environment variables are used by the administration script (see [this section](#administration-script) below) to
+These environment variables are used by the administration script (see [Administration Script](#administration-script) below) to
 compute many other variables.
 Finally, all these environment variables are passed to the various services using the Compose file (`compose.yaml`).
 
@@ -338,7 +348,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-Vite will use the environment file `client/.env` to set the environment variables described in [this section](#web-client).
+Vite will use the environment file `client/.env` to set the environment variables described in [this section](#the-client-package).
 
 #### API Server Development
 
@@ -362,7 +372,7 @@ pnpm run start:dev
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
-N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#api-server).
+N.B. NestJS will use the environment file `server/.env` to set the environment variables described in [this section](#the-server-package).
 
 ### Multi-tenant mode
 
