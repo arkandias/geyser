@@ -237,63 +237,66 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 ### Development Environment
 
-You can run Geyser in development by setting `GEYSER_ENV=development`.
-In this environment, the Nginx server (frontend) and the NestJS server (backend) won't run in Docker (see below).
-The other services will be accessible at:
+To run Geyser in development mode, set `GEYSER_ENV=development`.
+In this configuration, the Nginx reverse proxy (frontend) and NestJS API server (backend) run outside of Docker
+containers to facilitate development workflows.
+The containerized services remain accessible on the following ports:
 
-- `hasura`: `http://localhost:8080`
-- `db`: `http://localhost:5432`
-- `keycloak`: `http://localhost:8081`
-- `kc-db`: `http://localhost:5433`
+- **Hasura GraphQL Engine**: `http://localhost:8080`
+- **PostgreSQL Database**: `http://localhost:5432`
+- **Keycloak Authentication**: `http://localhost:8081`
+- **Keycloak Database**: `http://localhost:5433`
 
-#### Web client in development
+#### Web Client Development
 
-Since `frontend` is not running in development, you must use Vite to serve the web client.
+Since the frontend container is disabled in development mode, you must serve the web client using Vite's development tools.
 
-First, change into the client's directory:
+Navigate to the client directory:
 
 ```shell
 cd ~/.geyser/<version>/client
 ```
 
-Then, you can run one of two following servers:
+Choose one of the following development servers:
 
-1. Vite dev server (with Hot Module Replacement) running at `http://localhost:5173`
+1. **Vite Development Server** with Hot Module Replacement at `http://localhost:5173`:
+
    ```shell
-   # Start the dev server
+   # Launch development server with HMR
    pnpm run dev
    ```
-2. Vite preview server running at `http://localhost:4173`
+
+2. **Vite Preview Server** for production builds at `http://localhost:4173`:
+
    ```shell
-   # Build the client (bundle directory: ./dist)
+   # Build the application for production
    pnpm run build
-   # Start the preview server (serving files from ./dist)
+
+   # Serve the built application from ./dist
    pnpm run preview
    ```
 
-#### API in development
+#### API Development
 
-Since `backend` is not running in development, you must run the NestJS yourself.
+Since the backend container is disabled in development mode, you must run the NestJS application server locally.
 
-First, change into the server's directory:
+Navigate to the server directory:
 
 ```shell
 cd ~/.geyser/<version>/server
 ```
 
-Then, start the NestJS server:
+Start the NestJS server using one of these options:
 
 ```shell
+# Production mode
 pnpm run start
-```
 
-You can also start the NestJS server in dev mode to watch for changes in your files:
-
-```shell
+# Development mode with file watching and auto-restart
 pnpm run start:dev
 ```
 
-In both cases, NestJS server will be listening to `http://localhost:3000`.
+The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
 ### Multi-tenant mode
 
