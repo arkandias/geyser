@@ -210,8 +210,6 @@ Services are organized into three Docker networks:
 
 ## Custom Packages
 
-## Custom Packages
-
 While Geyser leverages standard Docker images for most services (PostgreSQL, Hasura, Keycloak, Nginx),
 the application's core functionality is implemented through three custom-developed packages.
 
@@ -273,8 +271,6 @@ The source code is located in the `shared/` directory.
 
 ### Environment Variables
 
-#### Environment Files
-
 Geyser uses two environment files:
 
 - `.env`: Base configuration file with default values
@@ -284,8 +280,6 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
 `.env` files (see [Development Environment](#development-environment) below).
-
-#### List of Environment Variables
 
 | Environment variable          | Default value | Description                                                                                                           |
 | ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
