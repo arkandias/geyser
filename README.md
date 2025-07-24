@@ -163,7 +163,7 @@ authenticate users with their email address. Access is configured from within th
 
 Geyser consists of multiple services, each running in a Docker container organized into three logical tiers:
 
-### Frontend (frontend)
+### Frontend (`frontend`)
 
 The frontend is an Nginx server that serves as the main entry point and reverse proxy for all external access:
 
@@ -173,24 +173,24 @@ The frontend is an Nginx server that serves as the main entry point and reverse 
 
 The frontend also handles TLS termination and serves static assets for the web application.
 
-### Backend (backend, hasura, db)
+### Backend (`backend`, `hasura`, `db`)
 
 The backend tier consists of three interconnected services:
 
-- **NestJS Server (backend)**: The main API server accessible via the frontend proxy at `/api`
-- **Hasura GraphQL Engine (hasura)**: Provides GraphQL interface to the database
-- **PostgreSQL Database (db)**: Stores all application data
+- **NestJS Server (`backend`)**: The main API server accessible via the frontend proxy at `/api`
+- **Hasura GraphQL Engine (`hasura`)**: Provides GraphQL interface to the database
+- **PostgreSQL Database (`db`)**: Stores all application data
 
 The NestJS server can query the database either directly via SQL or through Hasura's GraphQL API. Both the database and
 Hasura are isolated on a private network (`private-db`) and are only accessible by the NestJS server -- they cannot be
-reached from outside the Docker environment.
+reached through the frontend proxy.
 
-### Authentication (keycloak, kc-db)
+### Authentication (`keycloak`, `kc-db`)
 
 User authentication is handled by a dedicated Keycloak instance with its own PostgreSQL database:
 
-- **Keycloak (keycloak)**: OpenID Connect provider for user authentication, accessible via the frontend proxy at `/auth`
-- **Keycloak Database (kc-db)**: Dedicated PostgreSQL instance storing user credentials and identity data
+- **Keycloak (`keycloak`)**: OpenID Connect provider for user authentication, accessible via the frontend proxy at `/auth`
+- **Keycloak Database (`kc-db`)**: Dedicated PostgreSQL instance storing user credentials and identity data
 
 The authentication flow works as follows:
 
@@ -224,9 +224,9 @@ Variables in `.env.local` take precedence over those in `.env`.
 
 | Environment variable          | Default value | Explanation                                                                                                           |
 | ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [here](#deployment-environment)                              |
+| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [here](#development-environment)                             |
 | `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                      |
-| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [here](#tenancy-mode)                                                            |
+| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [here](#multi-tenant-mode)                                                       |
 | `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                                            |
 | `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`), see [here](#running-geyser-as-a-systemd-service) |
 | `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                                                        |
@@ -235,9 +235,67 @@ Variables in `.env.local` take precedence over those in `.env`.
 | `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
 | `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
 
-### Deployment environment
+### Development Environment
 
-### Tenancy mode
+You can run Geyser in development by setting `GEYSER_ENV=development`.
+In this environment, the Nginx server (frontend) and the NestJS server (backend) won't run in Docker (see below).
+The other services will be accessible at:
+
+- `hasura`: `http://localhost:8080`
+- `db`: `http://localhost:5432`
+- `keycloak`: `http://localhost:8081`
+- `kc-db`: `http://localhost:5433`
+
+#### Web client in development
+
+Since `frontend` is not running in development, you must use Vite to serve the web client.
+
+First, change into the client's directory:
+
+```shell
+cd ~/.geyser/<version>/client
+```
+
+Then, you can run one of two following servers:
+
+1. Vite dev server (with Hot Module Replacement) running at `http://localhost:5173`
+   ```shell
+   # Start the dev server
+   pnpm run dev
+   ```
+2. Vite preview server running at `http://localhost:4173`
+   ```shell
+   # Build the client (bundle directory: ./dist)
+   pnpm run build
+   # Start the preview server (serving files from ./dist)
+   pnpm run preview
+   ```
+
+#### API in development
+
+Since `backend` is not running in development, you must run the NestJS yourself.
+
+First, change into the server's directory:
+
+```shell
+cd ~/.geyser/<version>/server
+```
+
+Then, start the NestJS server:
+
+```shell
+pnpm run start
+```
+
+You can also start the NestJS server in dev mode to watch for changes in your files:
+
+```shell
+pnpm run start:dev
+```
+
+In both cases, NestJS server will be listening to `http://localhost:3000`.
+
+### Multi-tenant mode
 
 ### Running Geyser as a systemd service
 
