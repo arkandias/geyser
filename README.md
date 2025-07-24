@@ -168,7 +168,7 @@ The frontend is an Nginx server that serves as the main entry point and reverse 
 - `https://<server-hostname>/api` proxies requests to the backend NestJS server
 - `https://<server-hostname>/auth` proxies requests to the Keycloak authentication service
 
-The frontend also handles SSL termination and serves static assets for the web application.
+The frontend also handles TLS termination and serves static assets for the web application.
 
 ### Backend (backend, hasura, db)
 
