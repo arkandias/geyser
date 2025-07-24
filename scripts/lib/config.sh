@@ -226,8 +226,8 @@ check_dependencies() {
         exit 1
     fi
 
-    if [[ "${docker_version%%.*}" -lt 23 ]]; then
-        error "Docker Engine version 23+ required (current: ${docker_version})"
+    if [[ "${docker_version%%.*}" -lt 25 ]]; then
+        error "Docker Engine version 25+ required (current: ${docker_version})"
         exit 1
     fi
 
