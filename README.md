@@ -98,13 +98,13 @@ curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/s
    geyser init
    ```
 
-   N.B. If you get a "command not found" error, add `~/.local/bin` to your PATH:
+   **Note:** If you get a "command not found" error, you need to add `~/.local/bin` to your PATH:
 
    ```shell
    export PATH="$HOME/.local/bin:$PATH"
    ```
 
-   Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make it permanent.
+   Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make the modification persistent.
 
    Alternatively, you can use the full path to the script: `~/.geyser/<version>/scripts/geyser`
 
@@ -189,7 +189,7 @@ We simply point some useful login options.
 
    ![Keycloak master realm login page](docs/images/keycloak/12_identity_providers.png)
 
-**_N.B. Users with a Keycloak account will not automatically have access to Geyser.
+**_Note: Users with a Keycloak account will not automatically have access to Geyser.
 Keycloak is only used to authenticate users with their email address.
 Access is configured from within the app._**
 
@@ -310,7 +310,7 @@ Geyser uses two environment files:
 
 Variables in `.env.local` take precedence over those in `.env`.
 
-N.B. In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
+**Note:** In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
 `.env` files (see [Development Environment](#development-environment) below).
 
 | Environment variable          | Default value | Description                                                                                                           |
@@ -375,7 +375,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-Vite will use the environment file `client/.env` to set the environment variables described in
+**Note:** Vite will use the environment file `client/.env` to set the environment variables described in
 [Package client](#package-client).
 
 #### API Server Development
@@ -400,7 +400,7 @@ pnpm run start:dev
 
 The NestJS API server will be available at `http://localhost:3000` in both configurations.
 
-N.B. NestJS will use the environment file `server/.env` to set the environment variables described in
+**Note:** NestJS will use the environment file `server/.env` to set the environment variables described in
 [Package server](#package-server).
 
 ### Multi-tenant mode
