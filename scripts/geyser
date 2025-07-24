@@ -62,7 +62,6 @@ Options:
   --dev                 Set environment to development
   --prod                Set environment to production
   --domain DOMAIN       Set domain name for deployment (e.g., geyser.example.com)
-  --origins ORIGINS     Set allowed origins for CORS policy and post login/logout redirection (comma-separated, wildcard allowed)
   --as-service          Run as a systemd service (affects logging)
 
 Run 'geyser COMMAND --help' for more information on a command.

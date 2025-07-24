@@ -247,16 +247,19 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 - `init`: Initialize a fresh Geyser installation
 - `start`: Start Geyser services
 - `stop`: Stop Geyser services
+- `restart`: Restart Geyser services
+- `show`: Show Geyser services
 - `update`: Update Geyser services
-- `reset`: Reset Geyser to a fresh installation
+- `cleanup`: Cleanup Geyser services
+- `purge`: Completely remove Geyser installation and all data
 
 #### Data Management
 
-- `backup`: Create a backup of Geyser main database
-- `restore`: Restore Geyser main database from a backup
-- `export-realms`: Export Keycloak realms and users
-- `import-realms`: Import Keycloak realms and users
-- `sync-keycloak`: Synchronize Keycloak users and groups with app data
+- `data-backup`: Backup Geyser main database
+- `data-restore`: Restore Geyser main database
+- `keycloak-export`: Export Keycloak realms and users
+- `keycloak-import`: Import Keycloak realms and users
+- `webdav-upload`: Upload a file or directory to a WebDAV server
 
 #### Development Tools
 
@@ -264,14 +267,27 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 - `hasura`: Hasura CLI wrapper
 - `kc`: Keycloak CLI access
 - `kcadm`: Keycloak Admin CLI access
-- `rsync`: Configured rsync wrapper
+- `webhook`: Webhook wrapper
+- `webhook-start`: Start a webhook on port 9000
+- `webhook-stop`: Terminate any process listening on port 9000
+- `deploy`: Deploy Geyser from remote repository
+
+#### Setup
+
+- `install-completion`: Install zsh completion (using oh-my-zsh)
 
 #### Options
 
 - `-h, --help`: Show help message
 - `-v, --version`: Show version information
-- `-s, --status`: Show current status
-- `-q, --quiet`: Disable log messages
+- `--log-level LEVEL`: Set log level [silent|debug|info|warn|error]
+- `--silent`: Set log level to silent
+- `--debug`: Set log level to debug
+- `--env ENV`: Set deployment environment [development|production]
+- `--dev`: Set environment to development
+- `--prod`: Set environment to production
+- `--domain DOMAIN`: Set domain name for deployment (e.g., geyser.example.com)
+- `--as-service`: Run as a systemd service (affects logging)
 
 Run `geyser COMMAND --help` for more information on a command.
 
