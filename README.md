@@ -161,14 +161,14 @@ In a web browser, go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/08_login_geyser.png)
 
-9. You can now refer to the [app documentation]() to configure Geyser.
+9. You can now refer to the app documentation to configure Geyser.
 
 #### Advanced Keycloak configuration
 
 For an advanced configuration of Keycloak, you can refer to
 [Keycloak documentation](https://www.keycloak.org/documentation).
 
-We simply point some useful login options.
+We simply point out some useful login options.
 
 1. If you want to allow users to create an account in Keycloak and to recover their password, you can enable this option
    on the "Login" tab of the "Realm settings" page.
