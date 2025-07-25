@@ -423,6 +423,60 @@ No automated scripts or web interface for organization provisioning have been de
 
 ### Running Geyser as a systemd service
 
+For production deployments, Geyser can be configured to run as a systemd service for automatic startup, system logging
+integration, Docker dependency management, and automatic restart on failure.
+
+#### Setup
+
+1. Copy the service file:
+
+   ```shell
+   sudo cp ~/.geyser/<version>/config/systemd/geyser.service /etc/systemd/system/
+   ```
+
+2. Customize the service file:
+
+   ```shell
+   sudo systemctl edit --full geyser.service
+   ```
+
+   Replace `User=`, `WorkingDirectory=`, and script paths in `ExecStart=`, `ExecStop=`
+
+3. Reload systemd configuration:
+
+   ```shell
+   sudo systemctl daemon-reload
+   ```
+
+4. Enable and start the service:
+   ```shell
+   sudo systemctl enable geyser.service
+   sudo systemctl start geyser.service
+   ```
+
+**Note:** With `GEYSER_AS_SERVICE=true`, logging output is automatically formatted for systemd journal integration.
+
+#### Management
+
+```shell
+# Check service status
+sudo systemctl status geyser.service
+
+# View logs in real-time
+journalctl -u geyser.service -f
+
+# View recent logs
+journalctl -u geyser.service --since "1 hour ago"
+
+# Start/stop/restart the service
+sudo systemctl start geyser.service
+sudo systemctl stop geyser.service
+sudo systemctl restart geyser.service
+
+# Disable automatic startup
+sudo systemctl disable geyser.service
+```
+
 ## Administration
 
 ### Administration Script
