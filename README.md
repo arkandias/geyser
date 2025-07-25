@@ -311,23 +311,24 @@ Geyser uses two environment files:
 Variables in `.env.local` take precedence over those in `.env`.
 
 **Note:** In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
-`.env` files (see [Development Environment](#development-environment) below).
+`.env` files (see [Development Environment](#development-environment)).
 
-| Environment variable          | Default value | Description                                                                                                           |
-| ----------------------------- | ------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [here](#development-environment)                             |
-| `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                      |
-| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [here](#multi-tenant-mode)                                                       |
-| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                                            |
-| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`), see [here](#running-geyser-as-a-systemd-service) |
-| `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                                                        |
-| `DB_PASSWORD`                 | **Required**  | Password for the main database privileged role                                                                        |
-| `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret (bypass token authentication)                                                                     |
-| `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                        |
-| `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                |
+| Environment variable          | Default value | Description                                                                                                                                          |
+| ----------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [Development Environment](#development-environment)                                         |
+| `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                                                     |
+| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [Multi-tenant Mode](#multi-tenant-mode)                                                                         |
+| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                                                                           |
+| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`), see [Running Geyser as a systemd service](#running-geyser-as-a-systemd-service) |
+| `NGINX_AUTH_ADMIN_ALLOW`      | `0.0.0.0/0`   | Allowed IPs for Keycloak restricted access                                                                                                           |
+| `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                                                                                       |
+| `DB_PASSWORD`                 | **Required**  | Password for the main database privileged role                                                                                                       |
+| `HASURA_GRAPHQL_ADMIN_SECRET` | **Required**  | Hasura admin secret (bypass token authentication)                                                                                                    |
+| `API_ADMIN_SECRET`            | **Required**  | API admin secret (bypass token authentication)                                                                                                       |
+| `OIDC_CLIENT_SECRET`          | **Required**  | Secret for Keycloak `app` client used by backend to authenticate users                                                                               |
 
-These environment variables are used by the administration script (see [Administration Script](#administration-script)
-below) to compute many other variables.
+These environment variables are used by the administration script (see [Administration Script](#administration-script))
+to compute many other variables.
 Finally, all these environment variables are passed to the various services using the Compose file (`compose.yaml`).
 
 ### Development Environment
@@ -404,6 +405,21 @@ The NestJS API server will be available at `http://localhost:3000` in both confi
 [Package server](#package-server).
 
 ### Multi-tenant mode
+
+Geyser can run in multi-tenant mode by setting `GEYSER_TENANCY=multi`.
+In this configuration, multiple organizations can be hosted on the same Geyser instance without any interaction between
+them.
+Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
+
+- `https://<org-key>.<server-hostname>` serves the web client application for each organization
+- `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
+- `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all organizations)
+
+The client determines the organization key from the subdomain automatically.
+
+**Note:** Organization management in multi-tenant mode requires manual database operations on the `public.organization`
+table in the PostgreSQL database (standard CRUD operations).
+No automated scripts or web interface for organization provisioning have been developed yet.
 
 ### Running Geyser as a systemd service
 
