@@ -26,7 +26,7 @@ Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it p
 - [Configuration](#configuration)
   - [Environment Variables](#environment-variables)
   - [Development Environment](#development-environment)
-  - [Multi-tenant mode](#multi-tenant-mode)
+  - [Multi-tenant Mode](#multi-tenant-mode)
   - [Running Geyser as a systemd service](#running-geyser-as-a-systemd-service)
 - [Administration](#administration)
   - [Administration Script](#administration-script)
@@ -164,7 +164,7 @@ In a web browser, go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/06_user_credentials.png)
 
-7. Enter you new user's password (twice), set "Temporary" to "Off", and click on the "Save" button.
+7. Enter your new user's password (twice), set "Temporary" to "Off", and click on the "Save" button.
 
    ![Keycloak master realm login page](docs/images/keycloak/07_set_password.png)
 
@@ -415,7 +415,7 @@ The NestJS API server will be available at `http://localhost:3000` in both confi
 **Note:** NestJS will use the environment file `server/.env` to set the environment variables described in
 [Package server](#package-server).
 
-### Multi-tenant mode
+### Multi-tenant Mode
 
 Geyser can run in multi-tenant mode by setting `GEYSER_TENANCY=multi`.
 In this configuration, multiple organizations can be hosted on the same Geyser instance without any interaction between
@@ -522,7 +522,6 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 - `webhook`: Webhook wrapper
 - `webhook-start`: Start a webhook on port 9000
 - `webhook-stop`: Terminate any process listening on port 9000
-- `deploy`: Deploy Geyser from remote repository
 
 #### Setup
 
@@ -583,19 +582,19 @@ Example crontab entries:
 
 ### Updates and Deployment
 
-Geyser supports continuous deployment, but the approach depends on your installation method:
+Geyser supports updates and continuous deployment, but the approach depends on your installation method:
 
 #### For Git-based installations
 
-If you installed Geyser by cloning the repository, you can use automated deployment:
+If you installed Geyser by cloning the repository, you can use:
 
 ```shell
-geyser deploy
+scripts/deploy.sh
 ```
 
 This command pulls the latest code, updates Docker images, and restarts services.
 
-Webhook deployment is also available for automatic deployments triggered by GitHub Actions:
+You can automate deployment on repository updates with a webhook as follows:
 
 1. Setup webhook environment variables in `.env` or `.env.local`:
 
@@ -609,26 +608,28 @@ Webhook deployment is also available for automatic deployments triggered by GitH
    geyser webhook-start
    ```
 
-3. Configure webhook in your GitHub repository settings with:
-   - Payload URL: `https://<server-hostname>:9000/hooks/deploy`
-   - Content type: `application/json`
-   - Secret: `<webhook-secret>`
-   - "Enable SSL verification"
-   - "Send me everything" or select "Workflow runs"
-
-4. To stop the webhook server:
+3. To stop the webhook server:
 
    ```shell
    geyser webhook-stop
    ```
 
-The webhook configuration (`config/hooks.json`) defines a `deploy` hook that triggers when:
+The default webhook configuration (`config/hooks.json`) defines a `deploy` hook that triggers when:
 
 - A GitHub Actions workflow named "CI" completes successfully
 - The workflow was triggered by a tag push
 - The webhook signature is verified using `WEBHOOK_SECRET`
 
-The webhook will run `scripts/deploy.sh`, which runs the `geyser deploy` command.
+**Note:** The default configuration is designed for GitHub repositories, but it can be adapted for other Git hosting
+services by modifying the trigger rules in `config/hooks.json`.
+
+To use the default webhook, add a webhook in your GitHub repository settings with the following parameters:
+
+- Payload URL: `https://<server-hostname>:9000/hooks/deploy`
+- Content type: `application/json`
+- Secret: `<webhook-secret>`
+- "Enable SSL verification"
+- "Send me everything" or select "Workflow runs"
 
 **Note:** The webhook runs on port 9000 with TLS.
 Ensure your firewall allows this port and use a strong webhook secret.
