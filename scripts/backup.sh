@@ -21,7 +21,7 @@
 # Exit the script immediately if any command fails
 set -e
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 declare -r SCRIPT_DIR
 
 timestamp="$(date +%Y-%m-%d-%H-%M-%S)"

@@ -73,11 +73,11 @@ EOF
 ###############################################################################
 
 # Absolute path to the directory containing the current script
-SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 declare -r SCRIPT_DIR
 
-# Absolute path to the directory containing the application
-: "${GEYSER_HOME:="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
+# Absolute path to the application base directory
+GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." && pwd)"
 declare -rx GEYSER_HOME
 
 # Directories paths

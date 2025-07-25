@@ -3,7 +3,7 @@
 # Exit the script immediately if any command fails
 set -e
 
-SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" &>/dev/null && pwd)"
+SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 
 V_PACKAGE=$(awk -F'"' '/"version"/ {print $4}' "${SCRIPT_DIR}/../package.json")
 V_INSTALL=$(grep 'GEYSER_VERSION=' "${SCRIPT_DIR}/install.sh" | cut -d'"' -f2)
