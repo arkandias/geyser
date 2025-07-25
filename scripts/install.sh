@@ -109,7 +109,7 @@ mkdir -p "${HOME}/.local/bin" || {
     echo "⚠ Failed to create directory ${HOME}/.local/bin" >&2
 }
 
-# Add geyser script to ~/.local/bin
+# Add symlink to geyser script in ~/.local/bin
 ln -sf "${install_path}/scripts/geyser" "${HOME}/.local/bin/geyser" || {
     echo "⚠ Failed to create symlink to geyser script in ${HOME}/.local/bin" >&2
 }

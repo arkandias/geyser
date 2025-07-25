@@ -78,7 +78,7 @@ declare -r SCRIPT_DIR
 
 # Absolute path to the directory containing the application
 : "${GEYSER_HOME:="$(cd "${SCRIPT_DIR}/.." &>/dev/null && pwd)"}"
-declare -r GEYSER_HOME
+declare -rx GEYSER_HOME
 
 # Directories paths
 declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/db/backups"
