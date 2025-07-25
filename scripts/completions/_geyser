@@ -103,8 +103,9 @@ _geyser() {
 
 # shellcheck disable=SC2120
 _geyser_compose() {
-    if [[ -z "${GEYSER_HOME}" ]]; then
-        echo "Error: GEYSER_HOME environment variable is not set" >&2
+    if [[ ! -f "${GEYSER_HOME}/compose.yaml" ]]; then
+        echo "Error: File ${GEYSER_HOME}/compose.yaml does not exist" >&2
+        echo "Verify environment variable GEYSER_HOME=${GEYSER_HOME}" >&2
         return 1
     fi
 
@@ -126,8 +127,9 @@ _geyser_compose() {
 
 # shellcheck disable=SC2120
 _geyser_hasura() {
-    if [[ -z "${GEYSER_HOME}" ]]; then
-        echo "Error: GEYSER_HOME environment variable is not set" >&2
+    if [[ ! -d "${GEYSER_HOME}/hasura" ]]; then
+        echo "Error: Directory ${GEYSER_HOME}/hasura does not exist" >&2
+        echo "Verify environment variable GEYSER_HOME=${GEYSER_HOME}" >&2
         return 1
     fi
 
