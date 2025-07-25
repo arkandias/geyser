@@ -31,7 +31,7 @@ Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it p
 - [Administration](#administration)
   - [Administration Script](#administration-script)
   - [Automatic Backups](#automatic-backups)
-  - [CI/CD](#cicd)
+  - [Updates and Deployment](#updates-and-deployment)
 - [Contributing](#contributing)
 - [License](#license)
 
@@ -71,10 +71,11 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 ### Installation
 
-Download and install the latest version (in `~/.geyser/<version>/`):
+Download and install the latest version:
 
 ```shell
 curl -fsSL https://github.com/arkandias/geyser-monorepo/raw/HEAD/scripts/install.sh | sh
+cd ~/.geyser/<version>
 ```
 
 Or for a specific version:
@@ -82,11 +83,21 @@ Or for a specific version:
 ```shell
 GEYSER_VERSION="1.2.3"
 curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/scripts/install.sh" | sh
+cd ~/.geyser/"${GEYSER_VERSION}"
+```
+
+Alternatively, you can clone the whole repository for development and easier [Updates and Deployment](#updates-and-deployment):
+
+```shell
+git clone https://github.com/arkandias/geyser-monorepo.git
+cd geyser-monorepo
+mkdir -p "$HOME/.local/bin"
+ln -sf "$(pwd)/scripts/geyser" "$HOME/.local/bin/geyser"
 ```
 
 ### Initialization
 
-1. Edit the file `~/.geyser/<version>/.env` and replace `geyser.example.com` with your server's hostname.
+1. Edit the file `.env` and replace `geyser.example.com` with your server's hostname.
 
 2. Add the TLS certificates for your server's hostname to the `nginx/certs` directory:
    - `nginx/certs/fullchain.crt` should contain the full certificate chain
@@ -106,7 +117,7 @@ curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/s
 
    Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make the modification persistent.
 
-   Alternatively, you can use the full path to the script: `~/.geyser/<version>/scripts/geyser`
+   Alternatively, you can use the full path to the script: `scripts/geyser`
 
 4. During initialization, you will be prompted for Keycloak temporary admin account username and password (choose a
    strong one!).
@@ -354,7 +365,7 @@ tools.
 Navigate to the client directory:
 
 ```shell
-cd ~/.geyser/<version>/client
+cd client
 ```
 
 Choose one of the following development servers:
@@ -386,7 +397,7 @@ Since the backend container is disabled in development mode, you must run the Ne
 Navigate to the server directory:
 
 ```shell
-cd ~/.geyser/<version>/server
+cd server
 ```
 
 Start the NestJS server using one of these options:
@@ -431,7 +442,7 @@ integration, Docker dependency management, and automatic restart on failure.
 1. Copy the service file:
 
    ```shell
-   sudo cp ~/.geyser/<version>/config/systemd/geyser.service /etc/systemd/system/
+   sudo cp config/systemd/geyser.service /etc/systemd/system/
    ```
 
 2. Customize the service file:
@@ -540,6 +551,11 @@ For zsh users, shell completion can be installed with:
 geyser install-completion
 ```
 
+#### Logs
+
+Unless [Geyser is running as a systemd service](#running-geyser-as-a-systemd-service), the logs produced by the script
+are stored in `logs/geyser.log`.
+
 ### Automatic Backups
 
 The script `scripts/backup.sh` is provided to automatically create a backup of Geyser and upload it to a WebDAV server
@@ -565,7 +581,77 @@ Example crontab entries:
 0 3 * 1-5,8-12 * /path/to/scripts/backup.sh
 ```
 
-### CI/CD
+### Updates and Deployment
+
+Geyser supports continuous deployment, but the approach depends on your installation method:
+
+#### For Git-based installations
+
+If you installed Geyser by cloning the repository, you can use automated deployment:
+
+```shell
+geyser deploy
+```
+
+This command pulls the latest code, updates Docker images, and restarts services.
+
+Webhook deployment is also available for automatic deployments triggered by GitHub Actions:
+
+1. Setup webhook environment variables in `.env` or `.env.local`:
+
+   ```shell
+   WEBHOOK_SECRET=<webhook-secret>
+   ```
+
+2. Start webhook server:
+
+   ```shell
+   geyser webhook-start
+   ```
+
+3. Configure webhook in your GitHub repository settings with:
+   - Payload URL: `https://<server-hostname>:9000/hooks/deploy`
+   - Content type: `application/json`
+   - Secret: `<webhook-secret>`
+   - "Enable SSL verification"
+   - "Send me everything" or select "Workflow runs"
+
+4. To stop the webhook server:
+
+   ```shell
+   geyser webhook-stop
+   ```
+
+The webhook configuration (`config/hooks.json`) defines a `deploy` hook that triggers when:
+
+- A GitHub Actions workflow named "CI" completes successfully
+- The workflow was triggered by a tag push
+- The webhook signature is verified using `WEBHOOK_SECRET`
+
+The webhook will run `scripts/deploy.sh`, which runs the `geyser deploy` command.
+
+**Note:** The webhook runs on port 9000 with TLS.
+Ensure your firewall allows this port and use a strong webhook secret.
+
+**Note:** If [Geyser is running as a systemd service](#running-geyser-as-a-systemd-service), you can run the webhook
+as a service too, using the service file `config/systemd/geyser-webhook.service` (see systemd setup instructions).
+Otherwise, the webhook logs will be stored in `logs/webhook.log`.
+
+#### For script-based installations
+
+If you used the install script, updates require manual reinstallation:
+
+1. Backup your data (recommended):
+   ```shell
+   geyser data-backup
+   geyser keycloak-export
+   ```
+2. Download and install the new version as described in [the installation step](#installation)
+3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `db/backups/`, `keycloak/backups/`, `logs/`, `nginx/certs/`, `server/keys/`)
+4. Restart Geyser:
+   ```shell
+   geyser start
+   ```
 
 ## Contributing
 
