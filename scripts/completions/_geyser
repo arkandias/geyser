@@ -41,7 +41,6 @@ _geyser() {
         'webhook:Webhook wrapper'
         'webhook-start:Start a webhook on port 9000'
         'webhook-stop:Terminate any process listening on port 9000'
-        'deploy:Deploy Geyser from remote repository'
         'install-completion:Install zsh completion'
     )
 

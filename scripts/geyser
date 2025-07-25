@@ -47,7 +47,6 @@ Development Tools:
   webhook               Webhook wrapper
   webhook-start         Start a webhook on port 9000
   webhook-stop          Terminate any process listening on port 9000
-  deploy                Deploy Geyser from remote repository
 
 Setup:
   install-completion    Install zsh completion (using oh-my-zsh)
@@ -238,10 +237,6 @@ main() {
     webhook-stop)
         shift
         handle_webhook_stop "$@"
-        ;;
-    deploy)
-        shift
-        handle_deploy "$@"
         ;;
     install-completion)
         handle_install_completion

@@ -8,13 +8,11 @@ Update Geyser services
 
 Usage: geyser update
 
-Pull latest images, rebuild local images, restart services with new images, and
-clean up old images.
+Pull latest images, rebuild local images, restart services with new images,
+apply Hasura migration and metadata, and clean up old images.
 
 Options:
   -h, --help        Show this help message
-
-Note: Services will be stopped during update.
 EOF
 }
 
