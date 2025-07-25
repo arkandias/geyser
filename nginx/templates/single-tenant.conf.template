@@ -34,7 +34,7 @@ server {
         proxy_set_header X-Forwarded-Prefix /auth;
     }
 
-    location /auth/admin/ {
+    location /auth/ {
         allow ${NGINX_AUTH_ADMIN_ALLOW};
         deny all;
         rewrite ^/auth/(.*)$ /$1 break;
