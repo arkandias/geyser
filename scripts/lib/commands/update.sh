@@ -33,22 +33,19 @@ handle_update() {
         esac
     done
 
-    if [[ -n "$(_compose ps -q)" ]]; then
-        warn "Running services need to be stopped for update"
-        if ! confirm "Continue?"; then
-            info "Update cancelled: Stop services first with 'geyser stop'"
-            return
-        fi
-        info "Stopping services..."
-        _compose down
-    fi
-
     info "Updating Docker images..."
     _compose pull
     _compose build --pull --no-cache
 
     info "Starting services with updated images..."
     _compose up -d
+
+    info "Applying Hasura migrations and metadata..."
+    wait_until_healthy hasura
+    info "Waiting a few more seconds..."
+    sleep 3
+    _hasura migrate apply --all-databases
+    _hasura metadata apply
 
     info "Cleaning up..."
     docker system prune -f

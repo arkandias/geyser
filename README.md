@@ -648,9 +648,10 @@ If you used the install script, updates require manual reinstallation:
    ```
 2. Download and install the new version as described in [the installation step](#installation)
 3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `db/backups/`, `keycloak/backups/`, `logs/`, `nginx/certs/`, `server/keys/`)
-4. Restart Geyser:
+4. Now `geyser` should point to the new version script.
+   Update Docker images and restart services:
    ```shell
-   geyser start
+   geyser update
    ```
 
 ## Contributing
