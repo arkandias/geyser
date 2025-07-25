@@ -28,24 +28,16 @@ server {
     ssl_certificate /etc/nginx/certs/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/private.key;
 
+    # Keycloak public endpoints
     location ~ ^/(realms|resources)/ {
         proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
         include /etc/nginx/includes/proxy-common.conf;
     }
-}
 
-# Keycloak admin server
-server {
-    listen 443 ssl;
-    server_name auth-admin.${NGINX_DOMAIN};
-
-    ssl_certificate /etc/nginx/certs/fullchain.crt;
-    ssl_certificate_key /etc/nginx/certs/private.key;
-
-    allow ${NGINX_AUTH_ADMIN_ALLOW};
-    deny all;
-
+    # All Keycloak endpoints (restricted access)
     location / {
+        allow ${NGINX_AUTH_ADMIN_ALLOW};
+        deny all;
         proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
         include /etc/nginx/includes/proxy-common.conf;
     }
@@ -59,6 +51,7 @@ server {
     ssl_certificate /etc/nginx/certs/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/private.key;
 
+    # Backend API
     location / {
         proxy_pass ${NGINX_PROXY_API_URL};
         include /etc/nginx/includes/proxy-common.conf;
@@ -67,7 +60,7 @@ server {
     }
 }
 
-# Client server
+# Static frontend files (catch-all for other subdomains)
 server {
     listen 443 ssl;
     server_name *.${NGINX_DOMAIN};

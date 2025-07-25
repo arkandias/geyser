@@ -27,6 +27,7 @@ server {
     ssl_certificate /etc/nginx/certs/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/private.key;
 
+    # Keycloak public endpoints
     location ~ ^/auth/(realms|resources)/ {
         rewrite ^/auth/(.*)$ /$1 break;
         proxy_pass ${NGINX_PROXY_KEYCLOAK_URL};
@@ -34,6 +35,7 @@ server {
         proxy_set_header X-Forwarded-Prefix /auth;
     }
 
+    # All Keycloak endpoints (restricted access)
     location /auth/ {
         allow ${NGINX_AUTH_ADMIN_ALLOW};
         deny all;
@@ -43,6 +45,7 @@ server {
         proxy_set_header X-Forwarded-Prefix /auth;
     }
 
+    # Backend API
     location /api/ {
         rewrite ^/api/(.*)$ /$1 break;
         proxy_pass ${NGINX_PROXY_API_URL};
@@ -51,6 +54,7 @@ server {
         proxy_set_header X-Admin-Secret "";
     }
 
+    # Static frontend files
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;
