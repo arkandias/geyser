@@ -9,7 +9,7 @@ set -e
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 
 V_PACKAGE=$(awk -F'"' '/"version"/ {print $4}' "${SCRIPT_DIR}/../package.json")
-V_INSTALL=$(grep 'GEYSER_VERSION=' "${SCRIPT_DIR}/install.sh" | cut -d'"' -f2)
+V_INSTALL=$(grep 'DEFAULT_GEYSER_VERSION=' "${SCRIPT_DIR}/install.sh" | cut -d'"' -f2)
 V_GEYSER=$(grep 'GEYSER_VERSION=' "${SCRIPT_DIR}/geyser" | cut -d'"' -f2)
 
 if [ "${V_PACKAGE}" = "$1" ] &&
