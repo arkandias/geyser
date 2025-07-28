@@ -114,16 +114,16 @@ jobs:
           # Create tarball from the collected file list
           echo "📦 Creating release artifact..."
           if [[ -s "$TEMP_FILE_LIST" ]]; then
-            tar -czf "release-${{ steps.vars.outputs.version }}.tar.gz" --files-from="$TEMP_FILE_LIST"
+            tar -czf "geyser-${{ steps.vars.outputs.version }}.tar.gz" --files-from="$TEMP_FILE_LIST"
 
-            echo "📦 Created release artifact: release-${{ steps.vars.outputs.version }}.tar.gz"
+            echo "📦 Created release artifact: geyser-${{ steps.vars.outputs.version }}.tar.gz"
 
             # Show contents for verification
             echo "📂 Artifact contents:"
-            tar -tzf "release-${{ steps.vars.outputs.version }}.tar.gz"
+            tar -tzf "geyser-${{ steps.vars.outputs.version }}.tar.gz"
 
             # Show total file count
-            FILE_COUNT=$(tar -tzf "release-${{ steps.vars.outputs.version }}.tar.gz" | wc -l)
+            FILE_COUNT=$(tar -tzf "geyser-${{ steps.vars.outputs.version }}.tar.gz" | wc -l)
             echo "📊 Total files in artifact: $FILE_COUNT"
           else
             echo "❌ No files found to include in artifact"
