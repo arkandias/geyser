@@ -78,7 +78,7 @@ curl -fsSL https://github.com/arkandias/geyser-monorepo/raw/HEAD/scripts/install
 cd ~/.geyser/<version>
 ```
 
-Or for a specific version:
+Or for a specific version (see the releases list [here](https://github.com/arkandias/geyser-monorepo/releases)):
 
 ```shell
 GEYSER_VERSION="1.2.3"
