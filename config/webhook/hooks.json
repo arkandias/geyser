@@ -48,10 +48,20 @@
         {
           "match": {
             "type": "value",
-            "value": "tag",
+            "value": "push",
             "parameter": {
               "source": "payload",
               "name": "workflow_run.event"
+            }
+          }
+        },
+        {
+          "match": {
+            "type": "value",
+            "value": "master",
+            "parameter": {
+              "source": "payload",
+              "name": "workflow_run.head_branch"
             }
           }
         },
