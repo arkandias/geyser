@@ -9,8 +9,7 @@ on:
       - "*"
 
 permissions:
-  contents: read
-  packages: write
+  contents: write
 
 concurrency:
   group: ci-${{ github.ref_name }}
