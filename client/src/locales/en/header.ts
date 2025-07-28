@@ -124,10 +124,10 @@ export default {
 </p>
 The source code for Geyser is available at
 <a
-  href="https://github.com/arkandias/geyser-monorepo"
+  href="https://github.com/arkandias/geyser"
   target="_blank"
   rel="noopener noreferrer"
-  >https://github.com/arkandias/geyser-monorepo</a
+  >https://github.com/arkandias/geyser</a
 >.`,
       },
     } satisfies Record<InfoTextKey, { label: string; message: string }> &

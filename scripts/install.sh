@@ -1,6 +1,6 @@
 #!/bin/sh
 
-GITHUB_REPO="https://github.com/arkandias/geyser-monorepo"
+GITHUB_REPO="https://github.com/arkandias/geyser"
 GEYSER_VERSION="1.0.0"
 INSTALL_ROOT="${HOME:?"HOME environment variable is not set"}/.geyser"
 

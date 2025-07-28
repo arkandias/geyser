@@ -74,23 +74,23 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 Download and install the latest version:
 
 ```shell
-curl -fsSL https://github.com/arkandias/geyser-monorepo/raw/HEAD/scripts/install.sh | sh
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | sh
 cd ~/.geyser/<version>
 ```
 
-Or for a specific version (see the releases list [here](https://github.com/arkandias/geyser-monorepo/releases)):
+Or for a specific version (see the releases list [here](https://github.com/arkandias/geyser/releases)):
 
 ```shell
 GEYSER_VERSION="1.2.3"
-curl -fsSL "https://github.com/arkandias/geyser-monorepo/raw/${GEYSER_VERSION}/scripts/install.sh" | sh
+curl -fsSL "https://github.com/arkandias/geyser/raw/${GEYSER_VERSION}/scripts/install.sh" | sh
 cd ~/.geyser/"${GEYSER_VERSION}"
 ```
 
 Alternatively, you can clone the whole repository for development and easier [Updates and Deployment](#updates-and-deployment):
 
 ```shell
-git clone https://github.com/arkandias/geyser-monorepo.git
-cd geyser-monorepo
+git clone https://github.com/arkandias/geyser.git
+cd geyser
 mkdir -p "$HOME/.local/bin"
 ln -sf "$(pwd)/scripts/geyser" "$HOME/.local/bin/geyser"
 ```

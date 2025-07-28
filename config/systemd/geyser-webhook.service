@@ -6,9 +6,9 @@ Requires=geyser.service
 [Service]
 Type=simple
 User=arkandias
-WorkingDirectory=/home/arkandias/geyser-monorepo
-ExecStart=/home/arkandias/geyser-monorepo/scripts/geyser webhook-start
-ExecStopPost=/home/arkandias/geyser-monorepo/scripts/geyser webhook-stop
+WorkingDirectory=/home/arkandias/geyser
+ExecStart=/home/arkandias/geyser/scripts/geyser webhook-start
+ExecStopPost=/home/arkandias/geyser/scripts/geyser webhook-stop
 Restart=always
 RestartSec=10
 

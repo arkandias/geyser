@@ -17,7 +17,7 @@ fi
 if ! git -C "${GEYSER_HOME}" rev-parse --git-dir &>/dev/null; then
     echo "Error: ${GEYSER_HOME} is not a git repository" >&2
     echo "This script requires a git-based installation" >&2
-    echo "Use 'git clone https://github.com/arkandias/geyser-monorepo.git' to install from repository" >&2
+    echo "Use 'git clone https://github.com/arkandias/geyser.git' to install from repository" >&2
     exit 1
 fi
 
