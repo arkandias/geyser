@@ -9,7 +9,9 @@ permissions:
   packages: write
 
 env:
-  GHCR_REPOSITORY: ghcr.io/${{ github.repository }}
+  GHCR_BACKEND_REPO: ghcr.io/${{ github.repository_owner }}/geyser-backend
+  GHCR_FRONTEND_REPO: ghcr.io/${{ github.repository_owner }}/geyser-frontend
+  RELEASE_ARTIFACT_NAME: geyser
 
 jobs:
   build-and-push:
@@ -29,12 +31,15 @@ jobs:
 
           # Set tags based on whether it's a prerelease
           if [[ "${{ github.event.release.prerelease }}" == "true" ]]; then
-            echo "backend_tags=${GHCR_REPOSITORY}-backend:${VERSION}" >> "${GITHUB_OUTPUT}"
-            echo "frontend_tags=${GHCR_REPOSITORY}-frontend:${VERSION}" >> "${GITHUB_OUTPUT}"
+            echo "backend_tags=${GHCR_BACKEND_REPO}:${VERSION}" >> "${GITHUB_OUTPUT}"
+            echo "frontend_tags=${GHCR_FRONTEND_REPO}:${VERSION}" >> "${GITHUB_OUTPUT}"
           else
-            echo "backend_tags=${GHCR_REPOSITORY}-backend:${VERSION},${GHCR_REPOSITORY}-backend:latest" >> "${GITHUB_OUTPUT}"
-            echo "frontend_tags=${GHCR_REPOSITORY}-frontend:${VERSION},${GHCR_REPOSITORY}-frontend:latest" >> "${GITHUB_OUTPUT}"
+            echo "backend_tags=${GHCR_BACKEND_REPO}:${VERSION},${GHCR_BACKEND_REPO}:latest" >> "${GITHUB_OUTPUT}"
+            echo "frontend_tags=${GHCR_FRONTEND_REPO}:${VERSION},${GHCR_FRONTEND_REPO}:latest" >> "${GITHUB_OUTPUT}"
           fi
+
+          # Set release artifact name
+          echo "artifact_name=${RELEASE_ARTIFACT_NAME}-${VERSION}" >> "${GITHUB_OUTPUT}"
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
@@ -46,8 +51,8 @@ jobs:
         uses: docker/login-action@v3
         with:
           registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ github.token }}
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GHCR_TOKEN }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
@@ -114,16 +119,16 @@ jobs:
           # Create tarball from the collected file list
           echo "📦 Creating release artifact..."
           if [[ -s "$TEMP_FILE_LIST" ]]; then
-            tar -czf "geyser-${{ steps.vars.outputs.version }}.tar.gz" --files-from="$TEMP_FILE_LIST"
+            tar -czf "${{ steps.vars.outputs.artifact_name }}.tar.gz" --files-from="$TEMP_FILE_LIST"
 
-            echo "📦 Created release artifact: geyser-${{ steps.vars.outputs.version }}.tar.gz"
+            echo "📦 Created release artifact: ${{ steps.vars.outputs.artifact_name }}.tar.gz"
 
             # Show contents for verification
             echo "📂 Artifact contents:"
-            tar -tzf "geyser-${{ steps.vars.outputs.version }}.tar.gz"
+            tar -tzf "${{ steps.vars.outputs.artifact_name }}.tar.gz"
 
             # Show total file count
-            FILE_COUNT=$(tar -tzf "geyser-${{ steps.vars.outputs.version }}.tar.gz" | wc -l)
+            FILE_COUNT=$(tar -tzf "${{ steps.vars.outputs.artifact_name }}.tar.gz" | wc -l)
             echo "📊 Total files in artifact: $FILE_COUNT"
           else
             echo "❌ No files found to include in artifact"
@@ -138,5 +143,5 @@ jobs:
           GH_TOKEN: ${{ github.token }}
         run: |
           gh release upload "${{ github.event.release.tag_name }}" \
-            "geyser-${{ steps.vars.outputs.version }}.tar.gz" \
+            "${{ steps.vars.outputs.artifact_name }}.tar.gz" \
             --clobber
