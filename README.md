@@ -105,7 +105,7 @@ curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEY
 #### Git-based installation
 
 Alternatively, you can clone the whole repository for development and easier
-[Updates and Deployment](#updates-and-deployment) in production:
+[updates and deployment](#updates-and-deployment) in production:
 
 ```shell
 git clone https://github.com/arkandias/geyser.git
