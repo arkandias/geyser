@@ -34,7 +34,8 @@ download() {
     fi
 }
 
-echo "Geyser ${version}..."
+echo "Geyser Installation Script"
+echo "Version: ${version}"
 echo "Installation path: ${install_path}"
 
 # Check if the installation directory already exists
