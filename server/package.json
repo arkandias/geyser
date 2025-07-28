@@ -18,7 +18,7 @@
     "@nestjs/platform-express": "^11.1.5",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
-    "axios": "^1.10.0",
+    "axios": "^1.11.0",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
@@ -27,10 +27,10 @@
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.2",
     "typeorm": "^0.3.25",
-    "zod": "^4.0.5"
+    "zod": "^4.0.10"
   },
   "devDependencies": {
-    "@nestjs/cli": "^11.0.7",
+    "@nestjs/cli": "^11.0.8",
     "@nestjs/schematics": "^11.0.5",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.9",
