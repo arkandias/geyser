@@ -83,14 +83,24 @@ Download and install the latest version:
 curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | sh
 ```
 
-Or for a specific version (see the releases list [here](https://github.com/arkandias/geyser/releases)):
+Or a specific version (see [the release list](https://github.com/arkandias/geyser/releases)):
 
 ```shell
-GEYSER_VERSION="1.2.3"
-curl -fsSL "https://github.com/arkandias/geyser/raw/${GEYSER_VERSION}/scripts/install.sh" | sh
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEYSER_VERSION=1.2.3 sh
 ```
 
-During the installation, you will be prompted for the installation directory (default is `~/.geyser/<version>`).
+By default, Geyser will be installed in `~/.geyser/<version>`.
+You can change this with:
+
+```shell
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | INSTALL_PATH=/opt/geyser sh
+```
+
+You can combine both environment variables:
+
+```shell
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEYSER_VERSION=1.2.3 INSTALL_PATH=/opt/geyser sh
+```
 
 #### Git-based installation
 
@@ -121,7 +131,7 @@ If you get a "command not found" error, you may need to add `~/.local/bin` to yo
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make the modification persistent.
+Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) to make the modification persistent.
 
 Alternatively, you can use the full path to the script:
 

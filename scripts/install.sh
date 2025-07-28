@@ -35,12 +35,13 @@ download() {
 }
 
 echo "Geyser Installation Script"
-echo "Version: ${version}"
+echo "Geyser version: ${version}"
 echo "Installation path: ${install_path}"
 
 # Check if the installation directory already exists
 if [ -e "${install_path}" ]; then
     echo "Error: Installation directory ${install_path} already exists" >&2
+    echo "Remove it first or specify a different installation path with INSTALL_PATH" >&2
     exit 1
 fi
 
@@ -48,12 +49,13 @@ fi
 parent_path="$(dirname "${install_path}")"
 mkdir -p "${parent_path}" || {
     echo "Error: Failed to create parent directory ${parent_path}" >&2
+    echo "Verify permissions" >&2
     exit 1
 }
 
 # Download Geyser from GitHub repository
 download "${archive_path}" "${archive_url}" || {
-    echo "Error: Failed to download ${archive_url} to ${archive_path}" >&2
+    echo "Error: Failed to download ${archive_url}" >&2
     exit 1
 }
 
@@ -73,6 +75,7 @@ fi
 # Create extraction directory if it doesn't exist
 mkdir -p "${extract_path}" || {
     echo "Error: Failed to create directory ${extract_path}" >&2
+    echo "Verify permissions" >&2
     exit 1
 }
 
