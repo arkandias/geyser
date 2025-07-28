@@ -98,7 +98,7 @@ jobs:
             # Check if item exists (file or directory)
             if [[ -e "$item" ]]; then
               if [[ -d "$item" ]]; then
-                echo "✅ Will include directory: $item/"
+                echo "✅ Will include directory: ${item%/}/"
                 # Add directory and all its contents
                 find "$item" -type f >> "$TEMP_FILE_LIST"
               elif [[ -f "$item" ]]; then

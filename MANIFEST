@@ -6,4 +6,4 @@ scripts/
 .env
 compose.dev.yaml
 compose.yaml
-LICENCE
+LICENSE
