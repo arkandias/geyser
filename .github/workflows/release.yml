@@ -52,7 +52,7 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.GHCR_TOKEN }}
+          password: ${{ github.token }}
 
       - name: Build and push backend
         uses: docker/build-push-action@v6
@@ -65,10 +65,11 @@ jobs:
           cache-to: type=gha,mode=max,scope=backend
           labels: |
             org.opencontainers.image.title=${{ github.repository }}-backend
+            org.opencontainers.image.description=Backend service for Geyser application
             org.opencontainers.image.version=${{ steps.vars.outputs.version }}
-            org.opencontainers.image.source=${{ github.event.repository.html_url }}
-            org.opencontainers.image.revision=${{ github.sha }}
             org.opencontainers.image.created=${{ steps.vars.outputs.date }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.source=${{ github.event.repository.html_url }}
 
       - name: Build and push frontend
         uses: docker/build-push-action@v6
