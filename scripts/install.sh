@@ -14,7 +14,7 @@ cleanup() {
 }
 trap cleanup EXIT
 
-echo "Installing Geyser v${GEYSER_VERSION}..."
+echo "Installing Geyser ${GEYSER_VERSION}..."
 
 # Create installation root directory if it doesn't exist
 mkdir -p "${INSTALL_ROOT}" || {
@@ -100,7 +100,7 @@ mv "${extract_path}" "${install_path}" || {
 
 # Verify installation succeeded
 if [ -x "${install_path}/scripts/geyser" ]; then
-    echo "Geyser v${GEYSER_VERSION} installed successfully"
+    echo "Geyser ${GEYSER_VERSION} installed successfully"
 else
     echo "Error: ${install_path}/scripts/geyser not found" >&2
     exit 1

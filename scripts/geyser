@@ -18,7 +18,7 @@ set -e
 # Help text function
 show_help() {
     cat <<EOF
-Geyser Administration Script v${VERSION}
+Geyser ${GEYSER_VERSION}
 
 Usage: geyser [OPTIONS] COMMAND
 
@@ -125,7 +125,7 @@ main() {
             exit 0
             ;;
         -v | --version)
-            echo "Geyser Administration Script v${VERSION}"
+            echo "Geyser ${GEYSER_VERSION}"
             exit 0
             ;;
         --log-level)
