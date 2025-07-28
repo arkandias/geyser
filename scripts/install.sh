@@ -1,8 +1,11 @@
 #!/bin/sh
 
-GITHUB_REPO="https://github.com/arkandias/geyser"
 GEYSER_VERSION="1.0.0"
-INSTALL_ROOT="${HOME:?"HOME environment variable is not set"}/.geyser"
+
+archive_url="${GITHUB_REPO}/archive/releases/download/v${GEYSER_VERSION}/geyser-${GEYSER_VERSION}.tar.gz"
+archive_path="/tmp/geyser-${GEYSER_VERSION}.tar.gz"
+extract_path="/tmp/geyser/${GEYSER_VERSION}"
+default_install_path="${HOME}/.geyser/${GEYSER_VERSION}"
 
 cleanup() {
     if [ -n "${archive_path}" ] && [ -f "${archive_path}" ]; then
@@ -13,14 +16,6 @@ cleanup() {
     fi
 }
 trap cleanup EXIT
-
-echo "Installing Geyser ${GEYSER_VERSION}..."
-
-# Create installation root directory if it doesn't exist
-mkdir -p "${INSTALL_ROOT}" || {
-    echo "Error: Failed to create directory ${INSTALL_ROOT}" >&2
-    exit 1
-}
 
 download() {
     if command -v curl >/dev/null 2>&1; then
@@ -33,32 +28,47 @@ download() {
     fi
 }
 
-url="${GITHUB_REPO}/archive/releases/download/v${GEYSER_VERSION}/geyser-${GEYSER_VERSION}.tar.gz"
-archive_path="/tmp/geyser-${GEYSER_VERSION}.tar.gz"
-extract_path="/tmp/geyser/${GEYSER_VERSION}"
-install_path="${INSTALL_ROOT}/${GEYSER_VERSION}"
+echo "Geyser ${GEYSER_VERSION} installation"
+while true; do
+    printf "Enter installation path [%s]: " "${default_install_path}"
+    read -r install_path
 
-# Check if the installation directory already exists
-if [ -d "${install_path}" ]; then
-    printf "Installation directory %s already exists.\nDo you want to replace it? [y/N] " "${install_path}"
-    read -r response
-    case "${response}" in
-    [yY])
-        rm -rf "${install_path}" || {
-            echo "Error: Failed to remove existing installation" >&2
-            exit 1
+    if [ -z "${install_path}" ]; then
+        install_path="${default_install_path}"
+    fi
+
+    # Check if the installation directory already exists
+    if [ -d "${install_path}" ]; then
+        printf "Installation directory %s already exists.\nDo you want to replace it? [y/N] " "${install_path}"
+        read -r response
+        case "${response}" in
+        [yY])
+            # Remove existing installation directory
+            rm -rf "${install_path}" || {
+                echo "Error: Failed to remove existing installation" >&2
+                exit 1
+            }
+            break
+            ;;
+        *)
+            echo "Please choose a different installation directory"
+            continue
+            ;;
+        esac
+    else
+        # Create installation parent directory if it doesn't exist
+        parent_path="$(dirname "${install_path}")"
+        mkdir -p "${parent_path}" || {
+            echo "Error: Failed to create parent directory ${parent_path}" >&2
+            continue
         }
-        ;;
-    *)
-        echo "Installation cancelled"
-        exit 1
-        ;;
-    esac
-fi
+        break
+    fi
+done
 
 # Download Geyser from GitHub repository
-download "${archive_path}" "${url}" || {
-    echo "Error: Failed to download ${url} to ${archive_path}" >&2
+download "${archive_path}" "${archive_url}" || {
+    echo "Error: Failed to download ${archive_url} to ${archive_path}" >&2
     exit 1
 }
 
