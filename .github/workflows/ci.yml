@@ -75,7 +75,8 @@ jobs:
       - name: Create GitHub Release
         if: steps.check_tag.outputs.should_release == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}
+          # Use PAT instead of github.token to allow triggering the release workflow
+          GH_TOKEN: ${{ secrets.RELEASE_TOKEN }}
         run: |
           TAG_NAME="${{ github.ref_name }}"
           PRERELEASE_FLAG=""
