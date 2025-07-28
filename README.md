@@ -618,7 +618,7 @@ You can automate deployment on repository updates with a webhook as follows:
 The default webhook configuration (`config/hooks.json`) defines a `deploy` hook that triggers when:
 
 - A GitHub Actions workflow named "CI" completes successfully
-- The workflow was triggered by a tag push
+- The workflow was triggered by a push on branch `master`
 - The webhook signature is verified using `WEBHOOK_SECRET`
 
 **Note:** The default configuration is designed for GitHub repositories, but it can be adapted for other Git hosting
