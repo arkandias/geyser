@@ -106,7 +106,8 @@ jobs:
                 echo "$item" >> "$TEMP_FILE_LIST"
               fi
             else
-              echo "⚠️ Not found: $item"
+              echo "❌ Not found: $item"
+              exit 1
             fi
           done < MANIFEST
 
