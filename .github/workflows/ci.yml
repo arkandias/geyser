@@ -71,7 +71,11 @@ jobs:
             echo "❌ Tag does not match version pattern: $TAG_NAME"
           fi
       - name: Checkout repository
+        if: steps.check_tag.outputs.should_release == 'true'
         uses: actions/checkout@v4
+      - name: Check if versions match across repository
+        if: steps.check_tag.outputs.should_release == 'true'
+        run: scripts/check-versions.sh "${{ steps.check_tag.outputs.version }}"
       - name: Create GitHub Release
         if: steps.check_tag.outputs.should_release == 'true'
         env:
