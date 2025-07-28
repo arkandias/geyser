@@ -32,6 +32,6 @@ handle_restart() {
 
     info "Restarting services..."
     _compose down
-    _compose up -d --no-build
+    _compose up -d
     success "All services restarted successfully"
 }

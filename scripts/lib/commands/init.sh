@@ -94,7 +94,7 @@ handle_init() {
     _hasura metadata apply
 
     info "Starting all services..."
-    _compose up -d --no-build
+    _compose up -d
 
     info "Cleaning up Docker..."
     docker system prune -f
