@@ -90,8 +90,8 @@ During the installation, you will be prompted for the installation directory (de
 
 #### Git-based installation
 
-Alternatively, you can clone the whole repository for development and easier [Updates and Deployment](#updates-and-deployment)
-in production:
+Alternatively, you can clone the whole repository for development and easier
+[Updates and Deployment](#updates-and-deployment) in production:
 
 ```shell
 git clone https://github.com/arkandias/geyser.git
@@ -342,8 +342,8 @@ Geyser uses two environment files:
 
 Variables in `.env.local` take precedence over those in `.env`.
 
-**Note:** In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their own
-`.env` files (see [Development Environment](#development-environment)).
+**Note:** In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their
+own `.env` files (see [Development Environment](#development-environment)).
 
 | Environment variable          | Default value | Description                                                                                                                                          |
 | ----------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -445,7 +445,8 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 
 - `https://<org-key>.<server-hostname>` serves the web client application for each organization
 - `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
-- `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all organizations)
+- `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
+  organizations)
 
 The client determines the organization key from the subdomain automatically.
 
@@ -669,7 +670,8 @@ If you used the install script, updates require manual reinstallation:
    geyser keycloak-export
    ```
 2. Download and install the new version as described in [the installation step](#installation)
-3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `db/backups/`, `keycloak/backups/`, `logs/`, `nginx/certs/`, `server/keys/`)
+3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `db/backups/`,
+   `keycloak/backups/`, `logs/`, `nginx/certs/`, `server/keys/`)
 4. Now `geyser` should point to the new version script.
    Update Docker images and restart services:
    ```shell
@@ -682,9 +684,5 @@ Bug reports, feature requests, and pull requests are welcome on GitHub.
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3.0 &ndash; see the [LICENSE](LICENSE) file for
-details.
-
-```
-
-```
+This project is licensed under the GNU Affero General Public License v3.0
+&ndash; see the [LICENSE](LICENSE) file for details.
