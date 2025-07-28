@@ -6,7 +6,7 @@
 # License: GNU AGPL v3.0
 #######################################
 
-declare -rx GEYSER_VERSION="1.0.0"
+declare -rx GEYSER_VERSION="1.0.1"
 
 # Exit the script immediately if any command fails
 set -e
