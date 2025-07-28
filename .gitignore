@@ -1,11 +1,11 @@
-dist/
 node_modules/
+dist/
 
 /db/backups/
 /keycloak/backups/
+/certs/
 /keys/
 /logs/
-/nginx/certs/
 /server/keys/
 
 *.tsbuildinfo
