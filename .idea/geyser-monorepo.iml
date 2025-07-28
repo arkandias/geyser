@@ -20,6 +20,7 @@
       <excludeFolder url="file://$MODULE_DIR$/db/backups" />
       <excludeFolder url="file://$MODULE_DIR$/keycloak/backups" />
       <excludeFolder url="file://$MODULE_DIR$/nginx/certs" />
+      <excludeFolder url="file://$MODULE_DIR$/keys" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
