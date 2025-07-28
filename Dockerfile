@@ -66,6 +66,7 @@ CMD ["pnpm", "start:prod"]
 FROM nginx:1.29 AS frontend
 
 COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
+COPY ./nginx/docker-entrypoint.d/ /docker-entrypoint.d/
 COPY ./nginx/templates/ /etc/nginx/templates/
 COPY ./nginx/includes/ /etc/nginx/includes/
 
