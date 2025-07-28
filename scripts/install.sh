@@ -14,6 +14,8 @@ cleanup() {
 }
 trap cleanup EXIT
 
+echo "Installing Geyser v${GEYSER_VERSION}..."
+
 # Create installation root directory if it doesn't exist
 mkdir -p "${INSTALL_ROOT}" || {
     echo "Error: Failed to create directory ${INSTALL_ROOT}" >&2
@@ -98,20 +100,20 @@ mv "${extract_path}" "${install_path}" || {
 
 # Verify installation succeeded
 if [ -x "${install_path}/scripts/geyser" ]; then
-    echo "✓ Geyser installed successfully"
+    echo "Geyser v${GEYSER_VERSION} installed successfully"
 else
-    echo "⚠ Installation may have failed: geyser script not found" >&2
+    echo "Error: ${install_path}/scripts/geyser not found" >&2
     exit 1
 fi
 
 # Create ~/.local/bin if it doesn't exist
 mkdir -p "${HOME}/.local/bin" || {
-    echo "⚠ Failed to create directory ${HOME}/.local/bin" >&2
+    echo "Warning: Failed to create directory ${HOME}/.local/bin" >&2
 }
 
 # Add symlink to geyser script in ~/.local/bin
 ln -sf "${install_path}/scripts/geyser" "${HOME}/.local/bin/geyser" || {
-    echo "⚠ Failed to create symlink to geyser script in ${HOME}/.local/bin" >&2
+    echo "Warning: Failed to create symlink to geyser script in ${HOME}/.local/bin" >&2
 }
 echo "Added symlink to geyser script in ${HOME}/.local/bin"
 
@@ -119,7 +121,7 @@ echo "Added symlink to geyser script in ${HOME}/.local/bin"
 case ":${PATH}:" in
 *":${HOME}/.local/bin:"*) ;;
 *)
-    echo "⚠ Add ~/.local/bin to PATH"
+    echo "Warning: Add ~/.local/bin to PATH"
     echo "You may add the following line to your shell config file (e.g., .bashrc or .zshrc):"
     echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
     ;;
