@@ -31,22 +31,17 @@ RUN pnpm --filter=server deploy --prod /prod/server
 
 FROM build-shared AS build-frontend
 
-ARG BUILD_VERSION
-ARG API_URL
-ARG GRAPHQL_URL
-ARG TENANCY_MODE
-ARG ORGANIZATION_KEY
+ARG VITE_BUILD_VERSION
+ARG VITE_API_URL
+ARG VITE_GRAPHQL_URL
+ARG VITE_TENANCY_MODE
+ARG VITE_ORGANIZATION_KEY
 
-RUN test -n "${API_URL}" || (echo "ERROR: API_URL build argument is required" && exit 1)
-RUN test -n "${GRAPHQL_URL}" || (echo "ERROR: GRAPHQL_URL build argument is required" && exit 1)
-RUN test -n "${TENANCY_MODE}" || (echo "ERROR: TENANCY_MODE build argument is required" && exit 1)
-RUN bash -c '[[ "${TENANCY_MODE}" =~ ^(multi|single)$ ]] || (echo "ERROR: TENANCY_MODE must be \"multi\" or \"single\", got: \"${TENANCY_MODE}\"" && exit 1)'
-
-RUN VITE_BUILD_VERSION="${BUILD_VERSION}" \
-    VITE_API_URL="${API_URL}" \
-    VITE_GRAPHQL_URL="${GRAPHQL_URL}" \
-    VITE_MULTI_TENANT=$([ "${TENANCY_MODE}" = "multi" ] && echo "true" || echo "false") \
-    VITE_ORGANIZATION_KEY="${ORGANIZATION_KEY}" \
+RUN VITE_BUILD_VERSION="${VITE_BUILD_VERSION}" \
+    VITE_API_URL="${VITE_API_URL}" \
+    VITE_GRAPHQL_URL="${VITE_GRAPHQL_URL}" \
+    VITE_TENANCY_MODE="${VITE_TENANCY_MODE}" \
+    VITE_ORGANIZATION_KEY="${VITE_ORGANIZATION_KEY}" \
     pnpm --filter=client run build
 
 FROM base AS backend
@@ -71,13 +66,7 @@ CMD ["pnpm", "start:prod"]
 FROM nginx:1.27 AS frontend
 
 COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
-
-ARG TENANCY_MODE
-
-RUN test -n "${TENANCY_MODE}" || (echo "ERROR: TENANCY_MODE build argument is required" && exit 1)
-RUN bash -c '[[ "${TENANCY_MODE}" =~ ^(multi|single)$ ]] || (echo "ERROR: TENANCY_MODE must be \"multi\" or \"single\", got: \"${TENANCY_MODE}\"" && exit 1)'
-
-COPY nginx/templates/${TENANCY_MODE}-tenant.conf.template /etc/nginx/templates/default.conf.template
+COPY ./nginx/templates/ /etc/nginx/templates/
 COPY ./nginx/includes/ /etc/nginx/includes/
 
 EXPOSE 80

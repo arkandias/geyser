@@ -105,9 +105,7 @@ services:
       - private-db
 
   backend:
-    build:
-      context: .
-      target: backend
+    image: ghcr.io/arkandias/geyser-backend:${GEYSER_VERSION}
     restart: always
     depends_on:
       keycloak:
@@ -142,14 +140,7 @@ services:
       - ./server/keys:/app/keys
 
   frontend:
-    build:
-      context: .
-      target: frontend
-      args:
-        BUILD_VERSION: "${GEYSER_VERSION}"
-        API_URL: "${API_URL}"
-        GRAPHQL_URL: "${API_URL}/graphql"
-        TENANCY_MODE: "${GEYSER_TENANCY}"
+    image: ghcr.io/arkandias/geyser-frontend:${GEYSER_VERSION}
     restart: always
     depends_on:
       keycloak:
@@ -164,6 +155,9 @@ services:
       start_period: 30s
       start_interval: 1s
     environment:
+      VITE_API_URL: "${API_URL}"
+      VITE_GRAPHQL_URL: "${API_URL}/graphql"
+      VITE_TENANCY_MODE: "${GEYSER_TENANCY}"
       NGINX_DOMAIN: "${GEYSER_DOMAIN}"
       NGINX_PROXY_KEYCLOAK_URL: "http://keycloak:8080"
       NGINX_PROXY_API_URL: "http://backend:3000"

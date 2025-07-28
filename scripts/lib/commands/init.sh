@@ -48,7 +48,7 @@ handle_init() {
 
     info "Pulling and building Docker images..."
     _compose pull
-    _compose build --pull --no-cache
+    _compose build --pull --no-cache keycloak
 
     info "Initializing Keycloak..."
 
@@ -94,7 +94,7 @@ handle_init() {
     _hasura metadata apply
 
     info "Starting all services..."
-    _compose up -d
+    _compose up -d --no-build
 
     info "Cleaning up Docker..."
     docker system prune -f

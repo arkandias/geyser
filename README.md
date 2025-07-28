@@ -269,11 +269,12 @@ These packages are built into two Docker images using a multi-stage build proces
 The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
 [Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
 
-Configuration is managed through environment variables that must be defined in `client/.env` during development or set
-during the build process in production:
+Configuration is managed through environment variables. These can be defined in `client/.env.development` for local
+development, or set as runtime environment variables when running the Docker image `frontend`:
 
 | Environment Variable    | Default Value | Description                                                                                                                  |
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `VITE_BUILD_VERSION`    | `<null>`      | The version name (build argument only)                                                                                       |
 | `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
 | `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
 | `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode (`true`/`false`), see [Multi-tenant Mode](#multi-tenant-mode)                                      |
