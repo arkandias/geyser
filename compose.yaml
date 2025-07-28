@@ -106,6 +106,9 @@ services:
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:${GEYSER_VERSION}
+    build:
+      context: .
+      target: backend
     restart: always
     depends_on:
       keycloak:
@@ -141,6 +144,11 @@ services:
 
   frontend:
     image: ghcr.io/arkandias/geyser-frontend:${GEYSER_VERSION}
+    build:
+      context: .
+      target: frontend
+      args:
+        BUILD_VERSION: "${GEYSER_VERSION}"
     restart: always
     depends_on:
       keycloak:
