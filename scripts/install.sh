@@ -31,7 +31,7 @@ download() {
     fi
 }
 
-url="${GITHUB_REPO}/archive/refs/tags/${GEYSER_VERSION}.tar.gz"
+url="${GITHUB_REPO}/archive/releases/download/v${GEYSER_VERSION}/geyser-${GEYSER_VERSION}.tar.gz"
 archive_path="/tmp/geyser-${GEYSER_VERSION}.tar.gz"
 extract_path="/tmp/geyser/${GEYSER_VERSION}"
 install_path="${INSTALL_ROOT}/${GEYSER_VERSION}"
