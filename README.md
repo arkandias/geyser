@@ -99,9 +99,9 @@ ln -sf "$(pwd)/scripts/geyser" "$HOME/.local/bin/geyser"
 
 1. Edit the file `.env` and replace `geyser.example.com` with your server's hostname.
 
-2. Add the TLS certificates for your server's hostname to the `nginx/certs` directory:
-   - `nginx/certs/fullchain.crt` should contain the full certificate chain
-   - `nginx/certs/private.key` should contain the private key
+2. Add the TLS certificates for your server's hostname to the `certs/` directory:
+   - `certs/fullchain.crt` should contain the full certificate chain
+   - `certs/private.key` should contain the private key
 
 3. Initialize Geyser with the following command:
 

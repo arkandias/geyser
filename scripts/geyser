@@ -82,12 +82,14 @@ declare -rx GEYSER_HOME
 # Directories paths
 declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/db/backups"
 declare -r KC_BACKUPS_DIR="${GEYSER_HOME}/keycloak/backups"
+declare -r CERTS_DIR="${GEYSER_HOME}/certs"
 declare -r KEYS_DIR="${GEYSER_HOME}/keys"
 declare -r LOGS_DIR="${GEYSER_HOME}/logs"
 
 # Create required directories
 mkdir -p "${DB_BACKUPS_DIR}"
 mkdir -p "${KC_BACKUPS_DIR}"
+mkdir -p "${CERTS_DIR}"
 mkdir -p "${KEYS_DIR}"
 mkdir -p "${LOGS_DIR}"
 

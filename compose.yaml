@@ -176,7 +176,7 @@ services:
     networks:
       - public
     volumes:
-      - ./nginx/certs:/etc/nginx/certs:ro
+      - ./certs:/etc/nginx/certs:ro
 
 networks:
   private-db:
