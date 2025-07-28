@@ -7,6 +7,10 @@ It manages the complete workflow from initial teacher requests through commissio
 Built with PostgreSQL, Hasura GraphQL, NestJS, and Keycloak authentication, it provides a secure and efficient
 "Course Assignment Flow".
 
+**Note:** This documentation is intended for system administrators and developers who need to install, configure, and
+maintain Geyser.
+End-user documentation will be provided separately.
+
 ## Table of contents
 
 - [Quick Start](#quick-start)
