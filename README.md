@@ -71,11 +71,12 @@ sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/too
 
 ### Installation
 
+#### Script-based installation
+
 Download and install the latest version:
 
 ```shell
 curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | sh
-cd ~/.geyser/<version>
 ```
 
 Or for a specific version (see the releases list [here](https://github.com/arkandias/geyser/releases)):
@@ -83,16 +84,45 @@ Or for a specific version (see the releases list [here](https://github.com/arkan
 ```shell
 GEYSER_VERSION="1.2.3"
 curl -fsSL "https://github.com/arkandias/geyser/raw/${GEYSER_VERSION}/scripts/install.sh" | sh
-cd ~/.geyser/"${GEYSER_VERSION}"
 ```
 
-Alternatively, you can clone the whole repository for development and easier [Updates and Deployment](#updates-and-deployment):
+During the installation, you will be prompted for the installation directory (default is `~/.geyser/<version>`).
+
+#### Git-based installation
+
+Alternatively, you can clone the whole repository for development and easier [Updates and Deployment](#updates-and-deployment)
+in production:
 
 ```shell
 git clone https://github.com/arkandias/geyser.git
 cd geyser
-mkdir -p "$HOME/.local/bin"
-ln -sf "$(pwd)/scripts/geyser" "$HOME/.local/bin/geyser"
+mkdir -p ~/.local/bin
+ln -sf "$(pwd)/scripts/geyser" ~/.local/bin/geyser
+```
+
+In this case, the installation directory is wherever you cloned the repository (e.g., `~/geyser` if you cloned it to
+your home directory).
+
+#### Verify installation
+
+Confirm the installation was successful:
+
+```shell
+geyser --version
+```
+
+If you get a "command not found" error, you may need to add `~/.local/bin` to your PATH:
+
+```shell
+export PATH="$HOME/.local/bin:$PATH"
+```
+
+Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make the modification persistent.
+
+Alternatively, you can use the full path to the script:
+
+```shell
+<install-dir>/scripts/geyser --version
 ```
 
 ### Initialization
@@ -108,16 +138,6 @@ ln -sf "$(pwd)/scripts/geyser" "$HOME/.local/bin/geyser"
    ```shell
    geyser init
    ```
-
-   **Note:** If you get a "command not found" error, you need to add `~/.local/bin` to your PATH:
-
-   ```shell
-   export PATH="$HOME/.local/bin:$PATH"
-   ```
-
-   Add this line to your shell configuration file (e.g., `~/.bashrc` or `~/.zshrc`) to make the modification persistent.
-
-   Alternatively, you can use the full path to the script: `scripts/geyser`
 
 4. During initialization, you will be prompted for Keycloak temporary admin account username and password (choose a
    strong one!).
@@ -664,3 +684,7 @@ Bug reports, feature requests, and pull requests are welcome on GitHub.
 
 This project is licensed under the GNU Affero General Public License v3.0 &ndash; see the [LICENSE](LICENSE) file for
 details.
+
+```
+
+```
