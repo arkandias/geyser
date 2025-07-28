@@ -3,6 +3,7 @@ node_modules/
 
 /db/backups/
 /keycloak/backups/
+/keys/
 /logs/
 /nginx/certs/
 /server/keys/
