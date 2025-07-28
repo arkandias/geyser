@@ -1,0 +1,9 @@
+config/
+db/
+hasura/
+keycloak/
+scripts/
+.env
+compose.dev.yaml
+compose.yaml
+LICENCE
