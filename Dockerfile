@@ -63,7 +63,7 @@ EXPOSE 3000
 
 CMD ["pnpm", "start:prod"]
 
-FROM nginx:1.27 AS frontend
+FROM nginx:1.29 AS frontend
 
 COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
 COPY ./nginx/templates/ /etc/nginx/templates/
