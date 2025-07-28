@@ -17,6 +17,6 @@ if [ "${V_PACKAGE}" = "$1" ] &&
     [ "${V_GEYSER}" = "$1" ]; then
     echo "All versions match (${V_PACKAGE})"
 else
-    echo "Version mismatch: package.json=${V_PACKAGE}, install.sh=${V_INSTALL}, geyser=${V_GEYSER}"
+    echo "Version mismatch: expected=$1, package.json=${V_PACKAGE}, install.sh=${V_INSTALL}, geyser=${V_GEYSER}"
     exit 1
 fi
