@@ -137,7 +137,7 @@ services:
       - private-db
       - public
     volumes:
-      - ./server/keys:/app/keys
+      - ./keys:/app/keys
 
   frontend:
     image: ghcr.io/arkandias/geyser-frontend:${GEYSER_VERSION}
