@@ -324,7 +324,7 @@ development, or set as runtime environment variables when running the Docker ima
 | `VITE_BUILD_VERSION`    | `<null>`      | The version name (build argument only)                                                                                       |
 | `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
 | `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
-| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode (`true`/`false`), see [Multi-tenant Mode](#multi-tenant-mode)                                      |
+| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode [`true`/`false`], see [Multi-tenant Mode](#multi-tenant-mode)                                      |
 | `VITE_ORGANIZATION_KEY` | `<null>`      | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
 | `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
@@ -374,11 +374,11 @@ own `.env` files (see [Development Environment](#development-environment)).
 
 | Environment variable          | Default value | Description                                                                                                                                          |
 | ----------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `GEYSER_ENV`                  | `production`  | Deployment environment (`development`/`production`), see [Development Environment](#development-environment)                                         |
+| `GEYSER_ENV`                  | `production`  | Deployment environment [`development`/`production`], see [Development Environment](#development-environment)                                         |
 | `GEYSER_DOMAIN`               | `localhost`   | Hostname (and optionally port number) of the server (e.g., `geyser.example.com`)                                                                     |
-| `GEYSER_TENANCY`              | `single`      | Tenancy mode (`single`/`multi`), see [Multi-tenant Mode](#multi-tenant-mode)                                                                         |
-| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold (`silent`/`debug`/`info`/`warn`/`error`)                                                                                           |
-| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service (`true`/`false`), see [Running Geyser as a systemd service](#running-geyser-as-a-systemd-service) |
+| `GEYSER_TENANCY`              | `single`      | Tenancy mode [`single`/`multi`], see [Multi-tenant Mode](#multi-tenant-mode)                                                                         |
+| `GEYSER_LOG_LEVEL`            | `info`        | Logging threshold [`silent`/`debug`/`info`/`warn`/`error`]                                                                                           |
+| `GEYSER_AS_SERVICE`           | `false`       | Indicate if Geyser is running as a systemd service [`true`/`false`], see [Running Geyser as a systemd service](#running-geyser-as-a-systemd-service) |
 | `NGINX_AUTH_ADMIN_ALLOW`      | `0.0.0.0/0`   | Allowed IPs for Keycloak restricted access                                                                                                           |
 | `KC_DB_PASSWORD`              | **Required**  | Password for Keycloak database privileged role                                                                                                       |
 | `DB_PASSWORD`                 | **Required**  | Password for the main database privileged role                                                                                                       |
@@ -436,7 +436,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-**Note:** Vite will use the environment file `client/.env` to set the environment variables described in
+**Note:** Vite will use the environment file `client/.env.development` to set the environment variables described in
 [Package client](#package-client).
 
 #### API Server Development
@@ -581,10 +581,10 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 
 - `-h, --help`: Show help message
 - `-v, --version`: Show version information
-- `--log-level LEVEL`: Set log level (`silent`/`debug`/`info`/`warn`/`error`)
+- `--log-level LEVEL`: Set log level [`silent`/`debug`/`info`/`warn`/`error`]
 - `--silent`: Set log level to silent
 - `--debug`: Set log level to debug
-- `--env ENV`: Set deployment environment (`development`/`production`)
+- `--env ENV`: Set deployment environment [`development`/`production`]
 - `--dev`: Set deployment environment to development
 - `--prod`: Set deployment environment to production
 - `--domain DOMAIN`: Set domain name for deployment (e.g., `geyser.example.com`)
