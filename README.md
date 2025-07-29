@@ -67,7 +67,7 @@ This guide will get you a working instance of Geyser in minutes.
   curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
   ```
 
-- **Oh My Zsh** (Zsh users only &ndash; required for autocomplete):
+- **Oh My Zsh** (zsh users only &ndash; required for autocomplete):
 
   ```shell
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
@@ -110,12 +110,25 @@ Alternatively, you can clone the whole repository for development and easier
 ```shell
 git clone https://github.com/arkandias/geyser.git
 cd geyser
+```
+
+In this case, the installation directory is wherever you cloned the repository (e.g., `~/geyser` if you ran the git
+clone command from your home directory).
+Create a symlink to geyser script in `~/.local/bin`:
+
+```shell
 mkdir -p ~/.local/bin
 ln -sf "$(pwd)/scripts/geyser" ~/.local/bin/geyser
 ```
 
-In this case, the installation directory is wherever you cloned the repository (e.g., `~/geyser` if you cloned it to
-your home directory).
+Set up your local configuration file:
+
+```shell
+cp .env .env.local
+```
+
+**Note:** Use `.env.local` for your configuration changes.
+This file is git-ignored and won't affect version control.
 
 #### Verify installation
 
@@ -136,16 +149,16 @@ Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) t
 Alternatively, you can use the full path to the script:
 
 ```shell
-<install dir>/scripts/geyser --version
+<install-dir>/scripts/geyser --version
 ```
 
 ### Initialization
 
-1. Edit the file `.env` and replace `<server hostname>` with your server's hostname, e.g. `geyser.example.com`.
+1. Edit the file `.env` and replace `geyser.example.com` with your server's hostname.
 
-2. Add the TLS certificates for your server's hostname to the `certs/<server hostname>/` directory as follows:
-   - `certs/<server hostname>/fullchain.crt` for the full certificate chain
-   - `certs/<server hostname>/private.key` for the private key
+2. Add the TLS certificates for your server's hostname to the `certs/<server-hostname>/` directory as follows:
+   - `certs/<server-hostname>/fullchain.crt` for the full certificate chain
+   - `certs/<server-hostname>/private.key` for the private key
 
 3. Initialize Geyser with the following command:
 
@@ -157,8 +170,8 @@ Alternatively, you can use the full path to the script:
    strong one!).
 
 5. Once the initialization is finished, the following services are accessible in a web browser:
-   - Keycloak: `https://<server hostname>/auth`
-   - Geyser: `https://<server hostname>`
+   - Keycloak: `https://<server-hostname>/auth`
+   - Geyser: `https://<server-hostname>`
 
 ### Creating a first user in Keycloak
 
@@ -166,7 +179,7 @@ The Keycloak account you created during initialization is a temporary account fo
 This realm is intended to administrate the other realms only.
 Thus, Geyser uses a different realm to authenticate users: the realm `geyser`.
 We will now create a first user in this realm, with privileges to administrate the app.
-In a web browser, go to: `https://<server hostname>/auth`
+In a web browser, go to: `https://<server-hostname>/auth`
 
 1. Connect to Keycloak admin console using the temporary admin account.
 
@@ -202,7 +215,7 @@ In a web browser, go to: `https://<server hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/07_set_password.png)
 
-8. Go to: `https://<server hostname>` and log into Geyser with your newly created user email and password.
+8. Go to: `https://<server-hostname>` and log into Geyser with your newly created user email and password.
 
    ![Keycloak master realm login page](docs/images/keycloak/08_login_geyser.png)
 
@@ -247,9 +260,9 @@ Geyser consists of multiple services, each running in a Docker container organiz
 The frontend consists of an Nginx Server (`frontend`) that serves as the main entry point and reverse proxy for all
 external access:
 
-- `https://<server hostname>` serves the web client application
-- `https://<server hostname>/api` proxies requests to the backend NestJS server
-- `https://<server hostname>/auth` proxies requests to the Keycloak authentication service
+- `https://<server-hostname>` serves the web client application
+- `https://<server-hostname>/api` proxies requests to the backend NestJS server
+- `https://<server-hostname>/auth` proxies requests to the Keycloak authentication service
 
 The frontend also handles TLS termination and serves static assets for the web application.
 
@@ -458,9 +471,9 @@ In this configuration, multiple organizations can be hosted on the same Geyser i
 them.
 Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
 
-- `https://<org key>.<server hostname>` serves the web client application for each organization
-- `https://api.<server hostname>` proxies requests to the backend NestJS server (shared across all organizations)
-- `https://auth.<server hostname>` proxies requests to the Keycloak authentication service (shared across all
+- `https://<org-key>.<server-hostname>` serves the web client application for each organization
+- `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
+- `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
   organizations)
 
 The client determines the organization key from the subdomain automatically.
@@ -568,20 +581,20 @@ The `geyser` script provides a comprehensive set of commands to manage your inst
 
 - `-h, --help`: Show help message
 - `-v, --version`: Show version information
-- `--log-level LEVEL`: Set log level [silent|debug|info|warn|error]
+- `--log-level LEVEL`: Set log level (`silent`/`debug`/`info`/`warn`/`error`)
 - `--silent`: Set log level to silent
 - `--debug`: Set log level to debug
-- `--env ENV`: Set deployment environment [development|production]
+- `--env ENV`: Set deployment environment (`development`/`production`)
 - `--dev`: Set deployment environment to development
 - `--prod`: Set deployment environment to production
-- `--domain DOMAIN`: Set domain name for deployment (e.g., geyser.example.com)
+- `--domain DOMAIN`: Set domain name for deployment (e.g., `geyser.example.com`)
 - `--as-service`: Run as a systemd service (affects logging)
 
 Run `geyser COMMAND --help` for more information on a command.
 
-#### Shell Completion
+#### Shell Completion (requires Oh My Zsh)
 
-For zsh users, shell completion can be installed with:
+Shell completion for zsh can be installed with:
 
 ```shell
 geyser install-completion
@@ -636,7 +649,7 @@ You can automate deployment on repository updates with a webhook as follows:
 1. Setup webhook environment variables in `.env` or `.env.local`:
 
    ```shell
-   WEBHOOK_SECRET=<webhook secret>
+   WEBHOOK_SECRET=<webhook-secret>
    ```
 
 2. Start webhook server:
@@ -662,9 +675,9 @@ services by modifying the trigger rules in `config/hooks.json`.
 
 To use the default webhook, add a webhook in your GitHub repository settings with the following parameters:
 
-- Payload URL: `https://<server hostname>:9000/hooks/deploy`
+- Payload URL: `https://<server-hostname>:9000/hooks/deploy`
 - Content type: `application/json`
-- Secret: `<webhook secret>`
+- Secret: `<webhook-secret>`
 - "Enable SSL verification"
 - "Send me everything" or select "Workflow runs"
 

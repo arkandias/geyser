@@ -7,9 +7,9 @@ Requires=docker.service
 Type=oneshot
 User=<username>
 RemainAfterExit=yes
-WorkingDirectory=<install dir>
-ExecStart=<install dir>/scripts/geyser start
-ExecStop=<install dir>/scripts/geyser stop
+WorkingDirectory=<install-dir>
+ExecStart=<install-dir>/scripts/geyser start
+ExecStop=<install-dir>/scripts/geyser stop
 Restart=on-failure
 RestartSec=10
 

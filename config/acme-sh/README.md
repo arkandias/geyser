@@ -9,8 +9,8 @@ curl https://get.acme.sh | sh -s email="<email>"
 Set the following environment variables:
 
 ```shell
-export GEYSER_DOMAIN=<server hostname>
-export GEYSER_HOME=<install dir>
+export GEYSER_DOMAIN=<server-hostname>
+export GEYSER_HOME=<install-dir>
 ```
 
 ## Issue certificates (with OVH DNS)
@@ -19,9 +19,9 @@ Create a token [here][token-url] with unlimited validity and restricted to the s
 
 ```shell
 export OVH_END_POINT=ovh-eu
-export OVH_AK="<application key>"
-export OVH_AS="<application secret>"
-export OVH_CK="<consumer key>"
+export OVH_AK="<application-key>"
+export OVH_AS="<application-secret>"
+export OVH_CK="<consumer-key>"
 acme.sh --issue -d "${GEYSER_DOMAIN}" -d "*.${GEYSER_DOMAIN}" --dns dns_ovh --server letsencrypt --keylength 4096
 ```
 
