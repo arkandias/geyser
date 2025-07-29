@@ -1,7 +1,7 @@
 name: geyser
 services:
   kc-db:
-    image: postgres:17
+    image: postgres:17.5
     restart: always
     healthcheck:
       test: "pg_isready -U postgres -d keycloak || exit 1"
@@ -57,7 +57,7 @@ services:
     command: start --optimized
 
   db:
-    image: postgres:17
+    image: postgres:17.5
     restart: always
     healthcheck:
       test: "pg_isready -U postgres -d geyser || exit 1"
@@ -81,7 +81,7 @@ services:
       - ./db/backups:/backups
 
   hasura:
-    image: hasura/graphql-engine:v2.48.0.ubuntu
+    image: hasura/graphql-engine:v2.48.3-ce.cli-migrations-v2
     restart: always
     depends_on:
       db:
