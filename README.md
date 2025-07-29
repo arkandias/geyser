@@ -385,6 +385,7 @@ be merged with a second one (`compose.dev.yaml`).
 
 In this configuration, the Nginx reverse proxy (frontend) and NestJS API server (backend) run outside of Docker
 containers to facilitate development workflows.
+You need a [git-based installation](#git-based-installation) to run these.
 The containerized services remain accessible on the following ports:
 
 - Hasura GraphQL Engine: `http://localhost:8080`
@@ -684,8 +685,8 @@ If you used the install script, updates require manual reinstallation:
    geyser keycloak-export
    ```
 2. Download and install the new version as described in [the installation step](#installation)
-3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `db/backups/`,
-   `keycloak/backups/`, `logs/`, `nginx/certs/`, `server/keys/`)
+3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `backups/`,
+   `keycloak/backups/`, `logs/`, `certs/`, `server/keys/`)
 4. Now `geyser` should point to the new version script.
    Update Docker images and restart services:
    ```shell

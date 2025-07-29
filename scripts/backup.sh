@@ -30,7 +30,7 @@ kc_backup="kc_${timestamp}"
 
 "${SCRIPT_DIR}/geyser" stop
 "${SCRIPT_DIR}/geyser" data-backup --name "${db_backup}"
-"${SCRIPT_DIR}/geyser" webdav-upload --path "${SCRIPT_DIR}/../db/backups/${db_backup}"
+"${SCRIPT_DIR}/geyser" webdav-upload --path "${SCRIPT_DIR}/../backups/${db_backup}"
 "${SCRIPT_DIR}/geyser" stop
 "${SCRIPT_DIR}/geyser" keycloak-export --name "${kc_backup}"
 "${SCRIPT_DIR}/geyser" webdav-upload --path "${SCRIPT_DIR}/../keycloak/backups/${kc_backup}"

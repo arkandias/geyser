@@ -5,10 +5,10 @@ Requires=geyser.service
 
 [Service]
 Type=simple
-User=arkandias
-WorkingDirectory=/home/arkandias/geyser
-ExecStart=/home/arkandias/geyser/scripts/geyser webhook-start
-ExecStopPost=/home/arkandias/geyser/scripts/geyser webhook-stop
+User=<username>
+WorkingDirectory=<install-dir>
+ExecStart=<install-dir>/scripts/geyser webhook-start
+ExecStopPost=<install-dir>/scripts/geyser webhook-stop
 Restart=always
 RestartSec=10
 

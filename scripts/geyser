@@ -82,7 +82,7 @@ GEYSER_VERSION="$(cat "${GEYSER_HOME}/VERSION")"
 declare -rx GEYSER_VERSION
 
 # Directories paths
-declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/db/backups"
+declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/backups"
 declare -r KC_BACKUPS_DIR="${GEYSER_HOME}/keycloak/backups"
 declare -r CERTS_DIR="${GEYSER_HOME}/certs"
 declare -r KEYS_DIR="${GEYSER_HOME}/keys"

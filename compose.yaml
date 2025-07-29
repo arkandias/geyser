@@ -78,7 +78,7 @@ services:
       - private-db
     volumes:
       - data:/var/lib/postgresql/data
-      - ./db/backups:/backups
+      - ./backups:/backups
 
   hasura:
     image: hasura/graphql-engine:v2.48.3-ce.cli-migrations-v2

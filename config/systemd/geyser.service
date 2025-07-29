@@ -5,11 +5,11 @@ Requires=docker.service
 
 [Service]
 Type=oneshot
-User=arkandias
+User=<username>
 RemainAfterExit=yes
-WorkingDirectory=/home/arkandias/geyser
-ExecStart=/home/arkandias/geyser/scripts/geyser start
-ExecStop=/home/arkandias/geyser/scripts/geyser stop
+WorkingDirectory=<install-dir>
+ExecStart=<install-dir>/scripts/geyser start
+ExecStop=<install-dir>/scripts/geyser stop
 Restart=on-failure
 RestartSec=10
 
