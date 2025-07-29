@@ -104,7 +104,7 @@ curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEY
 
 #### Git-based installation
 
-Alternatively, you can clone the whole repository for development and easier
+Alternatively, you can clone the whole repository for development or for easier
 [updates and deployment](#updates-and-deployment) in production:
 
 ```shell
@@ -114,21 +114,19 @@ cd geyser
 
 In this case, the installation directory is wherever you cloned the repository (e.g., `~/geyser` if you ran the git
 clone command from your home directory).
-Create a symlink to geyser script in `~/.local/bin`:
+
+Then create a symlink to geyser script in `~/.local/bin`:
 
 ```shell
 mkdir -p ~/.local/bin
 ln -sf "$(pwd)/scripts/geyser" ~/.local/bin/geyser
 ```
 
-Set up your local configuration file:
+And create a local configuration file that won't be tracked by git:
 
 ```shell
 cp .env .env.local
 ```
-
-**Note:** Use `.env.local` for your configuration changes.
-This file is git-ignored and won't affect version control.
 
 #### Verify installation
 
@@ -144,7 +142,7 @@ If you get a "command not found" error, you may need to add `~/.local/bin` to yo
 export PATH="$HOME/.local/bin:$PATH"
 ```
 
-Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) to make the modification persistent.
+Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) to make the change permanent.
 
 Alternatively, you can use the full path to the script:
 
@@ -471,12 +469,12 @@ In this configuration, multiple organizations can be hosted on the same Geyser i
 them.
 Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
 
-- `https://<org-key>.<server-hostname>` serves the web client application for each organization
+- `https://<organization-key>.<server-hostname>` serves the web client application for each organization
 - `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
 - `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
   organizations)
 
-The client determines the organization key from the subdomain automatically.
+The client determines the organization key from the subdomain automatically, unless `VITE_ORGANIZATION_KEY` is provided.
 
 **Note:** Organization management in multi-tenant mode requires manual database operations on the `public.organization`
 table in the PostgreSQL database (standard CRUD operations).
@@ -642,7 +640,7 @@ If you installed Geyser by cloning the repository, you can use:
 scripts/deploy.sh
 ```
 
-This command pulls the latest code, updates Docker images, and restarts services.
+This command pulls the latest code, updates Docker images, apply database migrations, and restarts services.
 
 You can automate deployment on repository updates with a webhook as follows:
 
@@ -698,8 +696,19 @@ If you used the install script, updates require manual reinstallation:
    geyser keycloak-export
    ```
 2. Download and install the new version as described in [the installation step](#installation)
-3. Migrate your configuration and data files (including, but not limited to: `.env`, `.env.local`, `backups/`,
-   `keycloak/backups/`, `logs/`, `certs/`, `server/keys/`)
+
+3. Copy configuration files and data:
+
+   ```shell
+   cp <old-install-dir>/.env <new-install-dir>/
+   cp <old-install-dir>/.env.local <new-install-dir>/
+   cp -r <old-install-dir>/backups <new-install-dir>/
+   cp -r <old-install-dir>/keycloak/backups <new-install-dir>/keycloak/
+   cp -r <old-install-dir>/certs <new-install-dir>/
+   cp -r <old-install-dir>/keys <new-install-dir>/
+   cp -r <old-install-dir>/logs <new-install-dir>/
+   ```
+
 4. Now `geyser` should point to the new version script.
    Update Docker images and restart services:
    ```shell
