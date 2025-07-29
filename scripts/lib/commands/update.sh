@@ -40,10 +40,6 @@ handle_update() {
 
     info "Applying Hasura migrations and metadata..."
     wait_until_healthy hasura
-    info "Waiting a few more seconds..."
-    sleep 3
-    _hasura migrate apply --all-databases
-    _hasura metadata apply
 
     info "Cleaning up..."
     docker system prune -f

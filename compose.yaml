@@ -103,6 +103,9 @@ services:
       - "8080:8080"
     networks:
       - private-db
+    volumes:
+      - ./hasura/migrations:/hasura-migrations
+      - ./hasura/metadata:/hasura-metadata
 
   backend:
     image: ghcr.io/arkandias/geyser-backend:${GEYSER_VERSION}

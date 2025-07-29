@@ -88,10 +88,6 @@ handle_init() {
     info "Initializing Hasura..."
     _compose up -d hasura
     wait_until_healthy hasura
-    info "Waiting a few more seconds..."
-    sleep 3
-    _hasura migrate apply --all-databases --skip-execution
-    _hasura metadata apply
 
     info "Starting all services..."
     _compose up -d
