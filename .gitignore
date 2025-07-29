@@ -5,8 +5,8 @@ dist/
 /keycloak/backups/
 /certs/
 /keys/
-/logs/
 /server/keys/
+/logs/
 
 *.tsbuildinfo
 *.local
