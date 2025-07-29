@@ -6,8 +6,6 @@
 # License: GNU AGPL v3.0
 #######################################
 
-declare -rx GEYSER_VERSION="1.0.1"
-
 # Exit the script immediately if any command fails
 set -e
 
@@ -78,6 +76,10 @@ declare -r SCRIPT_DIR
 # Absolute path to the application base directory
 GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." && pwd)"
 declare -rx GEYSER_HOME
+
+# Geyser version
+GEYSER_VERSION="$(cat "${GEYSER_HOME}/VERSION")"
+declare -rx GEYSER_VERSION
 
 # Directories paths
 declare -r DB_BACKUPS_DIR="${GEYSER_HOME}/db/backups"

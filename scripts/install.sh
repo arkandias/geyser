@@ -1,10 +1,34 @@
 #!/bin/sh
 
-DEFAULT_GEYSER_VERSION="1.0.1"
-version="${GEYSER_VERSION:-${DEFAULT_GEYSER_VERSION}}"
+echo "Geyser Installation Script"
+
+if [ -n "${GEYSER_VERSION}" ]; then
+    version="${GEYSER_VERSION}"
+else
+    echo "Fetching latest release..."
+    if command -v curl >/dev/null 2>&1; then
+        latest_release_tag="$(curl -fsSL https://api.github.com/repos/arkandias/geyser/releases/latest 2>/dev/null | grep -o '"tag_name": "[^"]*"' | cut -d'"' -f4)"
+    elif command -v wget >/dev/null 2>&1; then
+        latest_release_tag="$(wget -qO- https://api.github.com/repos/arkandias/geyser/releases/latest 2>/dev/null | grep -o '"tag_name": "[^"]*"' | cut -d'"' -f4)"
+    else
+        echo "Error: Could not find curl or wget to fetch latest release" >&2
+        exit 1
+    fi
+
+    if [ -z "${latest_release_tag}" ]; then
+        echo "Error: Could not get latest release" >&2
+        exit 1
+    fi
+
+    version="${latest_release_tag#v}"
+fi
+
+echo "Selected version: ${version}"
 
 DEFAULT_INSTALL_PATH="${HOME}/.geyser/${version}"
 install_path="${INSTALL_PATH:-${DEFAULT_INSTALL_PATH}}"
+
+echo "Installation path: ${install_path}"
 
 archive_url="https://github.com/arkandias/geyser/releases/download/v${version}/geyser-${version}.tar.gz"
 archive_path="/tmp/geyser-${version}.tar.gz"
@@ -33,10 +57,6 @@ download() {
         exit 1
     fi
 }
-
-echo "Geyser Installation Script"
-echo "Geyser version: ${version}"
-echo "Installation path: ${install_path}"
 
 # Check if the installation directory already exists
 if [ -e "${install_path}" ]; then
