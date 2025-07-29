@@ -141,11 +141,11 @@ Alternatively, you can use the full path to the script:
 
 ### Initialization
 
-1. Edit the file `.env` and replace `geyser.example.com` with your server's hostname.
+1. Edit the file `.env` and replace `<server hostname>` with your server's hostname, e.g. `geyser.example.com`.
 
-2. Add the TLS certificates for your server's hostname to the `certs/` directory:
-   - `certs/fullchain.crt` should contain the full certificate chain
-   - `certs/private.key` should contain the private key
+2. Add the TLS certificates for your server's hostname to the `certs/<server hostname>/` directory as follows:
+   - `certs/<server hostname>/fullchain.crt` for the full certificate chain
+   - `certs/<server hostname>/private.key` for the private key
 
 3. Initialize Geyser with the following command:
 
