@@ -6,6 +6,13 @@
 curl https://get.acme.sh | sh -s email="<email>"
 ```
 
+Set the following environment variables:
+
+```shell
+export GEYSER_DOMAIN=<server hostname>
+export GEYSER_HOME=<install dir>
+```
+
 ## Issue certificates (with OVH DNS)
 
 Create a token [here][token-url] with unlimited validity and restricted to the server's IPs.

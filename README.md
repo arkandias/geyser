@@ -45,33 +45,33 @@ This guide will get you a working instance of Geyser in minutes.
 
 ### System Requirements and Dependencies
 
-#### Core Requirements
+#### System Requirements
 
 - Linux or macOS
 - Docker Engine 25.0 or later (with Docker Compose V2)
-- Hasura CLI
+- Port 443 must be accessible (HTTPS traffic)
+- A domain name with valid TLS certificates
 
 #### Install Dependencies
 
-Install Docker with Docker Compose:
+- **Docker with Docker Compose** (required):
 
-```shell
-curl -fsSL https://get.docker.com | sh
-sudo usermod -aG docker $USER  # Log out and back in after this
-```
+  ```shell
+  curl -fsSL https://get.docker.com | sh
+  sudo usermod -aG docker $USER  # Log out and back in after this
+  ```
 
-Install Hasura CLI:
+- **Hasura CLI** (development only):
 
-```shell
-curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
-```
+  ```shell
+  curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
+  ```
 
-Optional tools:
+- **Oh My Zsh** (Zsh users only &ndash; required for autocomplete):
 
-```shell
-# Oh My Zsh (required for zsh completion)
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
-```
+  ```shell
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+  ```
 
 ### Installation
 
@@ -136,7 +136,7 @@ Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) t
 Alternatively, you can use the full path to the script:
 
 ```shell
-<install-dir>/scripts/geyser --version
+<install dir>/scripts/geyser --version
 ```
 
 ### Initialization
@@ -157,8 +157,8 @@ Alternatively, you can use the full path to the script:
    strong one!).
 
 5. Once the initialization is finished, the following services are accessible in a web browser:
-   - Keycloak: `https://<server-hostname>/auth`
-   - Geyser: `https://<server-hostname>`
+   - Keycloak: `https://<server hostname>/auth`
+   - Geyser: `https://<server hostname>`
 
 ### Creating a first user in Keycloak
 
@@ -166,7 +166,7 @@ The Keycloak account you created during initialization is a temporary account fo
 This realm is intended to administrate the other realms only.
 Thus, Geyser uses a different realm to authenticate users: the realm `geyser`.
 We will now create a first user in this realm, with privileges to administrate the app.
-In a web browser, go to: `https://<server-hostname>/auth`
+In a web browser, go to: `https://<server hostname>/auth`
 
 1. Connect to Keycloak admin console using the temporary admin account.
 
@@ -202,7 +202,7 @@ In a web browser, go to: `https://<server-hostname>/auth`
 
    ![Keycloak master realm login page](docs/images/keycloak/07_set_password.png)
 
-8. Go to: `https://<server-hostname>` and log into Geyser with your newly created user email and password.
+8. Go to: `https://<server hostname>` and log into Geyser with your newly created user email and password.
 
    ![Keycloak master realm login page](docs/images/keycloak/08_login_geyser.png)
 
@@ -247,9 +247,9 @@ Geyser consists of multiple services, each running in a Docker container organiz
 The frontend consists of an Nginx Server (`frontend`) that serves as the main entry point and reverse proxy for all
 external access:
 
-- `https://<server-hostname>` serves the web client application
-- `https://<server-hostname>/api` proxies requests to the backend NestJS server
-- `https://<server-hostname>/auth` proxies requests to the Keycloak authentication service
+- `https://<server hostname>` serves the web client application
+- `https://<server hostname>/api` proxies requests to the backend NestJS server
+- `https://<server hostname>/auth` proxies requests to the Keycloak authentication service
 
 The frontend also handles TLS termination and serves static assets for the web application.
 
@@ -458,9 +458,9 @@ In this configuration, multiple organizations can be hosted on the same Geyser i
 them.
 Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
 
-- `https://<org-key>.<server-hostname>` serves the web client application for each organization
-- `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
-- `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
+- `https://<org key>.<server hostname>` serves the web client application for each organization
+- `https://api.<server hostname>` proxies requests to the backend NestJS server (shared across all organizations)
+- `https://auth.<server hostname>` proxies requests to the Keycloak authentication service (shared across all
   organizations)
 
 The client determines the organization key from the subdomain automatically.
@@ -636,7 +636,7 @@ You can automate deployment on repository updates with a webhook as follows:
 1. Setup webhook environment variables in `.env` or `.env.local`:
 
    ```shell
-   WEBHOOK_SECRET=<webhook-secret>
+   WEBHOOK_SECRET=<webhook secret>
    ```
 
 2. Start webhook server:
@@ -662,9 +662,9 @@ services by modifying the trigger rules in `config/hooks.json`.
 
 To use the default webhook, add a webhook in your GitHub repository settings with the following parameters:
 
-- Payload URL: `https://<server-hostname>:9000/hooks/deploy`
+- Payload URL: `https://<server hostname>:9000/hooks/deploy`
 - Content type: `application/json`
-- Secret: `<webhook-secret>`
+- Secret: `<webhook secret>`
 - "Enable SSL verification"
 - "Send me everything" or select "Workflow runs"
 

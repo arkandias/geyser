@@ -8,7 +8,7 @@ Start a webhook on port 9000
 
 Usage: geyser webhook-start
 
-Start a secure webhook server on port 9000 using SSL/TLS certificates. Requires
+Start a secure webhook server on port 9000 using TLS certificates. Requires
 WEBHOOK_SECRET environment variable to be set.
 
 Options:

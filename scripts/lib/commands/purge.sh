@@ -49,6 +49,9 @@ handle_purge() {
     info "Cleaning up Docker..."
     docker system prune -f
 
+    info "Removing keys..."
+    rm -rf "${KEYS_DIR:?}"/*
+
     info "Removing logs..."
     rm -rf "${LOGS_DIR:?}"/*
 
