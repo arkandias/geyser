@@ -6,11 +6,12 @@
 curl https://get.acme.sh | sh -s email="<email>"
 ```
 
-Set the following environment variables:
+Set the following environment variables and create the certificates directory:
 
 ```shell
 export GEYSER_DOMAIN=<server-hostname>
 export GEYSER_HOME=<install-dir>
+mkdir -p "${GEYSER_HOME}/certs/${GEYSER_DOMAIN}"
 ```
 
 ## Issue certificates (with OVH DNS)
