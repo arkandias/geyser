@@ -81,7 +81,7 @@ services:
       - ./backups:/backups
 
   hasura:
-    image: hasura/graphql-engine:v2.48.3-ce.cli-migrations-v2
+    image: hasura/graphql-engine:v2.48.3-ce.cli-migrations-v3
     restart: always
     depends_on:
       db:
