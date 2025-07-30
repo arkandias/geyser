@@ -36,7 +36,7 @@ handle_update() {
     _compose build --pull --no-cache keycloak
 
     info "Starting services with updated images..."
-    _compose up -d
+    _compose up -d --no-build
 
     info "Applying Hasura migrations and metadata..."
     wait_until_healthy hasura

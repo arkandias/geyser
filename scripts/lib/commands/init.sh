@@ -90,7 +90,7 @@ handle_init() {
     wait_until_healthy hasura
 
     info "Starting all services..."
-    _compose up -d
+    _compose up -d --no-build
 
     info "Cleaning up Docker..."
     docker system prune -f

@@ -43,6 +43,6 @@ handle_start() {
     fi
 
     info "Starting services..."
-    _compose up -d
+    _compose up -d --no-build
     success "All services started successfully. Stop Geyser with 'geyser stop'"
 }
