@@ -183,7 +183,7 @@ _initialize_computed_env_vars() {
         API_URL="https://api.${GEYSER_DOMAIN}"
         API_ORIGINS="https://*.${GEYSER_DOMAIN}"
         KC_HOSTNAME="https://auth.${GEYSER_DOMAIN}"
-        KC_HOSTNAME_ADMIN="https://auth-admin.${GEYSER_DOMAIN}"
+        KC_HOSTNAME_ADMIN="https://auth.${GEYSER_DOMAIN}"
     else
         API_URL="https://${GEYSER_DOMAIN}/api"
         API_ORIGINS="https://${GEYSER_DOMAIN}"
