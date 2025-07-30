@@ -65,10 +65,11 @@ CMD ["pnpm", "start:prod"]
 
 FROM nginx:1.29 AS frontend
 
-COPY --from=build-frontend /app/client/dist /usr/share/nginx/html
+COPY --from=build-frontend /app/client/dist/ /usr/share/nginx/html/
 COPY --chmod=755 ./nginx/docker-entrypoint.d/ /docker-entrypoint.d/
 COPY ./nginx/templates/ /etc/nginx/templates/
 COPY ./nginx/includes/ /etc/nginx/includes/
+RUN rm /etc/nginx/conf.d/default.conf
 
 EXPOSE 80
 EXPOSE 443

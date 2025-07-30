@@ -13,11 +13,11 @@ ME=$(basename "$0")
 # Configure nginx based on tenancy mode by enabling/disabling configuration files
 # Nginx includes all .conf files from conf.d/ directory, so we rename files to control inclusion
 if [ "${VITE_TENANCY_MODE}" = "single" ]; then
-    mv /etc/nginx/conf.d/multi-tenant.conf /etc/nginx/conf.d/multi-tenant.conf.disabled
-    entrypoint_log "$ME: Multi-tenant configuration disabled"
+    rm /etc/nginx/conf.d/multi-tenant.conf
+    entrypoint_log "$ME: Removed multi-tenant configuration"
 elif [ "${VITE_TENANCY_MODE}" = "multi" ]; then
-    mv /etc/nginx/conf.d/single-tenant.conf /etc/nginx/conf.d/single-tenant.conf.disabled
-    entrypoint_log "$ME: Single-tenant configuration disabled"
+    rm /etc/nginx/conf.d/single-tenant.conf
+    entrypoint_log "$ME: Removed single-tenant configuration"
 else
     echo "$ME: ERROR: VITE_TENANCY_MODE must be 'single' or 'multi', got '${VITE_TENANCY_MODE}'"
     exit 1
