@@ -218,6 +218,9 @@ importers:
 
   shared:
     dependencies:
+      axios:
+        specifier: ^1.11.0
+        version: 1.11.0
       zod:
         specifier: ^4.0.10
         version: 4.0.10

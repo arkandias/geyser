@@ -2,6 +2,8 @@ import {
   type AccessTokenPayload,
   type OrganizationData,
   accessTokenPayloadSchema,
+  axiosErrorMessage,
+  errorMessage,
   organizationDataSchema,
 } from "@geyser/shared";
 import axios from "axios";
@@ -171,20 +173,15 @@ export class AuthManager {
       );
     } catch (error) {
       if (error instanceof z.ZodError) {
-        console.error("[AuthManager] Invalid organization data");
-      } else if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.debug(
-            `[AuthManager] Could not get organization data: ${error.response.status} ${error.response.statusText}`,
-          );
-        } else {
-          console.debug(
-            "[AuthManager] Could not get organization data: Network error",
-          );
-        }
-      } else {
         console.debug(
-          "[AuthManager] Could not get organization data: Unknown error",
+          "[AuthManager] Could not get organization data: Invalid data",
+        );
+      } else {
+        const message = axios.isAxiosError(error)
+          ? axiosErrorMessage(error)
+          : errorMessage(error);
+        console.debug(
+          `[AuthManager] Could not get organization data: ${message}`,
         );
       }
     }
@@ -255,16 +252,11 @@ export class AuthManager {
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.debug("[AuthManager] Verification failed: Invalid token");
-      } else if (axios.isAxiosError(error)) {
-        if (error.response) {
-          console.debug(
-            `[AuthManager] Verification failed: ${error.response.status} ${error.response.statusText}`,
-          );
-        } else {
-          console.debug("[AuthManager] Verification failed: Network error");
-        }
       } else {
-        console.debug("[AuthManager] Verification failed: Unknown error");
+        const message = axios.isAxiosError(error)
+          ? axiosErrorMessage(error)
+          : errorMessage(error);
+        console.debug(`[AuthManager] Verification failed: ${message}`);
       }
       this._payload = null;
       return false;
@@ -282,17 +274,10 @@ export class AuthManager {
       console.debug("[AuthManager] Refresh succeeded");
       return true;
     } catch (error) {
-      if (axios.isAxiosError<{ message?: string }>(error)) {
-        if (error.response) {
-          console.debug(
-            `[AuthManager] Refresh failed: ${error.response.status} ${error.response.statusText}`,
-          );
-        } else {
-          console.debug("[AuthManager] Refresh failed: Network error");
-        }
-      } else {
-        console.debug("[AuthManager] Refresh failed: Unknown error");
-      }
+      const message = axios.isAxiosError(error)
+        ? axiosErrorMessage(error)
+        : errorMessage(error);
+      console.debug(`[AuthManager] Refresh failed: ${message}`);
       return false;
     }
   }

@@ -1,3 +1,8 @@
+import {
+  axiosErrorMessage,
+  errorMessage,
+  zodErrorMessage,
+} from "@geyser/shared";
 import axios from "axios";
 import { z } from "zod";
 
@@ -14,25 +19,19 @@ const envSchema = z.looseObject({
 export type Env = z.infer<typeof envSchema>;
 
 // Import runtime configuration
-let runtimeEnv: Env;
+let runtimeEnv: Env = {};
 try {
   const response = await axios.get("/config.json");
   runtimeEnv = envSchema.parse(response.data);
 } catch (error) {
   if (error instanceof z.ZodError) {
-    console.error("Invalid config.json:", error);
-  } else if (axios.isAxiosError(error)) {
-    if (error.response) {
-      console.error(
-        `Could not get config.json: ${error.response.status} ${error.response.statusText}`,
-      );
-    } else {
-      console.error("Could not get config.json: Network error");
-    }
+    throw new Error(`Invalid config.json: ${zodErrorMessage(error)}`);
   } else {
-    console.error("Could not get config.json: Unknown error");
+    const message = axios.isAxiosError(error)
+      ? axiosErrorMessage(error)
+      : errorMessage(error);
+    console.warn(`Could not get config.json: ${message}`);
   }
-  runtimeEnv = {};
 }
 
 // Merge build environment and runtime environment

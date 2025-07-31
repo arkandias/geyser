@@ -9,6 +9,7 @@ import {
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose from "jose";
 
+import { joseErrorMessage } from "../common/utils";
 import { ConfigService } from "../config/config.service";
 import { KeysService } from "../keys/keys.service";
 import { RoleService } from "../role/role.service";
@@ -51,7 +52,7 @@ export class JwtService {
       if (error instanceof jose.errors.JOSEError) {
         throw new UnauthorizedException({
           message: "Token verification failed",
-          error: `${error.name}: ${error.message}`,
+          error: joseErrorMessage(error),
         });
       }
       throw error;

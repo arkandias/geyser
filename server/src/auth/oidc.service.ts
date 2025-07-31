@@ -1,3 +1,4 @@
+import { axiosErrorMessage, zodErrorMessage } from "@geyser/shared";
 import {
   Injectable,
   InternalServerErrorException,
@@ -9,6 +10,7 @@ import axios from "axios";
 import jose from "jose";
 import { z } from "zod";
 
+import { joseErrorMessage } from "../common/utils";
 import { ConfigService } from "../config/config.service";
 import { OidcEndpoints, oidcEndpointsSchema } from "./oidc-endpoints.schema";
 import {
@@ -54,13 +56,13 @@ export class OidcService implements OnModuleInit {
       if (error instanceof jose.errors.JOSEError) {
         throw new UnauthorizedException({
           message: "Identity token verification failed",
-          error: `${error.name}: ${error.message}`,
+          error: joseErrorMessage(error),
         });
       }
       if (error instanceof z.ZodError) {
         throw new UnauthorizedException({
           message: "Invalid identity token",
-          error: `${error.name}: ${error.message}`,
+          error: zodErrorMessage(error),
         });
       }
       throw error;
@@ -80,13 +82,13 @@ export class OidcService implements OnModuleInit {
       if (axios.isAxiosError(error)) {
         throw new UnauthorizedException({
           message: "Identity token request failed",
-          error: `${error.name}: ${error.message}`,
+          error: axiosErrorMessage(error),
         });
       }
       if (error instanceof z.ZodError) {
         throw new UnauthorizedException({
           message: "Invalid identity token",
-          error: `${error.name}: ${error.message}`,
+          error: zodErrorMessage(error),
         });
       }
       throw error;
