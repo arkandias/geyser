@@ -68,10 +68,6 @@ server {
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
 
-    location = /config.json {
-        root /usr/share/nginx/html;
-        try_files /config.json =404;
-    }
     location / {
         root /usr/share/nginx/html;
         try_files $uri $uri/ /index.html =404;
