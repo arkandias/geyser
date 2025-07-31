@@ -323,6 +323,7 @@ development, or set as runtime environment variables when running the Docker ima
 | `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
 | `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
 | `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode [`true`/`false`], see [Multi-tenant Mode](#multi-tenant-mode)                                      |
+| `VITE_BASE_DOMAIN`      | `<null>`      | Required for multi-tenant mode, see [Multi-tenant Mode](#multi-tenant-mode)                                                  |
 | `VITE_ORGANIZATION_KEY` | `<null>`      | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
 | `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
@@ -469,12 +470,13 @@ In this configuration, multiple organizations can be hosted on the same Geyser i
 them.
 Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
 
-- `https://<organization-key>.<server-hostname>` serves the web client application for each organization
+- `https://<organization-key>.<server-hostname>` serves the web client for the organization with the corresponding key
+- `https://<server-hostname>` serves the web client for the organization with the default key `default`
 - `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
 - `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
   organizations)
 
-The client determines the organization key from the subdomain automatically, unless `VITE_ORGANIZATION_KEY` is provided.
+**Note:** The client determines the organization key from the hostname, unless `VITE_ORGANIZATION_KEY` is provided.
 
 **Note:** Organization management in multi-tenant mode requires manual database operations on the `public.organization`
 table in the PostgreSQL database (standard CRUD operations).

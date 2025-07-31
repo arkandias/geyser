@@ -14,6 +14,7 @@ import {
 import {
   adminSecret,
   apiUrl,
+  baseDomain,
   bypassAuth,
   multiTenant,
   organizationKey,
@@ -119,20 +120,45 @@ export class AuthManager {
 
     // Multi-tenant mode: Get organization key from current location if possible
     if (multiTenant) {
-      const domainLabels = window.location.hostname.split(".");
-      if (domainLabels.length >= 3 && domainLabels[0]) {
-        this._organizationKey = domainLabels[0];
+      const hostname = window.location.hostname;
+
+      // Check if hostname ends with the base domain
+      if (!hostname.endsWith(baseDomain)) {
+        throw new Error(
+          `[AuthManager] Current hostname '${hostname}' does not end with base domain '${baseDomain}'`,
+        );
+      }
+
+      // If hostname is exactly the base domain (no subdomain), use default key
+      if (hostname === baseDomain) {
+        console.debug(
+          "[AuthManager] Root domain detected, using default organization key",
+        );
+        this._organizationKey = "default";
+        return;
+      }
+
+      // Extract subdomain by removing the base domain
+      const subdomain = hostname.slice(0, -(baseDomain.length + 1)); // +1 for the dot
+
+      // Validate subdomain exists and is not empty
+      if (subdomain && subdomain.length > 0 && !subdomain.includes(".")) {
+        this._organizationKey = subdomain;
         console.debug(
           `[AuthManager] Organization key (from subdomain): '${this._organizationKey}'`,
         );
         return;
+      } else {
+        throw new Error(
+          `[AuthManager] Invalid subdomain structure: '${subdomain}' from hostname '${hostname}'`,
+        );
       }
     }
 
     // Fallback to default organization key
     this._organizationKey = "default";
     console.debug(
-      `[AuthManager] Organization key (default value): '${this._organizationKey}'`,
+      `[AuthManager] Organization key (fallback to default): '${this._organizationKey}'`,
     );
   }
 
@@ -140,7 +166,9 @@ export class AuthManager {
     try {
       const response = await api.get(`/organization/${this._organizationKey}`);
       this._organization = organizationDataSchema.parse(response.data);
-      console.debug(`[AuthManager] Organization id: ${this._organization.id}`);
+      console.debug(
+        `[AuthManager] Organization id: '${this._organization.id}'`,
+      );
     } catch (error) {
       if (error instanceof z.ZodError) {
         console.error("[AuthManager] Invalid organization data");
