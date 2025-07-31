@@ -13,15 +13,11 @@ const envSchema = z.looseObject({
 });
 export type Env = z.infer<typeof envSchema>;
 
-// In production, import runtime configuration
+// Import runtime configuration
 let runtimeEnv: Env;
 try {
-  if (import.meta.env.PROD) {
-    const response = await axios.get("/config.json");
-    runtimeEnv = envSchema.parse(response.data);
-  } else {
-    runtimeEnv = {};
-  }
+  const response = await axios.get("/config.json");
+  runtimeEnv = envSchema.parse(response.data);
 } catch (error) {
   if (error instanceof z.ZodError) {
     console.error("Invalid config.json:", error);
