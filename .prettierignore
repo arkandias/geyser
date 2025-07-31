@@ -1,7 +1,5 @@
 .pnpm-store/
 pnpm-lock.yaml
 
-/client/public/
-!/client/public/config.template.json
 /client/src/gql/
 /client/schema.graphql
