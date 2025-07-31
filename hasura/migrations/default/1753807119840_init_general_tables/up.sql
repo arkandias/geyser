@@ -11,7 +11,7 @@ CREATE TABLE public.organization
     CONSTRAINT organization_id_positive CHECK (id > 0),   -- 0 is reserved for admin
     CONSTRAINT organization_key_valid CHECK (
         key ~ '^[a-z0-9-]+$' AND
-        key NOT IN ('admin', 'api', 'auth', 'auth-admin') -- reserved subdomains
+        key NOT IN ('admin', 'api', 'auth') -- reserved subdomains
         )
 );
 CREATE INDEX idx_organization_locale ON public.organization (locale);
