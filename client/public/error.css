@@ -1,0 +1,50 @@
+/* StyleSheet for error page with Bootstrap's color scheme */
+
+body {
+  font-family: system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  margin: 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  color: #333;
+}
+
+.error-container {
+  max-width: 600px;
+  margin: 50px auto;
+  text-align: center;
+  background: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #dc3545;
+  margin-bottom: 20px;
+}
+
+#error-message {
+  background: #f8d7da;
+  color: #721c24;
+  padding: 12px;
+  border-radius: 4px;
+  margin: 20px 0;
+  font-family: monospace;
+  word-break: break-all;
+  display: none; /* Hidden by default */
+}
+
+.restart-button {
+  background: #007bff;
+  color: white;
+  border: none;
+  padding: 12px 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 16px;
+  margin-top: 20px;
+}
+
+.restart-button:hover {
+  background: #0056b3;
+}
