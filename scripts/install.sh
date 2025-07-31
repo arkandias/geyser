@@ -2,8 +2,8 @@
 
 echo "Geyser Installation Script"
 
-if [ -n "${GEYSER_VERSION}" ]; then
-    version="${GEYSER_VERSION}"
+if [ -n "${VERSION}" ]; then
+    version="${VERSION}"
 else
     echo "Fetching latest release..."
     if command -v curl >/dev/null 2>&1; then

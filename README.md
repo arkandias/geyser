@@ -86,7 +86,7 @@ curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | sh
 Or a specific version (see [the release list](https://github.com/arkandias/geyser/releases)):
 
 ```shell
-curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEYSER_VERSION=1.2.3 sh
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | VERSION=1.2.3 sh
 ```
 
 By default, Geyser will be installed in `~/.geyser/<version>`.
@@ -99,7 +99,7 @@ curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | INS
 You can combine both environment variables:
 
 ```shell
-curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | GEYSER_VERSION=1.2.3 INSTALL_PATH=/opt/geyser sh
+curl -fsSL https://github.com/arkandias/geyser/raw/HEAD/scripts/install.sh | VERSION=1.2.3 INSTALL_PATH=/opt/geyser sh
 ```
 
 #### Git-based installation
