@@ -702,13 +702,15 @@ If you used the install script, updates require manual reinstallation:
 3. Copy configuration files and data:
 
    ```shell
-   cp <old-install-dir>/.env <new-install-dir>/
-   cp <old-install-dir>/.env.local <new-install-dir>/
-   cp -r <old-install-dir>/backups <new-install-dir>/
-   cp -r <old-install-dir>/keycloak/backups <new-install-dir>/keycloak/
-   cp -r <old-install-dir>/certs <new-install-dir>/
-   cp -r <old-install-dir>/keys <new-install-dir>/
-   cp -r <old-install-dir>/logs <new-install-dir>/
+   export OLD_INSTALL_PATH=<old-install-dir>
+   export NEW_INSTALL_PATH=<new-install-dir>
+   cp "${OLD_INSTALL_PATH}"/.env "${NEW_INSTALL_PATH}"/
+   cp "${OLD_INSTALL_PATH}"/.env.local "${NEW_INSTALL_PATH}"/
+   cp -r "${OLD_INSTALL_PATH}"/backups "${NEW_INSTALL_PATH}"/
+   cp -r "${OLD_INSTALL_PATH}"/keycloak/backups "${NEW_INSTALL_PATH}"/keycloak/
+   cp -r "${OLD_INSTALL_PATH}"/certs "${NEW_INSTALL_PATH}"/
+   cp -r "${OLD_INSTALL_PATH}"/keys "${NEW_INSTALL_PATH}"/
+   cp -r "${OLD_INSTALL_PATH}"/logs "${NEW_INSTALL_PATH}"/
    ```
 
 4. Now `geyser` should point to the new version script.
