@@ -314,19 +314,19 @@ These packages are built into two Docker images using a multi-stage build proces
 The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
 [Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
 
-Configuration is managed through environment variables. These can be defined in `client/.env.development` for local
-development, or set as runtime environment variables when running the Docker image `frontend`:
+Configuration is managed through environment variables. These can be defined in `client/.env` for local development,
+or set as runtime environment variables when running the Docker image `frontend`:
 
 | Environment Variable    | Default Value | Description                                                                                                                  |
 | ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_BUILD_VERSION`    | `<null>`      | The version name (build argument only)                                                                                       |
+| `VITE_BUILD_VERSION`    | `NULL`        | The version name (build argument only)                                                                                       |
 | `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
 | `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
-| `VITE_MULTI_TENANT`     | `false`       | Enables multi-tenant mode [`true`/`false`], see [Multi-tenant Mode](#multi-tenant-mode)                                      |
-| `VITE_BASE_DOMAIN`      | `<null>`      | Required for multi-tenant mode, see [Multi-tenant Mode](#multi-tenant-mode)                                                  |
-| `VITE_ORGANIZATION_KEY` | `<null>`      | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
+| `VITE_TENANCY_MODE`     | `single`      | Tenancy mode [`single`/`multi`], see [Multi-tenant Mode](#multi-tenant-mode)                                                 |
+| `VITE_BASE_DOMAIN`      | `NULL`        | Required for multi-tenant mode, see [Multi-tenant Mode](#multi-tenant-mode)                                                  |
+| `VITE_ORGANIZATION_KEY` | `NULL`        | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
 | `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
-| `VITE_ADMIN_SECRET`     | `<null>`      | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
+| `VITE_ADMIN_SECRET`     | `NULL`        | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
 
 ### Package `server`
 
@@ -435,7 +435,7 @@ Choose one of the following development servers:
    pnpm run preview
    ```
 
-**Note:** Vite will use the environment file `client/.env.development` to set the environment variables described in
+**Note:** Vite will use the environment file `client/.env` to set the environment variables described in
 [Package client](#package-client).
 
 #### API Server Development
