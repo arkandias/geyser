@@ -23,8 +23,10 @@ import { oidcTokenResponseSchema } from "./oidc-token-response.schema";
 @Injectable()
 export class OidcService implements OnModuleInit {
   private readonly logger = new Logger(OidcService.name);
-  private _metadata: OidcEndpoints | null = null;
-  private _jwks: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
+  private _metadata?: OidcEndpoints;
+  private _jwks?: (
+    protectedHeader: jose.JWSHeaderParameters,
+  ) => Promise<jose.CryptoKey>;
 
   constructor(private configService: ConfigService) {}
 
