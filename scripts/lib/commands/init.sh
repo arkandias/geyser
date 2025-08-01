@@ -80,11 +80,6 @@ handle_init() {
         -e CLIENT_SECRET="${OIDC_CLIENT_SECRET}" \
         keycloak import --file /opt/keycloak/data/import/geyser-realm.json
 
-    info "Initializing database..."
-    _compose run --rm \
-        -v "${GEYSER_HOME}"/db/init:/docker-entrypoint-initdb.d \
-        db docker-ensure-initdb.sh
-
     info "Initializing Hasura..."
     _compose up -d hasura
     wait_until_healthy hasura
