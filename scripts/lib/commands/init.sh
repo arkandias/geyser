@@ -60,10 +60,23 @@ handle_init() {
         username="temp-admin"
     fi
     local password=""
+    local password_confirm=""
     while [[ -z "${password}" ]]; do
         echo -n "Enter a password for Keycloak temporary admin account: "
         read -rs password
         echo
+
+        if [[ -n "${password}" ]]; then
+            echo -n "Confirm password: "
+            read -rs password_confirm
+            echo
+
+            if [[ "${password}" != "${password_confirm}" ]]; then
+                echo "Passwords do not match. Please try again."
+                password=""
+                password_confirm=""
+            fi
+        fi
     done
     _compose run --rm \
         -e KC_BOOTSTRAP_ADMIN_USERNAME="${username}" \
