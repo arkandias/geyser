@@ -25,7 +25,8 @@ export class OidcService implements OnModuleInit {
   private readonly logger = new Logger(OidcService.name);
   private _metadata?: OidcEndpoints;
   private _jwks?: (
-    protectedHeader: jose.JWSHeaderParameters,
+    protectedHeader?: jose.JWSHeaderParameters,
+    token?: jose.FlattenedJWSInput,
   ) => Promise<jose.CryptoKey>;
 
   constructor(private configService: ConfigService) {}
