@@ -698,10 +698,8 @@ export type Course = {
   createdAt: Scalars['timestamptz']['output'];
   /** Optional description */
   description?: Maybe<Scalars['String']['output']>;
-  ensIdImport?: Maybe<Scalars['String']['output']>;
   /** External reference (optional) */
   externalReference?: Maybe<Scalars['String']['output']>;
-  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Base number of groups */
   groups: Scalars['Int']['output'];
   /** Modified number of groups, if different from base */
@@ -712,7 +710,9 @@ export type Course = {
   hours: Scalars['Float']['output'];
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id: Scalars['Int']['output'];
@@ -722,7 +722,6 @@ export type Course = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid: Scalars['Int']['output'];
   /** An object relationship */
@@ -894,7 +893,9 @@ export type CourseAvgFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -926,7 +927,9 @@ export type CourseAvgOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -955,9 +958,7 @@ export type CourseBoolExp = {
   coordinationsAggregate?: InputMaybe<CoordinationAggregateBoolExp>;
   createdAt?: InputMaybe<TimestamptzComparisonExp>;
   description?: InputMaybe<StringComparisonExp>;
-  ensIdImport?: InputMaybe<StringComparisonExp>;
   externalReference?: InputMaybe<StringComparisonExp>;
-  formationIdImport?: InputMaybe<StringComparisonExp>;
   groups?: InputMaybe<IntComparisonExp>;
   groupsAdjusted?: InputMaybe<IntComparisonExp>;
   groupsEffective?: InputMaybe<IntComparisonExp>;
@@ -969,7 +970,6 @@ export type CourseBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
-  nomImport?: InputMaybe<StringComparisonExp>;
   oid?: InputMaybe<IntComparisonExp>;
   organization?: InputMaybe<OrganizationBoolExp>;
   priorities?: InputMaybe<PriorityBoolExp>;
@@ -993,8 +993,6 @@ export type CourseBoolExp = {
 
 /** unique or primary key constraints on table "course" */
 export enum CourseConstraint {
-  /** unique or primary key constraint on columns "ens_id_import" */
-  CourseEnsIdImportKey = 'course_ens_id_import_key',
   /** unique or primary key constraint on columns "id" */
   CourseIdKey = 'course_id_key',
   /** unique or primary key constraint on columns "id", "oid", "year" */
@@ -1038,10 +1036,8 @@ export type CourseInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Optional description */
   description?: InputMaybe<Scalars['String']['input']>;
-  ensIdImport?: InputMaybe<Scalars['String']['input']>;
   /** External reference (optional) */
   externalReference?: InputMaybe<Scalars['String']['input']>;
-  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Base number of groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups, if different from base */
@@ -1054,7 +1050,6 @@ export type CourseInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   organization?: InputMaybe<OrganizationObjRelInsertInput>;
@@ -1090,10 +1085,8 @@ export type CourseMaxFields = {
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Optional description */
   description?: Maybe<Scalars['String']['output']>;
-  ensIdImport?: Maybe<Scalars['String']['output']>;
   /** External reference (optional) */
   externalReference?: Maybe<Scalars['String']['output']>;
-  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Base number of groups */
   groups?: Maybe<Scalars['Int']['output']>;
   /** Modified number of groups, if different from base */
@@ -1104,7 +1097,9 @@ export type CourseMaxFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
@@ -1114,7 +1109,6 @@ export type CourseMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1139,10 +1133,8 @@ export type CourseMaxOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   /** Optional description */
   description?: InputMaybe<OrderBy>;
-  ensIdImport?: InputMaybe<OrderBy>;
   /** External reference (optional) */
   externalReference?: InputMaybe<OrderBy>;
-  formationIdImport?: InputMaybe<OrderBy>;
   /** Base number of groups */
   groups?: InputMaybe<OrderBy>;
   /** Modified number of groups, if different from base */
@@ -1153,7 +1145,9 @@ export type CourseMaxOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -1163,7 +1157,6 @@ export type CourseMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1189,10 +1182,8 @@ export type CourseMinFields = {
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
   /** Optional description */
   description?: Maybe<Scalars['String']['output']>;
-  ensIdImport?: Maybe<Scalars['String']['output']>;
   /** External reference (optional) */
   externalReference?: Maybe<Scalars['String']['output']>;
-  formationIdImport?: Maybe<Scalars['String']['output']>;
   /** Base number of groups */
   groups?: Maybe<Scalars['Int']['output']>;
   /** Modified number of groups, if different from base */
@@ -1203,7 +1194,9 @@ export type CourseMinFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
@@ -1213,7 +1206,6 @@ export type CourseMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1238,10 +1230,8 @@ export type CourseMinOrderBy = {
   createdAt?: InputMaybe<OrderBy>;
   /** Optional description */
   description?: InputMaybe<OrderBy>;
-  ensIdImport?: InputMaybe<OrderBy>;
   /** External reference (optional) */
   externalReference?: InputMaybe<OrderBy>;
-  formationIdImport?: InputMaybe<OrderBy>;
   /** Base number of groups */
   groups?: InputMaybe<OrderBy>;
   /** Modified number of groups, if different from base */
@@ -1252,7 +1242,9 @@ export type CourseMinOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -1262,7 +1254,6 @@ export type CourseMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1309,9 +1300,7 @@ export type CourseOrderBy = {
   coordinationsAggregate?: InputMaybe<CoordinationAggregateOrderBy>;
   createdAt?: InputMaybe<OrderBy>;
   description?: InputMaybe<OrderBy>;
-  ensIdImport?: InputMaybe<OrderBy>;
   externalReference?: InputMaybe<OrderBy>;
-  formationIdImport?: InputMaybe<OrderBy>;
   groups?: InputMaybe<OrderBy>;
   groupsAdjusted?: InputMaybe<OrderBy>;
   groupsEffective?: InputMaybe<OrderBy>;
@@ -1323,7 +1312,6 @@ export type CourseOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   oid?: InputMaybe<OrderBy>;
   organization?: InputMaybe<OrganizationOrderBy>;
   prioritiesAggregate?: InputMaybe<PriorityAggregateOrderBy>;
@@ -1358,11 +1346,7 @@ export enum CourseSelectColumn {
   /** column name */
   Description = 'description',
   /** column name */
-  EnsIdImport = 'ensIdImport',
-  /** column name */
   ExternalReference = 'externalReference',
-  /** column name */
-  FormationIdImport = 'formationIdImport',
   /** column name */
   Groups = 'groups',
   /** column name */
@@ -1385,8 +1369,6 @@ export enum CourseSelectColumn {
   NameDisplay = 'nameDisplay',
   /** column name */
   NameShort = 'nameShort',
-  /** column name */
-  NomImport = 'nomImport',
   /** column name */
   Oid = 'oid',
   /** column name */
@@ -1425,10 +1407,8 @@ export type CourseSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Optional description */
   description?: InputMaybe<Scalars['String']['input']>;
-  ensIdImport?: InputMaybe<Scalars['String']['input']>;
   /** External reference (optional) */
   externalReference?: InputMaybe<Scalars['String']['input']>;
-  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Base number of groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups, if different from base */
@@ -1441,7 +1421,6 @@ export type CourseSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1475,7 +1454,9 @@ export type CourseStddevFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -1507,7 +1488,9 @@ export type CourseStddevOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -1540,7 +1523,9 @@ export type CourseStddevPopFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -1572,7 +1557,9 @@ export type CourseStddevPopOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -1605,7 +1592,9 @@ export type CourseStddevSampFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -1637,7 +1626,9 @@ export type CourseStddevSampOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -1671,10 +1662,8 @@ export type CourseStreamCursorValueInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Optional description */
   description?: InputMaybe<Scalars['String']['input']>;
-  ensIdImport?: InputMaybe<Scalars['String']['input']>;
   /** External reference (optional) */
   externalReference?: InputMaybe<Scalars['String']['input']>;
-  formationIdImport?: InputMaybe<Scalars['String']['input']>;
   /** Base number of groups */
   groups?: InputMaybe<Scalars['Int']['input']>;
   /** Modified number of groups, if different from base */
@@ -1685,7 +1674,9 @@ export type CourseStreamCursorValueInput = {
   hours?: InputMaybe<Scalars['Float']['input']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<Scalars['Float']['input']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<Scalars['Float']['input']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<Scalars['Float']['input']>;
   /** Unique identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -1695,7 +1686,6 @@ export type CourseStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Priority duration in years (1=none, 0=permanent, NULL=disabled) */
@@ -1729,7 +1719,9 @@ export type CourseSumFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
@@ -1761,7 +1753,9 @@ export type CourseSumOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -2313,11 +2307,7 @@ export enum CourseUpdateColumn {
   /** column name */
   Description = 'description',
   /** column name */
-  EnsIdImport = 'ensIdImport',
-  /** column name */
   ExternalReference = 'externalReference',
-  /** column name */
-  FormationIdImport = 'formationIdImport',
   /** column name */
   Groups = 'groups',
   /** column name */
@@ -2330,8 +2320,6 @@ export enum CourseUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
-  /** column name */
-  NomImport = 'nomImport',
   /** column name */
   Oid = 'oid',
   /** column name */
@@ -2374,7 +2362,9 @@ export type CourseVarPopFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -2406,7 +2396,9 @@ export type CourseVarPopOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -2439,7 +2431,9 @@ export type CourseVarSampFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -2471,7 +2465,9 @@ export type CourseVarSampOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -2504,7 +2500,9 @@ export type CourseVarianceFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: Maybe<Scalars['Float']['output']>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: Maybe<Scalars['Float']['output']>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Float']['output']>;
@@ -2536,7 +2534,9 @@ export type CourseVarianceOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Modified number of teaching hours per group, if different from base */
   hoursAdjusted?: InputMaybe<OrderBy>;
+  /** Actual number of teaching hours per group, defaulting to base if no adjustment */
   hoursEffective?: InputMaybe<OrderBy>;
+  /** Effective teaching hours per group times effective number of groups */
   hoursEffectiveTotal?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
@@ -3823,7 +3823,7 @@ export type ExternalCourse = {
   hours: Scalars['Float']['output'];
   /** Unique identifier */
   id: Scalars['Int']['output'];
-  /** Course name */
+  /** Course label */
   label: Scalars['String']['output'];
   /** Organization reference */
   oid: Scalars['Int']['output'];
@@ -3958,7 +3958,7 @@ export type ExternalCourseInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Number of weighted hours */
   hours?: InputMaybe<Scalars['Float']['input']>;
-  /** Course name */
+  /** Course label */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -3979,7 +3979,7 @@ export type ExternalCourseMaxFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
-  /** Course name */
+  /** Course label */
   label?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
@@ -3997,7 +3997,7 @@ export type ExternalCourseMaxOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
-  /** Course name */
+  /** Course label */
   label?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
@@ -4016,7 +4016,7 @@ export type ExternalCourseMinFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
-  /** Course name */
+  /** Course label */
   label?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
@@ -4034,7 +4034,7 @@ export type ExternalCourseMinOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
-  /** Course name */
+  /** Course label */
   label?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
@@ -4105,7 +4105,7 @@ export type ExternalCourseSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Number of weighted hours */
   hours?: InputMaybe<Scalars['Float']['input']>;
-  /** Course name */
+  /** Course label */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -4206,7 +4206,7 @@ export type ExternalCourseStreamCursorValueInput = {
   hours?: InputMaybe<Scalars['Float']['input']>;
   /** Unique identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
-  /** Course name */
+  /** Course label */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -5022,6 +5022,7 @@ export enum OrderBy {
 /** Organization information */
 export type Organization = {
   __typename?: 'Organization';
+  /** Status flag */
   active: Scalars['Boolean']['output'];
   /** An array relationship */
   coordinations: Array<Coordination>;
@@ -5049,6 +5050,7 @@ export type Organization = {
   degrees: Array<Degree>;
   /** An aggregate relationship */
   degreesAggregate: DegreeAggregate;
+  /** Contact email address */
   email: Scalars['String']['output'];
   /** An array relationship */
   externalCourses: Array<ExternalCourse>;
@@ -5060,6 +5062,7 @@ export type Organization = {
   key: Scalars['String']['output'];
   /** Label for display purposes */
   label: Scalars['String']['output'];
+  /** Default locale */
   locale: LocaleEnum;
   /** An array relationship */
   messages: Array<Message>;
@@ -5573,6 +5576,7 @@ export enum OrganizationConstraint {
 
 /** input type for inserting data into table "organization" */
 export type OrganizationInsertInput = {
+  /** Status flag */
   active?: InputMaybe<Scalars['Boolean']['input']>;
   coordinations?: InputMaybe<CoordinationArrRelInsertInput>;
   courseTypes?: InputMaybe<CourseTypeArrRelInsertInput>;
@@ -5582,12 +5586,14 @@ export type OrganizationInsertInput = {
   currentPhase?: InputMaybe<CurrentPhaseArrRelInsertInput>;
   customTexts?: InputMaybe<CustomTextArrRelInsertInput>;
   degrees?: InputMaybe<DegreeArrRelInsertInput>;
+  /** Contact email address */
   email?: InputMaybe<Scalars['String']['input']>;
   externalCourses?: InputMaybe<ExternalCourseArrRelInsertInput>;
   /** Human-readable identifier (unique) */
   key?: InputMaybe<Scalars['String']['input']>;
   /** Label for display purposes */
   label?: InputMaybe<Scalars['String']['input']>;
+  /** Default locale */
   locale?: InputMaybe<LocaleEnum>;
   messages?: InputMaybe<MessageArrRelInsertInput>;
   positions?: InputMaybe<PositionArrRelInsertInput>;
@@ -5613,6 +5619,7 @@ export type OrganizationMaxFields = {
   __typename?: 'OrganizationMaxFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Contact email address */
   email?: Maybe<Scalars['String']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
@@ -5631,6 +5638,7 @@ export type OrganizationMinFields = {
   __typename?: 'OrganizationMinFields';
   /** Timestamp when the record was created */
   createdAt?: Maybe<Scalars['timestamptz']['output']>;
+  /** Contact email address */
   email?: Maybe<Scalars['String']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
@@ -5731,14 +5739,17 @@ export enum OrganizationSelectColumn {
 
 /** input type for updating data in table "organization" */
 export type OrganizationSetInput = {
+  /** Status flag */
   active?: InputMaybe<Scalars['Boolean']['input']>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Contact email address */
   email?: InputMaybe<Scalars['String']['input']>;
   /** Human-readable identifier (unique) */
   key?: InputMaybe<Scalars['String']['input']>;
   /** Label for display purposes */
   label?: InputMaybe<Scalars['String']['input']>;
+  /** Default locale */
   locale?: InputMaybe<LocaleEnum>;
   /** When true, teachers can only view their own services */
   privateService?: InputMaybe<Scalars['Boolean']['input']>;
@@ -5779,9 +5790,11 @@ export type OrganizationStreamCursorInput = {
 
 /** Initial value of the column from where the streaming should start */
 export type OrganizationStreamCursorValueInput = {
+  /** Status flag */
   active?: InputMaybe<Scalars['Boolean']['input']>;
   /** Timestamp when the record was created */
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
+  /** Contact email address */
   email?: InputMaybe<Scalars['String']['input']>;
   /** Unique identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
@@ -5789,6 +5802,7 @@ export type OrganizationStreamCursorValueInput = {
   key?: InputMaybe<Scalars['String']['input']>;
   /** Label for display purposes */
   label?: InputMaybe<Scalars['String']['input']>;
+  /** Default locale */
   locale?: InputMaybe<LocaleEnum>;
   /** When true, teachers can only view their own services */
   privateService?: InputMaybe<Scalars['Boolean']['input']>;
@@ -7304,7 +7318,6 @@ export type Program = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid: Scalars['Int']['output'];
   /** An object relationship */
@@ -7474,7 +7487,6 @@ export type ProgramBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
-  nomImport?: InputMaybe<StringComparisonExp>;
   oid?: InputMaybe<IntComparisonExp>;
   organization?: InputMaybe<OrganizationBoolExp>;
   tracks?: InputMaybe<TrackBoolExp>;
@@ -7514,7 +7526,6 @@ export type ProgramInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   organization?: InputMaybe<OrganizationObjRelInsertInput>;
@@ -7540,7 +7551,6 @@ export type ProgramMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7561,7 +7571,6 @@ export type ProgramMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7583,7 +7592,6 @@ export type ProgramMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7604,7 +7612,6 @@ export type ProgramMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7645,7 +7652,6 @@ export type ProgramOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   oid?: InputMaybe<OrderBy>;
   organization?: InputMaybe<OrganizationOrderBy>;
   tracksAggregate?: InputMaybe<TrackAggregateOrderBy>;
@@ -7676,8 +7682,6 @@ export enum ProgramSelectColumn {
   /** column name */
   NameShort = 'nameShort',
   /** column name */
-  NomImport = 'nomImport',
-  /** column name */
   Oid = 'oid',
   /** column name */
   UpdatedAt = 'updatedAt',
@@ -7707,7 +7711,6 @@ export type ProgramSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7801,7 +7804,6 @@ export type ProgramStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Timestamp when the record was last updated, automatically managed by trigger */
@@ -7841,8 +7843,6 @@ export enum ProgramUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
-  /** column name */
-  NomImport = 'nomImport',
   /** column name */
   Oid = 'oid',
   /** column name */
@@ -8818,11 +8818,11 @@ export enum RoleConstraint {
 }
 
 export enum RoleEnum {
-  /** Committee member with extra capabilities during assignment phase */
+  /** Committee member with extra permissions during assignment phase */
   Commissioner = 'COMMISSIONER',
-  /** Administrator with full capabilities including configuration and user management */
+  /** Administrator with full permissions within an organization */
   Organizer = 'ORGANIZER',
-  /** Standard user with basic capabilities */
+  /** Standard user with basic permissions */
   Teacher = 'TEACHER'
 }
 
@@ -9354,6 +9354,7 @@ export type ServiceModification = {
   hours: Scalars['Float']['output'];
   /** Unique identifier */
   id: Scalars['Int']['output'];
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label: Scalars['String']['output'];
   /** Organization reference */
   oid: Scalars['Int']['output'];
@@ -9488,6 +9489,7 @@ export type ServiceModificationInsertInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Hour deduction amount */
   hours?: InputMaybe<Scalars['Float']['input']>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -9508,6 +9510,7 @@ export type ServiceModificationMaxFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
@@ -9525,6 +9528,7 @@ export type ServiceModificationMaxOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
@@ -9543,6 +9547,7 @@ export type ServiceModificationMinFields = {
   hours?: Maybe<Scalars['Float']['output']>;
   /** Unique identifier */
   id?: Maybe<Scalars['Int']['output']>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
@@ -9560,6 +9565,7 @@ export type ServiceModificationMinOrderBy = {
   hours?: InputMaybe<OrderBy>;
   /** Unique identifier */
   id?: InputMaybe<OrderBy>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
@@ -9630,6 +9636,7 @@ export type ServiceModificationSetInput = {
   createdAt?: InputMaybe<Scalars['timestamptz']['input']>;
   /** Hour deduction amount */
   hours?: InputMaybe<Scalars['Float']['input']>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -9730,6 +9737,7 @@ export type ServiceModificationStreamCursorValueInput = {
   hours?: InputMaybe<Scalars['Float']['input']>;
   /** Unique identifier */
   id?: InputMaybe<Scalars['Int']['input']>;
+  /** Short description (e.g., "Release: Department chair", "Leave: Research sabbatical", "Research buyout: NSF grant course reduction", etc.) */
   label?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
@@ -11912,7 +11920,6 @@ export type Track = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid: Scalars['Int']['output'];
   /** An object relationship */
@@ -12060,7 +12067,6 @@ export type TrackBoolExp = {
   name?: InputMaybe<StringComparisonExp>;
   nameDisplay?: InputMaybe<StringComparisonExp>;
   nameShort?: InputMaybe<StringComparisonExp>;
-  nomImport?: InputMaybe<StringComparisonExp>;
   oid?: InputMaybe<IntComparisonExp>;
   organization?: InputMaybe<OrganizationBoolExp>;
   program?: InputMaybe<ProgramBoolExp>;
@@ -12099,7 +12105,6 @@ export type TrackInsertInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   organization?: InputMaybe<OrganizationObjRelInsertInput>;
@@ -12125,7 +12130,6 @@ export type TrackMaxFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Program reference */
@@ -12146,7 +12150,6 @@ export type TrackMaxOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Program reference */
@@ -12168,7 +12171,6 @@ export type TrackMinFields = {
   nameDisplay?: Maybe<Scalars['String']['output']>;
   /** Abbreviated name */
   nameShort?: Maybe<Scalars['String']['output']>;
-  nomImport?: Maybe<Scalars['String']['output']>;
   /** Organization reference */
   oid?: Maybe<Scalars['Int']['output']>;
   /** Program reference */
@@ -12189,7 +12191,6 @@ export type TrackMinOrderBy = {
   nameDisplay?: InputMaybe<OrderBy>;
   /** Abbreviated name */
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   /** Organization reference */
   oid?: InputMaybe<OrderBy>;
   /** Program reference */
@@ -12230,7 +12231,6 @@ export type TrackOrderBy = {
   name?: InputMaybe<OrderBy>;
   nameDisplay?: InputMaybe<OrderBy>;
   nameShort?: InputMaybe<OrderBy>;
-  nomImport?: InputMaybe<OrderBy>;
   oid?: InputMaybe<OrderBy>;
   organization?: InputMaybe<OrganizationOrderBy>;
   program?: InputMaybe<ProgramOrderBy>;
@@ -12259,8 +12259,6 @@ export enum TrackSelectColumn {
   NameDisplay = 'nameDisplay',
   /** column name */
   NameShort = 'nameShort',
-  /** column name */
-  NomImport = 'nomImport',
   /** column name */
   Oid = 'oid',
   /** column name */
@@ -12291,7 +12289,6 @@ export type TrackSetInput = {
   name?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Program reference */
@@ -12385,7 +12382,6 @@ export type TrackStreamCursorValueInput = {
   nameDisplay?: InputMaybe<Scalars['String']['input']>;
   /** Abbreviated name */
   nameShort?: InputMaybe<Scalars['String']['input']>;
-  nomImport?: InputMaybe<Scalars['String']['input']>;
   /** Organization reference */
   oid?: InputMaybe<Scalars['Int']['input']>;
   /** Program reference */
@@ -12425,8 +12421,6 @@ export enum TrackUpdateColumn {
   Name = 'name',
   /** column name */
   NameShort = 'nameShort',
-  /** column name */
-  NomImport = 'nomImport',
   /** column name */
   Oid = 'oid',
   /** column name */

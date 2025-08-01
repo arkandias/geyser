@@ -180,7 +180,7 @@ const upsertTeachers = useMutation(UpsertTeachersDocument);
 const updateTeachers = useMutation(UpdateTeachersDocument);
 const deleteTeachers = useMutation(DeleteTeachersDocument);
 
-const importConstraint = TeacherConstraint.TeacherPkey;
+const importConstraint = TeacherConstraint.TeacherOidEmailKey;
 const importUpdateColumns = [
   TeacherUpdateColumn.Email,
   TeacherUpdateColumn.Firstname,
