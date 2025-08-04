@@ -87,7 +87,7 @@ jobs:
           PRERELEASE_FLAG=""
 
           # Check if tag contains prerelease keywords
-          if [[ $TAG_NAME =~ -(alpha|beta|rc) ]]; then
+          if [[ $TAG_NAME =~ -(alpha|beta|canary|dev|edge|next|rc) ]]; then
             PRERELEASE_FLAG="--prerelease"
           fi
 
