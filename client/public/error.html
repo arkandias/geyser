@@ -23,7 +23,9 @@
         const errorMessage = urlParams.get("message");
         if (errorMessage) {
           const errorMessageElement = document.getElementById("error-message");
-          errorMessageElement.innerHTML = `<pre>${decodeURIComponent(errorMessage)}</pre>`;
+          const preElement = document.createElement("pre");
+          preElement.textContent = decodeURIComponent(errorMessage);
+          errorMessageElement.appendChild(preElement);
           errorMessageElement.style.display = "block";
         }
       } catch (error) {
