@@ -33,8 +33,8 @@ const initOptions = computed<OptionWithSearch[]>(() =>
     typeof opt === "object" && opt !== null
       ? {
           value: opt.value,
-          label: String(opt.label),
-          search: normalizeForSearch(String(opt.label)),
+          label: opt.label,
+          search: normalizeForSearch(opt.label),
         }
       : {
           value: opt,
