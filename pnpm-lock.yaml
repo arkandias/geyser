@@ -147,7 +147,7 @@ importers:
     dependencies:
       '@geyser/shared':
         specifier: workspace:*
-        version: link:../shared
+        version: file:shared
       '@nestjs/axios':
         specifier: ^4.0.1
         version: 4.0.1(@nestjs/common@11.1.5(reflect-metadata@0.2.2)(rxjs@7.8.2))(axios@1.11.0)(rxjs@7.8.2)
@@ -569,6 +569,9 @@ packages:
 
   '@fastify/busboy@3.1.1':
     resolution: {integrity: sha512-5DGmA8FTdB2XbDeEwc/5ZXBl6UbBAyBOOLlPuBnZ/N1SwdH9Ii+cOX3tBROlDgcTXxjOYnLMVoKk9+FXAw0CJw==}
+
+  '@geyser/shared@file:shared':
+    resolution: {directory: shared, type: directory}
 
   '@graphql-codegen/add@5.0.3':
     resolution: {integrity: sha512-SxXPmramkth8XtBlAHu4H4jYcYXM/o3p01+psU+0NADQowA8jtYkK6MW5rV6T+CxkEaNZItfSmZRPgIuypcqnA==}
@@ -4733,6 +4736,13 @@ snapshots:
       levn: 0.4.1
 
   '@fastify/busboy@3.1.1': {}
+
+  '@geyser/shared@file:shared':
+    dependencies:
+      axios: 1.11.0
+      zod: 4.0.14
+    transitivePeerDependencies:
+      - debug
 
   '@graphql-codegen/add@5.0.3(graphql@16.11.0)':
     dependencies:

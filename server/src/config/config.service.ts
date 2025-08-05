@@ -29,6 +29,23 @@ export class ConfigService {
     refreshTokenMaxAge: number;
     stateExpirationTime: number;
   };
+  readonly keys: {
+    alg:
+      | "Ed25519"
+      | "EdDSA"
+      | "ES256"
+      | "ES384"
+      | "ES512"
+      | "PS256"
+      | "PS384"
+      | "PS512"
+      | "RS256"
+      | "RS384"
+      | "RS512";
+    modulusLength: number;
+    rotationInterval: number;
+    expirationTime: number;
+  };
 
   constructor(private configService: NestConfigService<Env, true>) {
     this.nodeEnv = this.configService.getOrThrow<"development" | "production">(
@@ -98,13 +115,97 @@ export class ConfigService {
     };
     this.logger.log("JWT configuration:");
     this.logger.log(
-      `- Access token max age (ms): ${this.jwt.accessTokenMaxAge}`,
+      `- Access token max age: ${this.jwt.accessTokenMaxAge}ms (${this.formatDuration(this.jwt.accessTokenMaxAge)})`,
     );
     this.logger.log(
-      `- Refresh token max age (ms): ${this.jwt.refreshTokenMaxAge}`,
+      `- Refresh token max age: ${this.jwt.refreshTokenMaxAge}ms (${this.formatDuration(this.jwt.refreshTokenMaxAge)})`,
     );
     this.logger.log(
-      `- State expiration time (ms): ${this.jwt.stateExpirationTime}`,
+      `- State expiration time: ${this.jwt.stateExpirationTime}ms (${this.formatDuration(this.jwt.stateExpirationTime)})`,
     );
+
+    this.keys = {
+      alg: this.configService.getOrThrow<
+        | "Ed25519"
+        | "EdDSA"
+        | "ES256"
+        | "ES384"
+        | "ES512"
+        | "PS256"
+        | "PS384"
+        | "PS512"
+        | "RS256"
+        | "RS384"
+        | "RS512"
+      >("API_KEYS_ALGORITHM"),
+      modulusLength: this.configService.getOrThrow<number>(
+        "API_KEYS_MODULUS_LENGTH_RSA",
+      ),
+      rotationInterval: this.configService.getOrThrow<number>(
+        "API_KEYS_ROTATION_INTERVAL_MS",
+      ),
+      expirationTime: this.configService.getOrThrow<number>(
+        "API_KEYS_EXPIRATION_TIME_MS",
+      ),
+    };
+    this.logger.log("Keys configuration:");
+    this.logger.log(`- Algorithm: ${this.keys.alg}`);
+    if (
+      ["PS256", "PS384", "PS512", "RS256", "RS384", "RS512"].includes(
+        this.keys.alg,
+      )
+    ) {
+      this.logger.log(`- Modulus length: ${this.keys.modulusLength}`);
+      if (this.keys.modulusLength < 2048) {
+        this.logger.warn(
+          "RSA modulus length should be at least 2048 for security",
+        );
+      }
+    }
+    this.logger.log(
+      `- Rotation interval: ${this.keys.rotationInterval}ms (${this.formatDuration(this.keys.rotationInterval)})`,
+    );
+    this.logger.log(
+      `- Expiration time: ${this.keys.expirationTime}ms (${this.formatDuration(this.keys.expirationTime)})`,
+    );
+
+    this.validate();
+  }
+
+  private validate(): void {
+    if (this.jwt.refreshTokenMaxAge <= this.jwt.accessTokenMaxAge) {
+      this.logger.warn(
+        "JWT refresh token max age should be greater than access token max age",
+      );
+    }
+    if (this.keys.rotationInterval < 60000) {
+      this.logger.warn("Keys rotation interval is very short (< 1 minute)");
+    }
+    if (this.keys.rotationInterval > 2147483647) {
+      this.logger.warn(
+        "Keys rotation interval exceeds setTimeout limit (2147483647 ms / ~24.8 days)",
+      );
+    }
+    if (this.keys.expirationTime < this.keys.rotationInterval * 2) {
+      this.logger.warn(
+        "Keys expiration time should be at least 2x rotation interval for safe overlap",
+      );
+    }
+    if (this.keys.expirationTime <= this.jwt.refreshTokenMaxAge) {
+      this.logger.warn(
+        "Keys expiration time should be longer than refresh token max age",
+      );
+    }
+  }
+
+  private formatDuration(ms: number): string {
+    const days = Math.round(ms / (24 * 60 * 60 * 1000));
+    const hours = Math.round(ms / (60 * 60 * 1000));
+    const minutes = Math.round(ms / (60 * 1000));
+
+    if (days >= 1) return `${days}d`;
+    if (hours >= 1) return `${hours}h`;
+    if (minutes >= 1) return `${minutes}min`;
+    return `${ms}ms`;
   }
 }

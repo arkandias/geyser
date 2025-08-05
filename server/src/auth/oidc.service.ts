@@ -24,10 +24,7 @@ import { oidcTokenResponseSchema } from "./oidc-token-response.schema";
 export class OidcService implements OnModuleInit {
   private readonly logger = new Logger(OidcService.name);
   private _metadata?: OidcEndpoints;
-  private _jwks?: (
-    protectedHeader?: jose.JWSHeaderParameters,
-    token?: jose.FlattenedJWSInput,
-  ) => Promise<jose.CryptoKey>;
+  private _getKey: ReturnType<typeof jose.createRemoteJWKSet> | null = null;
 
   constructor(private configService: ConfigService) {}
 
@@ -37,23 +34,15 @@ export class OidcService implements OnModuleInit {
     this._metadata = oidcEndpointsSchema.parse(response.data);
     this.logger.log(`Identity provider metadata loaded`);
 
-    this._jwks = jose.createRemoteJWKSet(new URL(this._metadata.jwksUrl));
+    this._getKey = jose.createRemoteJWKSet(new URL(this._metadata.jwksUrl));
     this.logger.log("Identity provider JWKS loaded");
   }
 
   async verifyToken(token: string): Promise<OidcTokenPayload> {
     try {
-      // Decode the token's protected header to get the key ID
-      const protectedHeaderParameters = jose.decodeProtectedHeader(token);
-
-      // Get the public key from JWKS
-      const key = await this.jwks(protectedHeaderParameters);
-
-      // Verify the token with the public key
-      const { payload } = await jose.jwtVerify(token, key, {
+      const { payload } = await jose.jwtVerify(token, this.getKey, {
         issuer: this.metadata.issuerUrl,
       });
-
       return oidcTokenPayloadSchema.parse(payload);
     } catch (error) {
       if (error instanceof jose.errors.JOSEError) {
@@ -98,11 +87,11 @@ export class OidcService implements OnModuleInit {
     }
   }
 
-  get jwks() {
-    if (!this._jwks) {
+  get getKey() {
+    if (!this._getKey) {
       throw new InternalServerErrorException("JWKS not loaded");
     }
-    return this._jwks;
+    return this._getKey;
   }
 
   get metadata() {

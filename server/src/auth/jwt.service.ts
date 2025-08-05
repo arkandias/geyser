@@ -30,7 +30,7 @@ export class JwtService {
     payload: Omit<BaseTokenPayload, "iss" | "iat" | "jti">,
   ): Promise<string> {
     return new jose.SignJWT(payload)
-      .setProtectedHeader({ alg: "RS256" })
+      .setProtectedHeader({ alg: this.configService.keys.alg })
       .setIssuer(this.configService.api.url.href)
       .setIssuedAt()
       .setJti(randomUUID())
@@ -43,7 +43,7 @@ export class JwtService {
   ): Promise<T> {
     let result: jose.JWTVerifyResult<T>;
     try {
-      result = await jose.jwtVerify<T>(token, this.keysService.publicKey, {
+      result = await jose.jwtVerify<T>(token, this.keysService.getKey, {
         issuer: this.configService.api.url.href,
         audience: this.configService.api.url.href,
         requiredClaims: ["sub", "exp", "iat", "jti"],

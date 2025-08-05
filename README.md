@@ -335,22 +335,27 @@ The `server` package is a [NestJS](https://nestjs.com/) application providing th
 Configuration is managed through environment variables that must be defined in `server/.env` during development or set
 in the deployment environment for production:
 
-| Environment Variable               | Default Value    | Description                                                                       |
-| ---------------------------------- | ---------------- | --------------------------------------------------------------------------------- |
-| `API_PORT`                         | `3000`           | Port number for the HTTP server                                                   |
-| `API_URL`                          | **Required**     | Public URL where the API is accessible                                            |
-| `API_ORIGINS`                      | **Required**     | Comma-separated list of allowed origins for CORS policy (supports regex patterns) |
-| `API_ADMIN_SECRET`                 | **Required**     | Admin secret for bypassing JWT authentication                                     |
-| `API_DATABASE_URL`                 | **Required**     | PostgreSQL database connection string                                             |
-| `API_GRAPHQL_URL`                  | **Required**     | GraphQL Engine endpoint URL                                                       |
-| `API_GRAPHQL_ADMIN_SECRET`         | **Required**     | Admin secret for GraphQL Engine access                                            |
-| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)    | Request timeout for GraphQL operations (milliseconds)                             |
-| `API_OIDC_DISCOVERY_URL`           | **Required**     | OpenID Connect discovery endpoint URL for the identity provider                   |
-| `API_OIDC_CLIENT_ID`               | **Required**     | OAuth2/OIDC client identifier for authentication                                  |
-| `API_OIDC_CLIENT_SECRET`           | **Required**     | OAuth2/OIDC client secret                                                         |
-| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)    | Login state expiration time (milliseconds)                                        |
-| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)   | Maximum lifetime for JWT access tokens (milliseconds)                             |
-| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d) | Maximum lifetime for JWT refresh tokens (milliseconds)                            |
+| Environment Variable               | Default Value      | Description                                                                                                            |
+| ---------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `API_NODE_ENV`                     | `development`      | Node.js environment mode [`development`/`production`]                                                                  |
+| `API_PORT`                         | `3000`             | Port number for the HTTP server                                                                                        |
+| `API_URL`                          | **Required**       | Public URL where the API is accessible (must use HTTPS in production)                                                  |
+| `API_ORIGINS`                      | **Required**       | Comma-separated list of allowed origins for CORS policy (supports regex patterns)                                      |
+| `API_ADMIN_SECRET`                 | **Required**       | Admin secret for bypassing JWT authentication                                                                          |
+| `API_DATABASE_URL`                 | **Required**       | PostgreSQL database connection string (format: `postgresql://user:password@host:port/dbname`)                          |
+| `API_GRAPHQL_URL`                  | **Required**       | GraphQL Engine endpoint URL                                                                                            |
+| `API_GRAPHQL_ADMIN_SECRET`         | **Required**       | Admin secret for GraphQL Engine access                                                                                 |
+| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)      | Request timeout for GraphQL operations (in milliseconds)                                                               |
+| `API_OIDC_DISCOVERY_URL`           | **Required**       | OpenID Connect discovery endpoint URL for the identity provider                                                        |
+| `API_OIDC_CLIENT_ID`               | **Required**       | OAuth2/OIDC client identifier for authentication                                                                       |
+| `API_OIDC_CLIENT_SECRET`           | **Required**       | OAuth2/OIDC client secret                                                                                              |
+| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)     | Maximum lifetime for JWT access tokens (in milliseconds)                                                               |
+| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d)   | Maximum lifetime for JWT refresh tokens (in milliseconds)                                                              |
+| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)      | OAuth login state expiration time for CSRF protection (in milliseconds)                                                |
+| `API_KEYS_ALGORITHM`               | `EdDSA`            | Algorithm for signing JWTs [`Ed25519`/`EdDSA`/`ES256`/`ES384`/`ES512`/`PS256`/`PS384`/`PS512`/`RS256`/`RS384`/`RS512`] |
+| `API_KEYS_MODULUS_LENGTH_RSA`      | `2048`             | Modulus length in bits for RSA algorithms (`PS*`/`RS*` only). Common values: `2048`, `3072`, `4096`                    |
+| `API_KEYS_ROTATION_INTERVAL_MS`    | `604800000` (7d)   | How often new signing keys are generated and the current active key is deprecated (in milliseconds)                    |
+| `API_KEYS_EXPIRATION_TIME_MS`      | `2419200000` (28d) | How long a key remains available for JWT verification from the moment it's created (in milliseconds)                   |
 
 ### Package `shared`
 
