@@ -520,7 +520,10 @@ integration, Docker dependency management, and automatic restart on failure.
    sudo systemctl start geyser.service
    ```
 
-**Note:** With `GEYSER_AS_SERVICE=true`, logging output is automatically formatted for systemd journal integration.
+**Note:** With `GEYSER_AS_SERVICE=true`, logs are integrated with systemd:
+
+- The administration script uses systemd-compatible formatting for output
+- Docker container logs are sent to journald instead of Docker's default JSON files
 
 #### Management
 

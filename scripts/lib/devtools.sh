@@ -7,6 +7,9 @@ _compose() {
     local -a compose_files=(
         "-f" "${GEYSER_HOME}/compose.yaml"
     )
+    if [[ "${GEYSER_AS_SERVICE}" == "true" ]]; then
+        compose_files+=("-f" "${GEYSER_HOME}/compose.log.yaml")
+    fi
     if [[ "${GEYSER_ENV}" == "development" ]]; then
         compose_files+=("-f" "${GEYSER_HOME}/compose.dev.yaml")
     fi

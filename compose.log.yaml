@@ -1,0 +1,36 @@
+services:
+  kc-db:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_kc-db"
+
+  keycloak:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_keycloak"
+
+  db:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_db"
+
+  hasura:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_hasura"
+
+  backend:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_backend"
+
+  frontend:
+    logging:
+      driver: journald
+      options:
+        tag: "geyser_frontend"
