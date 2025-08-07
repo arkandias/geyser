@@ -50,11 +50,11 @@ export default {
         label: "Legal Notice",
         message: `
 <p>
-  As part of managing provisional teaching services, <i>GeyserFlow</i>
+  As part of managing provisional teaching services, <i>Geyser</i>
   collects and processes your personal data based on your consent.
 </p>
 <p>
-  This information is securely stored on <i>GeyserFlow</i> servers,
+  This information is securely stored on <i>Geyser</i> servers,
   without transmission to external services.
 </p>
 <p>Privacy of your data:</p>

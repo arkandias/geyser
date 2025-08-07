@@ -50,12 +50,12 @@ export default {
         label: "Mentions légales",
         message: `
 <p>
-  Dans le cadre de la gestion des services prévisionnels, <i>GeyserFlow</i>
+  Dans le cadre de la gestion des services prévisionnels, <i>Geyser</i>
   collecte et traite vos données personnelles sur la base de votre consentement.
 </p>
 <p>
   Ces informations sont conservées de manière sécurisée sur les serveurs de
-  <i>GeyserFlow</i>, sans transmission à des services externes.
+  <i>Geyser</i>, sans transmission à des services externes.
 </p>
 <p>Confidentialité de vos données&nbsp;:</p>
 <ul>
