@@ -81,7 +81,7 @@ const getCourseRows = useQuery({
     year: activeYear.value ?? -1,
   }),
   pause: () => activeYear.value === null,
-  context: { additionalTypenames: ["All", "Priority", "Request"] },
+  context: { additionalTypenames: ["All", "Course", "Priority", "Request"] },
 });
 const fetchingCourseRows = computed(() => getCourseRows.fetching.value);
 const courseRows = computed(() => getCourseRows.data.value?.courses ?? []);
@@ -100,6 +100,8 @@ const getServiceRows = useQuery({
   context: {
     additionalTypenames: [
       "All",
+      "ExternalCourse",
+      "Message",
       "Priority",
       "Request",
       "Service",
