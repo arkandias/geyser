@@ -42,16 +42,6 @@ handle_data_restore() {
         esac
     done
 
-    if [[ -n "$(_compose ps -q)" ]]; then
-        warn "Services must be stopped before import"
-        if ! confirm "Continue?"; then
-            info "Data import cancelled"
-            return
-        fi
-        info "Stopping services..."
-        _compose down
-    fi
-
     # Select a backup file
     if [[ -z "${backup}" ]]; then
         local -a backups
