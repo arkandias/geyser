@@ -68,7 +68,7 @@ export class AuthManager {
 
     // Bypass authentication (dev only)
     if (bypassAuth) {
-      console.debug("[AuthManager] Bypassing authentication");
+      console.debug("[AuthManager] Bypassing authentication...");
       this._payload = {
         orgId: this._organization.id,
         userId: 0,
