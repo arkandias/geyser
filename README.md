@@ -483,6 +483,8 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 
 **Note:** The client determines the organization key from the hostname, unless `VITE_ORGANIZATION_KEY` is provided.
 
+**Note:** You need a wildcard certificate for the `*.<server-hostname>` subdomains.
+
 **Note:** Organization management in multi-tenant mode requires manual database operations on the `public.organization`
 table in the PostgreSQL database (standard CRUD operations).
 No automated scripts or web interface for organization provisioning have been developed yet.
