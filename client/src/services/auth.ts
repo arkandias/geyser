@@ -145,7 +145,7 @@ export class AuthManager {
       const subdomain = hostname.slice(0, -(baseDomain.length + 1)); // +1 for the dot
 
       // Validate subdomain exists and is not empty
-      if (subdomain && subdomain.length > 0 && !subdomain.includes(".")) {
+      if (/^[a-z-]+$/.test(subdomain)) {
         this._organizationKey = subdomain;
         console.debug(
           `[AuthManager] Organization key (from subdomain): '${this._organizationKey}'`,
