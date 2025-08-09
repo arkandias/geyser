@@ -220,7 +220,7 @@ check_dependencies() {
     fi
 
     local docker_version
-    docker_version="$(docker version --format '{{.Server.Version}}' 2>/dev/null)"
+    docker_version="$(docker version --format '{{.Server.Version}}' 2>/dev/null || true)"
     if [[ -z "${docker_version}" ]]; then
         error "Failed to get Docker version. Is Docker daemon running?"
         exit 1
@@ -241,7 +241,7 @@ check_dependencies() {
         exit 1
     fi
 
-    if ! hasura &>/dev/null; then
+    if ! command -v hasura &>/dev/null; then
         error "Hasura CLI is not installed. You can install it with \
 'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
         exit 1
