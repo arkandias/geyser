@@ -42,6 +42,7 @@ const authInit =
 
 export const makeClientOptions = (authManager: AuthManager): ClientOptions => ({
   url: graphqlUrl,
+  preferGetMethod: false,
   exchanges: [
     devtoolsExchange,
     cacheExchange,
