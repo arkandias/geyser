@@ -7,6 +7,9 @@
 
     /* Module */
     "rootDir": "./src",
+    "paths": {
+      "@/*": ["./src/*"]
+    },
 
     /* Emit */
     "outDir": "./dist",

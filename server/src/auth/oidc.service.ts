@@ -10,15 +10,18 @@ import axios from "axios";
 import jose from "jose";
 import { z } from "zod";
 
-import { joseErrorMessage } from "../common/utils";
-import { ConfigService } from "../config/config.service";
-import { OidcEndpoints, oidcEndpointsSchema } from "./oidc-endpoints.schema";
+import {
+  OidcEndpoints,
+  oidcEndpointsSchema,
+} from "@/auth/oidc-endpoints.schema";
 import {
   OidcTokenPayload,
   oidcTokenPayloadSchema,
-} from "./oidc-token-payload.schema";
-import { OidcTokenRequestParameters } from "./oidc-token-request-parameters.interface";
-import { oidcTokenResponseSchema } from "./oidc-token-response.schema";
+} from "@/auth/oidc-token-payload.schema";
+import { OidcTokenRequestParameters } from "@/auth/oidc-token-request-parameters.interface";
+import { oidcTokenResponseSchema } from "@/auth/oidc-token-response.schema";
+import { joseErrorMessage } from "@/common/utils";
+import { ConfigService } from "@/config/config.service";
 
 @Injectable()
 export class OidcService implements OnModuleInit {

@@ -1,6 +1,6 @@
 import { Controller, Get, Header } from "@nestjs/common";
 
-import { KeysService } from "./keys.service";
+import { KeysService } from "@/keys/keys.service";
 
 @Controller(".well-known")
 export class KeysController {

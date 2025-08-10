@@ -9,9 +9,9 @@ import {
 import { Request } from "express";
 import { z } from "zod";
 
-import { getHeader } from "../../common/utils";
-import { ConfigService } from "../../config/config.service";
-import { JwtService } from "../jwt.service";
+import { JwtService } from "@/auth/jwt.service";
+import { getHeader } from "@/common/utils";
+import { ConfigService } from "@/config/config.service";
 
 @Injectable()
 export class AuthGuard implements CanActivate {

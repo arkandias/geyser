@@ -7,7 +7,7 @@ import {
   Param,
 } from "@nestjs/common";
 
-import { OrganizationService } from "./organization.service";
+import { OrganizationService } from "@/organization/organization.service";
 
 @Controller("organization")
 export class OrganizationController {

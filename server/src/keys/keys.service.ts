@@ -11,8 +11,8 @@ import fs from "fs";
 import jose from "jose";
 import path from "path";
 
-import { ConfigService } from "../config/config.service";
-import { Metadata, metadataSchema } from "./metadata.schema";
+import { ConfigService } from "@/config/config.service";
+import { Metadata, metadataSchema } from "@/keys/metadata.schema";
 
 @Injectable()
 export class KeysService implements OnModuleInit, OnModuleDestroy {

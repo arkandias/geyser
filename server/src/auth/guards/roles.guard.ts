@@ -10,9 +10,9 @@ import {
 import { Reflector } from "@nestjs/core";
 import { Request } from "express";
 
-import { ConfigService } from "../../config/config.service";
-import { JwtService } from "../jwt.service";
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "@/auth/guards/auth.guard";
+import { JwtService } from "@/auth/jwt.service";
+import { ConfigService } from "@/config/config.service";
 
 export const ROLES_KEY = "roles";
 

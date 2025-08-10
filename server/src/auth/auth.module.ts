@@ -1,14 +1,14 @@
 import { Module } from "@nestjs/common";
 
-import { KeysModule } from "../keys/keys.module";
-import { OrganizationModule } from "../organization/organization.module";
-import { RoleModule } from "../role/role.module";
-import { UserModule } from "../user/user.module";
-import { AuthController } from "./auth.controller";
-import { AuthService } from "./auth.service";
-import { CookiesService } from "./cookies.service";
-import { JwtService } from "./jwt.service";
-import { OidcService } from "./oidc.service";
+import { AuthController } from "@/auth/auth.controller";
+import { AuthService } from "@/auth/auth.service";
+import { CookiesService } from "@/auth/cookies.service";
+import { JwtService } from "@/auth/jwt.service";
+import { OidcService } from "@/auth/oidc.service";
+import { KeysModule } from "@/keys/keys.module";
+import { OrganizationModule } from "@/organization/organization.module";
+import { RoleModule } from "@/role/role.module";
+import { UserModule } from "@/user/user.module";
 
 @Module({
   imports: [KeysModule, OrganizationModule, RoleModule, UserModule],

@@ -12,13 +12,13 @@ import {
 } from "@nestjs/common";
 import type { Response } from "express";
 
-import { Cookies } from "../common/cookies.decorator";
-import { ConfigService } from "../config/config.service";
-import { UserService } from "../user/user.service";
-import { AuthService } from "./auth.service";
-import { CookiesService } from "./cookies.service";
-import { JwtService } from "./jwt.service";
-import { OidcService } from "./oidc.service";
+import { AuthService } from "@/auth/auth.service";
+import { CookiesService } from "@/auth/cookies.service";
+import { JwtService } from "@/auth/jwt.service";
+import { OidcService } from "@/auth/oidc.service";
+import { Cookies } from "@/common/cookies.decorator";
+import { ConfigService } from "@/config/config.service";
+import { UserService } from "@/user/user.service";
 
 @Controller("auth")
 export class AuthController {

@@ -8,7 +8,7 @@ import {
 } from "@nestjs/common";
 import { Request } from "express";
 
-import { AuthGuard } from "./auth.guard";
+import { AuthGuard } from "@/auth/guards/auth.guard";
 
 @Injectable()
 export class AdminGuard extends AuthGuard implements CanActivate {

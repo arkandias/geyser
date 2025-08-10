@@ -9,14 +9,14 @@ import {
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose from "jose";
 
-import { joseErrorMessage } from "../common/utils";
-import { ConfigService } from "../config/config.service";
-import { KeysService } from "../keys/keys.service";
-import { RoleService } from "../role/role.service";
 import {
   RefreshTokenPayload,
   refreshTokenPayloadSchema,
-} from "./refresh-token-payload.schema";
+} from "@/auth/refresh-token-payload.schema";
+import { joseErrorMessage } from "@/common/utils";
+import { ConfigService } from "@/config/config.service";
+import { KeysService } from "@/keys/keys.service";
+import { RoleService } from "@/role/role.service";
 
 @Injectable()
 export class JwtService {

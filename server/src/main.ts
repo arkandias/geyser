@@ -4,9 +4,9 @@ import compression from "compression";
 import cookieParser from "cookie-parser";
 import express from "express";
 
-import { AppModule } from "./app.module";
-import { LoggingInterceptor } from "./common/logging.interceptor";
-import { ConfigService } from "./config/config.service";
+import { AppModule } from "@/app.module";
+import { LoggingInterceptor } from "@/common/logging.interceptor";
+import { ConfigService } from "@/config/config.service";
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

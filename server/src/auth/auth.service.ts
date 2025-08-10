@@ -6,7 +6,7 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 
-import { ConfigService } from "../config/config.service";
+import { ConfigService } from "@/config/config.service";
 
 interface StateParams {
   orgId: number;

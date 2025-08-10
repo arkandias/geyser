@@ -1,7 +1,7 @@
 import { Module } from "@nestjs/common";
 
-import { AuthModule } from "../auth/auth.module";
-import { GraphqlController } from "./graphql.controller";
+import { AuthModule } from "@/auth/auth.module";
+import { GraphqlController } from "@/graphql/graphql.controller";
 
 @Module({
   imports: [AuthModule],

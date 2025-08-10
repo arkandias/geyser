@@ -2,11 +2,14 @@ import { Body, Controller, Post, Res } from "@nestjs/common";
 import axios from "axios";
 import { Response } from "express";
 
-import { OrgId, UserId, UserRole } from "../auth/auth.decorators";
-import { Auth } from "../auth/guards/auth.guard";
-import { ZodValidationPipe } from "../common/zod-validation.pipe";
-import { ConfigService } from "../config/config.service";
-import { GraphqlRequest, graphqlRequestSchema } from "./graphql-request.schema";
+import { OrgId, UserId, UserRole } from "@/auth/auth.decorators";
+import { Auth } from "@/auth/guards/auth.guard";
+import { ZodValidationPipe } from "@/common/zod-validation.pipe";
+import { ConfigService } from "@/config/config.service";
+import {
+  GraphqlRequest,
+  graphqlRequestSchema,
+} from "@/graphql/graphql-request.schema";
 
 @Controller()
 export class GraphqlController {
