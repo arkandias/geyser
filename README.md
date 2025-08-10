@@ -430,6 +430,8 @@ Choose one of the following development servers:
    pnpm run dev
    ```
 
+   **Note:** If the port `5173` is already in use, Vite will try to use the next available port.
+
 2. Vite Preview Server for production builds at `http://localhost:4173`:
 
    ```shell
@@ -439,6 +441,8 @@ Choose one of the following development servers:
    # Serve the built application from ./dist
    pnpm run preview
    ```
+
+   **Note:** If the port `4173` is already in use, Vite will try to use the next available port.
 
 **Note:** Vite will use the environment file `client/.env` to set the environment variables described in
 [Package client](#package-client).

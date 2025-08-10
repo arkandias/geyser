@@ -3,6 +3,7 @@ import { fileURLToPath } from "node:url";
 
 import { quasar, transformAssetUrls } from "@quasar/vite-plugin";
 import vue from "@vitejs/plugin-vue";
+import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import { compression } from "vite-plugin-compression2";
 
@@ -10,32 +11,50 @@ import { compression } from "vite-plugin-compression2";
 export default defineConfig(() => ({
   build: {
     target: "es2024",
-    cssTarget: "es2023",
     rollupOptions: {
       output: {
-        manualChunks: {
-          "vendor-core": ["driver.js", "vue", "vue-i18n", "vue-router"],
-          "vendor-data": [
-            "@geyser/shared",
-            "@urql/exchange-auth",
-            "@urql/vue",
-            "axios",
-            "dompurify",
-            "graphql",
-            "marked",
-            "papaparse",
-            "zod",
-          ],
+        manualChunks: (id) => {
+          // GraphQL operations first
+          if (id.includes("/client/src/gql/")) {
+            return "gql";
+          }
+
+          // Keep all other client src in main bundle
+          if (id.includes("/client/src/")) {
+            return null;
+          }
+
+          // Shared workspace code
+          if (id.includes("/shared/dist/")) {
+            return "shared";
+          }
+
+          // Node modules chunking
+          if (id.includes("/node_modules/")) {
+            // Vue ecosystem
+            if (["vue", "@intlify"].some((pkg) => id.includes(pkg))) {
+              return "vendor-vue";
+            }
+
+            // Quasar UI library
+            if (id.includes("quasar")) {
+              return "vendor-quasar";
+            }
+
+            // GraphQL ecosystem
+            if (["@urql", "graphql", "wonka"].some((pkg) => id.includes(pkg))) {
+              return "vendor-graphql";
+            }
+
+            // Everything else from node_modules
+            return "vendor-misc";
+          }
+
+          // Build artifacts stay in main
+          return null;
         },
       },
     },
-    chunkSizeWarningLimit: 1000,
-  },
-  server: {
-    host: "0.0.0.0",
-    allowedHosts: [],
-    port: 5173,
-    strictPort: true,
   },
   plugins: [
     vue({
@@ -49,17 +68,19 @@ export default defineConfig(() => ({
         new URL("./src/css/quasar.variables.scss", import.meta.url),
       ),
     }),
-    compression(),
+    compression({
+      algorithms: ["gzip"],
+    }),
+    visualizer({
+      filename: "dist/stats.html",
+      gzipSize: true,
+    }),
   ],
   resolve: {
     alias: [
       {
         find: "@",
         replacement: fileURLToPath(new URL("./src", import.meta.url)),
-      },
-      {
-        find: "@geyser/shared",
-        replacement: fileURLToPath(new URL("../shared/src", import.meta.url)),
       },
     ],
   },
