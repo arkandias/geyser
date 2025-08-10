@@ -116,9 +116,9 @@ const getRequest = useQuery({
   query: GetRequestDocument,
   variables: () => ({
     oid: data.value.oid,
-    serviceId: serviceId.value,
+    serviceId: serviceId.value ?? -1,
     courseId: data.value.courseId,
-    requestType: requestType.value,
+    requestType: requestType.value ?? RequestTypeEnum.Assignment,
   }),
   pause: true,
   context: { requestPolicy: "network-only" },
