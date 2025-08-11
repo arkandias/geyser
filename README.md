@@ -181,41 +181,41 @@ In a web browser, go to: `https://<server-hostname>/auth`
 
 1. Connect to Keycloak admin console using the temporary admin account.
 
-   ![Keycloak master realm login page](docs/images/keycloak/01_login_master.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/01_login_master.png)
 
 2. Once logged in, click on the "Manage realms" button in the left menu and select "geyser" (click on the name).
 
-   ![Keycloak master realm login page](docs/images/keycloak/02_manage_realms.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/02_manage_realms.png)
 
 3. Now, "Geyser" must be displayed next to the "Current realm" badge.
    Click on the "Users" button in the left menu, and then on the "Create new user" button.
 
-   ![Keycloak master realm login page](docs/images/keycloak/03_users.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/03_users.png)
 
 4. Fill in the "Create user" form.
    You must provide an email and "Email verified" must be "On" (at the top of the form).
    The other fields are optional.
    Then, click on the "Join Groups" button (at the bottom of the form).
 
-   ![Keycloak master realm login page](docs/images/keycloak/04_create_user.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/04_create_user.png)
 
 5. In the "Select the groups to join" dialog box, check the box of the "AppAdmin" group and click on the "Join" button.
    This will give the user admin privileges in Geyser.
 
-   ![Keycloak master realm login page](docs/images/keycloak/05_join_groups.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/05_join_groups.png)
 
 6. Now that the user is created, you will be redirected to the user "Details" tab.
    Click on the "Credentials" tab, and then on the "Set password" button.
 
-   ![Keycloak master realm login page](docs/images/keycloak/06_user_credentials.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/06_user_credentials.png)
 
 7. Enter your new user's password (twice), set "Temporary" to "Off", and click on the "Save" button.
 
-   ![Keycloak master realm login page](docs/images/keycloak/07_set_password.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/07_set_password.png)
 
 8. Go to: `https://<server-hostname>` and log into Geyser with your newly created user email and password.
 
-   ![Keycloak master realm login page](docs/images/keycloak/08_login_geyser.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/08_login_geyser.png)
 
 9. You can now refer to the app documentation to configure Geyser.
 
@@ -229,21 +229,21 @@ We simply point out some useful login options.
 1. If you want to allow users to create an account in Keycloak and to recover their password, you can enable this option
    on the "Login" tab of the "Realm settings" page.
 
-   ![Keycloak master realm login page](docs/images/keycloak/09_login_options.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/09_login_options.png)
 
    For these options to work, Keycloak must be configured to send emails.
    You can do this in the "Email" tab.
    Note that the current admin user must have an email address to configure Keycloak's email.
    You can add one on the "Users" page.
 
-   ![Keycloak master realm login page](docs/images/keycloak/10_email_a.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/10_email_a.png)
 
-   ![Keycloak master realm login page](docs/images/keycloak/11_email_b.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/11_email_b.png)
 
 2. You may use an external identity provider, for example if your institution or your company provides one.
    This can be configured on the "Identity providers" page.
 
-   ![Keycloak master realm login page](docs/images/keycloak/12_identity_providers.png)
+   ![Keycloak master realm login page](docs/screenshots/keycloak/12_identity_providers.png)
 
 **_Note: Users with a Keycloak account will not automatically have access to Geyser.
 Keycloak is only used to authenticate users with their email address.
