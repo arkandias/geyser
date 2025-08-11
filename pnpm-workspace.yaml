@@ -2,9 +2,13 @@ packages:
   - client
   - server
   - shared
-onlyBuiltDependencies:
-  - "@nestjs/core"
-  - esbuild
+
 injectWorkspacePackages: true
+
+onlyBuiltDependencies:
+  - '@nestjs/core'
+  - '@parcel/watcher'
+  - esbuild
+
 syncInjectedDepsAfterScripts:
   - build
