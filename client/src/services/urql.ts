@@ -16,7 +16,7 @@ import {
 import { graphqlUrl } from "@/config/environment.ts";
 import type { AuthManager } from "@/services/auth.ts";
 
-const authInit =
+const makeAuthConfig =
   (authManager: AuthManager) =>
   (utils: AuthUtilities): Promise<AuthConfig> =>
     Promise.resolve({
@@ -47,7 +47,7 @@ export const makeClientOptions = (authManager: AuthManager): ClientOptions => ({
     devtoolsExchange,
     cacheExchange,
     debugExchange,
-    authExchange(authInit(authManager)),
+    authExchange(makeAuthConfig(authManager)),
     fetchExchange,
   ],
   fetchOptions: {
