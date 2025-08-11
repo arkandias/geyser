@@ -6,8 +6,8 @@ packages:
 injectWorkspacePackages: true
 
 onlyBuiltDependencies:
-  - '@nestjs/core'
-  - '@parcel/watcher'
+  - "@nestjs/core"
+  - "@parcel/watcher"
   - esbuild
 
 syncInjectedDepsAfterScripts:
