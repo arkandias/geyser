@@ -42,10 +42,6 @@ export type ParsedRow<T extends RowMetadata> = {
   -readonly [K in keyof T]: ParsedField<T[K]>;
 };
 
-export type NullableParsedRow<T extends RowMetadata> = {
-  -readonly [K in keyof T]?: ParsedField<T[K]> | null;
-};
-
 export type AdminColumn<R> = Partial<Column<R>> &
   FieldMetadata & {
     formComponent: "select" | "toggle" | "input";
