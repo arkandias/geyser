@@ -8,5 +8,17 @@ indent_size = 2
 insert_final_newline = true
 trim_trailing_whitespace = true
 
-[{*.sh,*.sql,scripts/*,nginx/includes/*,nginx/templates/*}]
+[*.sh]
+indent_size = 4
+
+[*.sql]
+indent_size = 4
+
+[scripts/geyser]
+indent_size = 4
+
+[nginx/includes/*.conf]
+indent_size = 4
+
+[nginx/templates/*.conf.template]
 indent_size = 4
