@@ -54,20 +54,20 @@ This guide will get you a working instance of Geyser in minutes.
 
 #### Install Dependencies
 
-- **Docker with Docker Compose** (required):
+- Docker with Docker Compose (required):
 
   ```shell
   curl -fsSL https://get.docker.com | sh
   sudo usermod -aG docker $USER  # Log out and back in after this
   ```
 
-- **Hasura CLI** (development only):
+- Hasura CLI (development only):
 
   ```shell
   curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
   ```
 
-- **Oh My Zsh** (zsh users only &ndash; required for autocomplete):
+- Oh My Zsh (zsh users only &ndash; required for autocomplete):
 
   ```shell
   sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
