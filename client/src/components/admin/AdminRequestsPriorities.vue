@@ -46,7 +46,7 @@ import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   AdminColumns,
-  NullableParsedRow,
+  ParsedRow,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
@@ -55,7 +55,7 @@ import { unique } from "@/utils";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminPriorityFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = PriorityInsertInput;
 
 const {

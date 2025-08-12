@@ -33,7 +33,7 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
   AdminColumns,
-  NullableParsedRow,
+  ParsedRow,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
@@ -42,7 +42,7 @@ import { unique } from "@/utils";
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCoordinationProgramFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = CoordinationInsertInput;
 
 const {

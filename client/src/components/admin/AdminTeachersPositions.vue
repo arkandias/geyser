@@ -28,12 +28,12 @@ import {
   UpsertPositionsDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
+import type { AdminColumns, ParsedRow, Scalar } from "@/types/data.ts";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminPositionFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = PositionInsertInput;
 
 const { positionFragments } = defineProps<{

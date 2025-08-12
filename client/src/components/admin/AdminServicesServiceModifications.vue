@@ -33,7 +33,7 @@ import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import { useYearsStore } from "@/stores/useYearsStore.ts";
 import type {
   AdminColumns,
-  NullableParsedRow,
+  ParsedRow,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
@@ -41,7 +41,7 @@ import type {
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminServiceModificationFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = ServiceModificationInsertInput;
 
 const { serviceFragments, serviceModificationFragments, teacherFragments } =
@@ -238,7 +238,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   if (flatRow.hours !== undefined) {
-    if (flatRow.hours === null || flatRow.hours < 0) {
+    if (flatRow.hours < 0) {
       throw new Error(
         t("admin.services.serviceModifications.form.error.hoursNegative"),
       );

@@ -27,12 +27,12 @@ import {
   UpsertCourseTypesDocument,
 } from "@/gql/graphql.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
-import type { AdminColumns, NullableParsedRow, Scalar } from "@/types/data.ts";
+import type { AdminColumns, ParsedRow, Scalar } from "@/types/data.ts";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminCourseTypeFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = CourseTypeInsertInput;
 
 const { courseTypeFragments } = defineProps<{

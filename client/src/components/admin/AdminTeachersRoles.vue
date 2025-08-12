@@ -31,16 +31,16 @@ import {
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 import type {
   AdminColumns,
-  NullableParsedRow,
+  ParsedRow,
   Scalar,
   SelectOptions,
 } from "@/types/data.ts";
-import { toLowerCase } from "@/utils";
+import { isRole, toLowerCase } from "@/utils";
 
 import AdminData from "@/components/admin/core/AdminData.vue";
 
 type Row = AdminRoleFragment;
-type FlatRow = NullableParsedRow<typeof adminColumns>;
+type FlatRow = Partial<ParsedRow<typeof adminColumns>>;
 type InsertInput = TeacherRoleInsertInput;
 
 const { roleFragments, teacherFragments } = defineProps<{
@@ -169,10 +169,7 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   if (flatRow.role !== undefined) {
-    if (
-      flatRow.role !== RoleEnum.Organizer &&
-      flatRow.role !== RoleEnum.Commissioner
-    ) {
+    if (!isRole(flatRow.role) || flatRow.role === RoleEnum.Teacher) {
       throw new Error(t("admin.teachers.roles.form.error.invalidRole"));
     }
     object.role = flatRow.role;

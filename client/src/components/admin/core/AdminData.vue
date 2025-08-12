@@ -10,7 +10,7 @@
     UpdateColumn extends string
   "
 >
-import { errorMessage } from "@geyser/shared";
+import { errorMessage, omit } from "@geyser/shared";
 import type { UseMutationResponse } from "@urql/vue";
 import { type Ref, computed, ref, toValue, watch } from "vue";
 
@@ -21,8 +21,8 @@ import type { Column } from "@/types/column.ts";
 import type {
   AdminColumns,
   FieldMetadata,
-  NullableParsedRow,
   Option,
+  ParsedRow,
   PrimitiveType,
   Scalar,
   SelectOptions,
@@ -41,7 +41,7 @@ import AdminSelect from "@/components/admin/core/AdminSelect.vue";
 import AdminToggle from "@/components/admin/core/AdminToggle.vue";
 
 type SetInput = Omit<InsertInput, "oid">;
-type FlatRow = Partial<NullableParsedRow<T>>;
+type FlatRow = Partial<ParsedRow<T>>;
 type CustomMutationResponse<
   Name extends string,
   V extends object,
