@@ -50,7 +50,7 @@ This guide will get you a working instance of Geyser in minutes.
 - Linux or macOS
 - Docker Engine 25.0 or later (with Docker Compose V2)
 - Port 443 must be accessible (HTTPS traffic)
-- A domain name with valid TLS certificates
+- A domain name with valid TLS certificates (follow [these instructions](config/acme-sh/README.md) to get one)
 
 #### Install Dependencies
 
@@ -489,7 +489,8 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 
 **Note:** The client determines the organization key from the hostname, unless `VITE_ORGANIZATION_KEY` is provided.
 
-**Note:** You need a wildcard certificate for the `*.<server-hostname>` subdomains.
+**Note:** You need a wildcard certificate for the `*.<server-hostname>` subdomains
+(follow [these instructions](config/acme-sh/README.md) to get one).
 
 ### Running Geyser as a systemd service
 
