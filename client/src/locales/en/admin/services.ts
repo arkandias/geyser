@@ -190,7 +190,6 @@ If there are modifications, external courses, requests, or messages for these se
             "To update the service, you must select a year and a teacher",
           serviceNotFound:
             "No service exists for teacher {teacherEmail} and year {year}",
-          noContent: "Enter a content",
         },
       },
       data: {

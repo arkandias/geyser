@@ -190,7 +190,6 @@ S'il existe des modifications, des enseignements extérieurs, des demandes ou de
             "Pour mettre à jour le service, vous devez sélectionner une année et un intervenant",
           serviceNotFound:
             "Il n'existe pas de service pour l'intervenant {teacherEmail} et l'année {year}",
-          noContent: "Entrez un contenu",
         },
       },
       data: {

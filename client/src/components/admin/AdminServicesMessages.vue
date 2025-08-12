@@ -184,9 +184,6 @@ const validateFlatRow = (flatRow: FlatRow): InsertInput => {
   }
 
   if (flatRow.content !== undefined) {
-    if (flatRow.content === null) {
-      throw new Error(t("admin.services.messages.form.error.noContent"));
-    }
     object.content = flatRow.content;
   }
 
