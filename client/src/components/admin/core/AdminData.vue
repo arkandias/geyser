@@ -5,7 +5,7 @@
     Id extends Scalar,
     Row extends Record<'id', Id>,
     T extends AdminColumns<string, Row>,
-    InsertInput extends { oid?: number | null | undefined },
+    InsertInput extends object,
     Constraint extends string,
     UpdateColumn extends string
   "
@@ -256,12 +256,12 @@ const insertDataHandle = async () => {
 const updateDataHandle = async () => {
   let changes: SetInput;
   try {
-    const { oid, ...rest } = validateFlatRow(
+    const validated = validateFlatRow(
       multipleSelection.value
         ? validateForm(selectedFields.value)
         : validateForm(),
     );
-    changes = rest;
+    changes = omit(validated, "oid");
   } catch (error) {
     notify(NotifyType.Error, {
       message: t("admin.data.error.invalidForm"),
