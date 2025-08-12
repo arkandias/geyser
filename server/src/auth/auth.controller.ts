@@ -1,5 +1,9 @@
 import { AccessTokenPayload, errorMessage } from "@geyser/shared";
 import {
+  ADMIN_USER_ID,
+  MASTER_ORGANIZATION_ID,
+} from "@geyser/shared/dist/constants";
+import {
   BadRequestException,
   Controller,
   Get,
@@ -104,25 +108,25 @@ export class AuthController {
       const isAdmin = !!roles?.includes("admin");
 
       let userId: number;
-      // Admin organization
-      if (orgId === 0) {
+      // Master organization
+      if (orgId === MASTER_ORGANIZATION_ID) {
         if (!isAdmin) {
           throw new UnauthorizedException("Admin access denied");
         }
-        userId = 0;
+        userId = ADMIN_USER_ID;
       } else {
         const user = await this.userService.findByOidEmail(orgId, email);
-        if (!isAdmin) {
+        if (isAdmin) {
+          userId = user?.id ?? ADMIN_USER_ID;
+        } else {
           if (!user) {
-            throw new UnauthorizedException(
-              `User '${email}' not found in organization ${orgId}`,
-            );
+            throw new UnauthorizedException(`User not found`);
           }
           if (!user.access) {
-            throw new UnauthorizedException("User does not have access");
+            throw new UnauthorizedException("Access denied");
           }
+          userId = user.id;
         }
-        userId = user?.id ?? 0; // 0 is a special id for non-user admin
       }
       await this.cookiesService.setAuthCookies(res, orgId, userId, isAdmin);
 

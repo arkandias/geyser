@@ -15,6 +15,7 @@ import { useYearsStore } from "@/stores/useYearsStore.ts";
 
 import TheHeader from "@/components/TheHeader.vue";
 import PageHome from "@/pages/PageHome.vue";
+import PageOrganizations from "@/pages/PageOrganizations.vue";
 
 const { authManager } = defineProps<{ authManager: AuthManager }>();
 
@@ -33,13 +34,20 @@ if (authManager.authError) {
   });
 }
 
-// Sync profile's activeRole with authManager role
+// Sync profile's activeRole with authManager role (except for master)
 watch(
   () => profile.activeRole,
   (role) => {
-    authManager.setRole(role);
+    if (!authManager.masterOrganization) {
+      authManager.setRole(role);
+    }
   },
 );
+
+// For master organization, set admin role immediately
+if (authManager.masterOrganization) {
+  authManager.setAdminRole();
+}
 
 graphql(`
   query GetAppData($orgId: Int!, $userId: Int!) {
@@ -72,14 +80,14 @@ graphql(`
   }
 `);
 
-// Fetch app data
+// Fetch app data (except for master)
 const getAppData = useQuery({
   query: GetAppDataDocument,
   variables: {
     orgId: authManager.orgId,
     userId: authManager.userId,
   },
-  pause: () => !authManager.hasAccess,
+  pause: () => authManager.masterOrganization || !authManager.hasAccess,
   context: {
     additionalTypenames: [
       "All",
@@ -151,7 +159,7 @@ watch(
 
 // Access check and alert message
 const alertMessage = computed(() => {
-  if (!authManager.organization) {
+  if (!authManager.organizationFound) {
     return t("home.alert.organizationNotFound");
   }
   if (authManager.postLogout) {
@@ -165,6 +173,9 @@ const alertMessage = computed(() => {
   }
   if (getAppData.error.value) {
     return t("home.alert.appDataError");
+  }
+  if (authManager.masterOrganization) {
+    return "";
   }
   if (!getAppData.data.value?.organization) {
     return t("home.alert.organizationNotLoaded");
@@ -188,7 +199,7 @@ const alertMessage = computed(() => {
 });
 
 const warningMessage = computed(() => {
-  if (alertMessage.value) {
+  if (authManager.masterOrganization || alertMessage.value) {
     return "";
   }
   if (activeYear.value === null) {
@@ -203,9 +214,13 @@ const warningMessage = computed(() => {
 
 <template>
   <QLayout view="hHh LpR fFf" class="text-body-1">
-    <TheHeader :disable="!!alertMessage" :warning="warningMessage" />
+    <TheHeader
+      :disable="authManager.masterOrganization || !!alertMessage"
+      :warning="warningMessage"
+    />
     <QPageContainer>
-      <PageHome v-if="alertMessage" :alert="alertMessage" />
+      <PageOrganizations v-if="authManager.masterOrganization" />
+      <PageHome v-else-if="alertMessage" :alert="alertMessage" />
       <RouterView v-else />
     </QPageContainer>
   </QLayout>

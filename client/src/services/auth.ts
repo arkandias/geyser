@@ -1,5 +1,6 @@
 import {
   type AccessTokenPayload,
+  MASTER_ORGANIZATION_KEY,
   type OrganizationData,
   accessTokenPayloadSchema,
   axiosErrorMessage,
@@ -302,12 +303,12 @@ export class AuthManager {
     return this._authError;
   }
 
-  get organizationKey(): string | null {
-    return this._organizationKey;
+  get masterOrganization(): boolean {
+    return this._organizationKey === MASTER_ORGANIZATION_KEY;
   }
 
-  get organization(): OrganizationData | null {
-    return this._organization;
+  get organizationFound(): boolean {
+    return !!this._organization;
   }
 
   get hasAccess(): boolean {
@@ -322,16 +323,16 @@ export class AuthManager {
     return this._payload?.userId ?? -1;
   }
 
-  get isAdmin(): boolean {
-    return this._payload?.isAdmin ?? false;
-  }
-
   get allowedRoles(): RoleEnum[] {
     return this._payload?.isAdmin
       ? Object.values(RoleEnum)
       : (this._payload?.allowedRoles
           .map((role) => role.toUpperCase())
           .filter((role) => isRole(role)) ?? []);
+  }
+
+  get isAdmin(): boolean {
+    return this._payload?.isAdmin ?? false;
   }
 
   setRole(role: RoleEnum | null) {

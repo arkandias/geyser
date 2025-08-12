@@ -481,6 +481,8 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 
 - `https://<organization-key>.<server-hostname>` serves the web client for the organization with the corresponding key
 - `https://<server-hostname>` serves the web client for the organization with the default key `default`
+- `https://master.<server-hostname>` serves the web client with an interface to manage all organizations (need admin
+  privileges)
 - `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)
 - `https://auth.<server-hostname>` proxies requests to the Keycloak authentication service (shared across all
   organizations)
@@ -488,10 +490,6 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 **Note:** The client determines the organization key from the hostname, unless `VITE_ORGANIZATION_KEY` is provided.
 
 **Note:** You need a wildcard certificate for the `*.<server-hostname>` subdomains.
-
-**Note:** Organization management in multi-tenant mode requires manual database operations on the `public.organization`
-table in the PostgreSQL database (standard CRUD operations).
-No automated scripts or web interface for organization provisioning have been developed yet.
 
 ### Running Geyser as a systemd service
 

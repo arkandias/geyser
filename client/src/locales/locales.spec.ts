@@ -24,6 +24,7 @@ import { adminCoursesDegreesColNames } from "@/components/admin/AdminCoursesDegr
 import { adminCoursesProgramsColNames } from "@/components/admin/AdminCoursesPrograms.vue";
 import { adminCoursesTermsColNames } from "@/components/admin/AdminCoursesTerms.vue";
 import { adminCoursesTracksColNames } from "@/components/admin/AdminCoursesTracks.vue";
+import { adminOrganizationsColNames } from "@/components/admin/AdminOrganizations.vue";
 import { adminRequestsPrioritiesColNames } from "@/components/admin/AdminRequestsPriorities.vue";
 import { adminRequestsRequestsColNames } from "@/components/admin/AdminRequestsRequests.vue";
 import { adminServicesExternalCoursesColNames } from "@/components/admin/AdminServicesExternalCourses.vue";
@@ -188,6 +189,9 @@ const findKeysInFiles = async (): Promise<string[]> => {
       terms: adminCoursesTermsColNames,
       courseTypes: adminCoursesCourseTypesColNames,
       courses: adminCoursesCoursesColNames,
+    },
+    organizations: {
+      organizations: adminOrganizationsColNames,
     },
     requests: {
       requests: adminRequestsRequestsColNames,

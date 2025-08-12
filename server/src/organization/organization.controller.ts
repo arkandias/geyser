@@ -1,3 +1,7 @@
+import {
+  MASTER_ORGANIZATION_ID,
+  MASTER_ORGANIZATION_KEY,
+} from "@geyser/shared/dist/constants";
 import { OrganizationData } from "@geyser/shared/dist/schemas/organization-data.schema";
 import {
   Controller,
@@ -15,10 +19,10 @@ export class OrganizationController {
 
   @Get(":key")
   async getOrganization(@Param("key") key: string): Promise<OrganizationData> {
-    // Admin organization
-    if (key === "admin") {
+    // Master organization
+    if (key === MASTER_ORGANIZATION_KEY) {
       return {
-        id: 0,
+        id: MASTER_ORGANIZATION_ID,
       };
     }
 
