@@ -1,4 +1,16 @@
 #!/bin/sh
+#
+# Git pre-push hook: Version Tag Validation
+#
+# Validates that version tags (v1.2.3 format) match the content
+# of the VERSION file in the project root.
+#
+# This prevents accidentally pushing tags that don't match the
+# declared version in the codebase.
+#
+# Usage: Automatically runs when pushing tags to remote
+# Pattern: ^v[0-9]+\.[0-9]+\.[0-9]+(-[a-z0-9.]+)?$
+#
 
 # Exit the script immediately if any command fails
 set -e
@@ -6,6 +18,10 @@ set -e
 # Get script directory (POSIX way)
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 readonly SCRIPT_DIR
+
+# Version tag pattern: v[major].[minor].[patch][-prerelease]
+VERSION_TAG_PATTERN='v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z0-9.][a-z0-9.]*\)*$'
+readonly VERSION_TAG_PATTERN
 
 # Read each ref being pushed from stdin
 while read -r local_ref _ _ _; do
@@ -16,7 +32,7 @@ while read -r local_ref _ _ _; do
         tag_name="$(basename "${local_ref}")"
 
         # Check if tag matches version pattern
-        if expr "${tag_name}" : 'v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z0-9.][a-z0-9.]*\)*$' >/dev/null; then
+        if expr "${tag_name}" : "${VERSION_TAG_PATTERN}" >/dev/null; then
             echo "Tag version check..."
 
             # Extract version without 'v' prefix
