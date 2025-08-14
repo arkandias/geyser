@@ -314,7 +314,8 @@ These packages are built into two Docker images using a multi-stage build proces
 The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
 [Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
 
-Configuration is managed through environment variables. These can be defined in `client/.env` for local development,
+Configuration is managed through environment variables.
+These can be defined in `client/.env` and `client/.env.local` for local development,
 or set as runtime environment variables when running the Docker image `frontend`:
 
 | Environment Variable    | Default Value | Description                                                                                                                  |
@@ -332,8 +333,8 @@ or set as runtime environment variables when running the Docker image `frontend`
 
 The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
 
-Configuration is managed through environment variables that must be defined in `server/.env` during development or set
-in the deployment environment for production:
+Configuration is managed through environment variables that must be defined in `server/.env` and `server/.env.local`
+during development or set in the deployment environment for production:
 
 | Environment Variable               | Default Value      | Description                                                                                                            |
 | ---------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
