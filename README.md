@@ -735,7 +735,7 @@ If you used the install script, updates require manual reinstallation:
 ## Contributing
 
 Bug reports, feature requests, and pull requests are welcome on GitHub,
-see [CONTRIBUTING](./CONTRIBUTING.md) for detailed instructions.
+see [CONTRIBUTING](CONTRIBUTING.md) for detailed instructions.
 
 ## License
 

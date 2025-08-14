@@ -279,7 +279,7 @@ pnpm run build
 ## Getting Help
 
 - **Issues**: Check existing issues or create a new one on GitHub
-- **Documentation**: Check the `README.md`
+- **Documentation**: Check the [README.md](README.md)
 
 ## License
 
