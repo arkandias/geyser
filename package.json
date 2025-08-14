@@ -18,7 +18,8 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc --noEmit && pnpm -r --parallel run typecheck",
-    "validate": "pnpm run format:check && pnpm run test && pnpm run typecheck && pnpm run lint"
+    "validate": "pnpm run format:check && pnpm run test && pnpm run typecheck && pnpm run lint",
+    "prepare": "husky"
   },
   "devDependencies": {
     "@eslint/js": "^9.33.0",
@@ -30,6 +31,7 @@
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.4.0",
     "globals": "^16.3.0",
+    "husky": "^9.1.7",
     "prettier": "^3.6.2",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.39.1"
