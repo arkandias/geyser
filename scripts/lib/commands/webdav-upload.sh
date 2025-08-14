@@ -77,7 +77,7 @@ _webdav_check_env() {
         fi
     done
 
-    if [[ ${#missing_vars[@]} -gt 0 ]]; then
+    if [[ "${#missing_vars[@]}" -gt 0 ]]; then
         error "Missing required environment variables: ${missing_vars[*]}"
         exit 1
     fi
