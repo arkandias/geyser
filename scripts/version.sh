@@ -17,12 +17,14 @@ while read -r local_ref _ _ _; do
 
         # Check if tag matches version pattern
         if expr "${tag_name}" : 'v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z0-9.][a-z0-9.]*\)*$' >/dev/null; then
+            echo "Tag version check..."
+
             # Extract version without 'v' prefix
             version_from_tag=$(echo "${tag_name}" | sed 's/^v//')
 
             # Check if VERSION file exists
             if [ ! -f "${SCRIPT_DIR}/../VERSION" ]; then
-                echo "Error: VERSION file not found"
+                echo "✗ VERSION file not found"
                 exit 1
             fi
 
@@ -31,7 +33,7 @@ while read -r local_ref _ _ _; do
 
             # Compare versions
             if [ "${version_from_tag}" != "${version_from_file}" ]; then
-                echo "Error: Version mismatch!"
+                echo "✗ Version mismatch!"
                 echo "  Tag version: ${version_from_tag}"
                 echo "  VERSION file: ${version_from_file}"
                 exit 1
