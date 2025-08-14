@@ -48,20 +48,19 @@ This guide will get you a working instance of Geyser in minutes.
 #### System Requirements
 
 - Linux or macOS
-- Docker Engine 25.0 or later (with Docker Compose V2)
 - Port 443 must be accessible (HTTPS traffic)
 - A domain name with valid TLS certificates (follow [these instructions](config/acme-sh/README.md) to get one)
 
 #### Install Dependencies
 
-- Docker with Docker Compose (required):
+- Docker (required):
 
   ```shell
   curl -fsSL https://get.docker.com | sh
   sudo usermod -aG docker $USER  # Log out and back in after this
   ```
 
-- Hasura CLI (development only):
+- Hasura CLI (optional):
 
   ```shell
   curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash
@@ -735,7 +734,8 @@ If you used the install script, updates require manual reinstallation:
 
 ## Contributing
 
-Bug reports, feature requests, and pull requests are welcome on GitHub.
+Bug reports, feature requests, and pull requests are welcome on GitHub,
+see [CONTRIBUTING](./CONTRIBUTING.md) for detailed instructions.
 
 ## License
 
