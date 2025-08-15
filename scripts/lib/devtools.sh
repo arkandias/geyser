@@ -33,6 +33,12 @@ _compose() {
 
 # Run Hasura CLI with project configuration and admin secret
 _hasura() {
+    if ! command -v hasura &>/dev/null; then
+        error "Hasura CLI is not installed. You can install it with \
+'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
+        exit 1
+    fi
+
     # shellcheck disable=SC2034
     local -a ENV_VARS=(
         "HASURA_GRAPHQL_ADMIN_SECRET"

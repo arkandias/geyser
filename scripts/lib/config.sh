@@ -240,10 +240,4 @@ check_dependencies() {
         error "Docker buildx is required"
         exit 1
     fi
-
-    if ! command -v hasura &>/dev/null; then
-        error "Hasura CLI is not installed. You can install it with \
-'curl -L https://github.com/hasura/graphql-engine/raw/stable/cli/get.sh | bash'"
-        exit 1
-    fi
 }
