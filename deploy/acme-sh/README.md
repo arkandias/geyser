@@ -56,7 +56,7 @@ acme.sh --issue -d "${GEYSER_DOMAIN}" -d "*.${GEYSER_DOMAIN}" --dns dns_ovh --se
 acme.sh --install-cert -d "${GEYSER_DOMAIN}" \
 --fullchain-file "${GEYSER_HOME}/certs/${GEYSER_DOMAIN}/fullchain.crt" \
 --key-file "${GEYSER_HOME}/certs/${GEYSER_DOMAIN}/private.key" \
---reloadcmd "${GEYSER_HOME}/scripts/geyser compose exec frontend nginx -s reload"
+--reloadcmd "${GEYSER_HOME}/cli/geyser compose exec frontend nginx -s reload"
 ```
 
 ## Certificate Renewal

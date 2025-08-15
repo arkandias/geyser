@@ -8,8 +8,8 @@ Type=oneshot
 User=<username>
 RemainAfterExit=yes
 WorkingDirectory=<install-dir>
-ExecStart=<install-dir>/scripts/geyser start
-ExecStop=<install-dir>/scripts/geyser stop
+ExecStart=<install-dir>/cli/geyser start
+ExecStop=<install-dir>/cli/geyser stop
 Restart=on-failure
 RestartSec=10
 

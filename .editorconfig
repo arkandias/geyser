@@ -14,7 +14,7 @@ indent_size = 4
 [*.sql]
 indent_size = 4
 
-[scripts/geyser]
+[cli/geyser]
 indent_size = 4
 
 [nginx/includes/*.conf]

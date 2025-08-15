@@ -21,17 +21,22 @@
 # Exit the script immediately if any command fails
 set -e
 
+# Absolute path to the directory containing the current script
 SCRIPT_DIR="$(cd -- "$(dirname -- "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
 declare -r SCRIPT_DIR
+
+# Absolute path to the application base directory
+GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." && pwd)"
+declare -r GEYSER_HOME
 
 timestamp="$(date +%Y-%m-%d-%H-%M-%S)"
 db_backup="db_${timestamp}"
 kc_backup="kc_${timestamp}"
 
-"${SCRIPT_DIR}/geyser" stop
-"${SCRIPT_DIR}/geyser" data-backup --name "${db_backup}"
-"${SCRIPT_DIR}/geyser" webdav-upload --path "${SCRIPT_DIR}/../backups/${db_backup}"
-"${SCRIPT_DIR}/geyser" stop
-"${SCRIPT_DIR}/geyser" keycloak-export --name "${kc_backup}"
-"${SCRIPT_DIR}/geyser" webdav-upload --path "${SCRIPT_DIR}/../keycloak/backups/${kc_backup}"
-"${SCRIPT_DIR}/geyser" start
+"${GEYSER_HOME}/cli/geyser" stop
+"${GEYSER_HOME}/cli/geyser" data-backup --name "${db_backup}"
+"${GEYSER_HOME}/cli/geyser" webdav-upload --path "${SCRIPT_DIR}/../backups/${db_backup}"
+"${GEYSER_HOME}/cli/geyser" stop
+"${GEYSER_HOME}/cli/geyser" keycloak-export --name "${kc_backup}"
+"${GEYSER_HOME}/cli/geyser" webdav-upload --path "${SCRIPT_DIR}/../keycloak/backups/${kc_backup}"
+"${GEYSER_HOME}/cli/geyser" start

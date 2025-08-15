@@ -114,8 +114,8 @@ mv "${extract_path}" "${install_path}" || {
 }
 
 # Verify installation succeeded
-if [ ! -x "${install_path}/scripts/geyser" ]; then
-    echo "Error: ${install_path}/scripts/geyser not found" >&2
+if [ ! -x "${install_path}/cli/geyser" ]; then
+    echo "Error: ${install_path}/cli/geyser not found" >&2
     exit 1
 fi
 
@@ -126,7 +126,7 @@ mkdir -p "${HOME}/.local/bin" || {
 
 # Create a symlink to geyser script in ~/.local/bin
 echo "Creating symlink in ${HOME}/.local/bin..."
-ln -sf "${install_path}/scripts/geyser" "${HOME}/.local/bin/geyser" || {
+ln -sf "${install_path}/cli/geyser" "${HOME}/.local/bin/geyser" || {
     echo "Warning: Failed to create a symlink to geyser script in ${HOME}/.local/bin" >&2
 }
 
@@ -135,7 +135,7 @@ echo ":${PATH}:" | grep -q ":${HOME}/.local/bin:" || {
     echo "Warning: ~/.local/bin is not in your PATH"
     echo "Add this to your shell config file (~/.bashrc, ~/.zshrc, etc.):"
     echo "    export PATH=\"\$HOME/.local/bin:\$PATH\""
-    echo "Or run directly: ${install_path}/scripts/geyser"
+    echo "Or run directly: ${install_path}/cli/geyser"
 }
 
 echo "Installation complete! Run 'geyser' to get started"

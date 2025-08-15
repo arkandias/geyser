@@ -7,8 +7,8 @@ Requires=geyser.service
 Type=simple
 User=<username>
 WorkingDirectory=<install-dir>
-ExecStart=<install-dir>/scripts/geyser webhook-start
-ExecStopPost=<install-dir>/scripts/geyser webhook-stop
+ExecStart=<install-dir>/cli/geyser webhook-start
+ExecStopPost=<install-dir>/cli/geyser webhook-stop
 Restart=always
 RestartSec=10
 
