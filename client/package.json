@@ -11,9 +11,8 @@
     "typecheck:node": "tsc --noEmit -p tsconfig.node.json",
     "typecheck:app": "vue-tsc --noEmit -p tsconfig.app.json",
     "typecheck": "pnpm run typecheck:node && pnpm run typecheck:app",
-    "codegen:schema": "graphql-codegen --config codegen.schema.ts",
-    "codegen:documents": "graphql-codegen --config codegen.documents.ts",
-    "codegen": "pnpm codegen:schema && pnpm codegen:documents"
+    "codegen": "graphql-codegen",
+    "codegen:schema": "graphql-codegen --config codegen.schema.ts"
   },
   "dependencies": {
     "@geyser/shared": "workspace:*",
