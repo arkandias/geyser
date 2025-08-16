@@ -637,10 +637,10 @@ Example crontab entries:
 
 ```
 # Hourly backups in June and July
-0 * * 6,7 * /path/to/scripts/backup.sh
+0 * * 6,7 * <install-dir>/scripts/backup.sh
 
 # Daily at 3:00 AM other months
-0 3 * 1-5,8-12 * /path/to/scripts/backup.sh
+0 3 * 1-5,8-12 * <install-dir>/scripts/backup.sh
 ```
 
 ### Updates and Deployment

@@ -13,10 +13,10 @@
 #
 # Example crontab usage:
 #   # Hourly backups in June and July
-#   0 * * 6,7 * /path/to/scripts/backup.sh
+#   0 * * 6,7 * <install-dir>/scripts/backup.sh
 #
 #   # Daily at 3:00 AM every month except June and July
-#   0 3 * 1-5,8-12 * /path/to/scripts/backup.sh
+#   0 3 * 1-5,8-12 * <install-dir>/scripts/backup.sh
 
 # Exit the script immediately if any command fails
 set -e
