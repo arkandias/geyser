@@ -49,6 +49,14 @@ export class KeysService implements OnModuleInit, OnModuleDestroy {
     }
   }
 
+  get kid(): string {
+    const activeKey = this.metadata.keys.find((key) => key.status === "active");
+    if (!activeKey) {
+      throw new InternalServerErrorException("No active key");
+    }
+    return activeKey.kid;
+  }
+
   get privateKey(): jose.CryptoKey {
     if (!this._privateKey) {
       throw new InternalServerErrorException("No private key available");

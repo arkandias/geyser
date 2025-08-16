@@ -30,7 +30,10 @@ export class JwtService {
     payload: Omit<BaseTokenPayload, "iss" | "iat" | "jti">,
   ): Promise<string> {
     return new jose.SignJWT(payload)
-      .setProtectedHeader({ alg: this.configService.keys.alg })
+      .setProtectedHeader({
+        alg: this.configService.keys.alg,
+        kid: this.keysService.kid,
+      })
       .setIssuer(this.configService.api.url.href)
       .setIssuedAt()
       .setJti(randomUUID())
