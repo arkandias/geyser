@@ -41,7 +41,7 @@ handle_install_completion() {
 
     prompt "oh-my-zsh directory [${ZSH}]:"
     local omz_completions="${INPUT:-"${ZSH}/completions"}"
-    local geyser_completions="${GEYSER_HOME}/scripts/completions"
+    local geyser_completions="${GEYSER_HOME}/cli/completions"
 
     info "Installing completion..."
     if [[ ! -d "${omz_completions}" ]]; then
