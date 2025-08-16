@@ -17,7 +17,7 @@ This guide will help you get started with the development environment and contri
 - **Node.js** &ndash; JavaScript runtime (version 24 required)
 - **pnpm** &ndash; Package manager (version 10 required)
 - **Docker Engine** &ndash; Container platform (version 25.0+ with Compose V2)
-- **Hasura CLI** &ndash; GraphQL management tool (version 2.0+ required)
+- **Hasura CLI** &ndash; GraphQL management tool
 
 ## Getting Started
 

@@ -53,7 +53,7 @@ This guide will get you a working instance of Geyser in minutes.
 
 #### Install Dependencies
 
-- **Docker v25.0+** (required):
+- **Docker version 25.0+** (required):
 
   ```shell
   curl -fsSL https://get.docker.com | sh
