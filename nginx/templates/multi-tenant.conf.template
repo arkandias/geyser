@@ -63,7 +63,7 @@ server {
 # Static frontend files (catch-all for other subdomains)
 server {
     listen 443 ssl;
-    server_name ${NGINX_DOMAIN} *.${NGINX_DOMAIN};
+    server_name *.${NGINX_DOMAIN};
 
     ssl_certificate /etc/nginx/certs/${NGINX_DOMAIN}/fullchain.crt;
     ssl_certificate_key /etc/nginx/certs/${NGINX_DOMAIN}/private.key;
