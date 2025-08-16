@@ -24,7 +24,7 @@ VERSION_TAG_PATTERN='v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z0-9.][a-z0-9.]
 readonly VERSION_TAG_PATTERN
 
 # Read each ref being pushed from stdin
-while read -r local_ref _ _ _; do
+while read -r local_ref local_sha _ _; do
 
     # Check if this is a tag push
     case "${local_ref}" in
@@ -38,14 +38,14 @@ while read -r local_ref _ _ _; do
             # Extract version without 'v' prefix
             version_from_tag=$(echo "${tag_name}" | sed 's/^v//')
 
-            # Check if VERSION file exists
-            if [ ! -f "${SCRIPT_DIR}/../VERSION" ]; then
-                echo "✗ VERSION file not found"
+            # Read VERSION file from the commit being tagged
+            if ! version_from_file=$(git show "${local_sha}:VERSION" 2>/dev/null); then
+                echo "✗ VERSION file not found in commit ${local_sha}"
                 exit 1
             fi
 
-            # Read version from file
-            version_from_file=$(tr -d '[:space:]' <"${SCRIPT_DIR}/../VERSION")
+            # Clean whitespace from file content
+            version_from_file=$(echo "${version_from_file}" | tr -d '[:space:]')
 
             # Compare versions
             if [ "${version_from_tag}" != "${version_from_file}" ]; then
