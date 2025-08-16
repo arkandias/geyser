@@ -611,11 +611,10 @@ Vous pouvez supprimer une demande soit en faisant une nouvelle demande du même 
       },
     },
     {
-      element: "#toolbar-courses",
       popover: {
         title: "Boutons additionnels",
         description:
-          "Deux boutons additionnels sont disponibles dans la barre d'outils lorsque vous êtes sur la page des enseignements.",
+          "Trois boutons additionnels sont disponibles dans la barre d'outils lorsque vous êtes sur la page des enseignements.",
       },
     },
     {
@@ -725,23 +724,6 @@ N.B. Les filtres de la table des enseignements sont désactivés lorsqu'un inter
       },
     },
     {
-      popover: {
-        title: "Autres boutons de la barre de menu",
-        description:
-          "Passons en revue les boutons de la barre de menu restants.",
-        popoverClass: "custom-popover large-popover",
-        onPrevClick: () => {
-          void (async () => {
-            await router.push({ name: "courses" });
-            openLeftPanel();
-            await new Promise((resolve) => setTimeout(resolve, 200));
-            document.querySelector<HTMLElement>(".table-services-row")?.click();
-            driverObj.value?.movePrevious();
-          })();
-        },
-      },
-    },
-    {
       element: "#year-button",
       popover: {
         title: "Bouton Année active",
@@ -768,6 +750,23 @@ Lorsque vous sélectionnez une année passée, un bandeau vous avertit que l'ann
         onPrevClick: () => {
           document.getElementById("year-button")?.click();
           driverObj.value?.movePrevious();
+        },
+      },
+    },
+    {
+      popover: {
+        title: "Autres boutons de la barre de menu",
+        description:
+          "Passons en revue les boutons de la barre de menu restants.",
+        popoverClass: "custom-popover large-popover",
+        onPrevClick: () => {
+          void (async () => {
+            await router.push({ name: "courses" });
+            openLeftPanel();
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            document.querySelector<HTMLElement>(".table-services-row")?.click();
+            driverObj.value?.movePrevious();
+          })();
         },
       },
     },
@@ -917,7 +916,8 @@ N'hésitez pas à faire part de vos remarques en utilisant l'adresse de contact 
       prevBtnText: "Précédent",
       doneBtnText: "Terminer",
       allowClose: false,
-      stagePadding: 5,
+      overlayOpacity: 0.5,
+      stagePadding: 0,
       stageRadius: 0,
       popoverClass: "custom-popover",
       onPopoverRender: (popover) => {

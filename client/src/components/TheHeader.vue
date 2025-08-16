@@ -23,7 +23,7 @@ defineProps<{ disable?: boolean; warning?: string }>();
       <QSeparator vertical inset />
       <BtnRefreshData />
       <BtnDarkMode />
-      <BtnTutorial v-if="!disable" />
+      <BtnTutorial />
       <MenuInfo />
       <MenuUser />
     </QToolbar>
