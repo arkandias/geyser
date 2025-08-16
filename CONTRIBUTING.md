@@ -7,14 +7,17 @@ This guide will help you get started with the development environment and contri
 
 ### System Requirements
 
-- Linux or macOS
+- **Operating System:** Linux or macOS (Windows may function but is not officially supported)
+- **Memory:** 8 GB of RAM
+- **Storage:** 10 GB of free disk space
 
 ### Required Software
 
-- Node.js 24 &ndash; The project requires Node.js version 24 exactly
-- pnpm 10 &ndash; Package manager (pnpm version 10 is required)
-- Git &ndash; For version control
-- Docker &ndash; Required for running database and other services in development
+- **Git** &ndash; Version control
+- **Node.js** &ndash; JavaScript runtime (version 24 required)
+- **pnpm** &ndash; Package manager (version 10 required)
+- **Docker Engine** &ndash; Container platform (version 25.0+ with Compose V2)
+- **Hasura CLI** &ndash; GraphQL management tool (version 2.0+ required)
 
 ## Getting Started
 
@@ -53,15 +56,38 @@ cp server/.env server/.env.local
 
 Edit these files according to your local setup requirements.
 
-## Development Workflow
+## Project Overview
 
 ### Project Structure
 
-This is a monorepo with three main packages:
+This is a monorepo with the following structure:
 
-- `client/` - Vue.js frontend application (Vite + TypeScript)
-- `server/` - NestJS backend API (Node.js + TypeScript)
-- `shared/` - Shared types and utilities
+#### Main packages
+
+- `client/` &ndash; Vue.js frontend application (Vite + TypeScript)
+- `server/` &ndash; NestJS backend API (Node.js + TypeScript)
+- `shared/` &ndash; Shared types and utilities
+
+#### Configuration and infrastructure
+
+- `.github/` &ndash; GitHub Actions workflows and configuration
+- `.husky/` &ndash; Git hooks for code quality enforcement
+- `.idea/` &ndash; JetBrains IDE configuration and settings
+- `cli/` &ndash; Administration CLI (the `geyser` script and its `lib/` directory)
+- `docs/` &ndash; Documentation
+- `deploy/` &ndash; Deployment and infrastructure configuration
+- `hasura/` &ndash; GraphQL schema, migrations, and metadata
+- `keycloak/` &ndash; Authentication server configuration
+- `nginx/` &ndash; Nginx configuration for production
+- `scripts/` &ndash; Utility scripts (standalone automation scripts)
+
+#### Runtime directories (created automatically)
+
+- `backups/` &ndash; Database backup files
+- `keycloak/backups/` &ndash; Keycloak realm and user backups
+- `certs/` &ndash; SSL/TLS certificates
+- `keys/` &ndash; Cryptographic keys
+- `logs/` &ndash; Application and service logs
 
 ### Available Scripts
 
@@ -91,74 +117,101 @@ pnpm run lint:fix
 
 # Run all validation checks (format, test, typecheck, lint)
 pnpm run validate
+
+# Install Git hooks (runs automatically after pnpm install)
+pnpm run prepare
 ```
 
-### Development Environment
+## Development Environment
 
-The project is designed to run in development mode with Docker containers for services (database, etc.)
-and local development servers for the client and server.
+In development mode, core services (databases, Hasura, Keycloak) run in Docker containers while the client and server
+run locally for faster iteration.
 
-#### Setting up Development Environment
+### Setting up Development Environment
 
-1. Set development mode: `GEYSER_ENV=development` (in `.env.local`)
+1. Set development mode (in `.env.local`): `GEYSER_ENV=development`
 
 2. Start containerized services:
+
    ```shell
    cli/geyser start
    ```
 
-#### Running the Client (Frontend)
+3. The following services will be available:
+   - **Hasura**: `http://localhost:8080`
+   - **Database** (PostgreSQL): `http://localhost:5432`
+   - **Keycloak**: `http://localhost:8081`
+   - **Keycloak database** (PostgreSQL): `http://localhost:5433`
 
-Navigate to the client directory and start the development server:
+### Build the Shared Package
+
+The shared package contains types and utilities used by both the client and server.
+Build it before starting development and after making changes:
 
 ```shell
-cd client
-
-# Start Vite development server with HMR at http://localhost:5173
-pnpm run dev
-
-# Or build and preview production build at http://localhost:4173
-pnpm run build
-pnpm run preview
+pnpm --filter shared run build
 ```
 
-#### Running the Server (Backend)
+### Serving the Web Client
 
-Navigate to the server directory and start the API server:
+#### Development server
+
+Start the development server with hot module reloading:
 
 ```shell
-cd server
+pnpm --filter client run dev
+```
 
-# Development mode with auto-restart on file changes
-pnpm run start:dev
+The development server will be available at `http://localhost:5173`.
 
-# Or production mode
-pnpm run start
+#### Preview production build
+
+Alternatively, you can build the client and preview the production build:
+
+```shell
+pnpm --filter client run build
+pnpm --filter client run preview
+```
+
+The build will be served at `http://localhost:4173`.
+
+### Running the API Server
+
+Start the API server in development mode with auto-restart on file changes:
+
+```shell
+pnpm --filter server run start:dev
+```
+
+Or start the API server in production mode:
+
+```shell
+pnpm --filter server run start
 ```
 
 The API server will be available at `http://localhost:3000`.
 
-### Code Quality and Standards
+## Code Quality and Standards
 
-#### TypeScript
+### TypeScript
 
 - The project uses strict TypeScript configuration
 - All code must pass type checking: `pnpm run typecheck`
 - Avoid `any` and type assertions when possible
 
-#### Formatting
+### Formatting
 
 - Prettier is used for code formatting
-- Configuration includes automatic import sorting via `@trivago/prettier-plugin-sort-imports`
+- Configuration includes import sorting via `@trivago/prettier-plugin-sort-imports`
 - Format your code before committing: `pnpm run format`
 
-#### Linting
+### Linting
 
 - ESLint with TypeScript and Vue plugins
 - Strict configuration with additional style rules
 - Fix linting issues: `pnpm run lint:fix`
 
-#### Testing
+### Testing
 
 - Vitest for unit testing (client only)
 - Tests should be written for new features and bug fixes
@@ -194,9 +247,23 @@ Always run validation before committing:
 pnpm run validate
 ```
 
-#### Pull Request Process
+#### Git Hooks
 
-1. Create a feature branch from `master`
+The project includes Git hooks to enforce code quality and consistency:
+
+**Pre-push Hook (Version Tag Validation):**
+
+- Automatically validates that version tags match the `VERSION` file
+- Prevents pushing mismatched version tags (e.g., tag `v1.2.3` must match `VERSION` file content `1.2.3`)
+- Runs automatically when pushing tags matching pattern `v[major].[minor].[patch][-prerelease]`
+
+**Note:** This ensures version consistency between Git tags and the project's VERSION file, which is critical for the release process.
+
+## Contribution Process
+
+### Pull Request Process
+
+1. Create a new branch from `master`
 2. Make your changes following the coding standards
 3. Add tests for new functionality
 4. Run validation to ensure all checks pass
@@ -206,66 +273,19 @@ pnpm run validate
    - Link to related issues
    - Screenshots for UI changes
 
-## Development Services
-
-When running in development mode, these services are available:
-
-- **Frontend** (Vite): `http://localhost:5173`
-- **Backend** (NestJS): `http://localhost:3000`
-- **Hasura**: `http://localhost:8080`
-- **Database** (PostgreSQL): `http://localhost:5432`
-- **Keycloak**: `http://localhost:8081`
-- **Keycloak database** (PostgreSQL): `http://localhost:5433`
-
-## Continuous Integration
+### Continuous Integration
 
 The project uses GitHub Actions for CI/CD:
 
-- **Format checking** with Prettier
-- **Testing** with Vitest
-- **Type checking** with TypeScript
-- **Linting** with ESLint
-- **Docker builds** for releases
+- Format checking with Prettier
+- Testing with Vitest
+- Type checking with TypeScript
+- Linting with ESLint
+- Docker builds for releases
 
 All checks must pass before merging pull requests.
 
 ## Package-Specific Development
-
-### Client Package (Vue.js)
-
-```shell
-cd client
-
-# Development server
-pnpm run dev
-
-# Build for production
-pnpm run build
-
-# Preview production build
-pnpm run preview
-
-# Run tests
-pnpm run test
-
-# Generate GraphQL types
-pnpm run codegen
-```
-
-### Server Package (NestJS)
-
-```shell
-cd server
-
-# Development with auto-reload
-pnpm run start:dev
-
-# Production mode
-pnpm run start
-
-# Build
-pnpm run build
-```
 
 ### Shared Package
 
@@ -274,16 +294,73 @@ cd shared
 
 # Build shared types and utilities
 pnpm run build
+
+# Type checking
+pnpm run typecheck
+```
+
+### Client Package (Vue.js)
+
+```shell
+cd client
+
+# Development server with HMR
+pnpm run dev
+
+# Build client for production
+pnpm run build
+
+# Preview production build
+pnpm run preview
+
+# Run Vitest
+pnpm run test
+
+# Run Vitest in watch mode
+pnpm run test:watch
+
+# Type checking
+pnpm run typecheck
+
+# Generate types from GraphQL schema and documents
+pnpm run codegen
+
+# Generate GraphQL schema file schema.graphql (needs to connect to Hasura)
+pnpm run codegen:schema
+```
+
+### Server Package (NestJS)
+
+```shell
+cd server
+
+# Build server
+pnpm run build
+
+# Build and start server
+pnpm run start
+
+# Start with live-reload (automatically recompiles on file changes)
+pnpm run start:dev
+
+# Start with debugging enabled (--inspect flag for IDE connection)
+pnpm run start:debug
+
+# Start production build (requires build first)
+pnpm run start:prod
+
+# Type checking
+pnpm run typecheck
 ```
 
 ## Getting Help
 
-- **Issues**: Check existing issues or create a new one on GitHub
-- **Documentation**: Check the [README.md](README.md)
+- **Bug Reports**: Check [existing issues](https://github.com/arkandias/geyser/issues) or create a new one
+- **Documentation**: See [README.md](README.md) for installation and configuration
 
 ## License
 
-By contributing to Geyser, you agree that your contributions will be licensed under the AGPL-3.0-only.
+By contributing to Geyser, you agree that your contributions will be licensed under the GNU Affero GPL v3.
 
 ---
 
