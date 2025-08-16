@@ -23,10 +23,6 @@ End-user documentation will be provided separately.
   - [Backend](#backend)
   - [Authentication](#authentication)
   - [Network Architecture](#network-architecture)
-- [Custom Packages](#custom-packages)
-  - [Package `client`](#package-client)
-  - [Package `server`](#package-server)
-  - [Package `shared`](#package-shared)
 - [Configuration](#configuration)
   - [Environment Variables](#environment-variables)
   - [Development Environment](#development-environment)
@@ -297,71 +293,6 @@ Services are organized into three Docker networks:
 - `private-db`: Isolates the main database and Hasura from external access
 - `private-kc-db`: Isolates the Keycloak database for security
 
-## Custom Packages
-
-While Geyser leverages standard Docker images for most services (PostgreSQL, Hasura, Keycloak, Nginx),
-the application's core functionality is implemented through three custom-developed packages:
-`client`, `server`, and `shared`.
-
-These packages are built into two Docker images using a multi-stage build process:
-
-- the `frontend` image with the web client served by Nginx
-- the `backend` image containing the NestJS API server
-
-### Package `client`
-
-The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
-[Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
-
-Configuration is managed through environment variables.
-These can be defined in `client/.env` and `client/.env.local` for local development,
-or set as runtime environment variables when running the Docker image `frontend`:
-
-| Environment Variable    | Default Value | Description                                                                                                                  |
-| ----------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
-| `VITE_BUILD_VERSION`    | `NULL`        | The version name (build argument only)                                                                                       |
-| `VITE_API_URL`          | **Required**  | Base URL of the API endpoint                                                                                                 |
-| `VITE_GRAPHQL_URL`      | **Required**  | URL of the GraphQL API endpoint (typically `${VITE_API_URL}/graphql`)                                                        |
-| `VITE_TENANCY_MODE`     | `single`      | Tenancy mode [`single`/`multi`], see [Multi-tenant Mode](#multi-tenant-mode)                                                 |
-| `VITE_BASE_DOMAIN`      | `NULL`        | Required for multi-tenant mode, see [Multi-tenant Mode](#multi-tenant-mode)                                                  |
-| `VITE_ORGANIZATION_KEY` | `NULL`        | Organization identifier (defaults to `default` in single-tenant mode, derived from subdomain in multi-tenant mode when null) |
-| `VITE_BYPASS_AUTH`      | `false`       | Bypasses Keycloak authentication (development only)                                                                          |
-| `VITE_ADMIN_SECRET`     | `NULL`        | API admin secret for authentication bypass (development only, required when `VITE_BYPASS_AUTH=true`)                         |
-
-### Package `server`
-
-The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
-
-Configuration is managed through environment variables that must be defined in `server/.env` and `server/.env.local`
-during development or set in the deployment environment for production:
-
-| Environment Variable               | Default Value      | Description                                                                                                            |
-| ---------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------------- |
-| `API_NODE_ENV`                     | `development`      | Node.js environment mode [`development`/`production`]                                                                  |
-| `API_PORT`                         | `3000`             | Port number for the HTTP server                                                                                        |
-| `API_URL`                          | **Required**       | Public URL where the API is accessible (must use HTTPS in production)                                                  |
-| `API_ORIGINS`                      | **Required**       | Comma-separated list of allowed origins for CORS policy (supports regex patterns)                                      |
-| `API_ADMIN_SECRET`                 | **Required**       | Admin secret for bypassing JWT authentication                                                                          |
-| `API_DATABASE_URL`                 | **Required**       | PostgreSQL database connection string (format: `postgresql://user:password@host:port/dbname`)                          |
-| `API_GRAPHQL_URL`                  | **Required**       | GraphQL Engine endpoint URL                                                                                            |
-| `API_GRAPHQL_ADMIN_SECRET`         | **Required**       | Admin secret for GraphQL Engine access                                                                                 |
-| `API_GRAPHQL_TIMEOUT_MS`           | `30000` (30s)      | Request timeout for GraphQL operations (in milliseconds)                                                               |
-| `API_OIDC_DISCOVERY_URL`           | **Required**       | OpenID Connect discovery endpoint URL for the identity provider                                                        |
-| `API_OIDC_CLIENT_ID`               | **Required**       | OAuth2/OIDC client identifier for authentication                                                                       |
-| `API_OIDC_CLIENT_SECRET`           | **Required**       | OAuth2/OIDC client secret                                                                                              |
-| `API_JWT_ACCESS_TOKEN_MAX_AGE_MS`  | `3600000` (1h)     | Maximum lifetime for JWT access tokens (in milliseconds)                                                               |
-| `API_JWT_REFRESH_TOKEN_MAX_AGE_MS` | `604800000` (7d)   | Maximum lifetime for JWT refresh tokens (in milliseconds)                                                              |
-| `API_JWT_STATE_EXPIRATION_TIME_MS` | `300000` (5m)      | OAuth login state expiration time for CSRF protection (in milliseconds)                                                |
-| `API_KEYS_ALGORITHM`               | `EdDSA`            | Algorithm for signing JWTs [`Ed25519`/`EdDSA`/`ES256`/`ES384`/`ES512`/`PS256`/`PS384`/`PS512`/`RS256`/`RS384`/`RS512`] |
-| `API_KEYS_MODULUS_LENGTH_RSA`      | `2048`             | Modulus length in bits for RSA algorithms (`PS*`/`RS*` only). Common values: `2048`, `3072`, `4096`                    |
-| `API_KEYS_ROTATION_INTERVAL_MS`    | `604800000` (7d)   | How often new signing keys are generated and the current active key is deprecated (in milliseconds)                    |
-| `API_KEYS_EXPIRATION_TIME_MS`      | `2419200000` (28d) | How long a key remains available for JWT verification from the moment it's created (in milliseconds)                   |
-
-### Package `shared`
-
-The `shared` package contains common code, types, and utilities shared between the client and server applications.
-This package promotes code reuse and ensures consistency across the frontend and backend components.
-
 ## Configuration
 
 ### Environment Variables
@@ -372,9 +303,6 @@ Geyser uses two environment files:
 - `.env.local`: Local overrides (not version-controlled)
 
 Variables in `.env.local` take precedence over those in `.env`.
-
-**Note:** In development mode, the Nginx reverse proxy (frontend) and the NestJS API server (backend) are using their
-own `.env` files (see [Development Environment](#development-environment)).
 
 | Environment variable          | Default value | Description                                                                                                                                          |
 | ----------------------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -396,81 +324,10 @@ Finally, all these environment variables are passed to the various services usin
 
 ### Development Environment
 
-To run Geyser in development mode, set `GEYSER_ENV=development`.
-This will change the values of the environment variables computed by the administration script and the Compose file will
-be merged with a second one (`compose.dev.yaml`).
+Geyser supports a development mode where core services run in Docker containers while frontend and backend run locally
+for faster iteration.
 
-In this configuration, the Nginx reverse proxy (frontend) and NestJS API server (backend) run outside of Docker
-containers to facilitate development workflows.
-You need a [git-based installation](#git-based-installation) to run these.
-The containerized services remain accessible on the following ports:
-
-- Hasura GraphQL Engine: `http://localhost:8080`
-- PostgreSQL Database: `http://localhost:5432`
-- Keycloak Authentication: `http://localhost:8081`
-- Keycloak Database: `http://localhost:5433`
-
-#### Web Client Development
-
-Since the frontend container is disabled in development mode, you must serve the web client using Vite's development
-tools.
-
-Navigate to the client directory:
-
-```shell
-cd client
-```
-
-Choose one of the following development servers:
-
-1. Vite Development Server with Hot Module Replacement at `http://localhost:5173`:
-
-   ```shell
-   # Launch development server with HMR
-   pnpm run dev
-   ```
-
-   **Note:** If the port `5173` is already in use, Vite will try to use the next available port.
-
-2. Vite Preview Server for production builds at `http://localhost:4173`:
-
-   ```shell
-   # Build the application for production
-   pnpm run build
-
-   # Serve the built application from ./dist
-   pnpm run preview
-   ```
-
-   **Note:** If the port `4173` is already in use, Vite will try to use the next available port.
-
-**Note:** Vite will use the environment file `client/.env` to set the environment variables described in
-[Package client](#package-client).
-
-#### API Server Development
-
-Since the backend container is disabled in development mode, you must run the NestJS application server locally.
-
-Navigate to the server directory:
-
-```shell
-cd server
-```
-
-Start the NestJS server using one of these options:
-
-```shell
-# Production mode
-pnpm run start
-
-# Development mode with file watching and auto-restart
-pnpm run start:dev
-```
-
-The NestJS API server will be available at `http://localhost:3000` in both configurations.
-
-**Note:** NestJS will use the environment file `server/.env` to set the environment variables described in
-[Package server](#package-server).
+For complete development setup instructions, see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ### Multi-tenant Mode
 

@@ -64,8 +64,8 @@ This is a monorepo with the following structure:
 
 #### Main packages
 
-- `client/` &ndash; Vue.js frontend application (Vite + TypeScript)
-- `server/` &ndash; NestJS backend API (Node.js + TypeScript)
+- `client/` &ndash; Vue.js web client (Vite + TypeScript)
+- `server/` &ndash; NestJS application API (Node.js + TypeScript)
 - `shared/` &ndash; Shared types and utilities
 
 #### Configuration and infrastructure
@@ -88,6 +88,16 @@ This is a monorepo with the following structure:
 - `certs/` &ndash; SSL/TLS certificates
 - `keys/` &ndash; Cryptographic keys
 - `logs/` &ndash; Application and service logs
+
+### Main Packages
+
+While Geyser leverages standard Docker images for most services (PostgreSQL, Hasura, Keycloak, Nginx), the application's
+core functionality is implemented through three custom-developed packages: `client`, `server`, and `shared`.
+
+These packages are built into two Docker images using a multi-stage build process (see `Dockerfile` for details):
+
+- the `frontend` image with the web client served by Nginx
+- the `backend` image containing the NestJS API server
 
 ### Available Scripts
 
@@ -124,7 +134,7 @@ pnpm run prepare
 
 ## Development Environment
 
-In development mode, core services (databases, Hasura, Keycloak) run in Docker containers while the client and server
+In development mode, core services (PostgreSQL, Hasura, Keycloak) run in Docker containers while frontend and backend
 run locally for faster iteration.
 
 ### Setting up Development Environment
@@ -289,6 +299,8 @@ All checks must pass before merging pull requests.
 
 ### Shared Package
 
+The `shared` package contains common code, types, and utilities shared between the client and server applications.
+
 #### Available Scripts
 
 ```shell
@@ -301,7 +313,10 @@ pnpm run build
 pnpm run typecheck
 ```
 
-### Client Package (Vue.js)
+### Client Package
+
+The `client` package is a single-page application built with [Vue 3](https://vuejs.org/) and
+[Quasar Framework](https://quasar.dev/), bundled using [Vite](https://vite.dev/).
 
 #### Environment Variables
 
@@ -348,7 +363,9 @@ pnpm run codegen
 pnpm run codegen:schema
 ```
 
-### Server Package (NestJS)
+### Server Package
+
+The `server` package is a [NestJS](https://nestjs.com/) application providing the backend REST and GraphQL APIs.
 
 #### Environment Variables
 
