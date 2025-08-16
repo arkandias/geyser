@@ -267,7 +267,8 @@ The project includes Git hooks to enforce code quality and consistency:
 - Prevents pushing mismatched version tags (e.g., tag `v1.2.3` must match `VERSION` file content `1.2.3`)
 - Runs automatically when pushing tags matching pattern `v[major].[minor].[patch][-prerelease]`
 
-**Note:** This ensures version consistency between Git tags and the project's VERSION file, which is critical for the release process.
+**Note:** This ensures version consistency between Git tags and the project's `VERSION` file, which is critical for the
+release workflow.
 
 ## Contribution Process
 
