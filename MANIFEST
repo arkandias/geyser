@@ -1,9 +1,11 @@
-config/
+cli/
+deploy/
 hasura/
 keycloak/
 scripts/
 .env
 compose.dev.yaml
+compose.log.yaml
 compose.yaml
 LICENSE
 VERSION

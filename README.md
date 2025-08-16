@@ -49,7 +49,7 @@ This guide will get you a working instance of Geyser in minutes.
 
 - Linux or macOS
 - Port 443 must be accessible (HTTPS traffic)
-- A domain name with valid TLS certificates (follow [these instructions](config/acme-sh/README.md) to get one)
+- A domain name with valid TLS certificates (follow [these instructions](deploy/acme-sh/README.md) to get one)
 
 #### Install Dependencies
 
@@ -490,7 +490,7 @@ Each organization is uniquely identified by its organization key, and the Nginx 
 **Note:** The client determines the organization key from the hostname, unless `VITE_ORGANIZATION_KEY` is provided.
 
 **Note:** You need a wildcard certificate for the `*.<server-hostname>` subdomains
-(follow [these instructions](config/acme-sh/README.md) to get one).
+(follow [these instructions](deploy/acme-sh/README.md) to get one).
 
 ### Running Geyser as a systemd service
 
@@ -502,7 +502,7 @@ integration, Docker dependency management, and automatic restart on failure.
 1. Copy the service file:
 
    ```shell
-   sudo cp config/systemd/geyser.service /etc/systemd/system/
+   sudo cp deploy/systemd/geyser.service /etc/systemd/system/
    ```
 
 2. Customize the service file:
@@ -677,14 +677,14 @@ You can automate deployment on repository updates with a webhook as follows:
    geyser webhook-stop
    ```
 
-The default webhook configuration (`config/hooks.json`) defines a `deploy` hook that triggers when:
+The default webhook configuration (`deploy/webhook/hooks.json`) defines a `deploy` hook that triggers when:
 
 - A GitHub Actions workflow named "CI" completes successfully
 - The workflow was triggered by a push on branch `master`
 - The webhook signature is verified using `WEBHOOK_SECRET`
 
 **Note:** The default configuration is designed for GitHub repositories, but it can be adapted for other Git hosting
-services by modifying the trigger rules in `config/hooks.json`.
+services by modifying the trigger rules in `deploys/webhook/hooks.json`.
 
 To use the default webhook, add a webhook in your GitHub repository settings with the following parameters:
 
@@ -698,7 +698,7 @@ To use the default webhook, add a webhook in your GitHub repository settings wit
 Ensure your firewall allows this port and use a strong webhook secret.
 
 **Note:** If [Geyser is running as a systemd service](#running-geyser-as-a-systemd-service), you can run the webhook
-as a service too, using the service file `config/systemd/geyser-webhook.service` (see systemd setup instructions).
+as a service too, using the service file `deploy/systemd/geyser-webhook.service` (see systemd setup instructions).
 Otherwise, the webhook logs will be stored in `logs/webhook.log`.
 
 #### For script-based installations
