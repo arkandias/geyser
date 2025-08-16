@@ -104,7 +104,7 @@ and local development servers for the client and server.
 
 2. Start containerized services:
    ```shell
-   ./scripts/geyser start
+   cli/geyser start
    ```
 
 #### Running the Client (Frontend)

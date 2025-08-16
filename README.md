@@ -118,7 +118,7 @@ Then create a symlink to geyser script in `~/.local/bin`:
 
 ```shell
 mkdir -p ~/.local/bin
-ln -sf "$(pwd)/scripts/geyser" ~/.local/bin/geyser
+ln -sf "$(pwd)/cli/geyser" ~/.local/bin/geyser
 ```
 
 And create a local configuration file that won't be tracked by git:
@@ -146,7 +146,7 @@ Add this line to your shell configuration file (`~/.bashrc`, `~/.zshrc`, etc.) t
 Alternatively, you can use the full path to the script:
 
 ```shell
-<install-dir>/scripts/geyser --version
+<install-dir>/cli/geyser --version
 ```
 
 ### Initialization
