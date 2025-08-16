@@ -1,5 +1,6 @@
 import {
   type AccessTokenPayload,
+  DEFAULT_ORGANIZATION_KEY,
   MASTER_ORGANIZATION_KEY,
   type OrganizationData,
   accessTokenPayloadSchema,
@@ -138,7 +139,7 @@ export class AuthManager {
         console.debug(
           "[AuthManager] Root domain detected, using default organization key",
         );
-        this._organizationKey = "default";
+        this._organizationKey = DEFAULT_ORGANIZATION_KEY;
         return;
       }
 
@@ -160,7 +161,7 @@ export class AuthManager {
     }
 
     // Fallback to default organization key
-    this._organizationKey = "default";
+    this._organizationKey = DEFAULT_ORGANIZATION_KEY;
     console.debug(
       `[AuthManager] Organization key (fallback to default): '${this._organizationKey}'`,
     );
