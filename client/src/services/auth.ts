@@ -127,26 +127,17 @@ export class AuthManager {
     if (multiTenant) {
       const hostname = window.location.hostname;
 
-      // Check if hostname ends with the base domain
-      if (!hostname.endsWith(baseDomain)) {
+      // Check if hostname is a subdomain of base domain
+      if (!hostname.endsWith("." + baseDomain)) {
         throw new Error(
-          `[AuthManager] Current hostname '${hostname}' does not end with base domain '${baseDomain}'`,
+          `[AuthManager] Current hostname '${hostname}' is not a subdomain of '${baseDomain}'`,
         );
       }
 
-      // If hostname is exactly the base domain (no subdomain), use default key
-      if (hostname === baseDomain) {
-        console.debug(
-          "[AuthManager] Root domain detected, using default organization key",
-        );
-        this._organizationKey = DEFAULT_ORGANIZATION_KEY;
-        return;
-      }
-
-      // Extract subdomain by removing the base domain
+      // Extract subdomain
       const subdomain = hostname.slice(0, -(baseDomain.length + 1)); // +1 for the dot
 
-      // Validate subdomain exists and is not empty
+      // Validate subdomain
       if (/^[a-z-]+$/.test(subdomain)) {
         this._organizationKey = subdomain;
         console.debug(
@@ -154,9 +145,7 @@ export class AuthManager {
         );
         return;
       } else {
-        throw new Error(
-          `[AuthManager] Invalid subdomain structure: '${subdomain}' from hostname '${hostname}'`,
-        );
+        throw new Error(`[AuthManager] Invalid subdomain: '${subdomain}'`);
       }
     }
 

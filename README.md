@@ -337,7 +337,6 @@ them.
 Each organization is uniquely identified by its organization key, and the Nginx configuration is modified as follows:
 
 - `https://<organization-key>.<server-hostname>` serves the web client for the organization with the corresponding key
-- `https://<server-hostname>` serves the web client for the organization with the default key `default`
 - `https://master.<server-hostname>` serves the web client with an interface to manage all organizations (need admin
   privileges)
 - `https://api.<server-hostname>` proxies requests to the backend NestJS server (shared across all organizations)

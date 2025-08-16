@@ -181,7 +181,7 @@ _initialize_computed_env_vars() {
         KC_HOSTNAME_ADMIN="http://localhost:8081"
     elif [[ "${GEYSER_TENANCY}" == "multi" ]]; then
         API_URL="https://api.${GEYSER_DOMAIN}"
-        API_ORIGINS="https://${GEYSER_DOMAIN},https://*.${GEYSER_DOMAIN}"
+        API_ORIGINS="https://*.${GEYSER_DOMAIN}"
         KC_HOSTNAME="https://auth.${GEYSER_DOMAIN}"
         KC_HOSTNAME_ADMIN="https://auth.${GEYSER_DOMAIN}"
     else
