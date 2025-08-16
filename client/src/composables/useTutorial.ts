@@ -65,7 +65,7 @@ export const useTutorial = () => {
           toolbarButton.innerText = ">>> Barre de menu";
           popover.footerButtons.append(toolbarButton);
           toolbarButton.addEventListener("click", () => {
-            driverObj.value?.moveTo(57);
+            driverObj.value?.moveTo(59);
           });
         },
       },
@@ -765,6 +765,9 @@ Lorsque vous sélectionnez une année passée, un bandeau vous avertit que l'ann
             openLeftPanel();
             await new Promise((resolve) => setTimeout(resolve, 200));
             document.querySelector<HTMLElement>(".table-services-row")?.click();
+            await new Promise((resolve) => setTimeout(resolve, 200));
+            document.getElementById("year-button")?.click();
+            await new Promise((resolve) => setTimeout(resolve, 200));
             driverObj.value?.movePrevious();
           })();
         },
@@ -785,49 +788,6 @@ Ce bouton permet de mettre à jour toutes les données affichées.`,
         title: "Bouton Mode sombre",
         description:
           "Ce bouton permet d'activer ou de désactiver le mode sombre.",
-      },
-    },
-    {
-      element: "#lang-button",
-      popover: {
-        title: "Bouton Langue",
-        description: "Ce bouton permet d'ouvrir le menu Langue.",
-        onNextClick: () => {
-          void (async () => {
-            document.getElementById("lang-button")?.click();
-            await new Promise((resolve) => setTimeout(resolve, 200));
-            driverObj.value?.moveNext();
-          })();
-        },
-        onPrevClick: () => {
-          void (async () => {
-            document.getElementById("year-button")?.click();
-            await new Promise((resolve) => setTimeout(resolve, 200));
-            driverObj.value?.movePrevious();
-          })();
-        },
-      },
-    },
-    {
-      element: "#lang-menu",
-      popover: {
-        title: "Menu Langue",
-        description: "Ce menu permet de sélectionner la langue de l'interface.",
-        onNextClick: () => {
-          document.getElementById("lang-button")?.click();
-          driverObj.value?.moveNext();
-        },
-        onPrevClick: () => {
-          document.getElementById("lang-button")?.click();
-          driverObj.value?.movePrevious();
-        },
-      },
-    },
-    {
-      element: "#tutorial-button",
-      popover: {
-        title: "Bouton Tutoriel",
-        description: "Ce bouton permet de démarrer ce tutoriel.",
       },
     },
     {

@@ -7,6 +7,7 @@ export type InfoTextKey = (typeof INFO_TEXT_KEYS)[number];
 <script setup lang="ts">
 import { ref } from "vue";
 
+import { useTutorial } from "@/composables/useTutorial.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
@@ -14,6 +15,7 @@ import MenuBase from "@/components/header/MenuBase.vue";
 
 const { t } = useTypedI18n();
 const { organization } = useOrganizationStore();
+const { startTour } = useTutorial();
 
 const isDialogOpen = ref<Record<InfoTextKey, boolean>>({
   contact: false,
@@ -22,7 +24,7 @@ const isDialogOpen = ref<Record<InfoTextKey, boolean>>({
 });
 
 const icons: Record<InfoTextKey, string> = {
-  contact: "sym_s_contact_support",
+  contact: "sym_s_alternate_email",
   legalNotice: "sym_s_balance",
   license: "sym_s_license",
 };
@@ -37,6 +39,14 @@ const icons: Record<InfoTextKey, string> = {
         </QItemLabel>
       </QItem>
       <QSeparator />
+      <QItem v-close-popup clickable @click="startTour()">
+        <QItemSection side>
+          <QIcon name="sym_s_help" color="primary" />
+        </QItemSection>
+        <QItemSection>
+          {{ t("header.info.tutorial.label") }}
+        </QItemSection>
+      </QItem>
       <QItem
         v-for="key in INFO_TEXT_KEYS"
         :key

@@ -32,11 +32,11 @@ export default {
     lang: {
       label: "Language",
     },
-    tutorial: {
-      label: "Tutorial",
-    },
     info: {
       label: "Information",
+      tutorial: {
+        label: "Tutorial",
+      },
       contact: {
         label: "Contact",
         message: `
