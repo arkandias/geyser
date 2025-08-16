@@ -739,5 +739,5 @@ see [CONTRIBUTING.md](CONTRIBUTING.md) for detailed instructions.
 
 ## License
 
-This project is licensed under the GNU Affero General Public License v3 &ndash;
+This project is licensed under the GNU Affero GPL v3 &ndash;
 see the [LICENSE](LICENSE) file for details.
