@@ -75,7 +75,7 @@ jobs:
       - name: Check if version matches VERSION file
         if: steps.check_tag.outputs.should_release == 'true'
         run: |
-          [[ "${{ steps.check_tag.outputs.version }}" == "$(cat VERSION)" ]] || exit 1
+          [[ "${{ steps.check_tag.outputs.version }}" == "$(tr -d '[:space:]' <VERSION)" ]] || exit 1
       - name: Create GitHub Release
         if: steps.check_tag.outputs.should_release == 'true'
         env:
