@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
   UseGuards,
@@ -67,21 +68,21 @@ export class AuthGuard implements CanActivate {
     if (!payload.isAdmin) {
       // Validate X-Org-Id header against JWT
       if (orgId && orgId !== payload.orgId) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-Org-Id header '${orgId}' does not match organization id '${payload.orgId}' from access token`,
         );
       }
 
       // Validate X-User-Id header against JWT
       if (userId && userId !== payload.userId) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-User-Id header '${userId}' does not match user id '${payload.userId}' from access token`,
         );
       }
 
       // Validate X-Role header against JWT allowed roles
       if (role && !payload.allowedRoles.includes(role)) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-Role header '${role}' not in user allowed roles from access token: [${payload.allowedRoles.join(", ")}]`,
         );
       }

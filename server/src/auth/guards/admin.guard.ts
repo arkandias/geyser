@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
   UseGuards,
@@ -16,13 +17,13 @@ export class AdminGuard extends AuthGuard implements CanActivate {
     // First, run the parent AuthGuard validation
     const isAuthenticated = await super.canActivate(context);
     if (!isAuthenticated) {
-      return false;
+      throw new UnauthorizedException("Authentication required");
     }
 
     const request = context.switchToHttp().getRequest<Request>();
 
     if (!request.auth?.isAdmin) {
-      throw new UnauthorizedException("Admin access denied");
+      throw new ForbiddenException("Admin access denied");
     }
 
     return true;
