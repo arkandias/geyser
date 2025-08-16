@@ -684,7 +684,7 @@ The default webhook configuration (`deploy/webhook/hooks.json`) defines a `deplo
 - The webhook signature is verified using `WEBHOOK_SECRET`
 
 **Note:** The default configuration is designed for GitHub repositories, but it can be adapted for other Git hosting
-services by modifying the trigger rules in `deploys/webhook/hooks.json`.
+services by modifying the trigger rules in `deploy/webhook/hooks.json`.
 
 To use the default webhook, add a webhook in your GitHub repository settings with the following parameters:
 
