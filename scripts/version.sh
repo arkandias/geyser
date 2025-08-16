@@ -15,10 +15,6 @@
 # Exit the script immediately if any command fails
 set -e
 
-# Get script directory (POSIX way)
-SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-readonly SCRIPT_DIR
-
 # Version tag pattern: v[major].[minor].[patch][-prerelease]
 VERSION_TAG_PATTERN='v[0-9][0-9]*\.[0-9][0-9]*\.[0-9][0-9]*\(-[a-z0-9.][a-z0-9.]*\)*$'
 readonly VERSION_TAG_PATTERN
