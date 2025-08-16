@@ -44,9 +44,6 @@ while read -r local_ref local_sha _ _; do
                 exit 1
             fi
 
-            # Clean whitespace from file content
-            version_from_file=$(echo "${version_from_file}" | tr -d '[:space:]')
-
             # Compare versions
             if [ "${version_from_tag}" != "${version_from_file}" ]; then
                 echo "✗ Version mismatch!"

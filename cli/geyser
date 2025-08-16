@@ -78,7 +78,7 @@ GEYSER_HOME="$(cd "${SCRIPT_DIR}/.." && pwd)"
 declare -rx GEYSER_HOME
 
 # Geyser version
-GEYSER_VERSION="$(tr -d '[:space:]' <"${GEYSER_HOME}/VERSION")"
+GEYSER_VERSION="$(cat "${GEYSER_HOME}/VERSION")"
 declare -rx GEYSER_VERSION
 
 # Directories paths
