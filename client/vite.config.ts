@@ -7,6 +7,24 @@ import { visualizer } from "rollup-plugin-visualizer";
 import { defineConfig } from "vite";
 import { compression } from "vite-plugin-compression2";
 
+const getPackageName = (path: string) => {
+  // Get the last node_modules segments
+  const segments = path.split("/node_modules/");
+  const lastSegment = segments[segments.length - 1];
+  if (!lastSegment) {
+    return null;
+  }
+
+  // Handle scoped packages like @vue/runtime-core
+  if (lastSegment.startsWith("@")) {
+    const parts = lastSegment.split("/");
+    return `${parts[0]}/${parts[1]}`;
+  }
+
+  // Handle regular packages like "vue", "quasar"
+  return lastSegment.split("/")[0];
+};
+
 // https://vitejs.dev/config/
 export default defineConfig(() => ({
   build: {
@@ -14,44 +32,59 @@ export default defineConfig(() => ({
     rollupOptions: {
       output: {
         manualChunks: (id) => {
-          // GraphQL operations first
-          if (id.includes("/client/src/gql/")) {
-            return "gql";
-          }
+          const packageName = getPackageName(id);
 
-          // Keep all other client src in main bundle
-          if (id.includes("/client/src/")) {
+          // === Source Code ===
+          if (!packageName) {
+            // GraphQL operations
+            if (id.includes("/client/src/gql/")) {
+              return "gql";
+            }
+
+            // Client package (without gql)
+            if (id.includes("/client/")) {
+              return null;
+            }
+
+            // Shared package
+            if (id.includes("/shared/dist/")) {
+              return "shared";
+            }
+
+            // Build artifacts
             return null;
           }
 
-          // Shared workspace code
-          if (id.includes("/shared/dist/")) {
-            return "shared";
+          // === Vendor Packages ===
+
+          // Vue ecosystem
+          if (
+            packageName === "vue" ||
+            packageName.startsWith("@vue/") ||
+            packageName === "vue-router" ||
+            packageName === "vue-i18n" ||
+            packageName.startsWith("@intlify/")
+          ) {
+            return "vendor-vue";
           }
 
-          // Node modules chunking
-          if (id.includes("/node_modules/")) {
-            // Vue ecosystem
-            if (["vue", "@intlify"].some((pkg) => id.includes(pkg))) {
-              return "vendor-vue";
-            }
-
-            // Quasar UI library
-            if (id.includes("quasar")) {
-              return "vendor-quasar";
-            }
-
-            // GraphQL ecosystem
-            if (["@urql", "graphql", "wonka"].some((pkg) => id.includes(pkg))) {
-              return "vendor-graphql";
-            }
-
-            // Everything else from node_modules
-            return "vendor-misc";
+          // Quasar
+          if (packageName === "quasar") {
+            return "vendor-quasar";
           }
 
-          // Build artifacts stay in main
-          return null;
+          // GraphQL ecosystem
+          if (
+            packageName === "graphql" ||
+            packageName.startsWith("@urql/") ||
+            packageName === "wonka" ||
+            packageName.startsWith("@0no-co/")
+          ) {
+            return "vendor-graphql";
+          }
+
+          // Other packages
+          return "vendor-misc";
         },
       },
     },
