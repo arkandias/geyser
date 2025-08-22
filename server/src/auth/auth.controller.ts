@@ -108,27 +108,33 @@ export class AuthController {
       const isAdmin = !!roles?.includes("admin");
 
       let userId: number;
+      let hasAccess: boolean;
       // Master organization
       if (orgId === MASTER_ORGANIZATION_ID) {
         if (!isAdmin) {
           throw new UnauthorizedException("Admin access denied");
         }
         userId = ADMIN_USER_ID;
+        hasAccess = true;
       } else {
         const user = await this.userService.findByOidEmail(orgId, email);
         if (isAdmin) {
           userId = user?.id ?? ADMIN_USER_ID;
+          hasAccess = true;
         } else {
           if (!user) {
             throw new UnauthorizedException(`User not found`);
           }
-          if (!user.access) {
-            throw new UnauthorizedException("Access denied");
-          }
           userId = user.id;
+          hasAccess = user.access;
         }
       }
-      await this.cookiesService.setAuthCookies(res, orgId, userId, isAdmin);
+      await this.cookiesService.setAuthCookies(res, {
+        orgId,
+        userId,
+        hasAccess,
+        isAdmin,
+      });
 
       if (redirectUrl) {
         redirectUrl.searchParams.set("post_login", "true");
@@ -225,9 +231,8 @@ export class AuthController {
     if (!refreshToken) {
       throw new UnauthorizedException("Missing refresh token");
     }
-    const { orgId, userId, isAdmin } =
-      await this.jwtService.verifyRefreshToken(refreshToken);
-    await this.cookiesService.setAuthCookies(res, orgId, userId, isAdmin);
+    const data = await this.jwtService.verifyRefreshToken(refreshToken);
+    await this.cookiesService.setAuthCookies(res, data);
 
     res.status(200).json({ message: "Token refreshed successfully" });
   }

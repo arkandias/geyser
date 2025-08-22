@@ -46,8 +46,8 @@ export default {
       shutdown: "",
     },
     alert: {
-      postLogout: "You're logged out",
       organizationNotFound: "Organization not found",
+      notAuthenticated: "You're not authenticated",
       noAccess: "You don't have access",
       appDataFetching: "Loading…",
       appDataError: "Error while loading",

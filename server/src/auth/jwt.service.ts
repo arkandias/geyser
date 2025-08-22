@@ -71,12 +71,13 @@ export class JwtService {
     return result.payload;
   }
 
-  async makeAccessToken(
-    orgId: number,
-    userId: number,
-    isAdmin: boolean,
-  ): Promise<string> {
-    const userRoles = await this.roleService.findByUserId(userId);
+  async makeAccessToken(data: {
+    orgId: number;
+    userId: number;
+    hasAccess: boolean;
+    isAdmin: boolean;
+  }): Promise<string> {
+    const userRoles = await this.roleService.findByUserId(data.userId);
     const roles = userRoles.map((userRole) => userRole.role);
     // Add base role
     if (!roles.includes("teacher")) {
@@ -85,36 +86,33 @@ export class JwtService {
     roles.sort();
 
     return this.makeToken({
-      sub: userId,
+      sub: data.userId,
       aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.accessTokenMaxAge) / 1000,
       ),
       typ: "Bearer",
-      orgId,
-      userId,
-      isAdmin,
+      ...data,
       allowedRoles: roles,
       defaultRole: "teacher",
     } satisfies OmitWithIndex<AccessTokenPayload, "iss" | "iat" | "jti">);
   }
 
-  async makeRefreshToken(
-    orgId: number,
-    userId: number,
-    isAdmin: boolean,
-  ): Promise<string> {
+  async makeRefreshToken(data: {
+    orgId: number;
+    userId: number;
+    hasAccess: boolean;
+    isAdmin: boolean;
+  }): Promise<string> {
     return this.makeToken({
-      sub: userId,
+      sub: data.userId,
       aud: this.configService.api.url.href,
       exp: Math.floor(
         (Date.now() + this.configService.jwt.refreshTokenMaxAge) / 1000,
       ),
       typ: "Refresh",
-      orgId,
-      userId,
-      isAdmin,
-    } satisfies OmitWithIndex<BaseTokenPayload, "iss" | "iat" | "jti">);
+      ...data,
+    } satisfies OmitWithIndex<RefreshTokenPayload, "iss" | "iat" | "jti">);
   }
 
   async verifyAccessToken(accessToken: string): Promise<AccessTokenPayload> {

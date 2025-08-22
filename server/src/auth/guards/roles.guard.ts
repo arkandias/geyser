@@ -4,6 +4,7 @@ import {
   ForbiddenException,
   Injectable,
   SetMetadata,
+  UnauthorizedException,
   UseGuards,
   applyDecorators,
 } from "@nestjs/common";
@@ -30,7 +31,7 @@ export class RolesGuard extends AuthGuard implements CanActivate {
     // First, run the parent AuthGuard validation
     const isAuthenticated = await super.canActivate(context);
     if (!isAuthenticated) {
-      return false;
+      throw new UnauthorizedException("Authentication required");
     }
 
     // Get the authorized roles from the decorator metadata

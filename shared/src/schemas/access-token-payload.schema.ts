@@ -6,6 +6,7 @@ export const accessTokenPayloadSchema = baseTokenPayloadSchema.and(
   z.looseObject({
     orgId: z.number(),
     userId: z.number(),
+    hasAccess: z.boolean(),
     isAdmin: z.boolean(),
     allowedRoles: z.array(z.string()),
     defaultRole: z.string(),

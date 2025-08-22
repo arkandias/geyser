@@ -5,6 +5,7 @@ export const refreshTokenPayloadSchema = baseTokenPayloadSchema.and(
   z.looseObject({
     orgId: z.number(),
     userId: z.number(),
+    hasAccess: z.boolean(),
     isAdmin: z.boolean(),
   }),
 );

@@ -74,6 +74,7 @@ export class AuthManager {
       this._payload = {
         orgId: this._organization.id,
         userId: 0,
+        hasAccess: true,
         isAdmin: true,
         allowedRoles: ["organizer", "commissioner", "teacher"],
         defaultRole: "teacher",
@@ -281,27 +282,19 @@ export class AuthManager {
     );
   }
 
-  get postLogin(): boolean {
-    return this._postLogin;
-  }
-
-  get postLogout(): boolean {
-    return this._postLogout;
-  }
-
   get authError(): string | null {
     return this._authError;
-  }
-
-  get masterOrganization(): boolean {
-    return this._organizationKey === MASTER_ORGANIZATION_KEY;
   }
 
   get organizationFound(): boolean {
     return !!this._organization;
   }
 
-  get hasAccess(): boolean {
+  get masterOrganization(): boolean {
+    return this._organizationKey === MASTER_ORGANIZATION_KEY;
+  }
+
+  get authenticated(): boolean {
     return !!this._payload;
   }
 
@@ -319,6 +312,10 @@ export class AuthManager {
       : (this._payload?.allowedRoles
           .map((role) => role.toUpperCase())
           .filter((role) => isRole(role)) ?? []);
+  }
+
+  get hasAccess(): boolean {
+    return this._payload?.hasAccess ?? false;
   }
 
   get isAdmin(): boolean {

@@ -1,6 +1,7 @@
 import {
   CanActivate,
   ExecutionContext,
+  ForbiddenException,
   Injectable,
   UnauthorizedException,
   UseGuards,
@@ -42,6 +43,7 @@ export class AuthGuard implements CanActivate {
         request.auth = {
           orgId,
           userId,
+          hasAccess: true,
           isAdmin: true,
           role,
         };
@@ -63,25 +65,30 @@ export class AuthGuard implements CanActivate {
     // Verify JWT token
     const payload = await this.jwtService.verifyAccessToken(accessToken);
 
-    // Headers validation for non-admin user
+    // Check access
+    if (!payload.hasAccess) {
+      throw new ForbiddenException("Access denied");
+    }
+
+    // Validate headers for non-admin user
     if (!payload.isAdmin) {
       // Validate X-Org-Id header against JWT
       if (orgId && orgId !== payload.orgId) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-Org-Id header '${orgId}' does not match organization id '${payload.orgId}' from access token`,
         );
       }
 
       // Validate X-User-Id header against JWT
       if (userId && userId !== payload.userId) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-User-Id header '${userId}' does not match user id '${payload.userId}' from access token`,
         );
       }
 
       // Validate X-Role header against JWT allowed roles
       if (role && !payload.allowedRoles.includes(role)) {
-        throw new UnauthorizedException(
+        throw new ForbiddenException(
           `X-Role header '${role}' not in user allowed roles from access token: [${payload.allowedRoles.join(", ")}]`,
         );
       }
@@ -91,6 +98,7 @@ export class AuthGuard implements CanActivate {
     request.auth = {
       orgId: payload.orgId,
       userId: payload.userId,
+      hasAccess: payload.hasAccess,
       isAdmin: payload.isAdmin,
       role: role ?? payload.defaultRole,
       jwtPayload: payload,
