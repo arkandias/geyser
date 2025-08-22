@@ -15,6 +15,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Return 401 for authentication failures, 403 for access denials
 
+### Fixed
+
+- Update dependabot configuration to monitor `keycloak/Dockerfile` and `.github/actions/setup/action.yml`
+- Rename GitHub configuration files to use `.yml` extension (`dependabot.yaml` → `dependabot.yml`)
+
 ## [1.0.0] - 2025-08-17
 
 ### Added
