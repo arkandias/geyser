@@ -43,6 +43,7 @@ export class AuthGuard implements CanActivate {
         request.auth = {
           orgId,
           userId,
+          hasAccess: true,
           isAdmin: true,
           role,
         };
@@ -64,7 +65,12 @@ export class AuthGuard implements CanActivate {
     // Verify JWT token
     const payload = await this.jwtService.verifyAccessToken(accessToken);
 
-    // Headers validation for non-admin user
+    // Check access
+    if (!payload.hasAccess) {
+      throw new ForbiddenException("Access denied");
+    }
+
+    // Validate headers for non-admin user
     if (!payload.isAdmin) {
       // Validate X-Org-Id header against JWT
       if (orgId && orgId !== payload.orgId) {
@@ -92,6 +98,7 @@ export class AuthGuard implements CanActivate {
     request.auth = {
       orgId: payload.orgId,
       userId: payload.userId,
+      hasAccess: payload.hasAccess,
       isAdmin: payload.isAdmin,
       role: role ?? payload.defaultRole,
       jwtPayload: payload,

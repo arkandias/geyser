@@ -38,40 +38,41 @@ export class CookiesService {
 
   async setAccessCookie(
     res: Response,
-    orgId: number,
-    userId: number,
-    isAdmin: boolean,
+    data: {
+      orgId: number;
+      userId: number;
+      hasAccess: boolean;
+      isAdmin: boolean;
+    },
   ): Promise<void> {
-    const accessToken = await this.jwtService.makeAccessToken(
-      orgId,
-      userId,
-      isAdmin,
-    );
+    const accessToken = await this.jwtService.makeAccessToken(data);
     res.cookie("access_token", accessToken, this.accessCookieOptions());
   }
 
   async setRefreshCookie(
     res: Response,
-    orgId: number,
-    userId: number,
-    isAdmin: boolean,
+    data: {
+      orgId: number;
+      userId: number;
+      hasAccess: boolean;
+      isAdmin: boolean;
+    },
   ): Promise<void> {
-    const refreshToken = await this.jwtService.makeRefreshToken(
-      orgId,
-      userId,
-      isAdmin,
-    );
+    const refreshToken = await this.jwtService.makeRefreshToken(data);
     res.cookie("refresh_token", refreshToken, this.refreshCookieOptions());
   }
 
   async setAuthCookies(
     res: Response,
-    orgId: number,
-    userId: number,
-    isAdmin: boolean,
+    data: {
+      orgId: number;
+      userId: number;
+      hasAccess: boolean;
+      isAdmin: boolean;
+    },
   ): Promise<void> {
-    await this.setAccessCookie(res, orgId, userId, isAdmin);
-    await this.setRefreshCookie(res, orgId, userId, isAdmin);
+    await this.setAccessCookie(res, data);
+    await this.setRefreshCookie(res, data);
   }
 
   unsetAccessCookie(res: Response): void {

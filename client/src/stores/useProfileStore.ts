@@ -13,9 +13,9 @@ type Profile = {
     id: number;
     year: number;
   }[];
+  isLogged: boolean;
   login: () => Promise<void>;
   logout: () => Promise<void>;
-  isLoggedOut: boolean;
 };
 
 const profile = reactive<Profile>({
@@ -25,13 +25,13 @@ const profile = reactive<Profile>({
   activeRole: null,
   displayname: "",
   services: [],
+  isLogged: false,
   login: (): Promise<void> => {
     return Promise.resolve();
   },
   logout: (): Promise<void> => {
     return Promise.resolve();
   },
-  isLoggedOut: false,
 });
 
 const setProfile = (newProfile: Profile) => {

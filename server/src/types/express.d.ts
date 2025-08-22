@@ -3,6 +3,7 @@ import type { AccessTokenPayload } from "@geyser/shared";
 interface AuthContext {
   orgId?: number;
   userId?: number;
+  hasAccess?: boolean;
   isAdmin?: boolean;
   role?: string;
   jwtPayload?: AccessTokenPayload;
