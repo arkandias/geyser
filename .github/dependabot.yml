@@ -14,7 +14,7 @@ updates:
           - "minor"
           - "patch"
 
-  - package-ecosystem: "github-actions"
+  - package-ecosystem: "docker"
     directory: "/"
     schedule:
       interval: "weekly"
@@ -22,7 +22,21 @@ updates:
       - dependencies
 
   - package-ecosystem: "docker"
+    directory: "/keycloak"
+    schedule:
+      interval: "weekly"
+    labels:
+      - dependencies
+
+  - package-ecosystem: "github-actions"
     directory: "/"
+    schedule:
+      interval: "weekly"
+    labels:
+      - dependencies
+
+  - package-ecosystem: "github-actions"
+    directory: "/.github/actions/setup"
     schedule:
       interval: "weekly"
     labels:
