@@ -6,9 +6,11 @@ import tsEslint from "typescript-eslint";
 
 const config: tsEslint.ConfigArray = tsEslint.config(
   {
-    ignores: [".git/", "**/node_modules/", "**/dist/"],
+    name: "global-ignores",
+    ignores: ["**/dist/", "client/src/gql/"],
   },
   {
+    name: "base-rules",
     files: ["**/*.{ts,vue}"],
     extends: [
       eslint.configs.recommended,
@@ -18,7 +20,6 @@ const config: tsEslint.ConfigArray = tsEslint.config(
     languageOptions: {
       ecmaVersion: 2024,
       sourceType: "module",
-      globals: globals.es2024,
       parser: tsEslint.parser,
       parserOptions: {
         projectService: true,
@@ -28,7 +29,6 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       "no-duplicate-imports": "error",
       // https://typescript-eslint.io/troubleshooting/faqs/eslint#i-get-errors-from-the-no-undef-rule-about-global-variables-not-being-defined-even-though-there-are-no-typescript-errors
       "no-undef": "off",
-      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       "@typescript-eslint/consistent-type-exports": "error",
       "@typescript-eslint/consistent-type-imports": "error",
       "@typescript-eslint/no-extraneous-class": [
@@ -62,21 +62,16 @@ const config: tsEslint.ConfigArray = tsEslint.config(
     },
   },
   {
-    files: ["client/src/vite-env.d.ts", "server/src/**/*.ts"],
-    rules: {
-      "@typescript-eslint/consistent-type-definitions": ["error", "interface"],
-    },
-  },
-  {
-    files: ["**/*.{ts,vue}"],
-    ignores: ["client/src/*"],
+    name: "node-globals",
+    files: ["**/*.ts"],
+    ignores: ["client/src/**"],
     languageOptions: {
       globals: globals.node,
     },
   },
   {
+    name: "client-vue-rules",
     files: ["client/src/**/*.{ts,vue}"],
-    ignores: ["client/src/gql/*"],
     extends: [eslintPluginVue.configs["flat/recommended"]],
     languageOptions: {
       globals: globals.browser,
@@ -86,6 +81,7 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       },
     },
     rules: {
+      "@typescript-eslint/consistent-type-definitions": ["error", "type"],
       // Uncategorized eslint-plugin-vue rules
       "vue/block-lang": ["error", { script: { lang: "ts" } }],
       "vue/block-order": ["warn", { order: ["script", "template", "style"] }],
@@ -97,7 +93,7 @@ const config: tsEslint.ConfigArray = tsEslint.config(
           maxEmptyLines: 0,
         },
       ],
-      "vue/component-api-style": ["error", ["script-setup", "composition"]],
+      "vue/component-api-style": ["warn", ["script-setup"]],
       "vue/component-name-in-template-casing": [
         "warn",
         "PascalCase",
@@ -121,7 +117,7 @@ const config: tsEslint.ConfigArray = tsEslint.config(
         },
       ],
       "vue/define-props-declaration": ["error", "type-based"],
-      "vue/enforce-style-attribute": ["error", { allow: ["scoped"] }],
+      "vue/enforce-style-attribute": ["warn", { allow: ["scoped"] }],
       "vue/html-button-has-type": [
         "warn",
         {
@@ -134,7 +130,6 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       "vue/no-boolean-default": ["warn", "no-default"],
       "vue/no-duplicate-attr-inheritance": ["warn"],
       "vue/no-ref-object-reactivity-loss": ["warn"],
-      "vue/no-required-prop-with-default": ["warn"],
       "vue/no-root-v-if": ["warn"],
       "vue/no-template-target-blank": [
         "error",
@@ -171,7 +166,7 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       ],
       "vue/no-v-text": ["warn"],
       "vue/padding-line-between-blocks": ["warn", "always"],
-      "vue/prefer-define-options": ["error"],
+      "vue/prefer-define-options": ["warn"],
       "vue/prefer-prop-type-boolean-first": ["warn"],
       "vue/prefer-separate-static-class": ["warn"],
       "vue/prefer-true-attribute-shorthand": ["warn"],
@@ -191,10 +186,12 @@ const config: tsEslint.ConfigArray = tsEslint.config(
       "vue/require-typed-ref": ["warn"],
       "vue/slot-name-casing": ["warn", "camelCase"],
       "vue/v-for-delimiter-style": ["warn", "in"],
-      "vue/valid-define-options": ["error"],
     },
   },
-  eslintConfigPrettier,
+  {
+    name: "prettier-compatibility",
+    ...eslintConfigPrettier,
+  },
 );
 
 export default config;
