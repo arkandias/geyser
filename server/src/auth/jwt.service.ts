@@ -8,6 +8,7 @@ import {
 } from "@geyser/shared";
 import { Injectable, UnauthorizedException } from "@nestjs/common";
 import jose from "jose";
+import { JwksService } from "nestjs-jwks";
 
 import {
   RefreshTokenPayload,
@@ -15,14 +16,13 @@ import {
 } from "@/auth/refresh-token-payload.schema";
 import { joseErrorMessage } from "@/common/utils";
 import { ConfigService } from "@/config/config.service";
-import { KeysService } from "@/keys/keys.service";
 import { RoleService } from "@/role/role.service";
 
 @Injectable()
 export class JwtService {
   constructor(
     private configService: ConfigService,
-    private keysService: KeysService,
+    private jwksService: JwksService,
     private roleService: RoleService,
   ) {}
 
@@ -31,13 +31,13 @@ export class JwtService {
   ): Promise<string> {
     return new jose.SignJWT(payload)
       .setProtectedHeader({
-        alg: this.configService.keys.alg,
-        kid: this.keysService.kid,
+        alg: this.jwksService.alg,
+        kid: this.jwksService.kid,
       })
       .setIssuer(this.configService.api.url.href)
       .setIssuedAt()
       .setJti(randomUUID())
-      .sign(this.keysService.privateKey);
+      .sign(this.jwksService.privateKey);
   }
 
   private async verifyToken<T extends BaseTokenPayload>(
@@ -46,7 +46,7 @@ export class JwtService {
   ): Promise<T> {
     let result: jose.JWTVerifyResult<T>;
     try {
-      result = await jose.jwtVerify<T>(token, this.keysService.getKey, {
+      result = await jose.jwtVerify<T>(token, this.jwksService.getKey, {
         issuer: this.configService.api.url.href,
         audience: this.configService.api.url.href,
         requiredClaims: ["sub", "exp", "iat", "jti"],

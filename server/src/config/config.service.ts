@@ -1,5 +1,6 @@
 import { Injectable, Logger } from "@nestjs/common";
 import { ConfigService as NestConfigService } from "@nestjs/config";
+import type { Algorithm } from "nestjs-jwks";
 
 import type { Env } from "@/config/env.schema";
 
@@ -29,19 +30,8 @@ export class ConfigService {
     refreshTokenMaxAge: number;
     stateExpirationTime: number;
   };
-  readonly keys: {
-    alg:
-      | "Ed25519"
-      | "EdDSA"
-      | "ES256"
-      | "ES384"
-      | "ES512"
-      | "PS256"
-      | "PS384"
-      | "PS512"
-      | "RS256"
-      | "RS384"
-      | "RS512";
+  readonly jwks: {
+    algorithm: Algorithm;
     modulusLength: number;
     rotationInterval: number;
     expirationTime: number;
@@ -124,20 +114,8 @@ export class ConfigService {
       `- State expiration time: ${this.jwt.stateExpirationTime}ms (${this.formatDuration(this.jwt.stateExpirationTime)})`,
     );
 
-    this.keys = {
-      alg: this.configService.getOrThrow<
-        | "Ed25519"
-        | "EdDSA"
-        | "ES256"
-        | "ES384"
-        | "ES512"
-        | "PS256"
-        | "PS384"
-        | "PS512"
-        | "RS256"
-        | "RS384"
-        | "RS512"
-      >("API_KEYS_ALGORITHM"),
+    this.jwks = {
+      algorithm: this.configService.getOrThrow<Algorithm>("API_KEYS_ALGORITHM"),
       modulusLength: this.configService.getOrThrow<number>(
         "API_KEYS_MODULUS_LENGTH_RSA",
       ),
@@ -149,24 +127,13 @@ export class ConfigService {
       ),
     };
     this.logger.log("Keys configuration:");
-    this.logger.log(`- Algorithm: ${this.keys.alg}`);
-    if (
-      ["PS256", "PS384", "PS512", "RS256", "RS384", "RS512"].includes(
-        this.keys.alg,
-      )
-    ) {
-      this.logger.log(`- Modulus length: ${this.keys.modulusLength}`);
-      if (this.keys.modulusLength < 2048) {
-        this.logger.warn(
-          "RSA modulus length should be at least 2048 for security",
-        );
-      }
-    }
+    this.logger.log(`- Algorithm: ${this.jwks.algorithm}`);
+    this.logger.log(`- Modulus length: ${this.jwks.modulusLength}`);
     this.logger.log(
-      `- Rotation interval: ${this.keys.rotationInterval}ms (${this.formatDuration(this.keys.rotationInterval)})`,
+      `- Rotation interval: ${this.jwks.rotationInterval}ms (${this.formatDuration(this.jwks.rotationInterval)})`,
     );
     this.logger.log(
-      `- Expiration time: ${this.keys.expirationTime}ms (${this.formatDuration(this.keys.expirationTime)})`,
+      `- Expiration time: ${this.jwks.expirationTime}ms (${this.formatDuration(this.jwks.expirationTime)})`,
     );
 
     this.validate();
@@ -178,20 +145,7 @@ export class ConfigService {
         "JWT refresh token max age should be greater than access token max age",
       );
     }
-    if (this.keys.rotationInterval < 60000) {
-      this.logger.warn("Keys rotation interval is very short (< 1 minute)");
-    }
-    if (this.keys.rotationInterval > 2147483647) {
-      this.logger.warn(
-        "Keys rotation interval exceeds setTimeout limit (2147483647 ms / ~24.8 days)",
-      );
-    }
-    if (this.keys.expirationTime < this.keys.rotationInterval * 2) {
-      this.logger.warn(
-        "Keys expiration time should be at least 2x rotation interval for safe overlap",
-      );
-    }
-    if (this.keys.expirationTime <= this.jwt.refreshTokenMaxAge) {
+    if (this.jwks.expirationTime <= this.jwt.refreshTokenMaxAge) {
       this.logger.warn(
         "Keys expiration time should be longer than refresh token max age",
       );
