@@ -217,7 +217,7 @@ importers:
         version: 11.0.10(@types/node@24.3.0)
       '@nestjs/schematics':
         specifier: ^11.0.7
-        version: 11.0.7(chokidar@4.0.3)(typescript@5.9.2)
+        version: 11.0.7(chokidar@4.0.3)(typescript@5.8.3)
       '@types/compression':
         specifier: ^1.8.1
         version: 1.8.1
@@ -5635,17 +5635,6 @@ snapshots:
       jsonc-parser: 3.3.1
       pluralize: 8.0.0
       typescript: 5.8.3
-    transitivePeerDependencies:
-      - chokidar
-
-  '@nestjs/schematics@11.0.7(chokidar@4.0.3)(typescript@5.9.2)':
-    dependencies:
-      '@angular-devkit/core': 19.2.15(chokidar@4.0.3)
-      '@angular-devkit/schematics': 19.2.15(chokidar@4.0.3)
-      comment-json: 4.2.5
-      jsonc-parser: 3.3.1
-      pluralize: 8.0.0
-      typescript: 5.9.2
     transitivePeerDependencies:
       - chokidar
 
