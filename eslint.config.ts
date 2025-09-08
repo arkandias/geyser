@@ -1,10 +1,11 @@
 import eslint from "@eslint/js";
 import eslintConfigPrettier from "eslint-config-prettier";
 import eslintPluginVue from "eslint-plugin-vue";
+import { defineConfig } from "eslint/config";
 import globals from "globals";
 import tsEslint from "typescript-eslint";
 
-const config: tsEslint.ConfigArray = tsEslint.config(
+const config: tsEslint.ConfigArray = defineConfig(
   {
     name: "global-ignores",
     ignores: ["**/dist/", "client/src/gql/"],
