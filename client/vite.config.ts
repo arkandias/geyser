@@ -115,6 +115,10 @@ export default defineConfig(() => ({
         find: "@",
         replacement: fileURLToPath(new URL("./src", import.meta.url)),
       },
+      {
+        find: "@geyser/shared",
+        replacement: fileURLToPath(new URL("../shared/src", import.meta.url)),
+      },
     ],
   },
   css: {
