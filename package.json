@@ -9,7 +9,7 @@
     "node": "24",
     "pnpm": "10"
   },
-  "packageManager": "pnpm@10.17.1",
+  "packageManager": "pnpm@10.18.2",
   "scripts": {
     "build": "pnpm -r run build",
     "build:shared": "pnpm --filter @geyser/shared run build",
