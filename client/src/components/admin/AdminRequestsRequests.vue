@@ -471,6 +471,10 @@ const formOptions = computed<SelectOptions<string, Row, typeof adminColumns>>(
           c.name === formValues.value["courseName"],
       )
       .map((c) => c.type.label),
+    type: Object.values(RequestTypeEnum).map((type) => ({
+      value: type,
+      label: t(`requestType.${toLowerCase(type)}`),
+    })),
   }),
 );
 
