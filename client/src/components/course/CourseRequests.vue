@@ -43,10 +43,10 @@ const requestsByType = computed(() =>
         RequestTypeEnum.Secondary,
       ]
     : [RequestTypeEnum.Primary, RequestTypeEnum.Secondary]
-  ).map((value) => ({
-    value,
-    label: t(`requestType.${toLowerCase(value)}`, 2),
-    requests: data.value.requests.filter((r) => r.type === value),
+  ).map((type) => ({
+    value: type,
+    label: t(`requestType.${toLowerCase(type)}`, 2),
+    requests: data.value.requests.filter((r) => r.type === type),
   })),
 );
 </script>
