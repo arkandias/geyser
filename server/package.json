@@ -18,7 +18,7 @@
     "@nestjs/platform-express": "^11.1.8",
     "@nestjs/terminus": "^11.0.0",
     "@nestjs/typeorm": "^11.0.0",
-    "axios": "^1.12.2",
+    "axios": "^1.13.1",
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.1.0",
@@ -35,6 +35,6 @@
     "@nestjs/schematics": "^11.0.9",
     "@types/compression": "^1.8.1",
     "@types/cookie-parser": "^1.4.10",
-    "@types/express": "^5.0.4"
+    "@types/express": "^5.0.5"
   }
 }
