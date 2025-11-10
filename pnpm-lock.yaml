@@ -76,8 +76,8 @@ importers:
         specifier: ^16.12.0
         version: 16.12.0
       marked:
-        specifier: ^16.4.0
-        version: 16.4.1
+        specifier: ^17.0.0
+        version: 17.0.0
       papaparse:
         specifier: ^5.5.3
         version: 5.5.3
@@ -3088,8 +3088,8 @@ packages:
     resolution: {integrity: sha512-8y/eV9QQZCiyn1SprXSrCmqJN0yNRATe+PO8ztwqrvrbdRLA3eYJF0yaR0YayLWkMbsQSKWS9N2gPcGEc4UsZg==}
     engines: {node: '>=0.10.0'}
 
-  marked@16.4.1:
-    resolution: {integrity: sha512-ntROs7RaN3EvWfy3EZi14H4YxmT6A5YvywfhO+0pm+cH/dnSQRmdAmoFIc3B9aiwTehyk7pESH4ofyBY+V5hZg==}
+  marked@17.0.0:
+    resolution: {integrity: sha512-KkDYEWEEiYJw/KC+DVm1zzlpMQSMIu6YRltkcCvwheCp8HWPXCk9JwOmHJKBlGfzcpzcIt6x3sMnTsRm/51oDg==}
     engines: {node: '>= 20'}
     hasBin: true
 
@@ -7590,7 +7590,7 @@ snapshots:
 
   map-cache@0.2.2: {}
 
-  marked@16.4.1: {}
+  marked@17.0.0: {}
 
   math-intrinsics@1.1.0: {}
 
