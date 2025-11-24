@@ -42,7 +42,7 @@
     "@urql/devtools": "^2.0.3",
     "@vitejs/plugin-vue": "^6.0.2",
     "@vue/test-utils": "^2.4.6",
-    "glob": "^11.0.3",
+    "glob": "^13.0.0",
     "happy-dom": "^20.0.10",
     "rollup-plugin-visualizer": "^6.0.4",
     "sass-embedded": "^1.93.3",
