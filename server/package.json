@@ -22,7 +22,7 @@
     "compression": "^1.8.1",
     "cookie-parser": "^1.4.7",
     "express": "^5.2.1",
-    "jose": "^6.2.0",
+    "jose": "^6.2.1",
     "nestjs-jwks": "^0.2.3",
     "pg": "^8.20.0",
     "reflect-metadata": "^0.2.2",
