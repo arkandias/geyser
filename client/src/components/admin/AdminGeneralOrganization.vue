@@ -6,7 +6,7 @@ import { NotifyType, useNotify } from "@/composables/useNotify.ts";
 import { useTypedI18n } from "@/composables/useTypedI18n.ts";
 import { DEFAULT_LOCALE } from "@/config/constants.ts";
 import { graphql } from "@/gql";
-import { type LocaleEnum, UpdateOrganizationDocument } from "@/gql/graphql.ts";
+import { UpdateOrganizationDocument } from "@/gql/graphql.ts";
 import { localeOptions } from "@/services/i18n.ts";
 import { useOrganizationStore } from "@/stores/useOrganizationStore.ts";
 
@@ -24,11 +24,11 @@ graphql(`
 
 const updateOrganization = useMutation(UpdateOrganizationDocument);
 
-const label = ref<string>("");
+const label = ref("");
 const sublabel = ref<string | null>("");
-const email = ref<string>("");
-const locale = ref<LocaleEnum>(DEFAULT_LOCALE);
-const privateService = ref<boolean>(false);
+const email = ref("");
+const locale = ref(DEFAULT_LOCALE);
+const privateService = ref(false);
 
 const resetParameters = () => {
   label.value = organization.label;
