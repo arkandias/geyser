@@ -162,7 +162,7 @@ const initForm = (rows: Row[]) =>
       key,
       getField(rows[0], col.field ?? key),
     ]),
-  ) as Record<string, Scalar>;
+  );
 
 const openForm = (rows?: Row[]) => {
   if (rows) {
