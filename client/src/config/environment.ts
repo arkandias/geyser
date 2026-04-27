@@ -25,7 +25,9 @@ try {
   runtimeEnv = envSchema.parse(response.data);
 } catch (error) {
   if (error instanceof z.ZodError) {
-    throw new Error(`Invalid config.json: ${zodErrorMessage(error)}`, { cause: error });
+    throw new Error(`Invalid config.json: ${zodErrorMessage(error)}`, {
+      cause: error,
+    });
   } else {
     const message = axios.isAxiosError(error)
       ? axiosErrorMessage(error)
