@@ -63,7 +63,7 @@ const transform =
       return parseField(value, fieldMetadata);
     } catch (error) {
       const message = errorMessage(error);
-      throw new Error(`Error while parsing field '${field}': ${message}`);
+      throw new Error(`Error while parsing field '${field}': ${message}`, { cause: error });
     }
   };
 

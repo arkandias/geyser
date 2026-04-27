@@ -466,6 +466,7 @@ const importRowsHandle = async () => {
         t("admin.data.error.unreadableFile", {
           reason: errorMessage(error, t("admin.data.error.unknownError")),
         }),
+        { cause: error },
       );
     }
 
@@ -481,6 +482,7 @@ const importRowsHandle = async () => {
         t("admin.data.error.parsingError", {
           reason: errorMessage(error, t("admin.data.error.unknownError")),
         }),
+        { cause: error },
       );
     }
 
@@ -493,6 +495,7 @@ const importRowsHandle = async () => {
             index,
             reason: errorMessage(error, t("admin.data.error.unknownError")),
           }),
+          { cause: error },
         );
       }
     });
