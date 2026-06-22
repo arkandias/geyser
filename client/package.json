@@ -22,7 +22,7 @@
     "axios": "^1.18.0",
     "dompurify": "^3.4.11",
     "driver.js": "^1.4.0",
-    "graphql": "^16.14.2",
+    "graphql": "^17.0.1",
     "marked": "^18.0.5",
     "papaparse": "^5.5.4",
     "quasar": "^2.20.1",
