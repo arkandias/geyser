@@ -23,16 +23,16 @@
     "dompurify": "^3.4.12",
     "driver.js": "^1.8.0",
     "graphql": "^17.0.2",
-    "marked": "^18.0.6",
+    "marked": "^18.0.7",
     "papaparse": "^5.5.4",
-    "quasar": "^2.21.4",
+    "quasar": "^2.23.1",
     "vue": "^3.5.40",
-    "vue-i18n": "^11.4.6",
+    "vue-i18n": "^11.4.8",
     "vue-router": "^5.2.0",
     "zod": "^4.4.3"
   },
   "devDependencies": {
-    "@dotenvx/dotenvx": "^2.14.0",
+    "@dotenvx/dotenvx": "^2.19.0",
     "@graphql-codegen/cli": "^7.2.0",
     "@graphql-codegen/client-preset": "^6.1.0",
     "@graphql-codegen/schema-ast": "^6.1.0",
@@ -43,12 +43,12 @@
     "@vitejs/plugin-vue": "^6.0.8",
     "@vue/test-utils": "^2.4.11",
     "glob": "^13.0.6",
-    "happy-dom": "^20.11.0",
+    "happy-dom": "^20.11.1",
     "rollup-plugin-visualizer": "^7.0.1",
     "sass-embedded": "^1.100.0",
     "vite": "^8.1.5",
     "vite-plugin-compression2": "^2.5.3",
     "vitest": "^4.1.10",
-    "vue-tsc": "^3.3.7"
+    "vue-tsc": "^3.3.8"
   }
 }
