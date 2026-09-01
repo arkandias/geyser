@@ -7,9 +7,9 @@
   "type": "module",
   "engines": {
     "node": "24",
-    "pnpm": "10"
+    "pnpm": "11"
   },
-  "packageManager": "pnpm@10.24.0",
+  "packageManager": "pnpm@11.25.0",
   "scripts": {
     "build": "pnpm -r run build",
     "build:shared": "pnpm --filter @geyser/shared run build",
@@ -28,13 +28,13 @@
     "@types/eslint": "^9.6.1",
     "@types/eslint-config-prettier": "^6.11.3",
     "@types/node": "^26.4.0",
-    "eslint": "^10.8.1",
+    "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "eslint-plugin-vue": "^10.10.0",
     "globals": "^17.11.0",
     "husky": "^9.1.7",
     "prettier": "^3.9.6",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.68.0"
+    "typescript-eslint": "^8.69.0"
   }
 }
