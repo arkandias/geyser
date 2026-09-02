@@ -3,6 +3,11 @@ packages:
   - server
   - shared
 
+allowBuilds:
+  '@nestjs/core': true
+  '@parcel/watcher': true
+  esbuild: true
+
 injectWorkspacePackages: true
 
 minimumReleaseAgeExclude:
@@ -20,9 +25,7 @@ minimumReleaseAgeExclude:
   - typescript-eslint@8.69.0
 
 onlyBuiltDependencies:
-  - "@nestjs/core"
-  - "@parcel/watcher"
-  - esbuild
+  - '@parcel/watcher'
 
 syncInjectedDepsAfterScripts:
   - build
