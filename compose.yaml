@@ -43,6 +43,7 @@ services:
       KC_DB_SCHEMA: "public"
       KC_HOSTNAME: "${KC_HOSTNAME}"
       KC_HOSTNAME_ADMIN: "${KC_HOSTNAME_ADMIN}"
+      KC_HOSTNAME_BACKCHANNEL_DYNAMIC: "true"
       KC_HOSTNAME_STRICT: "true"
       KC_HOSTNAME_DEBUG: "false"
       KC_HTTP_ENABLED: "true"
