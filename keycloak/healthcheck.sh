@@ -4,12 +4,8 @@
 exec 3<>/dev/tcp/localhost/9000
 
 # Sending HTTP request
-cat >&3 <<EOF
-HEAD /health/ready HTTP/1.1
-Host: localhost:9000
-Connection: close
-
-EOF
+# (HTTP requires CRLF line endings)
+printf 'HEAD /health/ready HTTP/1.1\r\nHost: localhost:9000\r\nConnection: close\r\n\r\n' >&3
 
 # Reading HTTP response
 response="$(timeout 1 cat <&3)"
